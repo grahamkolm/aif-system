@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"> <title>AIF</title>
+
+<style>
+
+body{
+margin:0;
+background:#05080d;
+color:white;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto; }
+
+.splash{
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:#05080d;
+z-index:10;
+}
+
+.logo{
+font-size:42px;
+font-weight:700;
+color:#00ff9c;
+}
+
+.sub{
+margin-top:8px;
+opacity:.8;
+}
+
+.bar{
+width:220px;
+height:6px;
+background:#1a1a1a;
+border-radius:10px;
+margin-top:30px;
+overflow:hidden;
+}
+
+.fill{
+height:100%;
+width:0%;
+background:#00ff9c;
+animation:load 2s forwards;
+}
+
+@keyframes load{
+from{width:0%}
+to{width:100%}
+}
+
+.quote{
+margin-top:25px;
+opacity:.7;
+}
+
+.app{
+display:none;
+padding:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="splash" id="splash">
+
+<div class="logo">AIF™</div>
+<div class="sub">Artificial Intelligence Fishing</div>
+
+<div class="bar">
+<div class="fill"></div>
+</div>
+
+<div class="quote">See what lies below</div>
+
+</div>
+
+
+<div class="app" id="app">
+
+<h2>AIF Dashboard</h2>
+
+<p>Your full AIF system will load here.</p>
+
+</div>
+
+
+<script>
+
+setTimeout(function(){
+
+document.getElementById("splash").style.display="none";
+document.getElementById("app").style.display="block";
+
+},2000);
+
+</script>
+
+</body>
+</html>
+
