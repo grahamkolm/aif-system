@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIF Tactical Dashboard</title>
+
+<style>
+body{
+margin:0;
+background:#05080d;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+color:#e6edf3;
+display:flex;
+justify-content:center;
+}
+
+.main{
+width:100%;
+max-width:420px;
+padding-bottom:140px;
+}
+
+.header{
+text-align:center;
+margin-top:22px;
+}
+
+.brand{
+font-size:36px;
+font-weight:700;
+color:#00ff9c;
+letter-spacing:1px;
+text-shadow:0 0 10px rgba(0,255,156,0.6);
+}
+
+.subtitle1{
+font-size:20px;
+color:#b9c3cc;
+margin-top:6px;
+}
+
+.subtitle2{
+font-size:16px;
+color:#7fffb2;
+margin-top:4px;
+letter-spacing:1px;
+}
+
+.wrapper{
+margin-top:20px;
+display:flex;
+justify-content:center;
+}
+
+.tiles{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:14px;
+margin-top:20px;
+width:100%;
+}
+
+.tile{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:16px;
+padding:14px;
+}
+
+.tile-title{
+font-size:12px;
+opacity:0.8;
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.tile-value{
+font-size:20px;
+font-weight:500;
+margin-top:4px;
+}
+
+.icon{
+width:16px;
+height:16px;
+color:#9fb4c7;
+}
+
+.good{ color:#00ff9c;}
+.warning{ color:#ffc400;}
+.bad{ color:#ff3b3b;}
+
+.ai-box{
+margin:22px 12px;
+background:rgba(255,255,255,0.06);
+border-left:4px solid #00ff9c;
+border-radius:16px;
+padding:18px;
+}
+
+.dock{
+position:fixed;
+bottom:0;
+width:100%;
+max-width:420px;
+background:#000;
+display:flex;
+justify-content:space-around;
+padding:12px 0;
+border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.dock-btn{
+display:flex;
+flex-direction:column;
+align-items:center;
+font-size:12px;
+cursor:pointer;
+}
+
+.dock-btn span{
+font-size:22px;
+margin-bottom:4px;
+}
+
+.spi-value{
+font-size:48px;
+font-weight:700;
+fill:#ffffff;
+}
+
+.spi-label{
+font-size:16px;
+letter-spacing:2px;
+fill:#00ff9c;
+}
+
+.spi-small{
+font-size:13px;
+fill:#9fb4c7;
+}
+
+.radarRing{
+stroke:rgba(0,255,156,0.18);
+stroke-width:1;
+fill:none;
+}
+
+@keyframes sonarSpin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+#sonarSweep{
+transform-origin:150px 150px;
+animation: sonarSpin 4s linear infinite;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+<div class="header">
+<div class="brand">AIF™</div>
+<div class="subtitle1">Artificial Intelligence Fishing</div>
+<div class="subtitle2">Drop • Scan • Strike</div>
+</div>
+
+<div class="wrapper">
+
+<svg viewBox="0 0 300 300" width="260">
+
+<defs>
+<linearGradient id="gradFull">
+<stop offset="0%" stop-color="#ff3b3b"/>
+<stop offset="40%" stop-color="#ffc400"/>
+<stop offset="100%" stop-color="#00ff9c"/>
+</linearGradient>
+</defs>
+
+<circle cx="150" cy="150" r="120" fill="none" stroke="url(#gradFull)" stroke-width="4"/>
+
+<circle cx="150" cy="150" r="102"
+fill="none"
+stroke="#00ff9c"
+stroke-width="4"
+stroke-linecap="round"
+stroke-dasharray="640"
+stroke-dashoffset="640"
+transform="rotate(-90 150 150)"
+id="progressArc"/>
+
+<circle cx="150" cy="150" r="40" class="radarRing"/>
+<circle cx="150" cy="150" r="70" class="radarRing"/>
+<circle cx="150" cy="150" r="100" class="radarRing"/>
+
+<circle cx="150" cy="150" r="80" fill="#070c12"/>
+
+<text x="150" y="140" text-anchor="middle" class="spi-value" id="spiText">--%</text>
+<text x="150" y="165" text-anchor="middle" class="spi-label">STRIKE</text>
+
+<text x="150" y="190" text-anchor="middle" class="spi-small" id="depthTxt"></text>
+<text x="150" y="205" text-anchor="middle" class="spi-small" id="structureTxt"></text>
+<text x="150" y="220" text-anchor="middle" class="spi-small" id="windTxt"></text>
+
+<line id="sonarSweep"
+x1="150"
+y1="150"
+x2="150"
+y2="40"
+stroke="#00ff9c"
+stroke-width="2"
+stroke-linecap="round"/>
+
+</svg>
+</div>
+
+<div class="tiles">
+
+<div class="tile">
+<div class="tile-title">
+<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="16" r="4" fill="currentColor"/><rect x="11" y="4" width="2" height="10" fill="currentColor"/></svg>
+Air
+</div>
+<div class="tile-value" id="airTemp"></div>
+</div>
+
+<div class="tile">
+<div class="tile-title">
+<svg class="icon" viewBox="0 0 24 24"><path d="M2 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+Surface
+</div>
+<div class="tile-value" id="surfaceTemp"></div>
+</div>
+
+<div class="tile">
+<div class="tile-title">
+<svg class="icon" viewBox="0 0 24 24"><polygon points="12,18 6,8 18,8" fill="currentColor"/></svg>
+Bottom
+</div>
+<div class="tile-value" id="bottomTemp"></div>
+</div>
+
+<div class="tile"><div class="tile-title"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/></svg>Pressure</div><div class="tile-value" id="pressure"></div></div>
+
+<div class="tile"><div class="tile-title"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12h12a3 3 0 100-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>Wind</div><div class="tile-value" id="wind"></div></div>
+
+<div class="tile"><div class="tile-title"><svg class="icon" viewBox="0 0 24 24"><path d="M6 18h11a4 4 0 000-8" fill="currentColor"/></svg>Cloud</div><div class="tile-value" id="cloud"></div></div>
+
+<div class="tile"><div class="tile-title"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2a9 9 0 100 18 7 7 0 110-18z" fill="currentColor"/></svg>Moon</div><div class="tile-value" id="moon"></div></div>
+
+<div class="tile"><div class="tile-title"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2c4 4 4 10 0 20" fill="currentColor"/></svg>Season</div><div class="tile-value" id="season"></div></div>
+
+<div class="tile"><div class="tile-title"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/></svg>Water</div><div class="tile-value">Fresh</div></div>
+
+</div>
+
+<div class="ai-box" id="aiText"></div>
+
+</div>
+
+<div class="dock">
+<div class="dock-btn" onclick="getGPS()"><span>📍</span>GPS</div>
+<div class="dock-btn" onclick="updateData()"><span>🎣</span>Refresh</div>
+<div class="dock-btn" onclick="saveDrop()"><span>🎯</span>Drop</div>
+</div>
+
+<script>
+
+function fetchData(){
+return{
+airTemp:18+Math.random()*5,
+surfaceTemp:19+Math.random()*4,
+bottomTemp:16+Math.random()*3,
+pressure:1012+Math.random()*6,
+windSpeed:5+Math.random()*12,
+windDir:["N","NE","E","SE","S","SW","W","NW"][Math.floor(Math.random()*8)],
+cloud:Math.floor(Math.random()*100),
+moon:["New","Waxing","Full","Waning"][Math.floor(Math.random()*4)]
+};
+}
+
+function render(d){
+
+document.getElementById("airTemp").innerText=d.airTemp.toFixed(1)+"°C";
+document.getElementById("surfaceTemp").innerText=d.surfaceTemp.toFixed(1)+"°C";
+document.getElementById("bottomTemp").innerText=d.bottomTemp.toFixed(1)+"°C";
+
+document.getElementById("pressure").innerText=d.pressure.toFixed(0)+" hPa";
+document.getElementById("wind").innerText=d.windSpeed.toFixed(1)+" km/h "+d.windDir;
+document.getElementById("cloud").innerText=d.cloud+"%";
+document.getElementById("moon").innerText=d.moon;
+document.getElementById("season").innerText="Autumn";
+
+const spi = Math.round(50 + Math.random()*50);
+document.getElementById("spiText").textContent = spi + "%";
+
+const radius=102;
+const circumference=2*Math.PI*radius;
+document.getElementById("progressArc").style.strokeDashoffset=
+circumference-(spi/100)*circumference;
+
+document.getElementById("depthTxt").textContent="Depth "+(6+Math.random()*2).toFixed(1)+"m";
+document.getElementById("structureTxt").textContent="Structure Slope Edge";
+document.getElementById("windTxt").textContent="Wind zone "+d.windDir;
+
+document.getElementById("aiText").innerHTML=
+"<b>AIF Tactical Assessment</b><br><br>"+
+"Wind "+d.windDir+" pushing natural food across the lake.<br>"+
+"Pressure "+d.pressure.toFixed(0)+" hPa influencing carp behaviour.<br>"+
+"Cloud cover "+d.cloud+"% affecting feeding confidence.";
+
+}
+
+function updateData(){
+render(fetchData());
+}
+
+function getGPS(){
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(function(pos){
+alert("GPS:\nLat "+pos.coords.latitude.toFixed(5)+"\nLon "+pos.coords.longitude.toFixed(5));
+});
+}else{
+alert("GPS not supported");
+}
+}
+
+function saveDrop(){
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let drop={
+lat:pos.coords.latitude,
+lon:pos.coords.longitude,
+time:new Date().toISOString()
+};
+
+let drops=JSON.parse(localStorage.getItem("aifDrops")||"[]");
+drops.push(drop);
+localStorage.setItem("aifDrops",JSON.stringify(drops));
+
+alert("Drop saved at:\n"+drop.lat.toFixed(5)+", "+drop.lon.toFixed(5));
+
+});
+}
+
+render(fetchData());
+
+</script>
+
+</body>
+</html>
