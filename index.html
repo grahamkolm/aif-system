@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIF Tactical Cockpit</title>
+
+<link rel="stylesheet" href="css/cockpit.css">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+</head>
+
+<body>
+
+<div class="main">
+
+<div class="header">
+<div class="brand">AIF™</div>
+<div class="subtitle1">Artificial Intelligence Fishing</div>
+<div class="subtitle2">Drop • Scan • Strike</div>
+</div>
+
+<div class="gauge-block">
+<div class="gauge-title">SPI</div>
+
+<svg viewBox="0 0 300 150" class="gauge">
+
+<path id="spiBackground"
+d="M20 130 A130 130 0 0 1 280 130"
+stroke="#1b2631"
+stroke-width="18"
+fill="none"/>
+
+<path id="spiArc"
+d="M20 130 A130 130 0 0 1 280 130"
+stroke="#00ff9c"
+stroke-width="18"
+fill="none"
+stroke-linecap="round"/>
+
+<text id="spiValue" x="150" y="120" text-anchor="middle">--%</text>
+
+</svg>
+</div>
+
+<div class="radar-wrapper">
+
+<svg viewBox="0 0 300 300" id="radar">
+
+<circle cx="150" cy="150" r="140" stroke="#00ff9c" stroke-opacity="0.3" fill="none"/>
+
+<line id="sweep"
+x1="150"
+y1="150"
+x2="150"
+y2="20"
+stroke="#00ff9c"
+stroke-width="2"/>
+
+<path id="windSector" fill="rgba(0,255,156,0.18)"/>
+
+<g id="particles"></g>
+
+</svg>
+
+</div>
+
+<div class="compass">
+🧭 <span id="heading">--</span>
+</div>
+
+<div class="gauge-block">
+<div class="gauge-title">CONF</div>
+
+<svg viewBox="0 0 300 150" class="gauge">
+
+<path
+d="M20 130 A130 130 0 0 1 280 130"
+stroke="#1b2631"
+stroke-width="18"
+fill="none"/>
+
+<path
+id="confArc"
+d="M20 130 A130 130 0 0 1 280 130"
+stroke="#3aa6ff"
+stroke-width="18"
+fill="none"
+stroke-linecap="round"/>
+
+<text id="confValue" x="150" y="120" text-anchor="middle">--%</text>
+
+</svg>
+
+</div>
+
+<div class="panels">
+
+<div class="panel">
+<div class="panelTitle">Air</div>
+<div class="panelValue" id="air">--</div>
+</div>
+
+<div class="panel">
+<div class="panelTitle">Pressure</div>
+<div class="panelValue" id="pressure">--</div>
+</div>
+
+<div class="panel">
+<div class="panelTitle">Wind</div>
+<div class="panelValue" id="wind">--</div>
+</div>
+
+<div class="panel">
+<div class="panelTitle">Cloud</div>
+<div class="panelValue" id="cloud">--</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="dock">
+<div class="dock-btn">📍<span>Scout</span></div>
+<div class="dock-btn">⟳<span>Refresh</span></div>
+<div class="dock-btn">🎯<span>Drop</span></div>
+<div class="dock-btn">🐟<span>Map</span></div>
+<div class="dock-btn">⚙️<span>Setup</span></div>
+<div class="dock-btn">📊<span>Report</span></div>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/environment.js"></script>
+<script src="js/radar.js"></script>
+<script src="js/gauges.js"></script>
+<script src="js/map.js"></script>
+
+</body>
+</html>
