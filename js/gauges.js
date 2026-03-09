@@ -53,3 +53,9 @@ arc.style.strokeDasharray = length;
 arc.style.strokeDashoffset = length - (length * percent);
 
 }
+
+
+arc.style.strokeDashoffset = length - (length * percent);
+
+}
+
