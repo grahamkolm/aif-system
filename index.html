@@ -43,7 +43,7 @@ max-width:260px;
 height:auto;
 }
 
-.ring{fill:none;stroke-width:4;}
+.ring{fill:none;stroke-width:4;filter:drop-shadow(0 0 6px rgba(0,255,156,0.35));
 .inner-ring{fill:none;stroke:#00ff9c;stroke-opacity:0.25;stroke-width:2}
 
 .spi-value{font-size:48px;fill:white;font-weight:700;}
@@ -305,7 +305,8 @@ box-shadow:0 0 18px rgba(0,255,156,0.35);
 
 <!-- wind sector -->
 <!-- outer SPI ring -->
-<circle cx="150" cy="150" r="120" stroke="url(#grad)" class="ring"/>
+<circle cx="150" cy="150" r="110" fill="none" stroke="rgba(0,255,156,0.15)" stroke-width="6"/>
+<circle cx="150" cy="150" r="95" fill="rgba(5,8,13,0.55)" stroke="rgba(0,255,156,0.15)" stroke-width="1"/>
 
 <!-- SPI progress arc -->
 <circle id="progressArc"
@@ -333,9 +334,9 @@ transform="rotate(-90 150 150)"
 
 <circle cx="150" cy="150" r="80" fill="#05080d"/>
 
-<text x="150" y="140" text-anchor="middle" class="spi-value" id="spi">--%</text>
+<text x="150" y="145" text-anchor="middle" class="spi-value" id="spi">--%</text>
 <text x="150" y="165" text-anchor="middle" class="spi-label">STRIKE</text>
-<text x="150" y="185" text-anchor="middle" font-size="14" fill="#6fb6ff" id="confidenceText">
+<text x="150" y="170" text-anchor="middle" font-size="14" fill="#6fb6ff" id="confidenceText">
 CONF --
 </text>
 
@@ -361,7 +362,7 @@ stroke-linecap="round"
 
 <g id="particles"></g>
 
-<text x="150" y="12" text-anchor="middle" fill="#7fffb2" font-size="12">N</text> <text x="288" y="155" text-anchor="middle" fill="#7fffb2" font-size="12">E</text> <text x="150" y="295" text-anchor="middle" fill="#7fffb2" font-size="12">S</text> <text x="12" y="155" text-anchor="middle" fill="#7fffb2" font-size="12">W</text>
+<text x="150" y="12" text-anchor="middle" fill="#00ff9c" font-size="12">N</text> <text x="288" y="155" text-anchor="middle" fill="#00ff9c" font-size="12">E</text> <text x="150" y="295" text-anchor="middle" fill="#00ff9c" font-size="12">S</text> <text x="12" y="155" text-anchor="middle" fill="#7fffb2" font-size="12">W</text>
 
 </svg>
 </div>
@@ -1381,6 +1382,7 @@ padding:20px;
 
 </body>
 </html>
+
 
 
 
