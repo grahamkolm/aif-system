@@ -319,10 +319,25 @@ stroke-linecap="round"
 
 <g id="particles"></g>
 
-<text x="100" y="72" text-anchor="middle" font-size="26" fill="white" id="spiGauge">--%</text> <text x="100" y="105" text-anchor="middle" font-size="14" fill="#7fffb2">SPI</text>
-<text x="150" y="140" text-anchor="middle" class="spi-value" id="spi">--%</text>
-<text x="150" y="170" text-anchor="middle" class="spi-label">STRIKE</text>
-<text x="150" y="195" text-anchor="middle" font-size="14" fill="#6fb6ff" id="confidenceText">
+<!-- CENTER TEXT -->
+<text x="150" y="145"
+text-anchor="middle"
+class="spi-value"
+id="spi">
+--%
+</text>
+
+<text x="150" y="170"
+text-anchor="middle"
+class="spi-label">
+STRIKE
+</text>
+
+<text x="150" y="195"
+text-anchor="middle"
+font-size="14"
+fill="#6fb6ff"
+id="confidenceText">
 CONF --
 </text>
 
@@ -613,7 +628,7 @@ let spi=calculateSPI(temp,pressure,wind,cloud);
 let confidence = calculateConfidence(temp,pressure,wind,cloud);
 document.getElementById("spi").textContent = spi + "%";
 document.getElementById("feed").innerText = feeding(spi);
-document.getElementById("confidenceText").textContent = "CONF" + confidence + "%";
+document.getElementById("confidenceText").textContent = "CONF " + confidence + "%";
 
 const arcRadius = 102;
 const c = 2*Math.PI*arcRadius;
@@ -1393,6 +1408,7 @@ padding:20px;
 
 </body>
 </html>
+
 
 
 
