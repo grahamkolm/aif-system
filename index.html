@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIF v2 Dashboard</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+<style>
+body{
+margin:0;
+background:#05080d;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+color:#e6edf3;
+display:flex;
+justify-content:center;
+}
+
+.main{
+width:100%;
+max-width:420px;
+padding-bottom:120px;
+}
+
+.header{
+text-align:center;
+margin-top:14px;
+}
+
+.brand{
+font-size:34px;
+font-weight:700;
+color:#00ff9c;
+}
+
+.subtitle1{font-size:18px;color:#b9c3cc;}
+.subtitle2{font-size:14px;color:#7fffb2;}
+
+.instrument{
+margin-top:20px;
+display:flex;
+justify-content:center;
+}
+
+#spiGauge{
+width:260px;
+height:260px;
+}
+
+.spi-number{
+font-size:44px;
+fill:white;
+font-weight:700;
+}
+
+.spi-label{
+font-size:16px;
+fill:#7fffb2;
+}
+
+.spi-desc{
+font-size:12px;
+fill:#9aa4ad;
+}
+
+.gauge-row{
+display:flex;
+justify-content:space-between;
+margin:16px 20px;
+}
+
+.gauge{width:48%;}
+
+.tile-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+margin:18px;
+}
+
+.tile{
+background:#0c1118;
+border-radius:12px;
+padding:12px;
+text-align:center;
+border:1px solid rgba(255,255,255,0.05);
+}
+
+.tile-title{font-size:12px;color:#9aa4ad;}
+.tile-value{font-size:18px;margin-top:4px;}
+
+.tactical-bar{
+margin:14px 20px;
+padding:10px;
+border-radius:12px;
+border:1px solid #00ff9c;
+background:rgba(0,255,156,0.06);
+text-align:center;
+font-size:13px;
+}
+
+.ai-box{
+margin:20px;
+background:#0c1118;
+border-radius:14px;
+padding:16px;
+border-left:4px solid #00ff9c;
+}
+
+.dock{
+position:fixed;
+bottom:0;
+width:100%;
+max-width:420px;
+background:black;
+display:flex;
+justify-content:space-evenly;
+padding:10px 0;
+border-top:1px solid rgba(255,255,255,0.1);
+}
+
+.dock-btn{
+text-align:center;
+font-size:11px;
+width:16%;
+cursor:pointer;
+}
+
+.dock-btn span{
+font-size:20px;
+display:block;
+}
+
+#mapPopup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#05080d;
+display:none;
+z-index:999;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+<div class="header">
+<div class="brand">AIF™</div>
+<div class="subtitle1">Artificial Intelligence Fishing</div>
+<div class="subtitle2">Drop • Scan • Strike</div>
+</div>
+
+<div class="instrument">
+
+<svg id="spiGauge" viewBox="0 0 300 300">
+
+<defs>
+<linearGradient id="spiGrad">
+<stop offset="0%" stop-color="#ff3b3b"/>
+<stop offset="50%" stop-color="#ffc400"/>
+<stop offset="100%" stop-color="#00ff9c"/>
+</linearGradient>
+</defs>
+
+<circle cx="150" cy="150" r="110"
+stroke="#1c2b2b"
+stroke-width="14"
+fill="none"/>
+
+<circle id="spiArc"
+cx="150"
+cy="150"
+r="110"
+stroke="url(#spiGrad)"
+stroke-width="14"
+fill="none"
+stroke-linecap="round"
+transform="rotate(-90 150 150)"
+stroke-dasharray="690"
+stroke-dashoffset="690"/>
+
+<text x="150" y="145" text-anchor="middle"
+class="spi-number"
+id="spiValue">--%</text>
+
+<text x="150" y="175"
+text-anchor="middle"
+class="spi-label">SPI</text>
+
+<text x="150" y="195"
+text-anchor="middle"
+class="spi-desc">Strike Probability Index</text>
+
+</svg>
+
+</div>
+
+<div class="gauge-row">
+
+<div class="gauge">
+
+<svg viewBox="0 0 200 120">
+
+<path d="M20 100 A80 80 0 0 1 180 100"
+stroke="#1c2b2b"
+stroke-width="12"
+fill="none"/>
+
+<path id="stabilityArc"
+d="M20 100 A80 80 0 0 1 180 100"
+stroke="#ffc400"
+stroke-width="12"
+stroke-linecap="round"
+fill="none"
+stroke-dasharray="251"
+stroke-dashoffset="251"/>
+
+<text x="100" y="75"
+text-anchor="middle"
+font-size="24"
+id="stabilityValue">--%</text>
+
+<text x="100" y="95"
+text-anchor="middle"
+font-size="13"
+fill="#9aa4ad">SPI Stability</text>
+
+</svg>
+
+</div>
+
+<div class="gauge">
+
+<svg viewBox="0 0 200 120">
+
+<path d="M20 100 A80 80 0 0 1 180 100"
+stroke="#1c2b2b"
+stroke-width="12"
+fill="none"/>
+
+<path id="confArc"
+d="M20 100 A80 80 0 0 1 180 100"
+stroke="#6fb6ff"
+stroke-width="12"
+stroke-linecap="round"
+fill="none"
+stroke-dasharray="251"
+stroke-dashoffset="251"/>
+
+<text x="100" y="75"
+text-anchor="middle"
+font-size="24"
+id="confValue">--%</text>
+
+<text x="100" y="95"
+text-anchor="middle"
+font-size="13"
+fill="#9aa4ad">Confidence</text>
+
+</svg>
+
+</div>
+
+</div>
+
+<div class="tile-grid">
+
+<div class="tile"><div class="tile-title">Air</div><div class="tile-value" id="air">--</div></div>
+<div class="tile"><div class="tile-title">Surface</div><div class="tile-value" id="surface">--</div></div>
+<div class="tile"><div class="tile-title">Bottom</div><div class="tile-value" id="bottom">--</div></div>
+
+<div class="tile"><div class="tile-title">Pressure</div><div class="tile-value" id="pressure">--</div></div>
+<div class="tile"><div class="tile-title">Wind</div><div class="tile-value" id="wind">--</div></div>
+<div class="tile"><div class="tile-title">Cloud</div><div class="tile-value" id="cloud">--</div></div>
+
+<div class="tile"><div class="tile-title">Moon</div><div class="tile-value" id="moon">--</div></div>
+<div class="tile"><div class="tile-title">Season</div><div class="tile-value" id="season">--</div></div>
+<div class="tile"><div class="tile-title">Feed</div><div class="tile-value" id="feed">--</div></div>
+
+</div>
+
+<div class="tactical-bar" id="tactical">
+Waiting for environmental data...
+</div>
+
+<div class="ai-box">
+<b>AIF Tactical Analysis</b>
+<div id="aiText">Waiting for scan...</div>
+</div>
+
+<div class="dock">
+
+<div class="dock-btn" onclick="fetchWeather()"><span>⟳</span>Refresh</div>
+<div class="dock-btn" onclick="openMap()"><span>🐟</span>Map</div>
+<div class="dock-btn" onclick="saveDrop()"><span>🎯</span>Drop</div>
+<div class="dock-btn" onclick="openReport()"><span>📊</span>Report</div>
+
+</div>
+
+</div>
+
+<div id="mapPopup">
+<div style="padding:10px;text-align:right;">
+<button onclick="closeMap()">Close</button>
+</div>
+<div id="map" style="height:92%; margin:10px;"></div>
+</div>
+
+<script>
+
+const API_KEY = "YOUR_OPENWEATHER_API_KEY"
+
+async function fetchWeather(){
+
+let r = await fetch(
+"https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid="+API_KEY
+)
+
+let data = await r.json()
+
+render(data)
+
+}
+
+function calculateSPI(temp,pressure,wind,cloud){
+
+let score=40
+
+if(pressure>1015 && pressure<1022) score+=15
+if(wind<10) score+=15
+if(cloud<60) score+=10
+
+let h=new Date().getHours()
+if(h>=7 && h<=10) score+=15
+
+return Math.min(score,95)
+
+}
+
+function calculateConfidence(temp,pressure,wind,cloud){
+
+let score=50
+
+if(pressure>=1015 && pressure<=1022) score+=15
+if(wind>=3 && wind<=12) score+=15
+if(cloud>=20 && cloud<=70) score+=10
+if(temp>=10 && temp<=30) score+=10
+
+return Math.min(score,95)
+
+}
+
+function render(data){
+
+let temp=data.main.temp
+let pressure=data.main.pressure
+let wind=data.wind.speed*3.6
+let cloud=data.clouds.all
+
+let spi=calculateSPI(temp,pressure,wind,cloud)
+let conf=calculateConfidence(temp,pressure,wind,cloud)
+
+updateSPI(spi)
+updateConfidence(conf)
+updateStability(spi)
+
+document.getElementById("air").innerText=temp.toFixed(1)+"°C"
+document.getElementById("surface").innerText=(temp-0.5).toFixed(1)+"°C"
+document.getElementById("bottom").innerText=(temp-1.5).toFixed(1)+"°C"
+
+document.getElementById("pressure").innerText=pressure+" hPa"
+document.getElementById("wind").innerText=wind.toFixed(1)+" km/h"
+document.getElementById("cloud").innerText=cloud+"%"
+
+document.getElementById("moon").innerText="Waxing"
+document.getElementById("season").innerText=getSeason()
+document.getElementById("feed").innerText=feeding(spi)
+
+updateTactical(spi)
+
+}
+
+function updateSPI(value){
+
+let circle=document.getElementById("spiArc")
+let radius=110
+let c=2*Math.PI*radius
+
+circle.style.strokeDasharray=c
+circle.style.strokeDashoffset=c-(value/100)*c
+
+document.getElementById("spiValue").textContent=value+"%"
+
+}
+
+function updateConfidence(value){
+
+let arc=document.getElementById("confArc")
+let len=251
+
+arc.style.strokeDashoffset=len-(value/100)*len
+document.getElementById("confValue").innerText=value+"%"
+
+}
+
+function updateStability(value){
+
+let arc=document.getElementById("stabilityArc")
+let len=251
+
+arc.style.strokeDashoffset=len-(value/100)*len
+document.getElementById("stabilityValue").innerText=value+"%"
+
+}
+
+function updateTactical(spi){
+
+let text=""
+
+if(spi>=70){
+text="Depth 6.5m • Patrol Edges • Active Feeding"
+}
+else if(spi>=55){
+text="Depth 6.5m • Moderate Patrol • Fish Slope"
+}
+else{
+text="Depth 6.5m • Low Activity • Target Deep Water"
+}
+
+document.getElementById("tactical").innerText=text
+
+}
+
+function feeding(spi){
+
+if(spi>=70) return "Heavy"
+if(spi>=55) return "Moderate"
+if(spi>=40) return "Light"
+
+return "Holding"
+
+}
+
+function getSeason(){
+
+let m=new Date().getMonth()+1
+
+if(m<=2||m==12) return "Summer"
+if(m<=5) return "Autumn"
+if(m<=8) return "Winter"
+
+return "Spring"
+
+}
+
+let map
+
+function openMap(){
+
+document.getElementById("mapPopup").style.display="block"
+
+if(!map){
+
+map=L.map('map').setView([-25.9,28.2],13)
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+attribution:'© OpenStreetMap'
+}).addTo(map)
+
+}
+
+}
+
+function closeMap(){
+document.getElementById("mapPopup").style.display="none"
+}
+
+function saveDrop(){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
+
+history.push({
+lat:pos.coords.latitude,
+lon:pos.coords.longitude,
+time:new Date().toISOString(),
+spi:document.getElementById("spiValue").innerText
+})
+
+localStorage.setItem("aif_drops",JSON.stringify(history))
+
+alert("Drop saved")
+
+})
+
+}
+
+function openReport(){
+
+let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
+
+alert("Drops logged: "+history.length)
+
+}
+
+fetchWeather()
+setInterval(fetchWeather,60000)
+
+</script>
+
+</body>
+</html>
