@@ -21,7 +21,7 @@ height:300px;
 position:relative;
 display:flex;
 justify-content:center;
-allign-items:center
+allign-items:center;
 margin-top:30px;
 background:url("lake-atmosphere.jpg");
 background-size:cover;
@@ -44,9 +44,12 @@ filter: drop-shadow(0 0 20px rgba(0,255,156,0.45));
 }
 
 .ring{fill:none;stroke-width:4;filter:drop-shadow(0 0 10px rgba(0,255,156,0.35));
-.inner-ring{fill:none;stroke:#00ff9c;stroke-opacity:0.25;stroke-width:2}
+}
+.inner-ring{fill:none;stroke:#00ff9c;stroke-opacity:0.25;stroke-width:2;
+}
 
-.spi-value(font-size:48px;fill:white;font-weight:700;filter:drop-shadow(0 0 6px rgba(255,255,255,0.5));
+.spi-value{(font-size:48px;fill:white;font-weight:700;filter:drop-shadow(0 0 6px rgba(255,255,255,0.5));
+}
 .spi-label{font-size:16px;fill:#00ff9c;letter-spacing:2px;}
      }
 #sweep{
@@ -317,6 +320,13 @@ stroke-linecap="round"
 
 <g id="particles"></g>
 
+<text x="100" y="72" text-anchor="middle" font-size="26" fill="white" id="spiGauge">--%</text> <text x="100" y="105" text-anchor="middle" font-size="14" fill="#7fffb2">SPI</text>
+<text x="150" y="140" text-anchor="middle" class="spi-value" id="spi">--%</text>
+<text x="150" y="170" text-anchor="middle" class="spi-label">STRIKE</text>
+<text x="150" y="195" text-anchor="middle" font-size="14" fill="#6fb6ff" id="confidenceText">
+CONF --
+</text>
+
 <text x="150" y="12" text-anchor="middle" fill="#00ff9c" font-size="12">N</text> <text x="288" y="155" text-anchor="middle" fill="#00ff9c" font-size="12">E</text> <text x="150" y="295" text-anchor="middle" fill="#00ff9c" font-size="12">S</text> <text x="12" y="155" text-anchor="middle" fill="#7fffb2" font-size="12">W</text>
 <g id="radarDial">
 
@@ -379,13 +389,6 @@ stroke-linecap="round"
 fill="none"
 stroke-dasharray="251"
 stroke-dashoffset="251"/>
-
-<text x="100" y="72" text-anchor="middle" font-size="26" fill="white" id="spiGauge">--%</text> <text x="100" y="105" text-anchor="middle" font-size="14" fill="#7fffb2">SPI</text>
-<text x="150" y="140" text-anchor="middle" class="spi-value" id="spi">--%</text>
-<text x="150" y="170" text-anchor="middle" class="spi-label">STRIKE</text>
-<text x="150" y="195" text-anchor="middle" font-size="14" fill="#6fb6ff" id="confidenceText">
-CONF --
-</text>
 
 </svg>
 </div>
@@ -1380,6 +1383,7 @@ padding:20px;
 
 </body>
 </html>
+
 
 
 
