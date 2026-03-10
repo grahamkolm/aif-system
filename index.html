@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
-<html> 
-<head> 
+<html>
+<head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AIF Tactical Dashboard</title>
 
@@ -11,23 +11,22 @@
 
 <style>
 body{margin:0;background:#05080d;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;color:#e6edf3;display:flex;justify-content:center;}
-.main{width:100%;max-width:380px;padding-bottom:120px;margin:auto;}
-.header{text-align:center;margin-top:12px;}
+.main{width:100%;max-width:420px;padding-bottom:120px;margin:auto;}
+.header{text-align:center;margin-top:20px;}
 .brand{font-size:36px;font-weight:700;color:#00ff9c;text-shadow:0 0 12px #00ff9c;}
 .subtitle1{font-size:20px;color:#b9c3cc;margin-top:6px;}
 .subtitle2{font-size:16px;color:#7fffb2;margin-top:4px;}
 .wrapper{
-height:300px;
+height:340px;
 position:relative;
 display:flex;
 justify-content:center;
-allign-items:center;
-margin-top:30px;
+margin-top:20px;
 background:url("lake-atmosphere.jpg");
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
-opacity:0.9;
+overflow:hidden;
 animation:waterMove 40s linear infinite;
 }
 @keyframes waterMove{
@@ -36,22 +35,14 @@ animation:waterMove 40s linear infinite;
 100%{background-position:center;}
 }
 
-svg{
-width:100%;
-max-width:340px;
-height:auto;
-filter: drop-shadow(0 0 20px rgba(0,255,156,0.45));
-}
+svg{width:310px;height:310px;}
 
-.ring{fill:none;stroke-width:4;filter:drop-shadow(0 0 10px rgba(0,255,156,0.35));
-}
-.inner-ring{fill:none;stroke:#00ff9c;stroke-opacity:0.25;stroke-width:2;
-}
+.ring{fill:none;stroke-width:4;}
+.inner-ring{fill:none;stroke:#00ff9c;stroke-opacity:0.25;stroke-width:2}
 
-.spi-value{(font-size:48px;fill:white;font-weight:700;filter:drop-shadow(0 0 6px rgba(255,255,255,0.5));
-}
+.spi-value{font-size:48px;fill:white;font-weight:700;}
 .spi-label{font-size:16px;fill:#00ff9c;letter-spacing:2px;}
-     }
+
 #sweep{
 stroke:#00ff9c;
 stroke-width:2;
@@ -78,26 +69,14 @@ filter: blur(12px);
 fill:rgba(0,255,156,0.18);
 }
 
-.gauge-row{
-display:flex;
-justify-content:space-between;
-margin:10px 25px 0px 25px;
-align-items:center;
-}
-
-.gauge{
-width:45%;
-max-width:140px
-}
-
 .tactical-bar{
-margin:14px 20px;
-padding:8px;
+margin:20px 20px;
+padding:10px;
 border-radius:12px;
 border:1px solid #00ff9c;
 background:rgba(0,255,156,0.05);
 text-align:center;
-font-size:12px;
+font-size:13px;
 box-shadow:0 0 10px rgba(0,255,156,0.4);
 }
 
@@ -296,82 +275,32 @@ box-shadow:0 0 18px rgba(0,255,156,0.35);
 
 <div class="wrapper">
 <svg viewBox="0 0 300 300">
-
-<!-- echo trail -->
-<line id="echoTrail" x1="150" y1="150" x2="150" y2="30"/>
-
-<!-- radar sweep -->
-<line id="sweep" x1="150" y1="150" x2="150" y2="40"/>
-
-</g>
-
-<line
-id="approachVector"
-x1="150"
-y1="150"
-x2="150"
-y2="35"
-stroke="#ff4444"
-stroke-width="3"
-stroke-linecap="round"
-/>
-
-
-<g id="particles"></g>
-
-<!-- CENTER TEXT -->
-<text x="150" y="145"
-text-anchor="middle"
-class="spi-value"
-id="spi">
---%
-</text>
-
-<text x="150" y="170"
-text-anchor="middle"
-class="spi-label">
-STRIKE
-</text>
-
-<text x="150" y="195"
-text-anchor="middle"
-font-size="14"
-fill="#6fb6ff"
-id="confidenceText">
-CONF --
-</text>
-
-<text x="150" y="12" text-anchor="middle" fill="#00ff9c" font-size="12">N</text> <text x="288" y="155" text-anchor="middle" fill="#00ff9c" font-size="12">E</text> <text x="150" y="295" text-anchor="middle" fill="#00ff9c" font-size="12">S</text> <text x="12" y="155" text-anchor="middle" fill="#7fffb2" font-size="12">W</text>
 <g id="radarDial">
 
-<!-- glass radar plate -->
-<circle
-cx="150"
-cy="150"
-r="92"
-fill="rgba(10,20,30,0.35)"
-stroke="rgba(0,255,156,0.25)"
-stroke-width="1"
-style="backdrop-filter: blur(6px);"
-/>
+<!-- Compass -->
+<g id="compass" font-size="12" fill="#00ff9c" text-anchor="middle">
 
-<ellipse
-cx="135"
-cy="120"
-rx="55"
-ry="28"
-fill="rgba(255,255,255,0.6)"
-transform="rotate(-25 135 120)"
-/>
+<text id="northMarker" x="150" y="12">N</text>
+<text x="210" y="15">NNE</text>
+<text x="265" y="60">NE</text>
+<text x="295" y="115">ENE</text>
 
-<circle
-cx="150"
-cy="150"
-r="86"
-fill="none"
-stroke="rgba(0,255,156,0.08)"
-stroke-width="1"
-/>
+<text x="288" y="155">E</text>
+<text x="295" y="205">ESE</text>
+<text x="265" y="250">SE</text>
+<text x="210" y="290">SSE</text>
+
+<text x="150" y="295">S</text>
+<text x="90" y="290">SSW</text>
+<text x="35" y="250">SW</text>
+<text x="5" y="205">WSW</text>
+
+<text x="12" y="155">W</text>
+<text x="15" y="115">WNW</text>
+<text x="35" y="60">NW</text>
+<text x="90" y="115">NNW</text>
+
+</g>
 
 <defs>
 <linearGradient id="grad">
@@ -382,9 +311,10 @@ stroke-width="1"
 </defs>
 
 <!-- wind sector -->
+<path id="windSector" class="wind-sector"></path>
+
 <!-- outer SPI ring -->
-<circle cx="150" cy="150" r="110" fill="none" stroke="rgba(0,255,156,0.15)" stroke-width="6"/>
-<circle cx="150" cy="150" r="95" fill="rgba(5,8,13,0.55)" stroke="rgba(0,255,156,0.15)" stroke-width="1"/>
+<circle cx="150" cy="150" r="120" stroke="url(#grad)" class="ring"/>
 
 <!-- SPI progress arc -->
 <circle id="progressArc"
@@ -409,56 +339,49 @@ fill="none"
 stroke-linecap="round"
 transform="rotate(-90 150 150)"
 />
-    
-</svg>
-</div>
 
-<div class="gauge-row">
+<circle cx="150" cy="150" r="80" fill="#05080d"/>
 
-<div class="gauge">
-<svg viewBox="0 0 200 120" width="160" height="90">
+<text x="150" y="140" text-anchor="middle" class="spi-value" id="spi">--%</text>
+<text x="150" y="165" text-anchor="middle" class="spi-label">STRIKE</text>
+<text x="150" y="185" text-anchor="middle" font-size="14" fill="#6fb6ff" id="confidenceText">
+CONF --
+</text>
 
-<path id="spiArcBg"
-d="M30 95 A70 70 0 0 1 170 95"
-stroke="#1c2b2b"
-stroke-width="10"
-fill="none"/>
+<!-- echo trail -->
+<line id="echoTrail" x1="150" y1="150" x2="150" y2="30"/>
 
-<path id="spiArc"
-d="M30 95 A70 70 0 0 1 170 95"
-stroke="url(#grad)"
-stroke-width="12"
+<!-- radar sweep -->
+<line id="sweep" x1="150" y1="150" x2="150" y2="40"/>
+
+<line id="windLane"
+x1="30"
+y1="150"
+x2="270"
+y2="150"
+stroke="#00ff9c"
+stroke-width="4"
+stroke-opacity="0.35"
+stroke-dasharray="10 6"
+filter="blur(1)"
+/>
+
+<line id="strikeArrow"
+x1="150"
+y1="150"
+x2="150"
+y2="60"
+stroke="#ff6b6b"
+stroke-width="5"
 stroke-linecap="round"
-fill="none"
-stroke-dasharray="251"
-stroke-dashoffset="251"/>
+filter="drop-shadow(0 0 8px #00ff9c)"
+/>
+
+</g>
+
+<g id="particles"></g>
 
 </svg>
-</div>
-
-<div class="gauge">
-<svg viewBox="0 0 200 120">
-
-<path id="confArcBg"
-d="M20 100 A80 80 0 0 1 180 100"
-stroke="#1c2b2b"
-stroke-width="12"
-fill="none"/>
-
-<path id="confArc"
-d="M20 100 A80 80 0 0 1 180 100"
-stroke="#3aa6ff"
-stroke-width="12"
-stroke-linecap="round"
-fill="none"
-stroke-dasharray="251"
-stroke-dashoffset="251"/>
-
-<text x="100" y="80" text-anchor="middle" font-size="26" fill="white" id="confGauge">--%</text> <text x="100" y="95" text-anchor="middle" font-size="14" fill="#6fb6ff">CONF</text>
-
-</svg>
-</div>
-
 </div>
 
 <div class="tactical-bar" id="tactical">
@@ -489,7 +412,7 @@ Carp likely approaching from deep basin toward slope edge.<br><br>
 08:00 – 09:15 morning patrol feeding.
 </div>
 
-<div style="font-size:12px;color:#7fffb2;margin-top:0px;">
+<div style="font-size:12px;color:#7fffb2;margin-top:opx;">
 Tap to expand
 </div>
 
@@ -569,18 +492,6 @@ score = Math.max(0, Math.min(95, score));
 return score;
 }
 
-function calculateApproachDirection(windDeg){
-
-// food drifts downwind
-let foodDrift = (windDeg + 180) % 360;
-
-// carp normally patrol along food drift 
-let patrol = (foodDrift + (Math.random()*40 - 20));
-
-return patrol;
-
-}
-
 function calculateSPI(temp,pressure,wind,cloud){
 
 let score=40;
@@ -611,22 +522,64 @@ let pressure=data.main.pressure;
 let wind=data.wind.speed * 3.6;
 let cloud=data.clouds ? data.clouds.all : 0;
 let windDeg = data.wind.deg || 0;
-let approach = calculateApproachDirection(windDeg);
-
-let vector = document.getElementById("approachVector");
-
-try{
-if(vector){
-vector.style.transformOrigin = "150px 150px"; 
-vector.style.transform = "rotate(" + approach + "deg)"; 
-}
-}catch(e){}
 
 // Feeding direction (opposite wind)
 let feedDir = (windDeg + 90) % 360;
 
 // Convert to SVG arc
 
+// Feeding zone width based on wind strength 
+let sectorWidth = 10 + wind;
+
+// limit so it doesn't get crazy wide
+if(sectorWidth > 60) sectorWidth = 60;
+
+let startAngle = (feedDir - sectorWidth/2) * Math.PI / 180; 
+let endAngle = (feedDir + sectorWidth/2) * Math.PI / 180;
+
+let r = 120;
+let cx = 150;
+let cy = 150;
+
+let x1 = cx + r * Math.cos(startAngle);
+let y1 = cy + r * Math.sin(startAngle);
+
+let x2 = cx + r * Math.cos(endAngle);
+let y2 = cy + r * Math.sin(endAngle);
+
+let path = `
+M ${cx} ${cy}
+L ${x1} ${y1}
+A ${r} ${r} 0 0 1 ${x2} ${y2}
+Z`;
+
+document.getElementById("windSector").setAttribute("d", path);
+
+
+let strikeDirection = (windDeg + 90) % 360;
+
+let arrow = document.getElementById("strikeArrow");
+
+if(arrow){
+arrow.setAttribute(
+"transform",
+"rotate(" + strikeDirection + " 150 150)"
+);
+}
+
+let lane = document.getElementById("windLane");
+let windSpeed = wind;
+if(lane){
+if(windSpeed < 3){
+lane.style.opacity = 0.15;
+}
+else if(windSpeed < 10){
+lane.style.opacity = 0.35;
+}
+else{
+lane.style.opacity = 0.6;
+}
+}
 
 document.getElementById("air").innerText=temp.toFixed(1)+"°C";
 document.getElementById("surface").innerText=(temp-0.5).toFixed(1)+"°C";
@@ -646,18 +599,13 @@ let spi=calculateSPI(temp,pressure,wind,cloud);
 let confidence = calculateConfidence(temp,pressure,wind,cloud);
 document.getElementById("spi").textContent = spi + "%";
 document.getElementById("feed").innerText = feeding(spi);
-document.getElementById("confidenceText").textContent = "CONF " + confidence + "%";
+document.getElementById("confidenceText").textContent = "CONF" + confidence + "%";
 
 const arcRadius = 102;
 const c = 2*Math.PI*arcRadius;
 
 const confRadius = 82;
 const confCirc = 2 * Math.PI * confRadius;
-
-let arc = document.getElementById("progressArc");
-
-if(arc){
-arc.style.transition = "stroke-dashoffset 0.6s ease"; arc.style.strokeDasharray = c; arc.style.strokeDashoffset = c - (spi/100) * c; }
 
 let confArc = document.getElementById("confidenceArc");
 
@@ -673,19 +621,6 @@ else{
 radar.classList.remove("strikePulse");
 }
 
-let spiArc = document.getElementById("spiArc");
-let confArc2 = document.getElementById("confArc");
-
-let arcLength = 251;
-
-if(spiArc){
-spiArc.style.transition = "stroke-dashoffset 0.6s ease"; spiArc.style.strokeDashoffset = arcLength - (spi/100)*arcLength; }
-
-if(confArc2){
-confArc2.style.transition = "stroke-dashoffset 0.6s ease"; confArc2.style.strokeDashoffset = arcLength - (confidence/100)*arcLength; }
-
-document.getElementById("spiGauge").textContent = spi + "%"; document.getElementById("confGauge").textContent = confidence + "%";
-
 let tactical = "";
 
 if(spi >= 70){
@@ -694,6 +629,8 @@ if(spi >= 70){
     tactical = "Low Activity <span class='sep'>•</span> Target Deeper Water"; }
 
 document.getElementById("tactical").innerHTML = "Depth 6.5m <span class='sep'>•</span> " + tactical;
+
+let arc=document.getElementById("progressArc");
 
 if(arc){
 arc.style.strokeDasharray=c;
@@ -738,13 +675,12 @@ function updateData(){
 pulseTiles();
 fetchWeather()
 .then(data=>{
-if(data && data.main){
 render(data);
-}
 })
 .catch(err=>{
 console.log("Weather fetch error:",err);
 });
+
 }
 
 function getGPS(){
@@ -1075,14 +1011,64 @@ blip.remove();
 
 
 setInterval(()=>{
-let spi = parseInt(document.getElementById("spi").innerText.replace("%","")) || 0; let windDeg = 0;
+let spi = parseInt(document.getElementById("spi").innerText.replace("%","")) || 0; 
+let windDeg = 0;
 
-let approach = calculateApproachDirection(windDeg);
-
-fishBlip(spi, approach);
+fishBlip(spi, windDeg+90);
 
 },900);
 
+
+let heading = 0;
+
+function enableCompass(){
+
+document.getElementById("northMarker").classList.add("northGlow");
+
+if (typeof DeviceOrientationEvent.requestPermission === "function"){
+
+DeviceOrientationEvent.requestPermission()
+.then(response => {
+
+if(response === "granted"){
+startCompass();
+}
+
+})
+.catch(console.error);
+
+}else{
+
+startCompass();
+
+}
+
+}
+
+function startCompass(){
+
+window.addEventListener("deviceorientation", function(event){
+
+if(event.alpha !== null){
+
+heading = event.alpha;
+
+let dial = document.getElementById("radarDial");
+
+if(dial){
+dial.setAttribute(
+"transform",
+"rotate(" + (-heading) + " 150 150)"
+);
+}
+
+}
+
+}, true);
+
+}
+
+startCompass();
 
 function loadSetup(){
 
@@ -1191,7 +1177,7 @@ if(!radar) return;
 let p = document.createElementNS("http://www.w3.org/2000/svg","circle");
 
 let angle = Math.random()*360;
-let dist = 30 + Math.random()*90;
+let dist = 60 + Math.random()*70;
 
 let x = 150 + Math.cos(angle*Math.PI/180)*dist; let y = 150 + Math.sin(angle*Math.PI/180)*dist;
 
@@ -1426,16 +1412,3 @@ padding:20px;
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
