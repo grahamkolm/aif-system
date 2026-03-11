@@ -390,13 +390,124 @@ airIcon.style.stroke="#00ffa6"
 }
   
 document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
+let surfaceIcon=document.querySelector('[data-lucide="waves"]')
+
+if(surfaceIcon){
+
+let sTemp=t-0.5
+
+if(sTemp >= 30){
+surfaceIcon.style.stroke="#ff3b3b"
+}
+else if(sTemp >= 22){
+surfaceIcon.style.stroke="#ffc400"
+}
+else{
+surfaceIcon.style.stroke="#00ffa6"
+}
+
+}
+
 document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
+let bottomIcon=document.querySelector('[data-lucide="arrow-down"]')
+
+if(bottomIcon){
+
+let bTemp=t-1.5
+
+if(bTemp >= 28){
+bottomIcon.style.stroke="#ff3b3b"
+}
+else if(bTemp >= 20){
+bottomIcon.style.stroke="#ffc400"
+}
+else{
+bottomIcon.style.stroke="#00ffa6"
+}
+
+}
+
 document.getElementById("pressure").innerText=p+" hPa"
+let pressureIcon=document.querySelector('[data-lucide="gauge"]')
+
+if(pressureIcon){
+
+if(p >= 1022){
+pressureIcon.style.stroke="#ffc400"
+}
+else if(p <= 1005){
+pressureIcon.style.stroke="#ff3b3b"
+}
+else{
+pressureIcon.style.stroke="#00ffa6"
+}
+
+}
+ 
 document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
+let windIcon=document.querySelector('[data-lucide="wind"]')
+
+if(windIcon){
+
+if(w > 20){
+windIcon.style.stroke="#ff3b3b"
+}
+else if(w > 12){
+windIcon.style.stroke="#ffc400"
+}
+else{
+windIcon.style.stroke="#00ffa6"
+}
+
+}
+ 
 document.getElementById("cloud").innerText=c+"%"
+let cloudIcon=document.querySelector('[data-lucide="cloud"]')
+
+if(cloudIcon){
+
+if(c >= 80){
+cloudIcon.style.stroke="#ff3b3b"
+}
+else if(c >= 40){
+cloudIcon.style.stroke="#ffc400"
+}
+else{
+cloudIcon.style.stroke="#00ffa6"
+}
+
+}
+
 document.getElementById("moon").innerText=getMoonPhase()
+let moonIcon=document.querySelector('[data-lucide="moon"]')
+
+if(moonIcon){
+moonIcon.style.stroke="#8fb3ff"
+}
+
 document.getElementById("season").innerText=getSeason()
+let seasonIcon=document.querySelector('[data-lucide="leaf"]')
+
+if(seasonIcon){
+seasonIcon.style.stroke="#00ffa6"
+}
+
 document.getElementById("feed").innerText=feeding(spi)
+let feedIcon=document.querySelector('[data-lucide="fish"]')
+
+if(feedIcon){
+
+if(spi >= 70){
+feedIcon.style.stroke="#00ffa6"
+}
+else if(spi >= 50){
+feedIcon.style.stroke="#ffc400"
+}
+else{
+feedIcon.style.stroke="#ff3b3b"
+}
+
+}
 
 let trend=getPressureTrend(p)
 document.getElementById("trend").innerText=trend
@@ -408,12 +519,31 @@ generateAI(spi,p,w,c)
 }
 
 function updateSPI(v){
+
 let c=document.getElementById("spiArc")
 let r=110
 let C=2*Math.PI*r
+
 c.style.strokeDasharray=C
 c.style.strokeDashoffset=C-(v/100)*C
+
 document.getElementById("spiValue").textContent=v+"%"
+
+/* SPI COLOR SYSTEM */
+
+if(v >= 70){
+c.style.stroke="#00ffa6"
+c.style.filter="drop-shadow(0 0 10px rgba(0,255,166,0.45))"
+}
+else if(v >= 40){
+c.style.stroke="#ffc400"
+c.style.filter="drop-shadow(0 0 8px rgba(255,196,0,0.35))"
+}
+else{
+c.style.stroke="#ff3b3b"
+c.style.filter="drop-shadow(0 0 8px rgba(255,59,59,0.35))"
+}
+
 }
 
 function feeding(spi){
@@ -509,6 +639,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
