@@ -356,8 +356,6 @@ if(d.main){
 render(d);
 }
 }catch(e){
-}
-}
     
 console.log("Weather fetch failed",e);
 document.getElementById("tactical").innerText="Weather connection failed";
@@ -441,6 +439,7 @@ let airEl = document.getElementById("air");
 
 airEl.innerText = airTemp + "°C";
 
+// temperature colour logic
 // temperature colour logic
 if(t >= 35){
     airEl.style.color = "#ff3b3b"; // extreme heat } else if(t >= 30){
