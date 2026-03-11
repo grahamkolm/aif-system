@@ -218,27 +218,16 @@ padding:20px;
 <div class="subtitle1">Artificial Intelligence Fishing</div>
 <div class="subtitle2">Drop • Scan • Strike</div>
 </div>
-
-<div class="instrument">
-<div class="spi-container">
-  <div class="spi-glow"></div>
-  <svg id="spiGauge" viewBox="0 0 300 300">
-  </svg>
-</div>
-</div>
+<svg id="spiGauge" viewBox="0 0 300 300">
 
 <defs>
 <linearGradient id="spiGrad">
-<stop offset="0%" stop-color="#ff3b3b"/>
-<stop offset="50%" stop-color="#ffc400"/>
-<stop offset="100%" stop-color="#00ff9c"/>
-</linearGradient>
-</defs>
+<stop offset="0%" stop-color="#ff3b3b"/> <stop offset="50%" stop-color="#ffc400"/> <stop offset="100%" stop-color="#00ff9c"/> </linearGradient> </defs>
 
 <circle cx="150" cy="150" r="110"
 stroke="#1c2b2b"
 stroke-width="14"
-fill="none"/>
+fill="none"
 stroke-dasharray="8 10"/>
 
 <circle id="spiArc"
@@ -248,11 +237,8 @@ r="110"
 stroke="url(#spiGrad)"
 stroke-width="14"
 fill="none"
-filter: drop-shadow(0 0 12px rgba(0,255,160,0.4));
 stroke-linecap="round"
-transform="rotate(-90 150 150)"
-stroke-dasharray="690"
-stroke-dashoffset="0"/>
+transform="rotate(-90 150 150)"/>
 
 <text x="150" y="145" text-anchor="middle"
 class="spi-number"
