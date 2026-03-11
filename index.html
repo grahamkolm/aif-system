@@ -349,6 +349,10 @@ id="confValue">--%</text>
 
 </div>
 
+<div class="tile">
+<i data-lucide="activity"></i>
+<div class="tile-title">Pressure Trend</div> <div class="tile-value" id="trend">--</div> </div>
+
 <div class="tactical-bar" id="tactical">
 Waiting for environmental data...
 </div>
@@ -419,20 +423,23 @@ let score = 40
 
 let trend = getPressureTrend(p)
 
-if(trend === "rising") score += 15
-if(trend === "stable") score += 8
-if(trend === "falling") score -= 5
+if(trend==="rising") score+=18
+if(trend==="stable") score+=10
+if(trend==="falling") score-=8
 
-if(w >= 3 && w <= 15) score += 15
-if(c >= 20 && c <= 70) score += 10
+if(w>=4 && w<=15) score+=15
+if(w>18) score-=5
 
-let hour = new Date().getHours()
+if(c>=20 && c<=70) score+=10
 
-if(hour >= 6 && hour <= 10) score += 12
-if(hour >= 17 && hour <= 20) score += 12
+let hour=new Date().getHours()
 
-return Math.max(15, Math.min(score,95))
+if(hour>=6 && hour<=10) score+=12
+if(hour>=17 && hour<=20) score+=12
 
+if(t>=16 && t<=24) score+=8
+
+return Math.max(15,Math.min(score,95))
 }
  
 function calculateConfidence(t,p,w,c){
@@ -483,14 +490,15 @@ document.getElementById("air").innerText=t.toFixed(1)+"°C"
 document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
 document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
 document.getElementById("pressure").innerText=p+" hPa"
+ 
+let trend = getPressureTrend(p)
+document.getElementById("tactical").innerText = "Pressure " + trend + " • Depth 6.5m • Patrol edges • " + feeding(spi) + " feeding";
+ 
 document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
 document.getElementById("cloud").innerText=c+"%"
 document.getElementById("moon").innerText="Waxing"
 document.getElementById("season").innerText=getSeason()
 document.getElementById("feed").innerText=feeding(spi)
-
-let trend = getPressureTrend(p)
-document.getElementById("tactical").innerText = "Pressure " + trend + " • Depth 6.5m • Patrol edges • " + feeding(spi) + " feeding";
 
 generateAI(spi,p,w,c)
 }
@@ -600,6 +608,8 @@ document.getElementById("reportPopup").style.display="none"
 
 document.addEventListener("DOMContentLoaded",function(){
 fetchWeather()
+
+setInterval(fetchWeather,600000) //Refresh every 10 min
 })
 
 lucide.createIcons();
