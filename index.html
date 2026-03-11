@@ -393,8 +393,8 @@ let spi=calculateSPI(t,p,w,c)
 let conf=calculateConfidence(t,p,w,c)
 
 updateSPI(spi)
-document.getElementById("confValue").innerText=conf+"%"
-document.getElementById("stabilityValue").innerText=spi+"%"
+document.getElementById("confValue").textContent=conf+"%"
+document.getElementById("stabilityValue").textContent=spi+"%"
 
 document.getElementById("air").innerText=t.toFixed(1)+"°C"
 document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
@@ -417,7 +417,7 @@ let r=110
 let C=2*Math.PI*r
 c.style.strokeDasharray=C
 c.style.strokeDashoffset=C-(v/100)*C
-document.getElementById("spiValue").innerText=v+"%"
+document.getElementById("spiValue").textContent=v+"%"
 }
 
 function feeding(spi){
