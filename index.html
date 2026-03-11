@@ -7,7 +7,7 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 
 body{
@@ -65,6 +65,14 @@ fill:#7fffb2;
 .spi-desc{
 font-size:13px;
 fill:#9aa4ad;
+}
+
+.tile i{
+width:28px;
+height:28px;
+stroke:#00ffa6";
+stroke-width:1.5;
+margin-bottom:6px;
 }
 
 .gauge-row{
@@ -298,17 +306,17 @@ id="confValue">--%</text>
 
 <div class="tile-grid">
 
-<div class="tile"><span class="icon">☀</span><div class="tile-title">Air</div><div class="tile-value" id="air">--</div></div>
-<div class="tile"><span class="icon">🌊</span><div class="tile-title">Surface</div><div class="tile-value" id="surface">--</div></div>
-<div class="tile"><span class="icon">⬇</span><div class="tile-title">Bottom</div><div class="tile-value" id="bottom">--</div></div>
+<div class="tile"><i data-lucide="sun"></i><div class="tile-title">Air</div><div class="tile-value" id="air">--</div></div>
+<div class="tile"><i data-lucide="waves"></i><div class="tile-title">Surface</div><div class="tile-value" id="surface">--</div></div>
+<div class="tile"><i data-lucide="arrow-down"></i><div class="tile-title">Bottom</div><div class="tile-value" id="bottom">--</div></div>
 
-<div class="tile"><span class="icon">🧭</span><div class="tile-title">Pressure</div><div class="tile-value" id="pressure">--</div></div>
-<div class="tile"><span class="icon">🌬</span><div class="tile-title">Wind</div><div class="tile-value" id="wind">--</div></div>
-<div class="tile"><span class="icon">☁</span><div class="tile-title">Cloud</div><div class="tile-value" id="cloud">--</div></div>
+<div class="tile"><i data-lucide="gauge"></i><div class="tile-title">Pressure</div><div class="tile-value" id="pressure">--</div></div>
+<div class="tile"><i data-lucide="wind"></i><div class="tile-title">Wind</div><div class="tile-value" id="wind">--</div></div>
+<div class="tile"><i data-lucide="cloud"></i><div class="tile-title">Cloud</div><div class="tile-value" id="cloud">--</div></div>
 
-<div class="tile"><span class="icon">🌙</span><div class="tile-title">Moon</div><div class="tile-value" id="moon">--</div></div>
-<div class="tile"><span class="icon">🍂</span><div class="tile-title">Season</div><div class="tile-value" id="season">--</div></div>
-<div class="tile"><span class="icon">🎣</span><div class="tile-title">Feed</div><div class="tile-value" id="feed">--</div></div>
+<div class="tile"><i data-lucide="moon"></i><div class="tile-title">Moon</div><div class="tile-value" id="moon">--</div></div>
+<div class="tile"><i data-lucide="leaf"></i><div class="tile-title">Season</div><div class="tile-value" id="season">--</div></div>
+<div class="tile"><i data-lucide="fish"></i><div class="tile-title">Feed</div><div class="tile-value" id="feed">--</div></div>
 
 </div>
 
@@ -503,6 +511,8 @@ document.getElementById("reportPopup").style.display="none"
 document.addEventListener("DOMContentLoaded",function(){
 fetchWeather()
 })
+
+lucide.createIcons();
 
 </script>
 
