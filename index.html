@@ -357,7 +357,7 @@ document.getElementById("tactical").innerText="Weather connection failed"
 
 function render(d){
 
-let t=d.main.temp
+let t=36 //=d.main.temp
 let p=d.main.pressure
 let w=d.wind.speed*3.6
 let c=d.clouds.all
@@ -377,6 +377,7 @@ gauge.style.filter="drop-shadow(0 0 12px rgba(0,255,156,0.25))"
 document.getElementById("air").innerText=t.toFixed(1)+"°C"
 let airIcon=document.querySelector('[data-lucide="sun"]')
 
+if(airIcon){
 if(t >= 30){
 airIcon.style.stroke="#ff3b3b"
 }
@@ -386,7 +387,8 @@ airIcon.style.stroke="#ffc400"
 else{
 airIcon.style.stroke="#00ffa6"
 }
-
+}
+  
 document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
 document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
 document.getElementById("pressure").innerText=p+" hPa"
@@ -507,6 +509,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
