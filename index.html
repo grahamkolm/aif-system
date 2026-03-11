@@ -282,7 +282,18 @@ Waiting for environmental data...
 
 <div class="tile-grid">
 
-<div class="tile"><i data-lucide="sun"></i><div class="tile-title">Air</div><div class="tile-value" id="air">--</div></div>
+let airTemp = t.toFixed(1);
+let airEl = document.getElementById("air");
+
+airEl.innerText = airTemp + "°C";
+
+// temperature colour logic
+if(t >= 35){
+    airEl.style.color = "#ff3b3b"; // extreme heat } else if(t >= 30){
+    airEl.style.color = "#ff9f1c"; // hot } else if(t <= 10){
+    airEl.style.color = "#6fb6ff"; // cold } else{
+    airEl.style.color = "#ffffff"; // normal }
+  
 <div class="tile"><i data-lucide="waves"></i><div class="tile-title">Surface</div><div class="tile-value" id="surface">--</div></div>
 <div class="tile"><i data-lucide="arrow-down"></i><div class="tile-title">Bottom</div><div class="tile-value" id="bottom">--</div></div>
 
