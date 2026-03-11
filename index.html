@@ -634,9 +634,11 @@ aiText += "<b>Environmental Scan</b><br>";
 if(p >= 1015 && p <= 1022){
 aiText += "Stable pressure detected.<br>"; } else if(p > 1022){ aiText += "High pressure system present.<br>"; } else{ aiText += "Falling pressure detected.<br>"; }
 
-if(w < 5){
-aiText += "Calm wind limiting natural food drift.<br>"; } else if(w < 15){ aiText += "Moderate wind concentrating food along windward banks.<br>"; } else{ aiText += "Strong wind creating active feeding lanes.<br>"; }
+if(w >= 5){
+    aiText += "Focus on windward banks and slope edges.<br>"; }else{
+    aiText += "Target deeper structure and basin patrol routes.<br>"; }
 
+aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>";
 
 /* ACTIVITY ASSESSMENT */
 
@@ -729,6 +731,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
