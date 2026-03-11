@@ -45,6 +45,15 @@ display:flex;
 justify-content:center;
 }
 
+.spi-container{
+ position:=relative;
+ width:=260px;
+ height:=260px;
+ display:flex;
+ justify-content:center;
+ align-items:=center;
+}
+ 
 #spiGauge{
 width:260px;
 height:260px;
@@ -109,15 +118,6 @@ background:rgba(15,20,28,0.75);
 border-radius:12px;
 padding:10px;
 backdrop-filter:blur(6px);
-}
-
-.spi-container{
- position:=relative;
- width:=260px;
- height:=260px;
- display:flex;
- justify-content:center;
- align-items:=center;
 }
  
 .tile-grid{
@@ -234,6 +234,7 @@ padding:20px;
 </div>
 
  <div class="instrument">
+ <div class="spi-container">
  <svg id="spiGauge" viewBox="0 0 300 300">
 
 <defs>
@@ -269,7 +270,7 @@ text-anchor="middle"
 class="spi-desc">Strike Probability Index</text>
 
 </svg>
- 
+</div>
 </div>
 
 <div class="gauge-row">
