@@ -69,6 +69,21 @@ font-size:13px;
 fill:#9aa4ad;
 }
 
+.spi-glow{
+position:absolute;
+width:260px;
+height:260px;
+border-radius:50%;
+background:radial-gradient(
+circle,
+rgba(0,255,160,0.25) 0%,
+rgba(0,255,160,0.12) 35%,
+rgba(0,255,160,0.05) 55%,
+transparent 70%
+);
+filter:blur(22px);
+}
+ 
 .tile i{
 width:28px;
 height:28px;
@@ -105,7 +120,7 @@ padding:14px;
 text-align:center;
 border:1px solid rgba(255,255,255,0.05);
 backdrop-filter:blur(4px);
-box-shadow:0 0 12px rgba(0,255,160,0,08),inset 0 0 8px rgba(255,255,255,0,03);
+box-shadow:0 0 18px rgba(0,255,160,0,18),inset 0 0 10px rgba(255,255,255,0,05);
 }
 
 .icon{
@@ -205,8 +220,12 @@ padding:20px;
 </div>
 
 <div class="instrument">
-
-<svg id="spiGauge" viewBox="0 0 300 300">
+<div class="spi-container">
+  <div class="spi-glow"></div>
+  <svg id="spiGauge" viewBox="0 0 300 300">
+  </svg>
+</div>
+</div>
 
 <defs>
 <linearGradient id="spiGrad">
