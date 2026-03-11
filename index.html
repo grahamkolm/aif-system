@@ -47,8 +47,8 @@ justify-content:center;
 
 .spi-container{
  position:=relative;
- width:=260px;
- height:=260px;
+ width:260px;
+ height:260px;
  display:flex;
  justify-content:center;
  align-items:=center;
@@ -60,9 +60,10 @@ width:260px;
 height:260px;
 position:=relative;
 z-index:2;
-filter: drop-shadow(0 0 10px rgba(0,255,156,0.5));
-filter: drop-shadow(0 0 25px rgba(0,255,156,0.25));
-filter: drop-shadow(0 0 45px rgba(0,255,156,0.12));
+filter:
+drop-shadow(0 0 10px rgba(0,255,156,0.5))
+drop-shadow(0 0 25px rgba(0,255,156,0.25))
+drop-shadow(0 0 45px rgba(0,255,156,0.12));
 }
 
 .spi-number{
@@ -423,8 +424,6 @@ if(hour >= 17 && hour <= 20) score += 12
 return Math.max(15, Math.min(score,95))
 
 }
-
-let trend = getPressureTrend(p)
  
 function calculateConfidence(t,p,w,c){
 let s=50
@@ -480,6 +479,7 @@ document.getElementById("moon").innerText="Waxing"
 document.getElementById("season").innerText=getSeason()
 document.getElementById("feed").innerText=feeding(spi)
 
+let trend = getPressureTrent(p)
 document.getElementById("tactical").innerText="Pressure" "+trend" • "Depth 6.5m • Patrol edges • "+feeding(spi)+" feeding"
 
 generateAI(spi,p,w,c)
