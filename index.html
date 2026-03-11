@@ -411,7 +411,7 @@ async function fetchWeather(){
 try{
 
 let r = await fetch("https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY); 
-let d = await r.json()
+let d = await r.json();
 
 if(d.main){
 render(d);
