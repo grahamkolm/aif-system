@@ -40,7 +40,8 @@ color:#00ff9c;
 .subtitle2{font-size:15px;color:#7fffb2;}
 
 .instrument{
-margin-top:25px;
+margin-top:18px;
+margin-bottom:6px
 display:flex;
 justify-content:center;
 }
@@ -157,16 +158,16 @@ margin-top:2px;
 }
 
 .tactical-bar{
-margin:16px 20px;
-padding:14px;
+margin:10px 20px 14px 20px;
+padding:12px;
 border-radius:14px;
 border:1px solid #00ff9c;
-background:linear-gradient(180deg, rgba(0,255,156,0.06));
+background:linear-gradient(180deg, rgba(0,255,156,0.06), rgba(0,255,156,0.04));
 text-align:center;
 font-size:14px;
 font-weight:500;
 color:#bfffe3;
-box-shadow:0 0 15px rgba(0,255,156,0.15); 
+box-shadow:0 0 12px rgba(0,255,156,0.15); 
 }
 
 .ai-box{
@@ -290,19 +291,20 @@ Waiting for environmental data...
 
 <path d="M20 100 A80 80 0 0 1 180 100"
 stroke="#1c2b2b"
-stroke-width="12"
+stroke-width="10"
 fill="none"/>
 
 <path id="stabilityArc"
 d="M20 100 A80 80 0 0 1 180 100"
 stroke="#ffc400"
-stroke-width="12"
+stroke-width="10"
 stroke-linecap="round"
 fill="none"
 stroke-dasharray="6 6"
-stroke-dashoffset="0"/>
+stroke-dashoffset="0"
+ filter="drop-shadow(0 0 8px rgba(255,200,0,0.04))"/>
 
-<text x="100" y="75"
+<text x="100" y="70"
 text-anchor="middle"
 font-size="24"
 fill="white"
