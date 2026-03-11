@@ -282,65 +282,6 @@ class="spi-desc">Strike Probability Index</text>
 Waiting for environmental data...
 </div>
 
-<div class="gauge-row">
-
-<div class="gauge">
-<div style="text-align:center;font-size:12px;color:#9aa4ad;">SPI Stability</div>
-<svg viewBox="0 0 200 120">
-
-<path d="M20 100 A80 80 0 0 1 180 100"
-stroke="#1c2b2b"
-stroke-width="10"
-fill="none"/>
-
-<path id="stabilityArc"
-d="M20 100 A80 80 0 0 1 180 100"
-stroke="#ffc400"
-stroke-width="10"
-stroke-linecap="round"
-fill="none"
-stroke-dasharray="6 6"
-stroke-dashoffset="0"
-filter="drop-shadow(0 0 8px rgba(255,200,0,0.04))"/>
-
-<text x="100" y="70"
-text-anchor="middle"
-font-size="24"
-fill="white"
-id="stabilityValue">--%</text>
-
-</svg>
-</div>
-
-<div class="gauge">
-<div style="text-align:center;font-size:12px;color:#9aa4ad;">Confidence</div>
-<svg viewBox="0 0 200 120">
-
-<path d="M20 100 A80 80 0 0 1 180 100"
-stroke="#1c2b2b"
-stroke-width="12"
-fill="none"/>
-
-<path id="confArc"
-d="M20 100 A80 80 0 0 1 180 100"
-stroke="#6fb6ff"
-stroke-width="12"
-stroke-linecap="round"
-fill="none"
-stroke-dasharray="6 6"
-stroke-dashoffset="0"/>
-
-<text x="100" y="75"
-text-anchor="middle"
-font-size="24"
-fill="white"
-id="confValue">--%</text>
-
-</svg>
-</div>
-
-</div>
-
 <div class="tile-grid">
 
 <div class="tile"><i data-lucide="sun"></i><div class="tile-title">Air</div><div class="tile-value" id="air">--</div></div>
@@ -496,9 +437,6 @@ let conf=calculateConfidence(t,p,w,c)
 
 updateSPI(spi)
 
-document.getElementById("confValue").textContent=conf+"%"
-document.getElementById("stabilityValue").textContent=spi+"%"
-
 document.getElementById("air").innerText=t.toFixed(1)+"°C"
 document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
 document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
@@ -515,7 +453,8 @@ let trend = getPressureTrend(p)
 
 document.getElementById("trend").innerText = trend
 
-document.getElementById("tactical").innerText = "Pressure " + trend + " • Depth 6.5m • Patrol edges • " + feeding(spi) + " feeding"
+document.getElementById("tactical").innerText = "Pressure " + trend + " • Confidence " + conf + "%" + " • Depth 6.5m • Patrol edges • " +
+feeding(spi) + " feeding";
 
 let bar=document.getElementById("tactical")
 
