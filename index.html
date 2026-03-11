@@ -304,32 +304,78 @@ return 6
 
 function calculateSPI(t,p,w,c,windDir){
 
-let score=45
+let score = 45
 
-let trend=getPressureTrend(p)
-if(trend==="rising")score+=12
-if(trend==="stable")score+=8
-if(trend==="falling")score-=6
+/* PRESSURE TREND */
 
-let pressureRate=Math.abs(pressureHistory[pressureHistory.length-1]-pressureHistory[0]||0)
-if(pressureRate>2)score-=6
+let trend = getPressureTrend(p)
 
-if(w>=4 && w<=15)score+=14
-if(w>18)score-=8
+if(trend === "rising") score += 10
+if(trend === "stable") score += 6
+if(trend === "falling") score -= 8
 
-if(c>=20 && c<=70)score+=10
 
-score+=sunriseWindow()
-score+=seasonalWeight()
+/* PRESSURE VELOCITY */
 
-if(t>=16 && t<=24)score+=10
-if(t>30)score-=6
+let pressureRate = Math.abs((pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0))
 
-let moon=getMoonPhase()
-if(moon=="Full")score+=5
-if(moon=="New")score-=3
+if(pressureRate >= 3) score -= 6
+if(pressureRate <= 1) score += 3
 
-return Math.max(15,Math.min(score,95))
+
+/* WIND SPEED */
+
+if(w >= 4 && w <= 15) score += 14
+if(w > 15 && w <= 22) score += 6
+if(w > 22) score -= 8
+
+
+/* WIND DIRECTION INTELLIGENCE */
+
+if(w >= 5){
+
+// simulate windward feeding advantage
+score += 5
+
+}
+
+
+/* CLOUD COVER */
+
+if(c >= 20 && c <= 70) score += 10
+if(c > 80) score += 4
+if(c < 10) score -= 3
+
+
+/* TEMPERATURE METABOLISM */
+
+if(t >= 16 && t <= 24) score += 12
+if(t >= 12 && t < 16) score += 6
+if(t > 28) score -= 6
+if(t < 10) score -= 8
+
+
+/* SUNRISE / SUNSET FEEDING WINDOW */
+
+score += sunriseWindow()
+
+
+/* SEASONAL METABOLISM */
+
+score += seasonalWeight()
+
+
+/* MOON PHASE */
+
+let moon = getMoonPhase()
+
+if(moon === "Full") score += 5
+if(moon === "Waxing") score += 3
+if(moon === "Waning") score += 2
+if(moon === "New") score -= 3
+
+
+return Math.max(15, Math.min(score,95))
 
 }
 
@@ -666,6 +712,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
