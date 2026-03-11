@@ -48,6 +48,8 @@ justify-content:center;
 #spiGauge{
 width:260px;
 height:260px;
+position:=relative;
+z-index:2;
 filter: drop-shadow(0 0 10px rgba(0,255,156,0.6));
 filter: drop-shadow(0 0 25px rgba(0,255,156,0.35));
 filter: drop-shadow(0 0 45px rgba(0,255,156,0.15));
@@ -71,12 +73,15 @@ fill:#9aa4ad;
 
 .spi-glow{
 position:absolute;
+top:0;
+left:0;
 width:260px;
 height:260px;
+z-index:0;
 border-radius:50%;
 background:radial-gradient(
 circle,
-rgba(0,255,160,0.25) 0%,
+rgba(0,255,160,0.18) 0%,
 rgba(0,255,160,0.12) 35%,
 rgba(0,255,160,0.05) 55%,
 transparent 70%
@@ -106,6 +111,15 @@ padding:10px;
 backdrop-filter:blur(6px);
 }
 
+.spi-container{
+ position:=relative;
+ width:=260px;
+ height:=260px;
+ display:flex;
+ justify-content:center;
+ align-items:=center;
+}
+ 
 .tile-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
