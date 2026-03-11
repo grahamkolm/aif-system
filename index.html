@@ -577,7 +577,7 @@ let windDirName = windDirectionName(windDir)
 
 document.getElementById("tactical").innerText = "Pressure "+trend+" • Wind "+w.toFixed(0)+" km/h "+windDirName+" • SPI "+spi+"% • "+feeding(spi)+" feeding"
 
-generateAI(spi,p,w,c,winDir)
+generateAI(spi,p,w,c,windDir)
 }
 
 function updateSPI(v){
@@ -662,7 +662,7 @@ aiText += "<br><b>Tactical Recommendation</b><br>";
 
 if(w >= 5){
 aiText += "Focus on windward banks and slope edges."; } else{ aiText += "Target deeper structure and basin patrol routes."; }
-aitText += "Wind direction: " + windDirectionName(windDir) + ".<br>";
+aitText += "Wind direction: " + wind directionName(winDir) + ".<br>";
 
 /* OUTPUT */
 
@@ -729,6 +729,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
