@@ -54,6 +54,8 @@ display:flex;
 justify-content:center;
 align-items:center;
 overflow:hidden;
+background: radial-gradient(circle at center, rgba(0,255,156,0.08) 0%, rgba(0,255,156,0,0.04) 35%, transparent 70%);
+border-radius:50%;
 }
 
 #spiGauge{
@@ -61,7 +63,7 @@ width:260px;
 height:260px;
 position:relative;
 z-index:2;
-filter: drop-shadow(0 0 0px rgba(255,255,255,0.15));
+filter: drop-shadow(0 0 4px rgba(0,255,156,0.15));
 transition:filter 0.5s ease;
 }
 
@@ -582,11 +584,11 @@ c.style.filter="drop-shadow(0 0 6px rgba(0,255,166,0.35))"
 }
 else if(v >= 40){
 c.style.stroke="#ffc400"
-c.style.filter="drop-shadow(0 0 8px rgba(255,196,0,0.35))"
+c.style.filter="drop-shadow(0 0 5px rgba(255,196,0,0.30))"
 }
 else{
 c.style.stroke="#ff3b3b"
-c.style.filter="drop-shadow(0 0 8px rgba(255,59,59,0.35))"
+c.style.filter="drop-shadow(0 0 5px rgba(255,59,59,0.30))"
 }
 
 }
@@ -712,6 +714,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
