@@ -46,7 +46,7 @@ justify-content:center;
 }
 
 .spi-container{
- position:=relative;
+ position:relative;
  width:260px;
  height:260px;
  display:flex;
@@ -58,7 +58,7 @@ justify-content:center;
 #spiGauge{
 width:260px;
 height:260px;
-position:=relative;
+position:relative;
 z-index:2;
 filter:
 drop-shadow(0 0 10px rgba(0,255,156,0.5))
@@ -479,8 +479,8 @@ document.getElementById("moon").innerText="Waxing"
 document.getElementById("season").innerText=getSeason()
 document.getElementById("feed").innerText=feeding(spi)
 
-let trend = getPressureTrent(p)
-document.getElementById("tactical").innerText="Pressure" "+trend" • "Depth 6.5m • Patrol edges • "+feeding(spi)+" feeding"
+let trend = getPressureTrend(p)
+document.getElementById("tactical").innerText = "Pressure "+trend+" • "Depth 6.5m • Patrol edges • "+feeding(spi)+" feeding"
 
 generateAI(spi,p,w,c)
 }
