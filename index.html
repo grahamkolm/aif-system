@@ -41,7 +41,7 @@ color:#00ff9c;
 
 .instrument{
 margin-top:18px;
-margin-bottom:6px
+margin-bottom:6px;
 display:flex;
 justify-content:center;
 }
@@ -507,6 +507,15 @@ document.getElementById("feed").innerText=feeding(spi)
 
 generateAI(spi,p,w,c)
 }
+ 
+function updateSPI(v){
+let c=document.getElementById("spiArc")
+let r=110
+let C=2*Math.PI*r
+c.style.strokeDasharray=C
+c.style.strokeDashoffset=C-(v/100)*C
+document.getElementById("spiValue").textContent=v+"%"
+}
 
 let bar=document.getElementById("tactical")
 
@@ -520,15 +529,6 @@ else{
 bar.style.borderColor="#ff3b3b"
 }
  
-function updateSPI(v){
-let c=document.getElementById("spiArc")
-let r=110
-let C=2*Math.PI*r
-c.style.strokeDasharray=C
-c.style.strokeDashoffset=C-(v/100)*C
-document.getElementById("spiValue").textContent=v+"%"
-}
-
 function feeding(spi){
 if(spi>=70)return"Heavy"
 if(spi>=55)return"Moderate"
