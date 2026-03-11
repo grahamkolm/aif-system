@@ -355,9 +355,10 @@ let d = await r.json();
 if(d.main){
 render(d);
 }
-
 }catch(e){
-
+}
+}
+    
 console.log("Weather fetch failed",e);
 document.getElementById("tactical").innerText="Weather connection failed";
 
