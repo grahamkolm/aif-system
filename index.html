@@ -405,10 +405,13 @@ id="confValue">--%</text>
 
 const API_KEY="63ba514dc7c2242cb10cd2632d2569ad"
 
+let pressureHistory = [];
+
 async function fetchWeather(){
 try{
-let r = await fetch(https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=+API_KEY);
-let d = await r.json()
+
+let r = await fetch("https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY); let d = await r.json()
+
 if(d.main){
 render(d);
 }
@@ -425,63 +428,6 @@ function calculateSPI(t,p,w,c){
 
 let score = 40
 
-function calculateConfidence(t,p,w,c){
-let s=50
-if(p>=1015&&p<=1022)s+=15
-if(w>=3&&w<=12)s+=15
-if(c>=20&&c<=70)s+=10
-if(t>=10&&t<=30)s+=10
-return Math.min(s,95)
-}
-
-let pressureHistory = [];
-
-function getPressureTrend(p){
-
-pressureHistory.push(p);
-
-if(pressureHistory.length > 6){
-pressureHistory.shift();
-}
-
-if(pressureHistory.length < 2){
-return "stable";
-}
-
-let diff = pressureHistory[pressureHistory.length-1] - pressureHistory[0];
-
-if(diff > 1) return "rising";
-if(diff < -1) return "falling";
-return "stable";
-
-}
-
-function render(d){
-let t=d.main.temp
-let p=d.main.pressure
-let w=d.wind.speed*3.6
-let c=d.clouds.all
-
-let spi=calculateSPI(t,p,w,c)
-let conf=calculateConfidence(t,p,w,c)
-
-updateSPI(spi)
-document.getElementById("confValue").textContent=conf+"%"
-document.getElementById("stabilityValue").textContent=spi+"%"
-
-document.getElementById("air").innerText=t.toFixed(1)+"°C"
-document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
-document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
-document.getElementById("pressure").innerText=p+" hPa"
-
-let trend = getPressureTrend(p)
-document.getElementById("tactical").innerText = "Pressure " + trend + " • Depth 6.5m • Patrol edges • " + feeding(spi) + " feeding";
-
-document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
-document.getElementById("cloud").innerText=c+"%"
-document.getElementById("moon").innerText="Waxing"
-document.getElementById("season").innerText=getSeason()
-document.getElementById("feed").innerText=feeding(spi)
 let trend = getPressureTrend(p)
 
 if(trend==="rising") score+=18
@@ -501,34 +447,75 @@ if(hour>=17 && hour<=20) score+=12
 if(t>=16 && t<=24) score+=8
 
 return Math.max(15,Math.min(score,95))
-}
-  
-generateAI(spi,p,w,c)
+
 }
 
-function updateSPI(v){
-let c=document.getElementById("spiArc")
-let r=110
-let C=2*Math.PI*r
-c.style.strokeDasharray=C
-c.style.strokeDashoffset=C-(v/100)*C
-document.getElementById("spiValue").textContent=v+"%"
+function calculateConfidence(t,p,w,c){
+
+let s=50
+
+if(p>=1015&&p<=1022)s+=15
+if(w>=3&&w<=12)s+=15
+if(c>=20&&c<=70)s+=10
+if(t>=10&&t<=30)s+=10
+
+return Math.min(s,95)
+
 }
 
-function feeding(spi){
-if(spi>=70)return"Heavy"
-if(spi>=55)return"Moderate"
-if(spi>=40)return"Light"
-return"Holding"
+function getPressureTrend(p){
+
+pressureHistory.push(p)
+
+if(pressureHistory.length > 6){
+pressureHistory.shift()
 }
 
-function getSeason(){
-let m=new Date().getMonth()+1
-if(m<=2||m==12)return"Summer"
-if(m<=5)return"Autumn"
-if(m<=8)return"Winter"
-return"Spring"
+if(pressureHistory.length < 2){
+return "stable"
 }
+
+let diff = pressureHistory[pressureHistory.length-1] - pressureHistory[0]
+
+if(diff > 1) return "rising"
+if(diff < -1) return "falling"
+return "stable"
+
+}
+
+function render(d){
+
+let t=d.main.temp
+let p=d.main.pressure
+let w=d.wind.speed*3.6
+let c=d.clouds.all
+
+let spi=calculateSPI(t,p,w,c)
+let conf=calculateConfidence(t,p,w,c)
+
+updateSPI(spi)
+
+document.getElementById("confValue").textContent=conf+"%"
+document.getElementById("stabilityValue").textContent=spi+"%"
+
+document.getElementById("air").innerText=t.toFixed(1)+"°C"
+document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
+document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
+
+document.getElementById("pressure").innerText=p+" hPa"
+document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
+document.getElementById("cloud").innerText=c+"%"
+
+document.getElementById("moon").innerText="Waxing"
+document.getElementById("season").innerText=getSeason()
+document.getElementById("feed").innerText=feeding(spi)
+
+let trend = getPressureTrend(p)
+
+document.getElementById("trend").innerText = trend
+
+document.getElementById("tactical").innerText = "Pressure " + trend + " • Depth 6.5m • Patrol edges • " + feeding(spi) + " feeding"
+
 let bar=document.getElementById("tactical")
 
 if(spi>=70){
@@ -541,10 +528,46 @@ else{
 bar.style.borderColor="#ff3b3b"
 }
 
+generateAI(spi,p,w,c)
+
+}
+
+function updateSPI(v){
+
+let c=document.getElementById("spiArc")
+let r=110
+let C=2*Math.PI*r
+
+c.style.strokeDasharray=C
+c.style.strokeDashoffset=C-(v/100)*C
+
+document.getElementById("spiValue").textContent=v+"%"
+
+}
+
+function feeding(spi){
+
+if(spi>=70)return"Heavy"
+if(spi>=55)return"Moderate"
+if(spi>=40)return"Light"
+return"Holding"
+
+}
+
+function getSeason(){
+
+let m=new Date().getMonth()+1
+
+if(m<=2||m==12)return"Summer"
+if(m<=5)return"Autumn"
+if(m<=8)return"Winter"
+return"Spring"
+
+}
+
 function generateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p)
-document.getElementById("trend").innerText = trend
 
 let txt="<b>Environmental Scan</b><br>"
 txt+="Pressure: "+p+" hPa ("+trend+")<br>"
@@ -582,21 +605,34 @@ alert("Scout location saved")
 
 function saveDrop(){
 navigator.geolocation.getCurrentPosition(function(pos){
+
 let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
-history.push({lat:pos.coords.latitude,lon:pos.coords.longitude,time:new Date().toISOString()})
+
+history.push({
+lat:pos.coords.latitude,
+lon:pos.coords.longitude,
+time:new Date().toISOString()
+})
+
 localStorage.setItem("aif_drops",JSON.stringify(history))
+
 alert("Drop saved")
+
 })
 }
 
 let map
 
 function openMap(){
+
 document.getElementById("mapPopup").style.display="block"
+
 if(!map){
 map=L.map('map').setView([-25.9,28.2],13)
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 }
+
 }
 
 function closeMap(){
@@ -612,9 +648,13 @@ document.getElementById("setupPopup").style.display="none"
 }
 
 function openReport(){
+
 let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
+
 document.getElementById("reportContent").innerHTML="Drops logged: "+history.length
+
 document.getElementById("reportPopup").style.display="block"
+
 }
 
 function closeReport(){
@@ -622,14 +662,17 @@ document.getElementById("reportPopup").style.display="none"
 }
 
 document.addEventListener("DOMContentLoaded",function(){
+
 fetchWeather()
 
-setInterval(fetchWeather,600000) //Refresh every 10 min
+setInterval(fetchWeather,600000)
+
 })
 
 lucide.createIcons();
 
 </script>
+
 
 </body>
 </html>
