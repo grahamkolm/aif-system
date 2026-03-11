@@ -357,7 +357,7 @@ document.getElementById("tactical").innerText="Weather connection failed"
 
 function render(d){
 
-let t=36 //=d.main.temp
+let t=d.main.temp
 let p=d.main.pressure
 let w=d.wind.speed*3.6
 let c=d.clouds.all
@@ -639,6 +639,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
