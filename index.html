@@ -515,9 +515,42 @@ document.getElementById("trend").innerText=trend
 document.getElementById("tactical").innerText=
 "Pressure "+trend+" • Wind "+w.toFixed(0)+"km/h • SPI "+spi+"% • "+feeding(spi)+" feeding"
 
-generateAI(spi,p,w,c)
-}
+function generateAI(spi,p,w,c){
 
+let aiText = "";
+
+// ENVIRONMENTAL SCAN
+aiText += "<b>Environmental Scan</b><br>";
+
+if(pressure >= 1015 && pressure <= 1022){ aiText += "Stable pressure detected.<br>"; } else if(pressure > 1022){ aiText += "High pressure system present.<br>"; } else{ aiText += "Falling pressure detected.<br>"; }
+
+if(w < 5){
+aiText += "Calm wind limiting natural food drift.<br>"; } else if(w < 15){ aiText += "Moderate wind concentrating food along windward banks.<br>"; } else{ aiText += "Strong wind creating active feeding lanes.<br>"; }
+
+// ACTIVITY ASSESSMENT
+aiText += "<br><b>Activity Assessment</b><br>";
+
+aiText += "Strike Probability Index: <b>" + spi + "%</b><br>";
+
+if(spi >= 70){
+aiText += "High feeding probability.<br>"; } else if(spi >= 55){ aiText += "Moderate feeding activity expected.<br>"; } else{ aiText += "Reduced feeding activity.<br>"; }
+
+// WATER BEHAVIOUR
+aiText += "<br><b>Water Behaviour</b><br>";
+
+if(c > 80){
+aiText += "Low light conditions encouraging shallow patrol.<br>"; } else if(c < 30){ aiText += "Clear skies warming surface layers.<br>"; }
+
+// TACTICAL RECOMMENDATION
+aiText += "<br><b>Tactical Recommendation</b><br>";
+
+if(wind >= 5){
+aiText += "Focus on windward banks and slope edges."; } else{ aiText += "Target deeper structure and basin patrol routes."; }
+
+document.getElementById("aiContent").innerHTML = aiText;
+
+}
+  
 function updateSPI(v){
 
 let c=document.getElementById("spiArc")
@@ -639,6 +672,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
