@@ -577,7 +577,7 @@ let windDirName = windDirectionName(windDir)
 
 document.getElementById("tactical").innerText = "Pressure "+trend+" • Wind "+w.toFixed(0)+" km/h "+windDirName+" • SPI "+spi+"% • "+feeding(spi)+" feeding"
 
-generateAI(spi,p,w,c)
+generateAI(spi,p,w,c,winDir)
 }
 
 function updateSPI(v){
@@ -623,7 +623,7 @@ if(m<=8)return"Winter"
 return"Spring"
 }
 
-function generateAI(spi,p,w,c){
+function generateAI(spi,p,w,c,winDir){
 
 let aiText = "";
 
@@ -729,6 +729,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
