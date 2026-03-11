@@ -52,7 +52,7 @@ justify-content:center;
  height:260px;
  display:flex;
  justify-content:center;
- align-items:=center;
+ align-items:center;
  overflow:hidden;
 }
  
@@ -508,15 +508,6 @@ document.getElementById("feed").innerText=feeding(spi)
 generateAI(spi,p,w,c)
 }
 
-function updateSPI(v){
-let c=document.getElementById("spiArc")
-let r=110
-let C=2*Math.PI*r
-c.style.strokeDasharray=C
-c.style.strokeDashoffset=C-(v/100)*C
-document.getElementById("spiValue").textContent=v+"%"
-}
-
 let bar=document.getElementById("tactical")
 
 if(spi>=70){
@@ -527,6 +518,15 @@ bar.style.borderColor="#ffc400"
 }
 else{
 bar.style.borderColor="#ff3b3b"
+}
+ 
+function updateSPI(v){
+let c=document.getElementById("spiArc")
+let r=110
+let C=2*Math.PI*r
+c.style.strokeDasharray=C
+c.style.strokeDashoffset=C-(v/100)*C
+document.getElementById("spiValue").textContent=v+"%"
 }
 
 function feeding(spi){
@@ -547,7 +547,8 @@ return"Spring"
 function generateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p)
-
+document.getElementById("trend").innerText = trend
+ 
 let txt="<b>Environmental Scan</b><br>"
 txt+="Pressure: "+p+" hPa ("+trend+")<br>"
 txt+="Wind: "+w.toFixed(1)+" km/h<br>"
