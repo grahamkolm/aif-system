@@ -447,10 +447,55 @@ setInterval(fetchWeather,600000)
 
 lucide.createIcons()
 
+function refreshDashboard(){
+fetchWeather()
+}
+
+function scoutSpot(){
+navigator.geolocation.getCurrentPosition(function(pos){
+alert("Scout location saved")
+})
+}
+
+function saveDrop(){
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
+
+history.push({
+lat:pos.coords.latitude,
+lon:pos.coords.longitude,
+time:new Date().toISOString()
+})
+
+localStorage.setItem("aif_drops",JSON.stringify(history))
+
+alert("Drop saved")
+
+})
+}
+
+function openMap(){
+alert("Map feature active")
+}
+
+function openSetup(){
+alert("Setup screen")
+}
+
+function openReport(){
+
+let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
+
+alert("Drops logged: "+history.length)
+
+}
+  
 </script>
 
 </body>
 </html>
+
 
 
 
