@@ -206,7 +206,7 @@ stroke-dasharray="8 12"/>
 cx="150"
 cy="150"
 r="110"
-stroke="#ffffff" //url(#spiGrad)" - change back if dont like white
+stroke="url(#spiGrad)" 
 stroke-width="14"
 fill="none"
 stroke-linecap="round"
@@ -515,7 +515,7 @@ document.getElementById("trend").innerText=trend
 document.getElementById("tactical").innerText = "Pressure "+trend+" • Wind "+w.toFixed(0)+" km/h • SPI "+spi+"% • "+feeding(spi)+" feeding"
 
 generateAI(spi,p,w,c)
-  
+
 function updateSPI(v){
 
 let c=document.getElementById("spiArc")
@@ -543,7 +543,7 @@ c.style.filter="drop-shadow(0 0 8px rgba(255,59,59,0.35))"
 }
 
 }
-
+ 
 function feeding(spi){
 if(spi>=70)return"Heavy"
 if(spi>=55)return"Moderate"
@@ -665,6 +665,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
