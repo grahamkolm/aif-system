@@ -507,7 +507,7 @@ document.getElementById("feed").innerText=feeding(spi)
 
 generateAI(spi,p,w,c)
 }
- 
+
 function updateSPI(v){
 let c=document.getElementById("spiArc")
 let r=110
@@ -515,18 +515,6 @@ let C=2*Math.PI*r
 c.style.strokeDasharray=C
 c.style.strokeDashoffset=C-(v/100)*C
 document.getElementById("spiValue").textContent=v+"%"
-}
-
-let bar=document.getElementById("tactical")
-
-if(spi>=70){
-bar.style.borderColor="#00ff9c"
-}
-else if(spi>=50){
-bar.style.borderColor="#ffc400"
-}
-else{
-bar.style.borderColor="#ff3b3b"
 }
  
 function feeding(spi){
@@ -543,7 +531,18 @@ if(m<=5)return"Autumn"
 if(m<=8)return"Winter"
 return"Spring"
 }
+let bar=document.getElementById("tactical")
 
+if(spi>=70){
+bar.style.borderColor="#00ff9c"
+}
+else if(spi>=50){
+bar.style.borderColor="#ffc400"
+}
+else{
+bar.style.borderColor="#ff3b3b"
+}
+ 
 function generateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p)
