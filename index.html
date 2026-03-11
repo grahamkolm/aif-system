@@ -317,7 +317,7 @@ return "North-West"
 
 }
 
-function calculateSPI(t,p,w,c,winDir){
+function calculateSPI(t,p,w,c,windDir){
 
 let score = 45
 
@@ -623,7 +623,7 @@ if(m<=8)return"Winter"
 return"Spring"
 }
 
-function generateAI(spi,p,w,c,winDir){
+function generateAI(spi,p,w,c,windDir){
 
 let aiText = "";
 
@@ -662,7 +662,7 @@ aiText += "<br><b>Tactical Recommendation</b><br>";
 
 if(w >= 5){
 aiText += "Focus on windward banks and slope edges."; } else{ aiText += "Target deeper structure and basin patrol routes."; }
-aitText += "Wind direction: " + wind directionName(winDir) + ".<br>";
+aitText += "Wind direction: " + wind directionName(windDir) + ".<br>";
 
 /* OUTPUT */
 
@@ -729,6 +729,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
