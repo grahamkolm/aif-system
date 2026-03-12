@@ -764,6 +764,24 @@ document.getElementById("tactical").innerText = "SPI "+spi+"% • "+feeding(spi)
 generateAI(spi,p,w,c,windDir)
 }
 
+function detectPressureStabilization(){
+
+if(pressureHistory.length < 4){
+return false
+}
+
+let change = Math.abs(
+pressureHistory[pressureHistory.length-1] - pressureHistory[pressureHistory.length-2]
+)
+
+if(change <= 0.3){
+return true
+}
+
+return false
+
+}
+    
 function updateSPI(v){
 
 let c=document.getElementById("spiArc")
@@ -931,6 +949,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
