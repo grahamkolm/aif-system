@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AIF Dashboard v5</title>
 
-<link rel="stylesheet"href=https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
+<link rel="stylesheet" href=https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script> 
 
@@ -678,8 +678,6 @@ pressureIcon.style.stroke="#00ffa6"
 
 /* PRESSURE STABILIZATION WINDOW */
 
-if(detectPressureStabilization() && p >= 1015){ score += 10 }
-
 document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
 let windIcon=document.querySelector('[data-lucide="wind"]')
 
@@ -808,16 +806,16 @@ document.getElementById("spiValue").textContent=v+"%";
 /* SPI COLOR SYSTEM */
 
 if(v >= 70){
-c.style.stroke="#00ffa6"
-c.style.filter="drop-shadow(0 0 6px rgba(0,255,166,0.35))"
+arc.style.stroke="#00ffa6"
+arc.style.filter="drop-shadow(0 0 6px rgba(0,255,166,0.35))"
 }
 else if(v >= 40){
-c.style.stroke="#ffc400"
-c.style.filter="drop-shadow(0 0 5px rgba(255,196,0,0.30))"
+arc.style.stroke="#ffc400"
+arc.style.filter="drop-shadow(0 0 5px rgba(255,196,0,0.30))"
 }
 else{
-c.style.stroke="#ff3b3b"
-c.style.filter="drop-shadow(0 0 5px rgba(255,59,59,0.30))"
+arc.style.stroke="#ff3b3b"
+arc.style.filter="drop-shadow(0 0 5px rgba(255,59,59,0.30))"
 }
 
 }
@@ -1010,6 +1008,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
