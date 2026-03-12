@@ -282,10 +282,7 @@ Tap to expand
 </div>
 
 <div class="dock">
-<div class="dock-btn" onclick="refreshDashboard()">
-<i id="refreshIcon" data-lucide="refresh-cw"></i>
-Refresh
-</div>
+<div class="dock-btn" onclick="refreshDashboard()"> <i id="refreshIcon" data-lucide="refresh-cw"></i> Refresh </div>
 
 <div class="dock-btn">
 <i data-lucide="map-pin"></i>
@@ -1014,11 +1011,11 @@ hint.innerText="Tap to expand"
 
 function refreshDashboard(){
 
-let icon = document.querySelector('[data-lucide="refresh-cw"]')
+let icon = document.getElementById("refreshIcon")
 
 if(icon){
-icon.style.transition = "transform 0.6s linear"
 icon.style.transform = "rotate(360deg)"
+icon.style.transition = "transform 0.6s"
 }
 
 fetchWeather()
@@ -1082,6 +1079,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
