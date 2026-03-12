@@ -729,7 +729,8 @@ return"Spring"
 function generateAI(spi,p,w,c,windDir){
 
 let aiText = "";
-
+let trend = getPressureTrend(p);
+  
 /* ENVIRONMENTAL SCAN */
 
 aiText += "<b>Environmental Scan</b><br>";
@@ -851,6 +852,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
