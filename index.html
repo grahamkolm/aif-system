@@ -166,8 +166,20 @@ text-align:center;
 font-size:11px;
 width:16%;
 cursor:pointer;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
 }
 
+.dock-btn i{
+width:22px;
+height:22px;
+stroke:#00ffa6;
+stroke-width:1.7;
+margin-bottom:4px;
+}
+  
 .dock-btn span{
 font-size:20px;
 display:block;
@@ -264,14 +276,37 @@ Waiting for environmental data...
 </div>
 
 <div class="dock">
-<div class="dock-btn" onclick="refreshDashboard()"><span>⟳</span>Refresh</div>
-<div class="dock-btn" onclick="scoutSpot()"><span>📍</span>Scout</div>
-<div class="dock-btn" onclick="saveDrop()"><span>🎯</span>Drop</div>
-<div class="dock-btn" onclick="openMap()"><span>🐟</span>Map</div>
-<div class="dock-btn" onclick="openSetup()"><span>⚙</span>Setup</div>
-<div class="dock-btn" onclick="openReport()"><span>📊</span>Report</div>
+<div class="dock-btn">
+<i data-lucide="refresh-cw"></i>
+Refresh
 </div>
 
+<div class="dock-btn">
+<i data-lucide="map-pin"></i>
+Scout
+</div>
+
+<div class="dock-btn">
+<i data-lucide="target"></i>
+Drop
+</div>
+
+<div class="dock-btn">
+<i data-lucide="fish"></i>
+Map
+</div>
+
+<div class="dock-btn">
+<i data-lucide="settings"></i>
+Setup
+</div>
+
+<div class="dock-btn">
+<i data-lucide="bar-chart-3"></i>
+Report
+</div>
+
+</div>
 <script>
 
 const API_KEY="63ba514dc7c2242cb10cd2632d2569ad"
@@ -743,6 +778,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
