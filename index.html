@@ -830,6 +830,27 @@ if(m<=8)return"Winter"
 return"Spring"
 }
 
+function predictFeedingZone(spi,t,w){
+
+let surfaceTemp = t - 0.5
+let bottomTemp = t - 1.5
+
+if(spi >= 80){
+return "Shallow feeding patrol (2–4m)"
+}
+
+if(spi >= 65 && w >= 6){
+return "Windward slope edges (4–7m)"
+}
+
+if(spi >= 50){
+return "Mid-depth transition zones (5–8m)"
+}
+
+return "Deeper holding areas (8–12m)"
+
+}
+  
 function generateAI(spi,p,w,c,windDir){
 
 let aiText = "";
@@ -870,12 +891,14 @@ aiText += "<br><b>Tactical Recommendation</b><br>";
 
 let bank = windBankPrediction(windDir)
 let drift = windDriftStrength(w)
+let zone = predictFeedingZone(spi,p,w)
 
 if(w >= 5){
 aiText += "Focus on windward banks and slope edges.<br>"; }else{ aiText += "Target deeper structure and basin patrol routes.<br>"; }
 
 aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>"; aiText += "Windward feeding bank: <b>" + bank + "</b><br>"; aiText += "Feeding drift strength: " + drift + "<br>";
-
+aiText += "Recommended feeding zone: <b>" + zone + "</b><br>";
+  
 /* OUTPUT */
 
 document.getElementById("aiContent").innerHTML = aiText;
@@ -956,6 +979,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
