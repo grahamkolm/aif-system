@@ -796,12 +796,10 @@ v = Math.round((v + lastSPI) /2)
 
 lastSPI = v
 
-let arc=document.getElementById("spiArc")
-let r = 110
-let C = 2*Math.PI*r
+let arc = document.getElementById("spiArc") let r = 110 let C = 2 * Math.PI * r
 
 arc.style.strokeDasharray = C
-arc.style.strokeDashoffset = C-(v/100) * C
+arc.style.strokeDashoffset = C - (v/100) * C
 
 document.getElementById("spiValue").textContent=v+"%"
 
@@ -1010,6 +1008,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
