@@ -140,8 +140,8 @@ cursor:pointer;
 }
 
 .ai-content{
-max-height:90px;
-overflow:hidden;
+max-height:none;
+overflow:visible;
 }
 
 .ai-content.expanded{
@@ -276,7 +276,7 @@ Waiting for environmental data...
 </div>
 
 <div class="dock">
-<div class="dock-btn" id="refreshBtn" onclick="refreshDashboard()">
+<div class="dock-btn" onclick="refreshDashboard()">
 <i id="refreshIcon" data-lucide="refresh-cw"></i>
 Refresh
 </div>
@@ -997,7 +997,7 @@ document.getElementById("aiContent").classList.toggle("expanded")
 
 function refreshDashboard(){
 
-let btn = document.getElementById("refreshIcon")
+let icon = document.getElementById("refreshIcon")
 
 if(icon){
 btn.style.transform = "rotate(360deg)"
@@ -1065,6 +1065,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
