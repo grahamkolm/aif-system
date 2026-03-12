@@ -727,11 +727,12 @@ document.getElementById("aiContent").classList.toggle("expanded")
 function refreshDashboard(){
 
 let btn = document.querySelector('[data-lucide="refresh-cw"]')
+
 if(btn){
 btn.style.transform = "rotate(360deg)"
 btn.style.transition = "transform 0.6s"
 }
-  
+
 fetchWeather()
 
 setTimeout(() => {
@@ -739,7 +740,9 @@ if(btn){
 btn.style.transform = "rotate(0deg)"
 }
 }, 600)
+
 }
+
   
 function scoutSpot(){
 navigator.geolocation.getCurrentPosition(function(pos){
@@ -792,6 +795,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
