@@ -397,6 +397,11 @@ let pressureRate = Math.abs((pressureHistory[pressureHistory.length-1] || 0) - (
 if(pressureRate >= 3) score -= 6
 if(pressureRate <= 1) score += 3 
 
+/* PRESSURE MOMENTUM */
+if(pressureRate >= 5){
+score -= 8
+}
+  
 /* PRESSURE STABILIZATION WINDOW */
 if(trend === "stable" && p >= 1018 && p <= 1026){
 score += 8
@@ -425,6 +430,21 @@ score += 5
 
 }
 
+/* WIND DIRECTION STABILITY */
+
+if(typeof lastWindDir !== "undefined"){
+
+let diff = Math.abs(windDir - lastWindDir)
+
+if(diff > 45){
+score -= 4
+}
+
+}
+
+lastWindDir = windDir
+
+  
 /* CLOUD COVER */
 
 if(c >= 20 && c <= 70) score += 10
@@ -876,6 +896,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
