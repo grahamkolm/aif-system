@@ -291,10 +291,7 @@ Tap to expand
 Drop
 </div>
 
-<div class="dock-btn">
-<i data-lucide="fish"></i>
-Map
-</div>
+<div class="dock-btn" onclick="openMap()"> <i data-lucide="fish"></i> Map </div>
 
 <div class="dock-btn">
 <i data-lucide="settings"></i>
@@ -1096,7 +1093,20 @@ alert("Drop saved")
 }
 
 function openMap(){
-alert("Map feature active")
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let lat = pos.coords.latitude
+let lon = pos.coords.longitude
+
+alert(
+"Map view coming soon\n\n"+
+"Your position:\n"+
+lat + ", " + lon
+)
+
+})
+
 }
 
 function openSetup(){
@@ -1122,6 +1132,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
