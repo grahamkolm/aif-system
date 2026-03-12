@@ -675,6 +675,10 @@ pressureIcon.style.stroke="#00ffa6"
 
 }
 
+/* PRESSURE STABILIZATION WINDOW */
+
+if(detectPressureStabilization() && p >= 1015){ score += 10 }
+
 document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
 let windIcon=document.querySelector('[data-lucide="wind"]')
 
@@ -758,6 +762,7 @@ document.getElementById("trend").innerText=trend
 let windDirName = windDirectionName(windDir)
 
 let strikeWindow = detectStrikeWindow(spi,trend,w,c)
+let stabilization = detectPressureStabilization()
 
 document.getElementById("tactical").innerText = "SPI "+spi+"% • "+feeding(spi)+" feeding • "+strikeWindow
 
@@ -831,14 +836,16 @@ let aiText = "";
 let trend = getPressureTrend(p);
 
 /* ENVIRONMENTAL ASSESSMENT */
+
 aiText += "<b>Environmental Scan</b><br>";
 
 if(p >= 1015 && p <= 1022){
-   aiText += "Stable pressure detected.<br>"; }
+aiText += "Stable pressure detected.<br>"; }
 
-let phase = detectWeatherPhase(p,trend,c,w);
+let stabilization = detectPressureStabilization()
 
-aiText += "<br><b>Weather Phase</b><br>"; aiText += phase + "<br>";
+if(stabilization){
+aiText += "Pressure stabilization detected – feeding window forming.<br>"; }
 
 /* ACTIVITY ASSESSMENT */
 
@@ -949,6 +956,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
