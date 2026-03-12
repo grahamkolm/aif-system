@@ -284,10 +284,7 @@ Tap to expand
 <div class="dock">
 <div class="dock-btn" onclick="refreshDashboard()"> <i id="refreshIcon" data-lucide="refresh-cw"></i> Refresh </div>
 
-<div class="dock-btn">
-<i data-lucide="map-pin"></i>
-Scout
-</div>
+<div class="dock-btn" onclick="scoutSpot()"> <i data-lucide="map-pin"></i> Scout </div>
 
 <div class="dock-btn">
 <i data-lucide="target"></i>
@@ -556,6 +553,35 @@ return "High probability feeding activity"
 }
 
 return "No major strike window detected"
+}
+
+function predictStrikeDuration(spi,trend,w,c){
+
+let duration = 20
+
+/* SPI influence */
+
+if(spi >= 80) duration += 40
+else if(spi >= 65) duration += 25
+else if(spi >= 50) duration += 10
+
+/* pressure trend */
+
+if(trend === "stable") duration += 10
+if(trend === "rising") duration += 5
+if(trend === "falling") duration -= 5
+
+/* wind feeding drift */
+
+if(w >= 6 && w <= 15) duration += 10
+if(w > 18) duration -= 5
+
+/* cloud low light */
+
+if(c > 60) duration += 5
+
+return duration
+
 }
   
 function getPressureTrend(p){
@@ -955,6 +981,10 @@ aiText += "<br><b>Activity Assessment</b><br>";
 
 aiText += "Strike Probability Index: <b>" + spi + "%</b><br>";
 
+let strikeDuration = predictStrikeDuration(spi,trend,w,c)
+
+aiText += "Estimated strike window: <b>" + strikeDuration + " minutes</b><br>" 
+  
 if(spi >= 70){
 aiText += "High feeding probability.<br>"; } else if(spi >= 55){ aiText += "Moderate feeding activity expected.<br>"; } else{ aiText += "Reduced feeding activity.<br>"; }
 
@@ -1029,9 +1059,24 @@ icon.style.transform = "rotate(0deg)"
 }
 
 function scoutSpot(){
+
 navigator.geolocation.getCurrentPosition(function(pos){
-alert("Scout location saved")
+
+let lat = pos.coords.latitude
+let lon = pos.coords.longitude
+
+let windDir = lastWindDir || 0
+let bank = windBankPrediction(windDir)
+
+alert(
+"Scout location locked\n\n" +
+"Latitude: " + lat.toFixed(5) +
+"\nLongitude: " + lon.toFixed(5) +
+"\n\nWindward bank: " + bank
+)
+
 })
+
 }
 
 function saveDrop(){
@@ -1079,6 +1124,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
