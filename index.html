@@ -878,6 +878,44 @@ return "Deep basin patrol route (8–12m)"
 
 }
 
+function predictFeedingEntry(w, windDir){
+
+if(w < 5){
+return "Fish holding near structure – no strong entry direction."
+}
+
+if(windDir >= 337 || windDir < 22){
+return "Fish likely entering swim from SOUTH bank (wind pushing food north)."
+}
+
+if(windDir >= 22 && windDir < 67){
+return "Fish likely entering from SOUTH-WEST slope."
+}
+
+if(windDir >= 67 && windDir < 112){
+return "Fish likely entering swim from WEST bank."
+}
+
+if(windDir >= 112 && windDir < 157){
+return "Fish likely entering from NORTH-WEST slope."
+}
+
+if(windDir >= 157 && windDir < 202){
+return "Fish likely entering swim from NORTH bank."
+}
+
+if(windDir >= 202 && windDir < 247){
+return "Fish likely entering from NORTH-EAST slope."
+}
+
+if(windDir >= 247 && windDir < 292){
+return "Fish likely entering swim from EAST bank."
+}
+
+return "Fish likely entering from SOUTH-EAST slope."
+
+}
+  
 function predictDriftCorridor(w, windDir){
 
 if(w < 5){
@@ -932,8 +970,10 @@ aiText += "<br><b>Tactical Recommendation</b><br>";
 let bank = windBankPrediction(windDir)
 let drift = windDriftStrength(w)
 let zone = predictFeedingZone(spi,t,w)
-let patrol = predictPatrolRoute(spi,w,windDir)
-let driftLane = predictDriftCorridor(w, windDir)
+let patrol = predictPatrolRoute(spi,w,windDir) 
+let driftLane = predictDriftCorridor(w, windDir) 
+let entry = predictFeedingEntry(w, windDir)
+
 
 aiText += "Drift corridor: <b>" + driftLane + "</b><br>"
   
@@ -944,6 +984,7 @@ aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>";
 aiText += "Windward feeding bank: <b>" + bank + "</b><br>"; 
 aiText += "Feeding drift strength: <b>" + drift + "</b><br>"; 
 aiText += "Drift corridor: <b>" + driftLane + "</b><br>"; 
+aiText += "Feeding entry direction: <b>" + entry + "</b><br>"; 
 aiText += "Recommended feeding zone: <b>" + zone + "</b><br>"; 
 aiText += "Likely patrol route: <b>" + patrol + "</b><br>";
 
@@ -1027,6 +1068,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
