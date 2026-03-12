@@ -835,8 +835,12 @@ function predictFeedingZone(spi,t,w){
 let surfaceTemp = t - 0.5
 let bottomTemp = t - 1.5
 
+if(spi >= 80 && w >= 8){
+return "Windward shallow patrol (2–4m)"
+}
+
 if(spi >= 80){
-return "Shallow feeding patrol (2–4m)"
+return "Slope feeding edges (3–6m)"
 }
 
 if(spi >= 65 && w >= 6){
@@ -979,6 +983,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
