@@ -1,5 +1,5 @@
 
-<!DOCTYPE html>  
+<!DOCTYPE html> 
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -310,8 +310,9 @@ Report
 </div>
 <script>
 
-const API_KEY="63ba514dc7c2242cb10cd2632d2569ad"
+const API_KEY="63ba514dc7c2242cb10cd2632d2569ad";
 let pressureHistory=[]
+let lastWindDir
 
 function getMoonPhase(){
 let d=new Date()
@@ -387,12 +388,13 @@ if(trend === "rising") score += 10
 if(trend === "stable") score += 6
 if(trend === "falling") score -= 8
 
-if(pressureRate >= 4 && trend === "failing"){
-score += 10;
+if(pressureRate >= 4 && trend === "falling"){
+score += 10
 }
+
 /* PRESSURE VELOCITY */
 
-let pressureRate = Math.abs(
+var pressureRate = Math.abs(
 (pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0)
 )
 
@@ -507,8 +509,7 @@ if(moon === "Waxing") score += 3
 if(moon === "Waning") score += 2
 if(moon === "New") score -= 3
 
-
-return Math.max(20, Math.min(score,95))
+return Math.max(20, Math.min(score,95));
 
 }
 
@@ -552,7 +553,7 @@ if(d.main){
 render(d);
 }
 
-}catch(e){
+catch(e){
 
 document.getElementById("tactical").innerText="Weather connection failed";
 
@@ -905,6 +906,3 @@ lucide.createIcons()
 
 </body>
 </html>
-
-
-
