@@ -392,16 +392,24 @@ score += 10;
 }
 /* PRESSURE VELOCITY */
 
-let pressureRate = Math.abs((pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0))
+let pressureRate = Math.abs(
+(pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0)
+)
 
-if(pressureRate >= 3) score -= 6
-if(pressureRate <= 1) score += 3 
+if(pressureRate >= 3){
+score -= 6
+}
+
+if(pressureRate <= 1){
+score += 3
+}
 
 /* PRESSURE MOMENTUM */
+
 if(pressureRate >= 5){
 score -= 8
 }
-  
+
 /* PRESSURE STABILIZATION WINDOW */
 if(trend === "stable" && p >= 1018 && p <= 1026){
 score += 8
@@ -897,6 +905,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
