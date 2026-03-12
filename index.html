@@ -1,7 +1,7 @@
 
 <!DOCTYPE html> 
-<html> 
-<head>
+<html>
+<head> 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AIF Dashboard v5</title>
 
@@ -605,6 +605,18 @@ feedIcon.style.stroke="#ff3b3b"
 
 }
 
+let tiles = document.querySelectorAll(".tile")
+
+tiles.forEach(tile=>{
+if(spi >= 80){
+tile.style.boxShadow =
+"0 0 12px rgba(0,255,156,0.25), inset 0 0 10px rgba(255,255,255,0.05)"
+}else{
+tile.style.boxShadow =
+"0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05)"
+}
+})
+
 let trend=getPressureTrend(p)
 document.getElementById("trend").innerText=trend
 
@@ -789,6 +801,7 @@ alert("Drops logged: "+history.length)
 
 </body>
 </html>
+
 
 
 
