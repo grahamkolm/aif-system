@@ -140,12 +140,13 @@ cursor:pointer;
 }
 
 .ai-content{
-max-height:none;
-overflow:visible;
+max-height:110px;
+overflow:hidden;
+transition:max-height 0.4s ease;
 }
 
 .ai-content.expanded{
-max-height:500px;
+max-height:600px;
 }
 
 .dock{
@@ -270,6 +271,9 @@ Waiting for environmental data...
 
 <div class="ai-box" onclick="toggleAI()">
 <b>AI Tactical Analysis</b>
+<div style="font-size:12px;color:#7fffb2;margin-bottom:6px">
+Tap to expand
+</div>
 <div id="aiContent" class="ai-content"></div>
 </div>
 
@@ -997,18 +1001,18 @@ document.getElementById("aiContent").classList.toggle("expanded")
 
 function refreshDashboard(){
 
-let icon = document.getElementById("refreshIcon")
+let icon = document.querySelector('[data-lucide="refresh-cw"]')
 
 if(icon){
-btn.style.transform = "rotate(360deg)"
-btn.style.transition = "transform 0.6s"
+icon.style.transition = "transform 0.6s linear"
+icon.style.transform = "rotate(360deg)"
 }
 
 fetchWeather()
 
 setTimeout(()=>{
-if(btn){
-btn.style.transform = "rotate(0deg)"
+if(icon){
+icon.style.transform = "rotate(0deg)"
 }
 },600)
 
@@ -1065,6 +1069,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
