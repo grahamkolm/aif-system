@@ -1,7 +1,7 @@
 
 <!DOCTYPE html> 
 <html>
-<head> 
+<head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AIF Dashboard v5</title>
 
@@ -310,8 +310,9 @@ Report
 </div>
 <script>
 
-const API_KEY="63ba514dc7c2242cb10cd2632d2569ad"
+const API_KEY="63ba514dc7c2242cb10cd2632d2569ad";
 let pressureHistory=[]
+let lastWindDir
 
 function getMoonPhase(){
 let d=new Date()
@@ -387,13 +388,29 @@ if(trend === "rising") score += 10
 if(trend === "stable") score += 6
 if(trend === "falling") score -= 8
 
+if(pressureRate >= 4 && trend === "falling"){
+score += 10
+}
 
 /* PRESSURE VELOCITY */
 
-let pressureRate = Math.abs((pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0))
+var pressureRate = Math.abs(
+(pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0)
+)
 
-if(pressureRate >= 3) score -= 6
-if(pressureRate <= 1) score += 3 
+if(pressureRate >= 3){
+score -= 6
+}
+
+if(pressureRate <= 1){
+score += 3
+}
+
+/* PRESSURE MOMENTUM */
+
+if(pressureRate >= 5){
+score -= 8
+}
 
 /* PRESSURE STABILIZATION WINDOW */
 if(trend === "stable" && p >= 1018 && p <= 1026){
@@ -423,6 +440,21 @@ score += 5
 
 }
 
+/* WIND DIRECTION STABILITY */
+
+if(typeof lastWindDir !== "undefined"){
+
+let diff = Math.abs(windDir - lastWindDir)
+
+if(diff > 45){
+score -= 4
+}
+
+}
+
+lastWindDir = windDir
+
+  
 /* CLOUD COVER */
 
 if(c >= 20 && c <= 70) score += 10
@@ -477,8 +509,7 @@ if(moon === "Waxing") score += 3
 if(moon === "Waning") score += 2
 if(moon === "New") score -= 3
 
-
-return Math.max(20, Math.min(score,95))
+return Math.max(20, Math.min(score,95));
 
 }
 
@@ -522,13 +553,15 @@ if(d.main){
 render(d);
 }
 
-} catch(e){
+catch(e){
 
 document.getElementById("tactical").innerText="Weather connection failed";
 
 }
 
 }
+
+
 
 function render(d){
 
@@ -873,65 +906,4 @@ lucide.createIcons()
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
