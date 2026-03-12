@@ -498,6 +498,13 @@ if(moon === "Waxing") score += 3
 if(moon === "Waning") score += 2
 if(moon === "New") score -= 3
 
+/* WEATHER PHASE IMPACT */
+
+let phase = detectWeatherPhase(p,trend,c,w)
+
+if(phase === "Pre-frontal feeding window"){ score += 12 }
+
+if(phase === "Post-frontal stabilization"){ score += 6 }
 
 return Math.max(20, Math.min(score,95))
 
@@ -894,5 +901,6 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
