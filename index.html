@@ -982,10 +982,6 @@ aiText += "<br><b>Activity Assessment</b><br>";
 aiText += "Strike Probability Index: <b>" + spi + "%</b><br>";
 let strikeDuration = predictStrikeDuration(spi,trend,w,c)
 aiText += "Estimated strike window: <b>" + strikeDuration + " minutes</b><br>";
-
-let strikeDuration = predictStrikeDuration(spi,trend,w,c)
-
-aiText += "Estimated strike window: <b>" + strikeDuration + " minutes</b><br>" 
   
 if(spi >= 70){
 aiText += "High feeding probability.<br>"; } else if(spi >= 55){ aiText += "Moderate feeding activity expected.<br>"; } else{ aiText += "Reduced feeding activity.<br>"; }
@@ -1126,6 +1122,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
