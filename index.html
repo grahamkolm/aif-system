@@ -469,6 +469,22 @@ return Math.max(20, Math.min(score,95))
 
 }
 
+function detectWeatherPhase(p,trend,c,w){
+
+if(trend === "falling" && w >= 10 && c > 50){ return "Pre-frontal feeding window"
+}
+
+if(trend === "rising" && p >= 1015){
+return "Post-frontal stabilization"
+}
+
+if(trend === "stable" && p >= 1018 && p <= 1025){ return "Stable high pressure phase"
+}
+
+return "Unstable weather phase"
+
+}
+  
 function getPressureTrend(p){
 
 pressureHistory.push(p)
@@ -721,6 +737,11 @@ aiText += "<b>Environmental Scan</b><br>";
 if(p >= 1015 && p <= 1022){
 aiText += "Stable pressure detected.<br>"; } else if(p > 1022){ aiText += "High pressure system present.<br>"; } else{ aiText += "Falling pressure detected.<br>"; }
 
+let phase = detectWeatherPhase(p,trend,c,w)
+
+aiText += "<br><b>Weather Phase</b><br>"
+aiText += phase + "<br>"
+ 
 /* ACTIVITY ASSESSMENT */
 
 aiText += "<br><b>Activity Assessment</b><br>";
@@ -830,6 +851,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
