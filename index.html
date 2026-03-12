@@ -740,7 +740,7 @@ if(p >= 1015 && p <= 1022){
     aiText += "High pressure system present.<br>"; } else{
     aiText += "Falling pressure system detected.<br>"; }
 
-let phase = detectWeatherPhase(p,trend,c,w)
+let phase = detectWeatherPhase(p,trend,c,w);
 
 aiText += "<br><b>Weather Phase</b><br>"; aiText += phase + "<br>";
  
@@ -853,6 +853,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
