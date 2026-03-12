@@ -277,7 +277,7 @@ Waiting for environmental data...
 
 <div class="dock">
 <div class="dock-btn" id="refreshBtn" onclick="refreshDashboard()">
-<i data-lucide="refresh-cw"></i>
+<i id="refreshIcon" data-lucide="refresh-cw"></i>
 Refresh
 </div>
 
@@ -973,9 +973,6 @@ let zone = predictFeedingZone(spi,t,w)
 let patrol = predictPatrolRoute(spi,w,windDir) 
 let driftLane = predictDriftCorridor(w, windDir) 
 let entry = predictFeedingEntry(w, windDir)
-
-
-aiText += "Drift corridor: <b>" + driftLane + "</b><br>"
   
 if(w >= 5){
 aiText += "Focus on windward banks and slope edges.<br>"; }else{ aiText += "Target deeper structure and basin patrol routes.<br>"; }
@@ -1000,9 +997,9 @@ document.getElementById("aiContent").classList.toggle("expanded")
 
 function refreshDashboard(){
 
-let btn = document.getElementById("refreshBtn")
+let btn = document.getElementById("refreshIcon")
 
-if(btn){
+if(icon){
 btn.style.transform = "rotate(360deg)"
 btn.style.transition = "transform 0.6s"
 }
@@ -1068,6 +1065,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
