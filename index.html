@@ -311,6 +311,7 @@ Report
 
 const API_KEY="63ba514dc7c2242cb10cd2632d2569ad"
 let pressureHistory=[]
+let lastSPI = null
 
 function getMoonPhase(){
 let d=new Date()
@@ -789,12 +790,18 @@ return false
     
 function updateSPI(v){
 
-let c=document.getElementById("spiArc")
-let r=110
-let C=2*Math.PI*r
+if(lastSPI !== null){
+v = Math.round((v + lastSPI) /2)
+}
 
-c.style.strokeDasharray=C
-c.style.strokeDashoffset=C-(v/100)*C
+lastSPI = v
+
+let arc=document.getElementById("spiArc")
+let r = 110
+let C = 2*Math.PI*r
+
+arc.style.strokeDasharray = C
+arc.style.strokeDashoffset = C-(v/100) * C
 
 document.getElementById("spiValue").textContent=v+"%"
 
@@ -1003,6 +1010,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
