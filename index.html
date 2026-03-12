@@ -1075,21 +1075,23 @@ alert(
 }
 
 function saveDrop(){
+
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
+let history = JSON.parse(localStorage.getItem("aif_drops") || "[]")
 
 history.push({
-lat:pos.coords.latitude,
-lon:pos.coords.longitude,
-time:new Date().toISOString()
+lat: pos.coords.latitude,
+lon: pos.coords.longitude,
+time: new Date().toISOString()
 })
 
-localStorage.setItem("aif_drops",JSON.stringify(history))
+localStorage.setItem("aif_drops", JSON.stringify(history))
 
 alert("Drop saved")
 
 })
+
 }
 
 function openMap(){
@@ -1145,6 +1147,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
