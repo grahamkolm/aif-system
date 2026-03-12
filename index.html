@@ -1,13 +1,12 @@
-
 <!DOCTYPE html> 
-<html> 
+<html>
 <head> 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AIF Dashboard v5</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script> 
+<link rel="stylesheet" href=https://unpkg.com/leaflet@1.9.4/dist/leaflet.css/> 
+<script src=https://unpkg.com/leaflet@1.9.4/dist/leaflet.js></script>
+<script src=https://unpkg.com/lucide@latest></script> 
 
 <style> 
 body{
@@ -514,7 +513,7 @@ async function fetchWeather(){
 
 try{
 
-let r = await fetch("https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY}");
+let r = await fetch(https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY});
 
 let d = await r.json();
 
@@ -619,7 +618,7 @@ pressureIcon.style.stroke="#00ffa6"
 }
 
 }
- 
+
 document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
 let windIcon=document.querySelector('[data-lucide="wind"]')
 
@@ -636,7 +635,7 @@ windIcon.style.stroke="#00ffa6"
 }
 
 }
- 
+
 document.getElementById("cloud").innerText=c+"%"
 let cloudIcon=document.querySelector('[data-lucide="cloud"]')
 
@@ -734,7 +733,7 @@ c.style.filter="drop-shadow(0 0 5px rgba(255,59,59,0.30))"
 }
 
 }
- 
+
 function feeding(spi){
 if(spi>=70)return"Heavy"
 if(spi>=55)return"Moderate"
@@ -764,7 +763,7 @@ if(p >= 1015 && p <= 1022){
 let phase = detectWeatherPhase(p,trend,c,w);
 
 aiText += "<br><b>Weather Phase</b><br>"; aiText += phase + "<br>";
- 
+
 /* ACTIVITY ASSESSMENT */
 
 aiText += "<br><b>Activity Assessment</b><br>";
@@ -822,7 +821,7 @@ btn.style.transform = "rotate(0deg)"
 },600)
 
 }
- 
+
 function scoutSpot(){
 navigator.geolocation.getCurrentPosition(function(pos){
 alert("Scout location saved")
@@ -874,64 +873,3 @@ lucide.createIcons()
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
