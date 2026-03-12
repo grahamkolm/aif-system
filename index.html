@@ -1094,7 +1094,12 @@ alert("Drop saved")
 
 function openMap(){
 
-navigator.geolocation.getCurrentPosition(function(pos){
+if(!navigator.geolocation){
+alert("Geolocation not supported on this device.") return }
+
+navigator.geolocation.getCurrentPosition(
+
+function(pos){
 
 let lat = pos.coords.latitude
 let lon = pos.coords.longitude
@@ -1105,9 +1110,15 @@ alert(
 lat + ", " + lon
 )
 
-})
+},
+
+function(error){
+alert("Location permission required to open map.") }
+
+)
 
 }
+
 
 function openSetup(){
 alert("Setup screen")
@@ -1132,6 +1143,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
