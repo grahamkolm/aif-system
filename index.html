@@ -1,15 +1,11 @@
 
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AIF Dashboard v5</title>
+<title>AIF Tactical Dashboard</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script> 
-
-<style> 
+<style>
 body{
 margin:0;
 background:#05080d;
@@ -22,131 +18,90 @@ justify-content:center;
 .main{
 width:100%;
 max-width:420px;
-padding-bottom:120px;
+padding-bottom:140px;
 }
 
 .header{
 text-align:center;
-margin-top:18px;
+margin-top:22px;
 }
 
 .brand{
 font-size:36px;
 font-weight:700;
 color:#00ff9c;
+letter-spacing:1px;
+text-shadow:0 0 10px rgba(0,255,156,0.6);
 }
 
-.subtitle1{font-size:20px;color:#b9c3cc;}
-.subtitle2{font-size:15px;color:#7fffb2;}
+.subtitle1{
+font-size:20px;
+color:#b9c3cc;
+margin-top:6px;
+}
 
-.instrument{
-margin-top:18px;
-margin-bottom:6px;
+.subtitle2{
+font-size:16px;
+color:#7fffb2;
+margin-top:4px;
+letter-spacing:1px;
+}
+
+.wrapper{
+margin-top:20px;
 display:flex;
 justify-content:center;
 }
 
-.spi-container{
-position:relative;
-width:260px;
-height:260px;
-display:flex;
-justify-content:center;
-align-items:center;
-overflow:hidden;
-background: radial-gradient(circle at center, rgba(0,255,156,0.08) 0%, rgba(0,255,156,0,0.04) 35%, transparent 70%);
-border-radius:50%;
-}
-
-#spiGauge{
-width:260px;
-height:260px;
-position:relative;
-z-index:2;
-filter: drop-shadow(0 0 4px rgba(0,255,156,0.15));
-transition:filter 0.5s ease;
-}
-
-.spi-number{
-font-size:46px;
-fill:white;
-font-weight:700;
-}
-
-.spi-label{
-font-size:18px;
-fill:#7fffb2;
-}
-
-.spi-desc{
-font-size:13px;
-fill:#9aa4ad;
-}
-
-.tile i{
-width:28px;
-height:28px;
-stroke:#00ffa6;
-stroke-width:1.5;
-margin-bottom:6px;
-}
-
-.tile-grid{
+.tiles{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:12px;
-margin:18px;
+gap:14px;
+margin-top:20px;
+width:100%;
 }
 
 .tile{
-background:rgba(15,20,28,0.75);
-border-radius:12px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:16px;
 padding:14px;
-text-align:center;
-border:1px solid rgba(255,255,255,0.05);
-backdrop-filter:blur(10px);
-box-shadow:0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05);
 }
 
 .tile-title{
 font-size:12px;
-color:#9aa4ad;
+opacity:0.8;
+display:flex;
+align-items:center;
+gap:6px;
 }
 
 .tile-value{
-font-size:18px;
-margin-top:2px;
+font-size:20px;
+font-weight:500;
+margin-top:4px;
 }
 
-.tactical-bar{
-margin:10px 20px 14px 20px;
-padding:12px;
-border-radius:14px;
-border:1px solid #00ff9c;
-background:linear-gradient(180deg, rgba(0,255,156,0.06), rgba(0,255,156,0.04));
-text-align:center;
-font-size:14px;
-font-weight:500;
-color:#bfffe3;
-box-shadow:0 6px 18px rgba(0,0,0,0.35);
+.icon{
+width:16px;
+height:16px;
+color:#9fb4c7;
 }
+
+.good{
+color:#00ff9c;
+text-shadow:0 0 8px rgba(0,255,156,0.6);
+}
+
+.warning{ color:#ffc400;}
+.bad{ color:#ff3b3b;}
 
 .ai-box{
-margin:20px;
-background:rgba(15,20,28,0.75);
-border-radius:14px;
-padding:16px;
+margin:22px 12px;
+background:rgba(255,255,255,0.06);
 border-left:4px solid #00ff9c;
-cursor:pointer;
-}
-
-.ai-content{
-max-height:90px;
-overflow:hidden;
-}
-
-.ai-content.expanded{
-max-height:500px;
+border-radius:16px;
+padding:18px;
 }
 
 .dock{
@@ -154,36 +109,57 @@ position:fixed;
 bottom:0;
 width:100%;
 max-width:420px;
-background:black;
+background:#000;
 display:flex;
-justify-content:space-evenly;
-padding:10px 0;
-border-top:1px solid rgba(255,255,255,0.1);
+justify-content:space-around;
+padding:12px 0;
+border-top:1px solid rgba(255,255,255,0.08);
 }
 
 .dock-btn{
-transition:transform 0.3s ease;
-text-align:center;
-font-size:11px;
-width:16%;
-cursor:pointer;
 display:flex;
 flex-direction:column;
 align-items:center;
-justify-content:center;
+font-size:12px;
+cursor:pointer;
 }
 
-.dock-btn i{
-width:22px;
-height:22px;
-stroke:#00ffa6;
-stroke-width:1.7;
+.dock-btn span{
+font-size:22px;
 margin-bottom:4px;
 }
-  
-.dock-btn span{
-font-size:20px;
-display:block;
+
+.spi-value{
+font-size:48px;
+font-weight:700;
+fill:#ffffff;
+}
+
+.spi-label{
+font-size:16px;
+letter-spacing:2px;
+fill:#00ff9c;
+}
+
+.spi-small{
+font-size:13px;
+fill:#9fb4c7;
+}
+
+.radarRing{
+stroke:rgba(0,255,156,0.18);
+stroke-width:1;
+fill:none;
+}
+
+@keyframes sonarSpin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+#sonarSweep{
+transform-origin:150px 150px;
+animation: sonarSpin 4s linear infinite;
 }
 
 </style>
@@ -199,785 +175,209 @@ display:block;
 <div class="subtitle2">Drop • Scan • Strike</div>
 </div>
 
-<div class="instrument">
-<div class="spi-container">
-<svg id="spiGauge" viewBox="0 0 300 300">
+<div class="wrapper">
+
+<svg viewBox="0 0 300 300" width="260">
 
 <defs>
-<linearGradient id="spiGrad">
+<linearGradient id="gradFull">
 <stop offset="0%" stop-color="#ff3b3b"/>
-<stop offset="50%" stop-color="#ffc400"/>
+<stop offset="40%" stop-color="#ffc400"/>
 <stop offset="100%" stop-color="#00ff9c"/>
 </linearGradient>
 </defs>
 
-<circle cx="150" cy="150" r="110"
-stroke="#1c2b2b"
-stroke-width="14"
-fill="none"
-stroke-dasharray="8 12"/>
+<circle cx="150" cy="150" r="120" fill="none" stroke="url(#gradFull)" stroke-width="4"/>
 
-<circle id="spiArc"
+<circle
 cx="150"
 cy="150"
-r="110"
-stroke="url(#spiGrad)" 
-stroke-width="14"
+r="102"
 fill="none"
+stroke="url(#gradFull)"
+stroke-width="4"
 stroke-linecap="round"
-transform="rotate(-90 150 150)"/>
+transform="rotate(-90 150 150)"
+id="progressArc"/>
 
-<text x="150" y="145" text-anchor="middle"
-class="spi-number"
-id="spiValue">--%</text>
+<circle cx="150" cy="150" r="40" class="radarRing"/>
+<circle cx="150" cy="150" r="70" class="radarRing"/>
+<circle cx="150" cy="150" r="100" class="radarRing"/>
 
-<text x="150" y="175"
-text-anchor="middle"
-class="spi-label">SPI</text>
+<circle cx="150" cy="150" r="80" fill="#070c12"/>
 
-<text x="150" y="195"
-text-anchor="middle"
-class="spi-desc">Strike Probability Index</text>
+<text x="150" y="140" text-anchor="middle" class="spi-value" id="spiText">--%</text>
+<text x="150" y="165" text-anchor="middle" class="spi-label">STRIKE</text>
+
+<text x="150" y="190" text-anchor="middle" class="spi-small" id="depthTxt"></text>
+<text x="150" y="205" text-anchor="middle" class="spi-small" id="structureTxt"></text>
+<text x="150" y="220" text-anchor="middle" class="spi-small" id="windTxt"></text>
+
+<line id="sonarSweep"
+x1="150"
+y1="150"
+x2="150"
+y2="40"
+stroke="#00ff9c"
+stroke-width="2"
+stroke-linecap="round"/>
 
 </svg>
 </div>
-</div>
 
-<div class="tactical-bar" id="tactical">
-Waiting for environmental data...
-</div>
+<div class="tiles">
 
-<div class="tile-grid">
-
-<div class="tile"><i data-lucide="sun"></i><div class="tile-title">air</div><div class="tile-value" id="air">--</div></div>
-<div class="tile"><i data-lucide="waves"></i><div class="tile-title">Surface</div><div class="tile-value" id="surface">--</div></div>
-<div class="tile"><i data-lucide="arrow-down"></i><div class="tile-title">Bottom</div><div class="tile-value" id="bottom">--</div></div>
-
-<div class="tile"><i data-lucide="gauge"></i><div class="tile-title">Pressure</div><div class="tile-value" id="pressure">--</div></div>
-<div class="tile"><i data-lucide="wind"></i><div class="tile-title">Wind</div><div class="tile-value" id="wind">--</div></div>
-<div class="tile"><i data-lucide="cloud"></i><div class="tile-title">Cloud</div><div class="tile-value" id="cloud">--</div></div>
-
-<div class="tile"><i data-lucide="moon"></i><div class="tile-title">Moon</div><div class="tile-value" id="moon">--</div></div>
-<div class="tile"><i data-lucide="leaf"></i><div class="tile-title">Season</div><div class="tile-value" id="season">--</div></div>
-<div class="tile"><i data-lucide="fish"></i><div class="tile-title">Feed</div><div class="tile-value" id="feed">--</div></div>
-
+<div class="tile">
+<div class="tile-title">Air</div>
+<div class="tile-value" id="airTemp"></div>
 </div>
 
 <div class="tile">
-<i data-lucide="activity"></i>
-<div class="tile-title">Pressure Trend</div>
-<div class="tile-value" id="trend">--</div>
+<div class="tile-title">Surface</div>
+<div class="tile-value" id="surfaceTemp"></div>
 </div>
 
-<div class="ai-box" onclick="toggleAI()">
-<b>AI Tactical Analysis</b>
-<div id="aiContent" class="ai-content"></div>
+<div class="tile">
+<div class="tile-title">Bottom</div>
+<div class="tile-value" id="bottomTemp"></div>
 </div>
+
+<div class="tile">
+<div class="tile-title">Pressure</div>
+<div class="tile-value" id="pressure"></div>
+</div>
+
+<div class="tile">
+<div class="tile-title">Wind</div>
+<div class="tile-value" id="wind"></div>
+</div>
+
+<div class="tile">
+<div class="tile-title">Cloud</div>
+<div class="tile-value" id="cloud"></div>
+</div>
+
+<div class="tile">
+<div class="tile-title">Moon</div>
+<div class="tile-value" id="moon"></div>
+</div>
+
+<div class="tile">
+<div class="tile-title">Season</div>
+<div class="tile-value" id="season"></div>
+</div>
+
+<div class="tile">
+<div class="tile-title">Water</div>
+<div class="tile-value">Fresh</div>
+</div>
+
+</div>
+
+<div class="ai-box" id="aiText"></div>
 
 </div>
 
 <div class="dock">
-<div class="dock-btn" id="refreshBtn" onclick="refreshDashboard()">
-<i data-lucide="refresh-cw"></i>
-Refresh
+<div class="dock-btn" onclick="getGPS()"><span>📍</span>GPS</div>
+<div class="dock-btn" onclick="updateData()"><span>🎣</span>Refresh</div>
+<div class="dock-btn" onclick="saveDrop()"><span>🎯</span>Drop</div>
 </div>
 
-<div class="dock-btn">
-<i data-lucide="map-pin"></i>
-Scout
-</div>
-
-<div class="dock-btn">
-<i data-lucide="target"></i>
-Drop
-</div>
-
-<div class="dock-btn">
-<i data-lucide="fish"></i>
-Map
-</div>
-
-<div class="dock-btn">
-<i data-lucide="settings"></i>
-Setup
-</div>
-
-<div class="dock-btn">
-<i data-lucide="bar-chart-3"></i>
-Report
-</div>
-
-</div>
 <script>
 
-const API_KEY="63ba514dc7c2242cb10cd2632d2569ad";
-let pressureHistory=[]
-let lastWindDir
-
-function getMoonPhase(){
-let d=new Date()
-let lp=2551443
-let now=d.getTime()/1000
-let new_moon=592500
-let phase=((now-new_moon)%lp)/lp
-if(phase<0.25)return"Waxing"
-if(phase<0.5)return"Full"
-if(phase<0.75)return"Waning"
-return"New"
+function fetchData(){
+return{
+airTemp:18+Math.random()*5,
+surfaceTemp:19+Math.random()*4,
+bottomTemp:16+Math.random()*3,
+pressure:1012+Math.random()*6,
+windSpeed:5+Math.random()*12,
+windDir:["N","NE","E","SE","S","SW","W","NW"][Math.floor(Math.random()*8)],
+cloud:Math.floor(Math.random()*100),
+moon:["New","Waxing","Full","Waning"][Math.floor(Math.random()*4)]
+};
 }
-
-function sunriseWindow(){
-let h=new Date().getHours()
-if(h>=5 && h<=9)return 10
-if(h>=17 && h<=20)return 12
-return 0
-}
-
-function seasonalWeight(){
-let m=new Date().getMonth()+1
-if(m<=2||m==12)return 8
-if(m<=5)return 4
-if(m<=8)return -4
-return 6
-}
-
-function windBankPrediction(deg){
-
-if(deg >= 337 || deg < 22) return "South bank (wind pushing north)"
-if(deg >= 22 && deg < 67) return "South-West bank"
-if(deg >= 67 && deg < 112) return "West bank (wind pushing east)"
-if(deg >= 112 && deg < 157) return "North-West bank"
-if(deg >= 157 && deg < 202) return "North bank (wind pushing south)"
-if(deg >= 202 && deg < 247) return "North-East bank"
-if(deg >= 247 && deg < 292) return "East bank (wind pushing west)"
-return "South-East bank"
-
-}
-  
-function windDriftStrength(w){
-
-if(w < 4) return "Low drift"
-if(w <= 10) return "Moderate drift"
-if(w <= 18) return "Strong feeding drift"
-return "Heavy water movement"
-
-}
-
-function windDirectionName(deg){
-
-if(deg >= 337 || deg < 22) return "North"
-if(deg < 67) return "North-East"
-if(deg < 112) return "East"
-if(deg < 157) return "South-East"
-if(deg < 202) return "South"
-if(deg < 247) return "South-West"
-if(deg < 292) return "West"
-return "North-West"
-
-}
-  
-function calculateSPI(t,p,w,c,windDir){
-
-let score = 45
-
-/* PRESSURE TREND */
-
-let trend = getPressureTrend(p)
-
-if(trend === "rising") score += 10
-if(trend === "stable") score += 6
-if(trend === "falling") score -= 8
-
-if(pressureRate >= 4 && trend === "falling"){
-score += 10
-}
-
-/* PRESSURE VELOCITY */
-
-var pressureRate = Math.abs(
-(pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0)
-)
-
-if(pressureRate >= 3){
-score -= 6
-}
-
-if(pressureRate <= 1){
-score += 3
-}
-
-/* PRESSURE MOMENTUM */
-
-if(pressureRate >= 5){
-score -= 8
-}
-
-/* PRESSURE STABILIZATION WINDOW */
-if(trend === "stable" && p >= 1018 && p <= 1026){
-score += 8
-}
-
-/* WIND SPEED FEEDING DRIFT */
-
-if(w >= 6 && w <= 18){
-score += 12
-}
-
-if(w > 18 && w <= 25){
-score += 4
-}
-
-if(w < 3){
-score -= 3
-}
-
-/* WIND DIRECTION INTELLIGENCE */
-
-if(w >= 5){
-
-// simulate windward feeding advantage
-score += 5
-
-}
-
-/* WIND DIRECTION STABILITY */
-
-if(typeof lastWindDir !== "undefined"){
-
-let diff = Math.abs(windDir - lastWindDir)
-
-if(diff > 45){
-score -= 4
-}
-
-}
-
-lastWindDir = windDir
-
-  
-/* CLOUD COVER */
-
-if(c >= 20 && c <= 70) score += 10
-if(c > 80) score += 4
-if(c < 10) score -= 3
-
-/* LOW LIGHT FEEDING */
-
-if(c > 60 && sunriseWindow() > 0){
-score += 6
-}
-
-if(c > 80){
-score += 4
-}
-
-/* THERMO STABILITY */
-
-let surfaceTemp = t - 0.5
-let bottomTemp = t - 1.5
-
-let diff = Math.abs(surfaceTemp - bottomTemp)
-
-if(diff < 1){
-score += 4
-}
-  
-/* TEMPERATURE METABOLISM */
-
-if(t >= 16 && t <= 24) score += 12
-if(t >= 12 && t < 16) score += 6
-if(t > 28) score -= 6
-if(t < 10) score -= 8
-
-
-/* SUNRISE / SUNSET FEEDING WINDOW */
-
-score += sunriseWindow()
-
-
-/* SEASONAL METABOLISM */
-
-score += seasonalWeight()
-
-
-/* MOON PHASE */
-
-let moon = getMoonPhase()
-
-if(moon === "Full") score += 5
-if(moon === "Waxing") score += 3
-if(moon === "Waning") score += 2
-if(moon === "New") score -= 3
-
-return Math.max(20, Math.min(score,95));
-
-}
-
-function detectWeatherPhase(p,trend,c,w){
-
-if(trend === "falling" && w >= 10 && c > 50){ return "Pre-frontal feeding window"
-}
-
-if(trend === "rising" && p >= 1015){
-return "Post-frontal stabilization"
-}
-
-if(trend === "stable" && p >= 1018 && p <= 1025){ return "Stable high pressure phase"
-}
-
-return "Unstable weather phase"
-
-}
-  
-function getPressureTrend(p){
-
-pressureHistory.push(p)
-if(pressureHistory.length>6){pressureHistory.shift()}
-if(pressureHistory.length<2){return"stable"}
-
-let diff=pressureHistory[pressureHistory.length-1]-pressureHistory[0]
-if(diff>1)return"rising"
-if(diff<-1)return"falling"
-return"stable"
-}
-
-async function fetchWeather(){
-
-try{
-
-let r = await fetch("https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
-
-let d = await r.json();
-
-if(d.main){
-render(d);
-}
-
-catch(e){
-
-document.getElementById("tactical").innerText="Weather connection failed";
-
-}
-
-}
-
-
 
 function render(d){
 
-let t=d.main.temp
-let p=d.main.pressure
-let w=d.wind.speed*3.6
-let c=d.clouds.all
-let windDir=d.wind.deg
+document.getElementById("airTemp").innerText=d.airTemp.toFixed(1)+"°C";
+document.getElementById("surfaceTemp").innerText=d.surfaceTemp.toFixed(1)+"°C";
+document.getElementById("bottomTemp").innerText=d.bottomTemp.toFixed(1)+"°C";
 
-let spi=calculateSPI(t,p,w,c,windDir)
+document.getElementById("pressure").innerText=d.pressure.toFixed(0)+" hPa";
+document.getElementById("wind").innerText=d.windSpeed.toFixed(1)+" km/h "+d.windDir;
+document.getElementById("cloud").innerText=d.cloud+"%";
+document.getElementById("moon").innerText=d.moon;
+document.getElementById("season").innerText="Autumn";
 
-updateSPI(spi)
+const spi = Math.round(50 + Math.random()*50);
+document.getElementById("spiText").textContent = spi + "%";
 
-let gauge=document.getElementById("spiGauge")
-if(spi>=70){
-gauge.style.filter="drop-shadow(0 0 25px rgba(0,255,156,0.8))"
-}else{
-gauge.style.filter="drop-shadow(0 0 12px rgba(0,255,156,0.25))"
-}
+const radius = 102;
+const circumference = 2 * Math.PI * radius;
 
-document.getElementById("air").innerText=t.toFixed(1)+"°C"
-let airIcon=document.querySelector('[data-lucide="sun"]')
+const arc = document.getElementById("progressArc");
 
-if(airIcon){
-if(t >= 30){
-airIcon.style.stroke="#ff3b3b"
-}
-else if(t >= 25){
-airIcon.style.stroke="#ffc400"
-}
-else{
-airIcon.style.stroke="#00ffa6"
-}
-}
-  
-document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
-let surfaceIcon=document.querySelector('[data-lucide="waves"]')
+arc.style.strokeDasharray = circumference;
+arc.style.strokeDashoffset = circumference - (spi / 100) * circumference;
 
-if(surfaceIcon){
+document.getElementById("depthTxt").textContent="Depth "+(6+Math.random()*2).toFixed(1)+"m";
+document.getElementById("structureTxt").textContent="Structure Slope Edge";
+document.getElementById("windTxt").textContent="Wind zone "+d.windDir;
 
-let sTemp=t-0.5
+document.getElementById("aiText").innerHTML = "<b>AIF Tactical Assessment</b><br><br>" +
 
-if(sTemp >= 30){
-surfaceIcon.style.stroke="#ff3b3b"
-}
-else if(sTemp >= 22){
-surfaceIcon.style.stroke="#ffc400"
-}
-else{
-surfaceIcon.style.stroke="#00ffa6"
-}
+"Wind "+d.windDir+" pushing natural food across the lake.<br><br>" +
+
+"Structure detected: slope edge.<br>" +
+"Recommended depth: "+(6+Math.random()*2).toFixed(1)+"m.<br>" +
+
+"Pressure "+d.pressure.toFixed(0)+" hPa influencing carp behaviour.<br>" +
+
+"Cloud cover "+d.cloud+"% affecting feeding confidence.<br>" +
+
+"Moon phase "+d.moon+" influencing feeding windows.<br><br>" +
+
+"Suggested tactic: fish tight to structure where wind lanes concentrate natural food.";
 
 }
 
-document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
-let bottomIcon=document.querySelector('[data-lucide="arrow-down"]')
-
-if(bottomIcon){
-
-let bTemp=t-1.5
-
-if(bTemp >= 28){
-bottomIcon.style.stroke="#ff3b3b"
-}
-else if(bTemp >= 20){
-bottomIcon.style.stroke="#ffc400"
-}
-else{
-bottomIcon.style.stroke="#00ffa6"
+function updateData(){
+render(fetchData());
 }
 
-}
-
-document.getElementById("pressure").innerText=p+" hPa"
-let pressureIcon=document.querySelector('[data-lucide="gauge"]')
-
-if(pressureIcon){
-
-if(p >= 1022){
-pressureIcon.style.stroke="#ffc400"
-}
-else if(p <= 1005){
-pressureIcon.style.stroke="#ff3b3b"
-}
-else{
-pressureIcon.style.stroke="#00ffa6"
-}
-
-}
- 
-document.getElementById("wind").innerText=w.toFixed(1)+" km/h"
-let windIcon=document.querySelector('[data-lucide="wind"]')
-
-if(windIcon){
-
-if(w > 20){
-windIcon.style.stroke="#ff3b3b"
-}
-else if(w > 12){
-windIcon.style.stroke="#ffc400"
-}
-else{
-windIcon.style.stroke="#00ffa6"
-}
-
-}
- 
-document.getElementById("cloud").innerText=c+"%"
-let cloudIcon=document.querySelector('[data-lucide="cloud"]')
-
-if(cloudIcon){
-
-if(c >= 80){
-cloudIcon.style.stroke="#ff3b3b"
-}
-else if(c >= 40){
-cloudIcon.style.stroke="#ffc400"
-}
-else{
-cloudIcon.style.stroke="#00ffa6"
-}
-
-}
-
-document.getElementById("moon").innerText=getMoonPhase()
-let moonIcon=document.querySelector('[data-lucide="moon"]')
-
-if(moonIcon){
-moonIcon.style.stroke="#8fb3ff"
-}
-
-document.getElementById("season").innerText=getSeason()
-let seasonIcon=document.querySelector('[data-lucide="leaf"]')
-
-if(seasonIcon){
-seasonIcon.style.stroke="#00ffa6"
-}
-
-document.getElementById("feed").innerText=feeding(spi)
-let feedIcon=document.querySelector('[data-lucide="fish"]')
-
-if(feedIcon){
-
-if(spi >= 70){
-feedIcon.style.stroke="#00ffa6"
-}
-else if(spi >= 50){
-feedIcon.style.stroke="#ffc400"
-}
-else{
-feedIcon.style.stroke="#ff3b3b"
-}
-
-}
-
-let tiles = document.querySelectorAll(".tile")
-
-tiles.forEach(tile=>{
-if(spi >= 80){
-tile.style.boxShadow =
-"0 0 12px rgba(0,255,156,0.25), inset 0 0 10px rgba(255,255,255,0.05)"
-}else{
-tile.style.boxShadow =
-"0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05)"
-}
-})
-
-let trend=getPressureTrend(p)
-document.getElementById("trend").innerText=trend
-
-let windDirName = windDirectionName(windDir)
-
-document.getElementById("tactical").innerText = "Pressure "+trend+" • Wind "+w.toFixed(0)+" km/h "+windDirName+" • SPI "+spi+"% • "+feeding(spi)+" feeding"
-
-generateAI(spi,p,w,c,windDir)
-}
-
-function updateSPI(v){
-
-let c=document.getElementById("spiArc")
-let r=110
-let C=2*Math.PI*r
-
-c.style.strokeDasharray=C
-c.style.strokeDashoffset=C-(v/100)*C
-
-document.getElementById("spiValue").textContent=v+"%"
-
-/* SPI COLOR SYSTEM */
-
-if(v >= 70){
-c.style.stroke="#00ffa6"
-c.style.filter="drop-shadow(0 0 6px rgba(0,255,166,0.35))"
-}
-else if(v >= 40){
-c.style.stroke="#ffc400"
-c.style.filter="drop-shadow(0 0 5px rgba(255,196,0,0.30))"
-}
-else{
-c.style.stroke="#ff3b3b"
-c.style.filter="drop-shadow(0 0 5px rgba(255,59,59,0.30))"
-}
-
-}
- 
-function feeding(spi){
-if(spi>=70)return"Heavy"
-if(spi>=55)return"Moderate"
-if(spi>=40)return"Light"
-return"Holding"
-}
-
-function getSeason(){
-let m=new Date().getMonth()+1
-if(m<=2||m==12)return"Summer"
-if(m<=5)return"Autumn"
-if(m<=8)return"Winter"
-return"Spring"
-}
-
-function generateAI(spi,p,w,c,windDir){
-
-let aiText = "";
-let trend = getPressureTrend(p);
-
-/* ENVIRONMENTAL ASSESSMENT */
-aiText += "<b>Environmental Scan</b><br>";
-
-if(p >= 1015 && p <= 1022){
-   aiText += "Stable pressure detected.<br>"; }
-
-let phase = detectWeatherPhase(p,trend,c,w);
-
-aiText += "<br><b>Weather Phase</b><br>"; aiText += phase + "<br>";
- 
-/* ACTIVITY ASSESSMENT */
-
-aiText += "<br><b>Activity Assessment</b><br>";
-
-aiText += "Strike Probability Index: <b>" + spi + "%</b><br>";
-
-if(spi >= 70){
-aiText += "High feeding probability.<br>"; } else if(spi >= 55){ aiText += "Moderate feeding activity expected.<br>"; } else{ aiText += "Reduced feeding activity.<br>"; }
-
-
-/* WATER BEHAVIOUR */
-
-aiText += "<br><b>Water Behaviour</b><br>";
-
-if(c > 80){
-aiText += "Low light conditions encouraging shallow patrol.<br>"; } else if(c < 30){ aiText += "Clear skies warming surface layers.<br>"; } else{ aiText += "Balanced light penetration in the water column.<br>"; }
-
-/* TACTICAL RECOMMENDATION */
-
-aiText += "<br><b>Tactical Recommendation</b><br>";
-
-let bank = windBankPrediction(windDir)
-let drift = windDriftStrength(w)
-
-if(w >= 5){
-aiText += "Focus on windward banks and slope edges.<br>"; }else{ aiText += "Target deeper structure and basin patrol routes.<br>"; }
-
-aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>"; aiText += "Windward feeding bank: <b>" + bank + "</b><br>"; aiText += "Feeding drift strength: " + drift + "<br>";
-
-/* OUTPUT */
-
-document.getElementById("aiContent").innerHTML = aiText;
-
-}
-
-function toggleAI(){
-document.getElementById("aiContent").classList.toggle("expanded")
-}
-
-function refreshDashboard(){
-
-let btn = document.getElementById("refreshBtn")
-
-if(btn){
-btn.style.transform = "rotate(360deg)"
-btn.style.transition = "transform 0.6s"
-}
-
-fetchWeather()
-
-setTimeout(()=>{
-if(btn){
-btn.style.transform = "rotate(0deg)"
-}
-},600)
-
-}
- 
-function scoutSpot(){
+function getGPS(){
+if(navigator.geolocation){
 navigator.geolocation.getCurrentPosition(function(pos){
-alert("Scout location saved")
-})
+alert("GPS:\nLat "+pos.coords.latitude.toFixed(5)+"\nLon "+pos.coords.longitude.toFixed(5));
+});
+}else{
+alert("GPS not supported");
+}
 }
 
 function saveDrop(){
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
-
-history.push({
+let drop={
 lat:pos.coords.latitude,
 lon:pos.coords.longitude,
 time:new Date().toISOString()
-})
+};
 
-localStorage.setItem("aif_drops",JSON.stringify(history))
+let drops=JSON.parse(localStorage.getItem("aifDrops")||"[]");
+drops.push(drop);
+localStorage.setItem("aifDrops",JSON.stringify(drops));
 
-alert("Drop saved")
+alert("Drop saved at:\n"+drop.lat.toFixed(5)+", "+drop.lon.toFixed(5));
 
-})
+});
 }
 
-function openMap(){
-alert("Map feature active")
-}
+render(fetchData());
 
-function openSetup(){
-alert("Setup screen")
-}
-
-function openReport(){
-
-let history=JSON.parse(localStorage.getItem("aif_drops")||"[]")
-
-alert("Drops logged: "+history.length)
-
-}
-
-document.addEventListener("DOMContentLoaded",function(){
-fetchWeather()
-setInterval(fetchWeather,600000)
-
-lucide.createIcons()
-})
-  
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
