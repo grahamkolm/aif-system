@@ -373,13 +373,24 @@ let pressureRate = Math.abs((pressureHistory[pressureHistory.length-1] || 0) - (
 if(pressureRate >= 3) score -= 6
 if(pressureRate <= 1) score += 3
 
+/* PRESSURE STABILIZATION WINDOW */
+If(trend === "stable" && p >= 1018 && p <= 1026){
+score += 8
+}
 
-/* WIND SPEED */
+/* WIND SPEED FEEDING DRIFT */
 
-if(w >= 4 && w <= 15) score += 14
-if(w > 15 && w <= 22) score += 6
-if(w > 22) score -= 8
+if(w >= 6 && w <= 18){
+score += 12
+}
 
+if(w > 18 && w <= 25){
+score += 4
+}
+
+if(w < 3){
+score -= 3
+}
 
 /* WIND DIRECTION INTELLIGENCE */
 
@@ -390,14 +401,33 @@ score += 5
 
 }
 
-
 /* CLOUD COVER */
 
 if(c >= 20 && c <= 70) score += 10
 if(c > 80) score += 4
 if(c < 10) score -= 3
 
+/* LOW LIGHT FEEDING */
 
+if(c > 60 && sunriseWindow() > 0){
+score += 6
+}
+
+if(c > 80){
+score += 4
+}
+
+/* THERMO STABILITY */
+
+let surfaceTemp = t - 0.5
+let bottomTemp = t - 1.5
+
+let diff = Math.abs(surfaceTemp - bottomTemp)
+
+if(diff < 1){
+score += 4
+}
+  
 /* TEMPERATURE METABOLISM */
 
 if(t >= 16 && t <= 24) score += 12
@@ -426,7 +456,7 @@ if(moon === "Waning") score += 2
 if(moon === "New") score -= 3
 
 
-return Math.max(15, Math.min(score,95))
+return Math.max(20, Math.min(score,95))
 
 }
 
@@ -795,6 +825,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
