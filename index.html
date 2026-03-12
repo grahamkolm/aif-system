@@ -140,13 +140,13 @@ cursor:pointer;
 }
 
 .ai-content{
-max-height:110px;
+max-height:120px;
 overflow:hidden;
-transition:max-height 0.4s ease;
+transition:max-height 0.35s ease;
 }
 
 .ai-content.expanded{
-max-height:600px;
+max-height:1000px;
 }
 
 .dock{
@@ -270,12 +270,14 @@ Waiting for environmental data...
 </div>
 
 <div class="ai-box" onclick="toggleAI()">
+
 <b>AI Tactical Analysis</b>
-<div style="font-size:12px;color:#7fffb2;margin-bottom:6px">
+
+<div id="aiHint" style="font-size:12px;color:#7fffb2;margin-bottom:6px">
 Tap to expand
 </div>
+
 <div id="aiContent" class="ai-content"></div>
-</div>
 
 </div>
 
@@ -996,7 +998,18 @@ document.getElementById("aiContent").innerHTML = aiText;
 }
 
 function toggleAI(){
-document.getElementById("aiContent").classList.toggle("expanded")
+
+let content = document.getElementById("aiContent")
+let hint = document.getElementById("aiHint")
+
+content.classList.toggle("expanded")
+
+if(content.classList.contains("expanded")){
+hint.innerText="Tap to collapse"
+}else{
+hint.innerText="Tap to expand"
+}
+
 }
 
 function refreshDashboard(){
@@ -1069,6 +1082,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
