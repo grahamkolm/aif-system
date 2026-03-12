@@ -877,6 +877,19 @@ return "Mid-depth contour patrol route (5–8m)"
 return "Deep basin patrol route (8–12m)"
 
 }
+
+function predictDriftCorridor(w, windDir){
+
+if(w < 5){
+return "Weak drift – fish structure directly."
+}
+
+if(w >= 5 && w <= 15){
+return "Moderate drift corridor forming along windward slope."
+}
+
+return "Strong drift corridor – fish slightly off the bank along feeding lane."
+}
   
 function generateAI(spi,p,w,c,windDir,t){
 
@@ -920,12 +933,18 @@ let bank = windBankPrediction(windDir)
 let drift = windDriftStrength(w)
 let zone = predictFeedingZone(spi,t,w)
 let patrol = predictPatrolRoute(spi,w,windDir)
+let driftLane = predictDriftCorridor(w, windDir)
+
+aiText += "Drift corridor: <b>" + driftLane + "</b><br>"
   
 if(w >= 5){
 aiText += "Focus on windward banks and slope edges.<br>"; }else{ aiText += "Target deeper structure and basin patrol routes.<br>"; }
 
-aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>"; aiText += "Windward feeding bank: <b>" + bank + "</b><br>"; aiText += "Feeding drift strength: " + drift + "<br>";
-aiText += "Recommended feeding zone: <b>" + zone + "</b><br>";
+aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>"; 
+aiText += "Windward feeding bank: <b>" + bank + "</b><br>"; 
+aiText += "Feeding drift strength: <b>" + drift + "</b><br>"; 
+aiText += "Drift corridor: <b>" + driftLane + "</b><br>"; 
+aiText += "Recommended feeding zone: <b>" + zone + "</b><br>"; 
 aiText += "Likely patrol route: <b>" + patrol + "</b><br>";
 
 /* OUTPUT */
@@ -1008,6 +1027,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
