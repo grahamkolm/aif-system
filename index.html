@@ -375,7 +375,7 @@ return "North-West"
 
 }
   
-function calculateSPI(t,p,w,c,windDir){
+function calculateSPI(p,w,c,windDir,t){
 
 let score = 45
 
@@ -595,7 +595,7 @@ let w=d.wind.speed*3.6
 let c=d.clouds.all
 let windDir=d.wind.deg
 
-let spi=calculateSPI(t,p,w,c,windDir)
+let spi=calculateSPI(p,w,c,windDir,t)
 
 updateSPI(spi)
 
@@ -767,7 +767,7 @@ let stabilization = detectPressureStabilization()
 
 document.getElementById("tactical").innerText = "SPI "+spi+"% • "+feeding(spi)+" feeding • "+strikeWindow
 
-generateAI(spi,p,w,c,t,windDir)
+generateAI(spi,p,w,c,windDir,t)
 }
 
 function detectPressureStabilization(){
@@ -880,7 +880,7 @@ return "Deep basin patrol route (8–12m)"
 
 }
   
-function generateAI(spi,p,w,c,t,windDir){
+function generateAI(spi,p,w,c,windDir,t){
 
 let aiText = "";
 let trend = getPressureTrend(p);
@@ -1010,6 +1010,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
