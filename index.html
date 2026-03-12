@@ -525,6 +525,34 @@ if(trend === "stable" && p >= 1018 && p <= 1025){ return "Stable high pressure p
 return "Unstable weather phase"
 
 }
+
+function detectStrikeWindow(spi,trend,w,c){
+
+let hour = new Date().getHours()
+
+/* sunrise window */
+if(hour >= 5 && hour <= 9 && spi >= 60){ return "Sunrise feeding window active"
+}
+
+/* sunset window */
+if(hour >= 17 && hour <= 20 && spi >= 60){ return "Sunset feeding window active"
+}
+
+/* storm front feeding */
+if(trend === "falling" && w >= 10 && c > 50){ return "Pre-frontal strike window forming"
+}
+
+/* post front stabilization */
+if(trend === "rising" && spi >= 65){
+return "Post-frontal feeding window"
+}
+
+if(spi >= 75){
+return "High probability feeding activity"
+}
+
+return "No major strike window detected"
+}
   
 function getPressureTrend(p){
 
@@ -729,7 +757,9 @@ document.getElementById("trend").innerText=trend
 
 let windDirName = windDirectionName(windDir)
 
-document.getElementById("tactical").innerText = "Pressure "+trend+" • Wind "+w.toFixed(0)+" km/h "+windDirName+" • SPI "+spi+"% • "+feeding(spi)+" feeding"
+let strikeWindow = detectStrikeWindow(spi,trend,w,c)
+
+document.getElementById("tactical").innerText = "SPI "+spi+"% • "+feeding(spi)+" feeding • "+strikeWindow
 
 generateAI(spi,p,w,c,windDir)
 }
@@ -901,6 +931,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
