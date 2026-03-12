@@ -340,19 +340,28 @@ if(m<=8)return -4
 return 6
 }
 
-function windDirectionName(deg){
+function windBankPrediction(deg){
 
-if(deg >= 337 || deg < 22) return "North";
-if(deg >= 22 && deg < 67) return "North-East";
-if(deg >= 67 && deg < 112) return "East";
-if(deg >= 112 && deg < 157) return "South-East";
-if(deg >= 157 && deg < 202) return "South";
-if(deg >= 202 && deg < 247) return "South-West";
-if(deg >= 247 && deg < 292) return "West";
-return "North-West";
+if(deg >= 337 || deg < 22) return "South bank (wind pushing north)"
+if(deg >= 22 && deg < 67) return "South-West bank"
+if(deg >= 67 && deg < 112) return "West bank (wind pushing east)"
+if(deg >= 112 && deg < 157) return "North-West bank"
+if(deg >= 157 && deg < 202) return "North bank (wind pushing south)"
+if(deg >= 202 && deg < 247) return "North-East bank"
+if(deg >= 247 && deg < 292) return "East bank (wind pushing west)"
+return "South-East bank"
 
 }
 
+function windDriftStrength(w){
+
+if(w < 4) return "Low drift"
+if(w <= 10) return "Moderate drift"
+if(w <= 18) return "Strong feeding drift"
+return "Heavy water movement"
+
+}
+  
 function calculateSPI(t,p,w,c,windDir){
 
 let score = 45
@@ -738,12 +747,13 @@ aiText += "<br><b>Tactical Recommendation</b><br>";
 
 aiText += "<br><b>Tactical Recommendation</b><br>";
 
+let bank = windBankPrediction(windDir)
+let drift = windDriftStrength(w)
+
 if(w >= 5){
-    aiText += "Focus on windward banks and slope edges.<br>"; } else{
-    aiText += "Target deeper structure and basin patrol routes.<br>"; }
+aiText += "Focus on windward banks and slope edges.<br>"; }else{ aiText += "Target deeper structure and basin patrol routes.<br>"; }
 
-aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>";
-
+aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>"; aiText += "Windward feeding bank: <b>" + bank + "</b><br>"; aiText += "Feeding drift strength: " + drift + "<br>";
 
 /* OUTPUT */
 
@@ -825,6 +835,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
