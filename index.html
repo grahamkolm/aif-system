@@ -766,7 +766,7 @@ let stabilization = detectPressureStabilization()
 
 document.getElementById("tactical").innerText = "SPI "+spi+"% • "+feeding(spi)+" feeding • "+strikeWindow
 
-generateAI(spi,p,w,c,windDir)
+generateAI(spi,p,w,c,t,windDir)
 }
 
 function detectPressureStabilization(){
@@ -873,7 +873,7 @@ return "Deep basin patrol route (8–12m)"
 
 }
   
-function generateAI(spi,p,w,c,windDir){
+function generateAI(spi,p,w,c,t,windDir){
 
 let aiText = "";
 let trend = getPressureTrend(p);
@@ -1003,6 +1003,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
