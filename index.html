@@ -399,6 +399,14 @@ if(trend === "stable" && p >= 1018 && p <= 1026){
 score += 8
 }
 
+/* PRESSURE MOMENTUM */
+
+if(pressureRate >= 5){
+score -= 8
+}
+
+if(pressureRate >= 4 && trend === "falling"){ score += 10 }
+ 
 /* WIND SPEED FEEDING DRIFT */
 
 if(w >= 6 && w <= 18){
@@ -422,6 +430,20 @@ score += 5
 
 }
 
+/* WIND DIRECTION STABILITY */
+
+if(typeof lastWindDir !== "undefined"){
+
+let diff = Math.abs(windDir - lastWindDir)
+
+if(diff > 45){
+score -= 4
+}
+
+}
+
+lastWindDir = windDir
+  
 /* CLOUD COVER */
 
 if(c >= 20 && c <= 70) score += 10
@@ -872,4 +894,5 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
