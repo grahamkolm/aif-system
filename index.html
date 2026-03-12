@@ -387,7 +387,9 @@ if(trend === "rising") score += 10
 if(trend === "stable") score += 6
 if(trend === "falling") score -= 8
 
-
+if(pressureRate >= 4 && trend === "failing"){
+score += 10;
+}
 /* PRESSURE VELOCITY */
 
 let pressureRate = Math.abs((pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0))
@@ -523,7 +525,7 @@ render(d);
 }
 
 }catch(e){
-
+console.error(e);
 document.getElementById("tactical").innerText="Weather connection failed";
 
 }
@@ -874,6 +876,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
