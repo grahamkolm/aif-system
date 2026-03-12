@@ -980,6 +980,8 @@ aiText += "Pressure stabilization detected – feeding window forming.<br>"; }
 aiText += "<br><b>Activity Assessment</b><br>";
 
 aiText += "Strike Probability Index: <b>" + spi + "%</b><br>";
+let strikeDuration = predictStrikeDuration(spi,trend,w,c)
+aiText += "Estimated strike window: <b>" + strikeDuration + " minutes</b><br>";
 
 let strikeDuration = predictStrikeDuration(spi,trend,w,c)
 
@@ -1124,6 +1126,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
