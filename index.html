@@ -891,7 +891,7 @@ aiText += "<br><b>Tactical Recommendation</b><br>";
 
 let bank = windBankPrediction(windDir)
 let drift = windDriftStrength(w)
-let zone = predictFeedingZone(spi,p,w)
+let zone = predictFeedingZone(spi,t,w)
 
 if(w >= 5){
 aiText += "Focus on windward banks and slope edges.<br>"; }else{ aiText += "Target deeper structure and basin patrol routes.<br>"; }
@@ -979,6 +979,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
