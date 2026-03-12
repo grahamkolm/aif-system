@@ -854,6 +854,24 @@ return "Mid-depth transition zones (5–8m)"
 return "Deeper holding areas (8–12m)"
 
 }
+
+function predictPatrolRoute(spi,w,windDir){
+
+if(spi >= 80 && w >= 8){
+return "Windward patrol route along shallow shelf (2–4m)"
+}
+
+if(spi >= 65 && w >= 6){
+return "Slope transition patrol along windward bank (3–6m)"
+}
+
+if(spi >= 50){
+return "Mid-depth contour patrol route (5–8m)"
+}
+
+return "Deep basin patrol route (8–12m)"
+
+}
   
 function generateAI(spi,p,w,c,windDir){
 
@@ -896,12 +914,14 @@ aiText += "<br><b>Tactical Recommendation</b><br>";
 let bank = windBankPrediction(windDir)
 let drift = windDriftStrength(w)
 let zone = predictFeedingZone(spi,t,w)
-
+let patrol = predictPatrolRoute(spi,w,windDir)
+  
 if(w >= 5){
 aiText += "Focus on windward banks and slope edges.<br>"; }else{ aiText += "Target deeper structure and basin patrol routes.<br>"; }
 
 aiText += "Wind direction: " + windDirectionName(windDir) + ".<br>"; aiText += "Windward feeding bank: <b>" + bank + "</b><br>"; aiText += "Feeding drift strength: " + drift + "<br>";
 aiText += "Recommended feeding zone: <b>" + zone + "</b><br>";
+aiText += "Likely patrol route: <b>" + patrol + "</b><br>";
   
 /* OUTPUT */
 
@@ -983,6 +1003,7 @@ lucide.createIcons()
 
 </body>
 </html>
+
 
 
 
