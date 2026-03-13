@@ -844,9 +844,10 @@ else if(v >= 40){
 arc.style.stroke="#ffc400"
 arc.style.filter="drop-shadow(0 0 5px rgba(255,196,0,0.30))"
 }
-else{
+else if(v >= 25){
 arc.style.stroke="#ff3b3b"
-arc.style.filter="drop-shadow(0 0 5px rgba(255,59,59,0.30))"
+}else{
+arc.style.stroke="#555"
 }
 
 }
@@ -1208,6 +1209,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
