@@ -1063,19 +1063,19 @@ function scoutSpot(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude
-let lon = pos.coords.longitude
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
 
-let windDir = lastWindDir || 0
-let windSpeed = lastWindSpeed || 0
-let spi = lastSPI || 50
+let windDir = lastWindDir || 0;
+let windSpeed = lastWindSpeed || 0;
+let spi = lastSPI || 50;
 
 let bank = windBankPrediction(windDir);
 let drift = windDriftStrength(windSpeed); 
 let entry = predictFeedingEntry(windSpeed, windDir); 
 let patrol = predictPatrolRoute(spi, windSpeed, windDir);
 
-let score = calculateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015)
+let score = calculateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
 
 /* SAVE SCOUT POINT */
 
@@ -1184,6 +1184,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
