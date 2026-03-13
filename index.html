@@ -1060,17 +1060,17 @@ function scoutSpot(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude;
-let lon = pos.coords.longitude;
+let lat = pos.coords.latitude
+let lon = pos.coords.longitude
 
-let windDir = lastWindDir || 0;
-let windSpeed = lastWindSpeed || 0;
-let spi = lastSPI || 50;
+let windDir = lastWindDir || 0
+let windSpeed = lastWindSpeed || 0
+let spi = lastSPI || 50
 
-let bank = windBankPrediction(windDir);
-let drift = windDriftStrength(windSpeed);
-let entry = predictFeedingEntry(windSpeed, windDir);
-let patrol = predictPatrolRoute(spi, windSpeed, windDir);
+let bank = windBankPrediction(windDir)
+let drift = windDriftStrength(windSpeed) let entry = predictFeedingEntry(windSpeed, windDir) let patrol = predictPatrolRoute(spi, windSpeed, windDir)
+
+let score = calculateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015)
 
 /* SAVE SCOUT POINT */
 
@@ -1079,6 +1079,7 @@ let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]")
 scouts.push({
 lat: lat,
 lon: lon,
+score: score,
 time: new Date().toISOString()
 })
 
@@ -1094,12 +1095,21 @@ alert(
 "\nFish entry: "+entry+
 "\nPatrol route: "+patrol+
 
-"\n\nScout spots logged: "+scouts.length
+"\n\nSWIM SCORE: "+score+"%"
 )
 
 })
 
 }
+
+let p=d.main.pressure
+lastPressure = p
+
+let w=d.wind.speed*3.6
+lastWindSpeed = w
+
+let c=d.clouds.all
+lastCloud = c
 
 function saveDrop(){
 
@@ -1178,6 +1188,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
