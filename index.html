@@ -1277,30 +1277,21 @@ alert("Drops logged: " + history.length);
 
 /* ===== START DASHBOARD ===== */
 
-document.addEventListener("DOMContentLoaded",function(){
+document.addEventListener("DOMContentLoaded",function () {
 
 fetchWeather();
 
 setInterval(fetchWeather,600000);
 
+if (typeof lucide !== "undefined") {
 lucide.createIcons();
-
+}
 });
   
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 
 
 
