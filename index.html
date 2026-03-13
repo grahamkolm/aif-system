@@ -1106,16 +1106,15 @@ navigator.geolocation.getCurrentPosition(
 
 function(pos){
 
-let lat = pos.coords.latitude.toFixed(5); 
-let lon = pos.coords.longitude.toFixed(5);
+let lat = pos.coords.latitude.toFixed(5); let lon = pos.coords.longitude.toFixed(5);
 
 alert(
 "Map view coming soon\n\n"+
 "Your position:\n"+
 lat + ", " + lon
 )
-}
-}
+
+},
 
 function(error){
 alert("Location permission required to open map.") },
@@ -1127,6 +1126,8 @@ maximumAge: 0
 }
 
 )
+
+}
 
 function openSetup(){
 alert("Setup screen")
@@ -1151,6 +1152,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
