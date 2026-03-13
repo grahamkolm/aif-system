@@ -1060,6 +1060,24 @@ icon.style.transform = "rotate(0deg)";
 
 }
 
+function calculateSwimScore(spi, windSpeed, cloud, pressure){
+
+let score = spi;
+
+if(windSpeed >= 6 && windSpeed <= 18){
+score += 5;
+}
+
+if(cloud >= 40 && cloud <= 80){
+score += 4;
+}
+
+if(pressure >= 1015 && pressure <= 1025){ score += 4; }
+
+return Math.max(20, Math.min(score,95));
+
+}
+  
 function scoutSpot(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
@@ -1266,6 +1284,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
