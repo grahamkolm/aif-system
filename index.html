@@ -1068,7 +1068,9 @@ let windSpeed = lastWindSpeed || 0;
 let spi = lastSPI || 50;
 
 let bank = windBankPrediction(windDir)
-let drift = windDriftStrength(windSpeed) let entry = predictFeedingEntry(windSpeed, windDir) let patrol = predictPatrolRoute(spi, windSpeed, windDir)
+let drift = windDriftStrength(windSpeed) 
+let entry = predictFeedingEntry(windSpeed, windDir) 
+let patrol = predictPatrolRoute(spi, windSpeed, windDir)
 
 alert(
 "SCOUT TACTICAL ANALYSIS\n\n"+
@@ -1163,6 +1165,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
