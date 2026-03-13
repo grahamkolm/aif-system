@@ -1172,17 +1172,7 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
-document.body.innerHTML += `
-<div id="map" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:999;
-background:black;
-"></div>
-`;
+document.body.innerHTML += '<div id="map" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:black;"></div>';
 
 let map = L.map('map').setView([lat, lon], 15);
 
@@ -1276,6 +1266,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
