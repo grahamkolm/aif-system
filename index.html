@@ -1062,16 +1062,20 @@ let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
 let windDir = lastWindDir || 0;
-let bank = windBankPrediction(windDir);
+
+let bank = windBankPrediction(windDir)
+let patrol = predictPatrolRoute(lastSPI || 50, lastWindSpeed || 0, windDir) let entry = predictFeedingEntry(lastWindSpeed || 0, windDir)
 
 alert(
-"Scout location locked\n\n" +
-"Latitude: " + lat.toFixed(5) +
-"\nLongitude: " + lon.toFixed(5) +
-"\n\nWindward bank: " + bank
-);
+"SCOUT LAYER 2\n\n"+
+"Latitude: "+lat.toFixed(5)+"\n"+
+"Longitude: "+lon.toFixed(5)+"\n\n"+
+"Windward bank: "+bank+"\n"+
+"Fish entry: "+entry+"\n"+
+"Patrol route: "+patrol
+)
 
-});
+})
 
 }
 
@@ -1152,6 +1156,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
