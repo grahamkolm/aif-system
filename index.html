@@ -241,11 +241,16 @@ display:block;
 <div class="subtitle1">Artificial Intelligence Fishing</div>
 <div class="subtitle2">Drop • Scan • Strike</div>
 </div>
-
+  
 <div class="instrument">
 <div class="spi-container">
-<svg id="spiGauge" viewBox="0 0 300 300">
+<div class="env-circle">
+<div class="mini-value" id="envScore">--</div> <div class="mini-label">ENV</div> </div>
 
+<div class="conf-circle">
+<div class="mini-value" id="confScore">--</div> <div class="mini-label">CONF</div> </div>
+<svg id="spiGauge" viewBox="0 0 300 300">
+  
 <defs>
 <linearGradient id="spiGrad">
 <stop offset="0%" stop-color="#ff3b3b"/>
@@ -281,12 +286,6 @@ class="spi-label">SPI</text>
 <text x="150" y="195"
 text-anchor="middle"
 class="spi-desc">Strike Probability Index</text>
-
-<div class="env-circle">
-<div class="mini-value" id="envScore">--</div> <div class="mini-label">ENV</div> </div>
-
-<div class="conf-circle">
-<div class="mini-value" id="confScore">--</div> <div class="mini-label">CONF</div> </div>
   
 </svg>
 </div>
