@@ -1058,20 +1058,21 @@ function scoutSpot(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude
-let lon = pos.coords.longitude
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
 
-let windDir = lastWindDir || 0
-let bank = windBankPrediction(windDir)
+let windDir = lastWindDir || 0;
+let bank = windBankPrediction(windDir);
 
 alert(
 "Scout location locked\n\n" +
 "Latitude: " + lat.toFixed(5) +
 "\nLongitude: " + lon.toFixed(5) +
 "\n\nWindward bank: " + bank
-)
+);
 
-})
+});
+
 }
 
 function saveDrop(){
@@ -1150,6 +1151,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
