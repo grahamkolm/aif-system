@@ -1108,6 +1108,43 @@ alert(
 
 }
 
+function getBestScout(){
+
+let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]")
+
+if(scouts.length === 0) return null
+
+let best = scouts[0]
+
+scouts.forEach(s=>{
+if(s.score > best.score){
+best = s
+}
+})
+
+return best
+
+}
+
+function distanceBetween(lat1,lon1,lat2,lon2){
+
+let R = 6371e3
+let φ1 = lat1 * Math.PI/180
+let φ2 = lat2 * Math.PI/180
+let Δφ = (lat2-lat1) * Math.PI/180
+let Δλ = (lon2-lon1) * Math.PI/180
+
+let a =
+Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+Math.cos(φ1) * Math.cos(φ2) *
+Math.sin(Δλ/2) * Math.sin(Δλ/2)
+
+let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+
+return R * c
+
+}
+  
 function saveDrop(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
@@ -1182,6 +1219,23 @@ new Date(s.time).toLocaleString()
 
 });
 
+/* FIND BEST OF ALL THE SCOUT SPOTS */
+let best = getBestScout()
+
+if(best){
+
+let dist = distanceBetween(lat,lon,best.lat,best.lon)
+
+L.marker([best.lat,best.lon]).addTo(map)
+.bindPopup(
+"<b>Best Swim</b><br>"+
+"Score: "+best.score+"%<br>"+
+"Distance: "+Math.round(dist)+" m"
+)
+
+}
+
+  
 });
 
 }
@@ -1209,6 +1263,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
