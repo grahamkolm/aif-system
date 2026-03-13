@@ -1227,11 +1227,11 @@ if(best){
 let dist = distanceBetween(lat,lon,best.lat,best.lon);
 
 L.marker([best.lat, best.lon], {
-    icon: L.icon({
-        iconUrl: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-        iconSize: [30, 30],
-        iconAnchor: [15, 30]
-    })
+icon: L.icon({
+iconUrl: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+iconSize: [30,30],
+iconAnchor: [15,30]
+})
 })
 .addTo(map)
 .bindPopup(
@@ -1240,10 +1240,14 @@ L.marker([best.lat, best.lon], {
 "Distance: " + Math.round(dist) + " m"
 )
 .openPopup();
-}
 
 }
-                                         
+
+/* CLOSE MAP FUNCTION */
+});
+
+/* ===== OTHER FUNCTIONS ===== */
+
 function openSetup(){
 alert("Setup screen")
 }
@@ -1252,21 +1256,27 @@ function openReport(){
 
 let history = JSON.parse(localStorage.getItem("aif_drops") || "[]");
 
-alert("Drops logged: "+ history.length);
+alert("Drops logged: " + history.length);
 
 }
 
+/* ===== START DASHBOARD ===== */
+
 document.addEventListener("DOMContentLoaded",function(){
-fetchWeather()
+
+fetchWeather();
+
 setInterval(fetchWeather,600000);
 
 lucide.createIcons();
+
 });
   
 </script>
 
 </body>
 </html>
+
 
 
 
