@@ -1067,8 +1067,8 @@ let windDir = lastWindDir || 0;
 let windSpeed = lastWindSpeed || 0;
 let spi = lastSPI || 50;
 
-let bank = windBankPrediction(windDir)
-let drift = windDriftStrength(windSpeed) let entry = predictFeedingEntry(windSpeed, windDir) let patrol = predictPatrolRoute(spi, windSpeed, windDir)
+let bank = windBankPrediction(windDir);
+let drift = windDriftStrength(windSpeed) let entry = predictFeedingEntry(windSpeed, windDir) let patrol = predictPatrolRoute(spi, windSpeed, windDir);
 
 /* SAVE SCOUT POINT */
 
@@ -1176,6 +1176,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
