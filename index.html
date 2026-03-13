@@ -1200,7 +1200,8 @@ maxZoom: 18
 
 /* USER POSITION */
 
-L.marker([lat,lon]).addTo(map)
+L.marker([lat,lon])
+.addTo(map)
 .bindPopup("Your Position")
 .openPopup();
 
@@ -1208,7 +1209,7 @@ L.marker([lat,lon]).addTo(map)
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
 
-scouts.forEach(s=>{
+scouts.forEach(s => {
 
 let color = "red";
 
@@ -1220,21 +1221,22 @@ fillOpacity:0.8
 }).addTo(map);
 
 marker.bindPopup(
-"<b>Scout Spot</b><br>"+
-"Score: "+s.score+"%<br>"+
+"<b>Scout Spot</b><br>" +
+"Score: " + s.score + "%<br>" +
 new Date(s.time).toLocaleString()
 );
 
 });
 
-/* FIND BEST OF ALL THE SCOUT SPOTS */
+/* FIND BEST SCOUT SPOT */
+
 let best = getBestScout();
 
 if(best){
 
 let dist = distanceBetween(lat,lon,best.lat,best.lon);
 
-L.marker([best.lat, best.lon], {
+L.marker([best.lat,best.lon],{
 icon: L.icon({
 iconUrl: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
 iconSize: [30,30],
@@ -1250,6 +1252,11 @@ iconAnchor: [15,30]
 .openPopup();
 
 }
+
+}); // CLOSE geolocation callback
+
+} // CLOSE openMap
+
 
 /* CLOSE MAP FUNCTION */
 });
@@ -1284,6 +1291,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
