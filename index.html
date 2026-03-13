@@ -1068,25 +1068,36 @@ let windSpeed = lastWindSpeed || 0;
 let spi = lastSPI || 50;
 
 let bank = windBankPrediction(windDir)
-let drift = windDriftStrength(windSpeed) 
-let entry = predictFeedingEntry(windSpeed, windDir) 
-let patrol = predictPatrolRoute(spi, windSpeed, windDir)
+let drift = windDriftStrength(windSpeed) let entry = predictFeedingEntry(windSpeed, windDir) let patrol = predictPatrolRoute(spi, windSpeed, windDir)
+
+/* SAVE SCOUT POINT */
+
+let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]")
+
+scouts.push({
+lat: lat,
+lon: lon,
+time: new Date().toISOString()
+})
+
+localStorage.setItem("aif_scout", JSON.stringify(scouts))
 
 alert(
 "SCOUT TACTICAL ANALYSIS\n\n"+
-"Latitude: " + lat.toFixed(5) +
-"\nLongitude: " + lon.toFixed(5) +
+"Latitude: "+lat.toFixed(5)+
+"\nLongitude: "+lon.toFixed(5)+
 
-"\n\nWindward bank: " + bank +
-"\nDrift corridor: " + drift +
-"\nFish entry: " + entry +
-"\nPatrol route: " + patrol
-);
+"\n\nWindward bank: "+bank+
+"\nDrift corridor: "+drift+
+"\nFish entry: "+entry+
+"\nPatrol route: "+patrol+
 
-});
+"\n\nScout spots logged: "+scouts.length
+)
+
+})
 
 }
-
 
 function saveDrop(){
 
@@ -1165,6 +1176,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
