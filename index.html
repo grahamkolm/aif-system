@@ -1173,26 +1173,53 @@ let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 return R * c
 
 }
-  
-function saveDrop(){
+  function openDrop(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let history = JSON.parse(localStorage.getItem("aif_drops") || "[]")
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
 
-history.push({
-lat: pos.coords.latitude,
-lon: pos.coords.longitude,
-time: new Date().toISOString()
-})
+let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
 
-localStorage.setItem("aif_drops", JSON.stringify(history))
+let best = null;
+let bestDist = 999999;
 
-alert("Drop saved")
+scouts.forEach(s => {
 
-})
+let d = distanceBetween(lat,lon,s.lat,s.lon);
+
+if(d < bestDist){
+bestDist = d;
+best = s;
+}
+
+});
+
+let spi = document.getElementById("spi").innerText || "0";
+
+let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
+
+drops.push({
+lat:lat,
+lon:lon,
+time:Date.now(),
+spi:spi,
+scoutScore: best ? best.score : null,
+distance: Math.round(bestDist)
+});
+
+localStorage.setItem("aif_drops", JSON.stringify(drops));
+
+alert(
+"DROP LOGGED\n\n"+
+"SPI: "+spi+"%\n"+
+(best ? "Scout Score: "+best.score+"%\nDistance: "+Math.round(bestDist)+"m" : "No scout nearby") );
+
+});
 
 }
+
 
 function openMap(){
 
@@ -1314,6 +1341,7 @@ document.getElementById("closeMap").remove();
 
 </body>
 </html>
+
 
 
 
