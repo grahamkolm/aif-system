@@ -60,8 +60,8 @@ border-radius:50%;
 .env-circle,
 .conf-circle{
 position:absolute;
-width:70px;
-height:70px;
+width:56px;
+height:56px;
 border-radius:50%;
 background:rgba(15,20,28,0.9);
 border:2px solid rgba(0,255,156,0.4);
@@ -75,17 +75,17 @@ box-shadow:0 4px 12px rgba(0,0,0,0.4);
 }
 
 .env-circle{
-bottom:-10px;
-left:25px;
+bottom:-18px;
+left:65px;
 }
 
 .conf-circle{
-bottom:-10px;
-right:25px;
+bottom:-18px;
+right:65px;
 }
 
 .mini-value{
-font-size:16px;
+font-size:14px;
 font-weight:700;
 color:#00ffa6;
 }
@@ -788,6 +788,14 @@ gauge.style.filter="drop-shadow(0 0 12px rgba(0,255,156,0.35))"
 gauge.style.filter="drop-shadow(0 0 6px rgba(0,255,156,0.15))"
 }
 
+if(spi >= 70){
+document.querySelector(".env-circle").style.boxShadow =
+"0 0 10px rgba(0,255,156,0.4)";
+
+document.querySelector(".conf-circle").style.boxShadow =
+"0 0 10px rgba(0,255,156,0.4)";
+}
+  
 function confidence(spi){
   if(spi >= 80) return "Very High";
   if(spi >= 70) return "High";
