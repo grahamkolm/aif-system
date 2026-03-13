@@ -618,9 +618,11 @@ function render(d){
 
 let t=d.main.temp
 let p=d.main.pressure
+lastPressure = p
 let w=d.wind.speed*3.6
 lastWindSpeed = w
 let c=d.clouds.all
+lastCloud = c
 let windDir=d.wind.deg
 
 let spi=calculateSPI(p,w,c,windDir,t)
@@ -1102,15 +1104,6 @@ alert(
 
 }
 
-let p=d.main.pressure
-lastPressure = p
-
-let w=d.wind.speed*3.6
-lastWindSpeed = w
-
-let c=d.clouds.all
-lastCloud = c
-
 function saveDrop(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
@@ -1188,6 +1181,7 @@ lucide.createIcons();
 
 </body>
 </html>
+
 
 
 
