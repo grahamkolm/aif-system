@@ -57,6 +57,45 @@ background: radial-gradient(circle at center, rgba(0,255,156,0.08) 0%, rgba(0,25
 border-radius:50%;
 }
 
+.env-circle,
+.conf-circle{
+position:absolute;
+width:70px;
+height:70px;
+border-radius:50%;
+background:rgba(15,20,28,0.9);
+border:2px solid rgba(0,255,156,0.4);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-size:12px;
+backdrop-filter:blur(8px);
+box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+
+.env-circle{
+bottom:-10px;
+left:25px;
+}
+
+.conf-circle{
+bottom:-10px;
+right:25px;
+}
+
+.mini-value{
+font-size:16px;
+font-weight:700;
+color:#00ffa6;
+}
+
+.mini-label{
+font-size:10px;
+color:#9aa4ad;
+margin-top:2px;
+}
+  
 #spiGauge{
 width:260px;
 height:260px;
@@ -245,6 +284,12 @@ class="spi-desc">Strike Probability Index</text>
 </div>
 </div>
 
+<div class="env-circle">
+<div class="mini-value" id="envScore">--</div> <div class="mini-label">ENV</div> </div>
+
+<div class="conf-circle">
+<div class="mini-value" id="confScore">--</div> <div class="mini-label">CONF</div> </div>
+  
 <div class="tactical-bar" id="tactical">
 Waiting for environmental data...
 </div>
@@ -889,6 +934,12 @@ feedIcon.style.stroke="#ff3b3b"
 
 }
 
+let envScore = Math.round((100 - Math.abs(p-1018)*2) + (c*0.2)); envScore = Math.max(40, Math.min(envScore,95));
+
+document.getElementById("envScore").innerText = envScore+"%";
+
+let conf = Math.round((spi + envScore)/2); document.getElementById("confScore").innerText = conf+"%";
+  
 let tiles = document.querySelectorAll(".tile")
 
 tiles.forEach(tile=>{
