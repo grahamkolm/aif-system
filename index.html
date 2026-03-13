@@ -315,6 +315,148 @@ Report
 </div>
 
 </div>
+
+function openDrop(){
+
+let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
+
+document.body.innerHTML += `
+<div id="dropPanel" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#0b0f14;
+z-index:9999;
+color:white;
+padding:30px;
+overflow:auto;
+">
+
+<h2 style="color:#00ffa6">DROP BAIT / RIG</h2>
+
+<p>Log a bait drop at your current position.</p>
+
+<button onclick="confirmDrop()" style="
+background:#00ffa6;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+margin-top:20px;
+">Confirm Drop</button>
+
+<button onclick="closeDrop()" style="
+background:#222;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+margin-left:10px;
+cursor:pointer;
+">Close</button>
+
+</div>
+`;
+
+}
+
+function confirmDrop(){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let lat = pos.coords.latitude;
+let lon = pos.coords.longitude;
+
+let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
+
+drops.push({
+lat:lat,
+lon:lon,
+time:Date.now()
+});
+
+localStorage.setItem("aif_drops",JSON.stringify(drops));
+
+alert("Drop logged successfully");
+
+});
+
+}
+
+function closeDrop(){
+document.getElementById("dropPanel").remove();
+}
+
+function openSetup(){
+
+document.body.innerHTML += `
+<div id="setupPanel" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+font-weight:600;
+border-radius:8px
+background:#0b0f14;
+color:#081018;
+z-index:9999;
+color:white;
+padding:10px 16px;
+overflow:auto;
+">
+
+<h2 style="color:#00ffa6">AIF SETTINGS</h2>
+
+<p>System configuration</p>
+
+<div style="margin-top:20px">
+
+<button onclick="resetSession()" style="
+background:#222;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+cursor:pointer;
+">Reset Session Data</button>
+
+</div>
+
+<button onclick="closeSetup()" style="
+background:#00ffa6;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+margin-top:30px;
+cursor:pointer;
+">Close</button>
+
+</div>
+`;
+
+}
+
+function closeSetup(){
+document.getElementById("setupPanel").remove();
+}
+
+function resetSession(){
+
+if(confirm("Reset all scouting and drop data?")){
+
+localStorage.removeItem("aif_scout");
+localStorage.removeItem("aif_drops");
+
+alert("Session reset complete");
+
+}
+
+}
+  
 <script>
 
 const API_KEY="63ba514dc7c2242cb10cd2632d2569ad"
@@ -1261,8 +1403,9 @@ top:20px;
 right:20px;
 z-index:1000;
 background:#00ffa6;
+color:#081018;
 border:none;
-padding:10px 14px;
+padding:10px 16px;
 border-radius:8px;
 font-weight:600;
 cursor:pointer;
@@ -1494,8 +1637,9 @@ position:fixed;
 top:20px;
 right:20px;
 background:#00ffa6;
+color:#081018
 border:none;
-padding:10px 14px;
+padding:10px 16px;
 border-radius:8px;
 font-weight:600;
 cursor:pointer;
