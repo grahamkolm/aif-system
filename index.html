@@ -1190,9 +1190,13 @@ navigator.geolocation.getCurrentPosition(function(pos){
 let lat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
+/* CREATE MAP CONTAINER */
+
 document.body.innerHTML += '<div id="map" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:black;"></div>';
 
 let map = L.map('map').setView([lat, lon], 15);
+
+/* MAP TILES */
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 maxZoom: 18
@@ -1200,7 +1204,7 @@ maxZoom: 18
 
 /* USER POSITION */
 
-L.marker([lat,lon])
+L.marker([lat, lon])
 .addTo(map)
 .bindPopup("Your Position")
 .openPopup();
@@ -1209,7 +1213,7 @@ L.marker([lat,lon])
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
 
-scouts.forEach(s => {
+scouts.forEach(function(s){
 
 let color = "red";
 
@@ -1228,19 +1232,19 @@ new Date(s.time).toLocaleString()
 
 });
 
-/* FIND BEST SCOUT SPOT */
+/* BEST SWIM */
 
 let best = getBestScout();
 
 if(best){
 
-let dist = distanceBetween(lat,lon,best.lat,best.lon);
+let dist = distanceBetween(lat, lon, best.lat, best.lon);
 
-L.marker([best.lat,best.lon],{
+L.marker([best.lat, best.lon],{
 icon: L.icon({
-iconUrl: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-iconSize: [30,30],
-iconAnchor: [15,30]
+iconUrl:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+iconSize:[30,30],
+iconAnchor:[15,30]
 })
 })
 .addTo(map)
@@ -1253,45 +1257,28 @@ iconAnchor: [15,30]
 
 }
 
-}); // CLOSE geolocation callback
-
-} // CLOSE openMap
-
-
-/* CLOSE MAP FUNCTION */
-});
-
-/* ===== OTHER FUNCTIONS ===== */
-
-function openSetup(){
-alert("Setup screen")
-}
-
-function openReport(){
-
-let history = JSON.parse(localStorage.getItem("aif_drops") || "[]");
-
-alert("Drops logged: " + history.length);
+}); 
 
 }
 
-/* ===== START DASHBOARD ===== */
+/* ===== DASHBOARD START ===== */
 
-document.addEventListener("DOMContentLoaded",function () {
+document.addEventListener("DOMContentLoaded", function(){
 
 fetchWeather();
 
 setInterval(fetchWeather,600000);
 
-if (typeof lucide !== "undefined") {
+if(typeof lucide !== "undefined"){
 lucide.createIcons();
 }
+
 });
-  
 </script>
 
 </body>
 </html>
+
 
 
 
