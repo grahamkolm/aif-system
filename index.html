@@ -1203,7 +1203,26 @@ let lon = pos.coords.longitude;
 
 /* CREATE MAP CONTAINER */
 
-document.body.innerHTML += '<div id="map" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:black;"></div>';
+document.body.innerHTML += `
+<div id="map" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:black;"></div>
+
+<button id="closeMap"
+onclick="closeMap()"
+style="
+position:fixed;
+top:20px;
+right:20px;
+z-index:1000;
+background:#00ffa6;
+border:none;
+padding:10px 14px;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+">
+Close
+</button>
+`;
 
 let map = L.map('map').setView([lat, lon], 15);
 
@@ -1285,10 +1304,17 @@ lucide.createIcons();
 }
 
 });
+
+function closeMap(){
+  document.getElementById("map".remove();
+  document.getElementById("closemap".remove();
+}
+  
 </script>
 
 </body>
 </html>
+
 
 
 
