@@ -358,6 +358,11 @@ Drop
 Map 
 </div>
 
+<div class="dock-btn" onclick="openPlan()"> 
+<i data-lucide="compass"></i> 
+Map 
+</div>  
+  
 <div class="dock-btn" onclick="openSetup()">
 <i data-lucide="settings"></i>
 Setup
@@ -1795,6 +1800,95 @@ alert("Drop log cleared");
 
 }
 
+function openPlan(){
+
+document.body.innerHTML += `
+<div id="planScreen" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#05080d;
+color:white;
+z-index:999;
+overflow:auto;
+padding:20px;
+font-family:Arial;
+">
+
+<h2 class="setup-title">AIF™ 60-Minute Tactical Setup</h2>
+
+<div class="setup-card">
+
+<h3>0–5 Minutes • Arrival Scan</h3>
+
+<label>Wind direction</label><br>
+<select>
+<option>N</option>
+<option>NE</option>
+<option>E</option>
+<option>SE</option>
+<option>S</option>
+<option>SW</option>
+<option>W</option>
+<option>NW</option>
+</select>
+
+<br><br>
+
+<label>Surface activity</label><br>
+<select>
+<option>None</option>
+<option>Light</option>
+<option>Active</option>
+<option>Heavy</option>
+</select>
+
+</div>
+
+<br>
+
+<div class="setup-card">
+
+<h3>5–20 Minutes • Water Intelligence</h3>
+
+<label>Depth (m)</label><br>
+<input type="number" step="0.1">
+
+<br><br>
+
+<label>Bottom composition</label><br>
+<select>
+<option>Gravel</option>
+<option>Silt</option>
+<option>Clay</option>
+<option>Weed</option>
+<option>Sand</option>
+</select>
+
+</div>
+
+<br>
+
+<button onclick="closePlan()" style="
+background:#00ffa6;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+">Close</button>
+
+</div>
+`;
+
+}
+
+function closePlan(){
+document.getElementById("planScreen").remove();
+}
+  
 </script>
 
 </body>
