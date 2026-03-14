@@ -236,6 +236,147 @@ font-size:20px;
 display:block;
 }
 
+<div id="setupPopup">
+
+<h2 class="setup-title">AIF™ 60-Minute Tactical Plan</h2>
+
+<!-- 0–5 Minutes -->
+<div class="setup-card">
+
+<h3 class="setup-section">0–5 Minutes • Arrival Scan</h3> <div class="setup-divider"></div>
+
+<p>Observe the water before deploying any gear.</p>
+
+<ul>
+<li>Wind direction</li>
+<li>Surface activity</li>
+<li>Water colour</li>
+</ul>
+
+<label>Wind direction</label>
+<select id="obs_wind">
+<option>N</option>
+<option>NE</option>
+<option>E</option>
+<option>SE</option>
+<option>S</option>
+<option>SW</option>
+<option>W</option>
+<option>NW</option>
+</select>
+
+<label>Surface activity</label>
+<select id="obs_activity">
+<option>None</option>
+<option>Light</option>
+<option>Active</option>
+<option>Heavy</option>
+</select>
+
+<label>Water colour</label>
+<select id="obs_colour">
+<option>Clear</option>
+<option>Green</option>
+<option>Brown</option>
+<option>Dirty</option>
+</select>
+
+</div>
+
+<!-- 5–20 Minutes -->
+<div class="setup-card">
+
+<h3 class="setup-section">5–20 Minutes • Water Intelligence</h3> <div class="setup-divider"></div>
+
+<p>Use sonar, camera or marker rod to understand the water structure.</p>
+
+<ul>
+<li>Depth at target area</li>
+<li>Bottom composition</li>
+<li>Surface and bottom temperature</li>
+</ul>
+
+<label>Depth at target area (m)</label>
+<input type="number" id="obs_depth" step="0.1">
+
+<label>Bottom composition</label>
+<select id="obs_bottom">
+<option>Gravel</option>
+<option>Silt</option>
+<option>Clay</option>
+<option>Weed</option>
+<option>Sand</option>
+</select>
+
+<label>Surface temperature (°C)</label>
+<input type="number" id="obs_surfaceTemp" step="0.1">
+
+<label>Bottom temperature (°C)</label>
+<input type="number" id="obs_bottomTemp" step="0.1">
+
+</div>
+
+<!-- 20–40 Minutes -->
+<div class="setup-card">
+
+<h3 class="setup-section">20–40 Minutes • Tactical Decision</h3> <div class="setup-divider"></div>
+
+<p>Based on observations decide how the swim will be fished.</p>
+
+<ul>
+<li>Bait selection</li>
+<li>Hookbait choice</li>
+<li>Feed approach</li>
+</ul>
+
+<label>Bait type</label>
+<select id="obs_bait">
+<option>Boilie</option>
+<option>Particles</option>
+<option>Pellets</option>
+<option>Mixed</option>
+</select>
+
+<label>Hookbait</label>
+<select id="obs_hookbait">
+<option>Bottom bait</option>
+<option>Popup</option>
+<option>Wafter</option>
+<option>Zig</option>
+</select>
+
+<label>Feed approach</label>
+<select id="obs_feed">
+<option>Light</option>
+<option>Moderate</option>
+<option>Heavy</option>
+</select>
+
+</div>
+
+<!-- 40–60 Minutes -->
+<div class="setup-card">
+
+<h3 class="setup-section">40–60 Minutes • Drop Preparation</h3> <div class="setup-divider"></div>
+
+<p>Prepare rods and finalize the first drop.</p>
+
+<ul>
+<li>Confirm target depth</li>
+<li>Confirm patrol direction</li>
+<li>Prepare first bait drop</li>
+</ul>
+
+<label>Target depth confirmed (m)</label> <input type="number" id="obs_targetDepth" step="0.1">
+
+<label>Patrol direction observed</label> <select id="obs_patrol"> <option>Shallow to deep</option> <option>Deep to shallow</option> <option>Along margin</option> <option>Across wind</option> </select>
+
+</div>
+
+<button onclick="closeSetup()" class="setup-close">Close</button>
+
+</div>
+  
 </style>
 </head>
 
