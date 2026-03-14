@@ -596,18 +596,6 @@ cursor:pointer;
 
 </div>
 
-<button onclick="closeSetup()" style="
-background:#00ffa6;
-border:none;
-padding:12px 18px;
-border-radius:8px;
-margin-top:30px;
-cursor:pointer;
-">Close</button>
-
-</div>
-`;
-
 }
 
 function closeSetup(){
@@ -1682,94 +1670,6 @@ document.getElementById("map").remove();
 document.getElementById("closeMap").remove();
 }
 
-function openSetup(){
-
-document.body.innerHTML += `
-<div id="setupScreen" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-color:white;
-z-index:999;
-overflow:auto;
-padding:20px;
-font-family:Arial;
-">
-
-<button onclick="closeSetup()" style="
-position:fixed;
-top:20px;
-right:20px;
-background:#00ffa6;
-border:none;
-padding:10px 14px;
-border-radius:8px;
-font-weight:600;
-cursor:pointer;
-">Close</button>
-
-<h2 style="color:#00ffa6;">AIF SETUP</h2>
-
-<div style="margin-top:30px">
-
-<h3 style="color:#00ffa6;">Session Controls</h3>
-
-<button onclick="clearScouts()" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-background:#111;
-border:1px solid #00ffa6;
-color:white;
-border-radius:8px;
-">
-Clear Scout Points
-</button>
-
-<button onclick="clearDrops()" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-background:#111;
-border:1px solid #00ffa6;
-color:white;
-border-radius:8px;
-">
-Clear Drop Log
-</button>
-
-</div>
-
-<div style="margin-top:40px">
-
-<h3 style="color:#00ffa6;">Hardware (Future)</h3>
-
-<div style="background:#111;padding:12px;border-radius:8px;margin-top:10px">
-Probe: Not Connected
-</div>
-
-<div style="background:#111;padding:12px;border-radius:8px;margin-top:10px">
-Boat Sonar: Not Connected
-</div>
-
-<div style="background:#111;padding:12px;border-radius:8px;margin-top:10px">
-Bank Sensors: Not Connected
-</div>
-
-</div>
-
-</div>
-`;
-
-}
-
-function closeSetup(){
-document.getElementById("setupScreen").remove();
-}
-  
 function openReport(){
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]"); let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
@@ -1973,9 +1873,20 @@ padding:20px;
 font-family:Arial;
 ">
 
-<h2 class="setup-title">AIF™ 60-Minute Tactical Setup</h2>
+<button onclick="closePlan()" style="
+position:fixed;
+top:20px;
+right:20px;
+background:#00ffa6;
+border:none;
+padding:10px 14px;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+">Close</button>
 
-<div class="setup-card">
+<h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
+
 
 <h3>0–5 Minutes • Arrival Scan</h3>
 
@@ -2001,11 +1912,19 @@ font-family:Arial;
 <option>Heavy</option>
 </select>
 
-</div>
+<br><br>
 
-<br>
+<label>Water colour</label><br>
+<select>
+<option>Clear</option>
+<option>Green</option>
+<option>Brown</option>
+<option>Dirty</option>
+</select>
 
-<div class="setup-card">
+
+<br><br><br>
+
 
 <h3>5–20 Minutes • Water Intelligence</h3>
 
@@ -2023,18 +1942,58 @@ font-family:Arial;
 <option>Sand</option>
 </select>
 
-</div>
 
-<br>
+<br><br><br>
 
-<button onclick="closePlan()" style="
-background:#00ffa6;
-border:none;
-padding:12px 18px;
-border-radius:8px;
-cursor:pointer;
-font-weight:600;
-">Close</button>
+
+<h3>20–40 Minutes • Tactical Decision</h3>
+
+<label>Bait type</label><br>
+<select>
+<option>Boilie</option>
+<option>Particles</option>
+<option>Pellets</option>
+<option>Mixed</option>
+</select>
+
+<br><br>
+
+<label>Hookbait</label><br>
+<select>
+<option>Bottom bait</option>
+<option>Popup</option>
+<option>Wafter</option>
+<option>Zig</option>
+</select>
+
+<br><br>
+
+<label>Feed approach</label><br>
+<select>
+<option>Light</option>
+<option>Moderate</option>
+<option>Heavy</option>
+</select>
+
+
+<br><br><br>
+
+
+<h3>40–60 Minutes • Drop Preparation</h3>
+
+<label>Target depth (m)</label><br>
+<input type="number" step="0.1">
+
+<br><br>
+
+<label>Patrol direction</label><br>
+<select>
+<option>Shallow to deep</option>
+<option>Deep to shallow</option>
+<option>Along margin</option>
+<option>Across wind</option>
+</select>
+
 
 </div>
 `;
@@ -2044,6 +2003,7 @@ font-weight:600;
 function closePlan(){
 document.getElementById("planScreen").remove();
 }
+
   
 </script>
 
