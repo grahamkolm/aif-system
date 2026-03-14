@@ -1562,19 +1562,31 @@ let lon = pos.coords.longitude;
 
 /* CREATE MAP CONTAINER */
 
-document.body.innerHTML += `
-<div id='map' style='position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:black;'></div>
+let mapDiv = document.createElement("div"); mapDiv.id = "map"; mapDiv.style.position = "fixed"; mapDiv.style.top = "0"; mapDiv.style.left = "0"; mapDiv.style.width = "100%"; mapDiv.style.height = "100%"; mapDiv.style.zIndex = "999"; mapDiv.style.background = "black";
 
-<button id='closeMap'
-onclick='closeMap()'
-style='position:fixed;top:20px;right:20px;z-index:1000;background:#00ffa6;color:#081018;border:none;padding:10px 16px;border-radius:8px;font-weight:600;cursor:pointer;'>
-Close
-</button>
-`;
+document.body.appendChild(mapDiv);
+
+/* CLOSE BUTTON */
+
+let btn = document.createElement("button"); btn.id = "closeMap"; btn.innerText = "Close"; btn.onclick = closeMap;
+
+btn.style.position = "fixed";
+btn.style.top = "20px";
+btn.style.right = "20px";
+btn.style.zIndex = "1000";
+btn.style.background = "#00ffa6";
+btn.style.color = "#081018";
+btn.style.border = "none";
+btn.style.padding = "10px 16px";
+btn.style.borderRadius = "8px";
+btn.style.fontWeight = "600";
+btn.style.cursor = "pointer";
+
+document.body.appendChild(btn);
+
+/* CREATE MAP */
 
 let map = L.map('map').setView([lat, lon], 15);
-
-/* MAP TILES */
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 maxZoom: 18
@@ -1635,7 +1647,7 @@ iconAnchor:[15,30]
 
 }
 
-}); 
+});
 
 }
 
