@@ -581,9 +581,7 @@ overflow:auto;
 `;
 
 document.body.innerHTML += `
-<h2 style="color:#00ffa6">AIF SETTINGS</h2>
-
-<p>System configuration</p>
+<h2 style="color:#00ffa6">AIF SETTINGS</h2> <p>System configuration</p>
 
 <div style="margin-top:20px">
 
@@ -594,11 +592,14 @@ border:none;
 padding:12px 18px;
 border-radius:8px;
 cursor:pointer;
-">Reset Session Data</button>
+">
+Reset Session Data
+</button>
 
 </div>
-
 `;
+
+}
 
 function closeSetup(){
 document.getElementById("setupPanel").remove();
