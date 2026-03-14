@@ -578,7 +578,7 @@ color:white;
 padding:10px 16px;
 overflow:auto;
 ">
-
+document.body.innerHTML += `
 <h2 style="color:#00ffa6">AIF SETTINGS</h2>
 
 <p>System configuration</p>
@@ -596,7 +596,7 @@ cursor:pointer;
 
 </div>
 
-}
+`;
 
 function closeSetup(){
 document.getElementById("setupPanel").remove();
