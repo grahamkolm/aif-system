@@ -65,7 +65,7 @@ transform:translateY(-50%);
 transition:all 0.25s ease;
 width:80px;
 height:80px;
-margin-top:100px; /* move circles down */
+margin-top:80px; /* move circles down */
 border-radius:50%;
 display:flex;
 flex-direction:column;
@@ -1563,23 +1563,11 @@ let lon = pos.coords.longitude;
 /* CREATE MAP CONTAINER */
 
 document.body.innerHTML += `
-<div id="map" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:black;"></div>
+<div id='map' style='position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:black;'></div>
 
-<button id="closeMap"
-onclick="closeMap()"
-style="
-position:fixed;
-top:20px;
-right:20px;
-z-index:1000;
-background:#00ffa6;
-color:#081018;
-border:none;
-padding:10px 16px;
-border-radius:8px;
-font-weight:600;
-cursor:pointer;
-">
+<button id='closeMap'
+onclick='closeMap()'
+style='position:fixed;top:20px;right:20px;z-index:1000;background:#00ffa6;color:#081018;border:none;padding:10px 16px;border-radius:8px;font-weight:600;cursor:pointer;'>
 Close
 </button>
 `;
