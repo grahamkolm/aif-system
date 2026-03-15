@@ -2014,6 +2014,18 @@ function closePlan(){
 document.getElementById("planScreen").remove();
 }
 
+function updateTacticalBar(confidence, feeding, window){
+
+let text =
+confidence + " confidence • " +
+feeding + " feeding activity • " +
+window + " bite window active";
+
+document.getElementById("tactical").innerText = text;
+
+}
+
+updateTacticalBar("Very high", "Heavy", "Sunrise");
   
 </script>
 
