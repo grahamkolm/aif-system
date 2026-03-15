@@ -54,7 +54,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 overflow:visible;
-background: radial-gradient(circle at center, rgba(0,255,156,0.08) 0%, rgba(0,255,156,0,0.04) 35%, transparent 70%);
+background: radial-gradient(circle at center, rgba(0,255,156,0.08) 0%, rgba(0,255,156,0.04) 35%, transparent 70%);
 border-radius:50%;
 }
 
@@ -208,7 +208,7 @@ max-height:1000px;
 position:fixed;
 bottom:0;
 left:50%;
-transform:translatex(-50%);
+transform:translateX(-50%);
 width:100%;
 max-width:420px;
 background:black;
@@ -2068,34 +2068,6 @@ updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
 
 function openSetup(){
   document.getElementById("setupPopup").style.display = "block";
-}
-
-function enableCompass(){
-
-if(window.compassEnabled) return;
-
-window.compassEnabled = true;
-
-if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-
-DeviceOrientationEvent.requestPermission()
-.then(permissionState => {
-
-if(permissionState === "granted"){
-startCompass();
-}else{
-document.getElementById("compassDir").innerText="Denied";
-}
-
-})
-.catch(console.error);
-
-}else{
-
-startCompass();
-
-}
-
 }
 
 function startCompass(){
