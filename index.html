@@ -564,7 +564,7 @@ document.getElementById("dropPanel").remove();
 function openSetup(){
 
 document.body.innerHTML += `
-<div id="setupPanel" style="
+<div id="setupScreen" style="
 position:fixed;
 top:0;
 left:0;
@@ -603,7 +603,7 @@ Reset Session Data
 }
 
 function closeSetup(){
-document.getElementById("setupPanel").remove();
+document.getElementById("setupScreen").remove();
 }
 
 function resetSession(){
@@ -1152,11 +1152,11 @@ return true
 return false
 
 }
-
-generateAI(spi, pressure, wind, cloud, WindDirection, airTemp);
   
 function updateSPI(v){
 
+generateAI(spi, pressure, wind, cloud, WindDirection, airTemp);  
+  
 if(lastSPI !== null){
 v = Math.round((v + lastSPI) /2)
 }
