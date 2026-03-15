@@ -1665,6 +1665,8 @@ iconAnchor:[15,30]
 
 document.addEventListener("DOMContentLoaded", function(){
 
+enableCompass();
+
 fetchWeather();
 
 setInterval(fetchWeather,600000);
@@ -2068,6 +2070,42 @@ function openSetup(){
   document.getElementById("setupPopup").style.display = "block";
 }
 
+function enableCompass(){
+
+if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+
+DeviceOrientationEvent.requestPermission()
+.then(permissionState => {
+
+if (permissionState === "granted") {
+
+window.addEventListener("deviceorientation", handleCompass);
+
+}
+
+})
+.catch(console.error);
+
+}else{
+
+window.addEventListener("deviceorientation", handleCompass);
+
+}
+
+}
+
+function handleCompass(event){
+
+let heading = Math.round(event.alpha);
+
+let dir="";
+
+if(heading >=337 || heading <22) dir="N"; else if(heading <67) dir="NE"; else if(heading <112) dir="E"; else if(heading <157) dir="SE"; else if(heading <202) dir="S"; else if(heading <247) dir="SW"; else if(heading <292) dir="W"; else dir="NW";
+
+document.getElementById("compassDir").innerText = dir;
+
+}
+  
 let compassHeading = 0;
 
 window.addEventListener("deviceorientation", function(event){
