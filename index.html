@@ -83,7 +83,7 @@ z-index:10;
 /* Left Cirle */
 .env-circle{
 left:-20px;
-transform:translate(-40px, 10px);
+transform:translate(-30px, 10px);
 }
 
 /* Right Circle */
@@ -605,7 +605,7 @@ Reset Session Data
 }
 
 function closeSetup(){
-document.getElementById("setupScreen").remove();
+document.getElementById("setupPopup").style.display = "none";
 }
 
 function resetSession(){
@@ -666,7 +666,57 @@ if(deg >= 247 && deg < 292) return "East bank (wind pushing west)"
 return "South-East bank"
 
 }
-  
+
+function bestWeekendThisMonth(){
+
+let today = new Date();
+let month = today.getMonth();
+let year = today.getFullYear();
+
+let bestScore = 0;
+let bestDate = null;
+
+for(let d = 1; d <= 31; d++){
+
+let testDate = new Date(year, month, d);
+
+if(testDate.getMonth() !== month) break;
+
+let day = testDate.getDay();
+
+if(day === 6 || day === 0){   // Saturday or Sunday
+
+let score = 50;
+
+let moon = getMoonPhase();
+
+if(moon === "Full") score += 10;
+if(moon === "Waxing") score += 6;
+
+score += seasonalWeight();
+score += sunriseWindow();
+
+if(score > bestScore){
+bestScore = score;
+bestDate = testDate;
+}
+
+}
+
+}
+
+if(bestDate){
+
+let options = { weekday: 'long', day: 'numeric', month: 'short' };
+
+return bestDate.toLocaleDateString(undefined, options);
+
+}
+
+return "No prediction";
+
+}
+
 function windDriftStrength(w){
 
 if(w < 4) return "Low drift"
@@ -2009,17 +2059,54 @@ function updateTacticalBar(confidence, feeding, window, pressureTrend){
 if(!pressureTrend){
 pressureTrend = "stable pressure";
 }
-  
+
+let bestWeekend = bestWeekendThisMonth();
+
 let text =
 confidence + " confidence • " +
 feeding + " feeding • " +
-window + " bite window active • " + "Pressure " + pressureTrend;  
+window + " bite window active • " +
+pressureTrend + " • Best weekend: " +
+bestWeekend;
 
 document.getElementById("tactical").innerText = text;
 
 }
 
+function bestWeekendThisMonth(){
+
+let today = new Date();
+let month = today.getMonth();
+let year = today.getFullYear();
+
+let bestDate = null;
+
+for(let d = 1; d <= 31; d++){
+
+let date = new Date(year, month, d);
+
+if(date.getMonth() !== month) break;
+
+if(date.getDay() === 6){ // Saturday
+bestDate = date;
+break;
+}
+
+}
+
+if(bestDate){
+return bestDate.toLocaleDateString(undefined,{day:'numeric',month:'short'});
+}
+
+return "None";
+
+}
+  
 updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
+
+function openSetup(){
+  document.getElementById("setupPopup").style.display = "block";
+}
   
 </script>
 
