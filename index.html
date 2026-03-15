@@ -83,7 +83,7 @@ z-index:10;
 /* Left Cirle */
 .env-circle{
 left:-15px;
-translate:(-85px, -40px);
+transform:translate:(-85px, -40px);
 }
 
 /* Right Circle */
@@ -172,6 +172,8 @@ margin-top:2px;
 
 .tactical-bar{
 margin:10px 20px 14px 20px;
+line-height:1.4;
+letter-spacing:0.3px;
 padding:12px;
 border-radius:14px;
 border:1px solid #00ff9c;
@@ -844,11 +846,11 @@ function detectStrikeWindow(spi,trend,w,c){
 let hour = new Date().getHours()
 
 /* sunrise window */
-if(hour >= 5 && hour <= 9 && spi >= 60){ return "Sunrise feeding window active"
+if(hour >= 5 && hour <= 9 && spi >= 60){ return "Sunrise window"
 }
 
 /* sunset window */
-if(hour >= 17 && hour <= 20 && spi >= 60){ return "Sunset feeding window active"
+if(hour >= 17 && hour <= 20 && spi >= 60){ return "Sunset window"
 }
 
 /* storm front feeding */
@@ -2010,7 +2012,7 @@ pressureTrend = "stable pressure";
   
 let text =
 confidence + " confidence • " +
-feeding + " feeding activity • " +
+feeding + " feeding • " +
 window + " bite window active • " + "Pressure " + pressureTrend;  
 
 document.getElementById("tactical").innerText = text;
