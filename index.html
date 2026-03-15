@@ -481,7 +481,8 @@ Waiting for environmental data...
 <div class="tile"><i data-lucide="moon"></i><div class="tile-title">Moon</div><div class="tile-value" id="moon">--</div></div>
 <div class="tile"><i data-lucide="leaf"></i><div class="tile-title">Season</div><div class="tile-value" id="season">--</div></div>
 <div class="tile"><i data-lucide="fish"></i><div class="tile-title">Feed</div><div class="tile-value" id="feed">--</div></div>
-
+<div class="tile"><i data-lucide="compass"></i><div class="tile-title">compass</div><div class="tile-value" id="compassDir">--</div></div>
+  
 </div>
 
 <div class="ai-box" onclick="toggleAI()">
@@ -2066,6 +2067,26 @@ updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
 function openSetup(){
   document.getElementById("setupPopup").style.display = "block";
 }
+
+let compassHeading = 0;
+
+window.addEventListener("deviceorientation", function(event){
+
+if(event.alpha !== null){
+
+let heading = Math.round(event.alpha);
+
+compassHeading = heading;
+
+let dir = "";
+
+if(heading >= 337 || heading < 22) dir = "N"; else if(heading < 67) dir = "NE"; else if(heading < 112) dir = "E"; else if(heading < 157) dir = "SE"; else if(heading < 202) dir = "S"; else if(heading < 247) dir = "SW"; else if(heading < 292) dir = "W"; else dir = "NW";
+
+document.getElementById("compassDir").innerText = dir;
+
+}
+
+});
   
 </script>
 
