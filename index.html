@@ -83,7 +83,7 @@ z-index:10;
 /* Left Cirle */
 .env-circle{
 left:-15px;
-translate:(-85px, -40px);
+transform: translate(-85px, -40px);
 }
 
 /* Right Circle */
@@ -1123,15 +1123,10 @@ tile.style.boxShadow =
 })
 
 let trend=getPressureTrend(p)
-document.getElementById("trend").innerText=trend
-
 let windDirName = windDirectionName(windDir)
-
 let strikeWindow = detectStrikeWindow(spi,trend,w,c)
 let stabilization = detectPressureStabilization()
-
-document.getElementById("tactical").innerText = "Confidence: "+confidence(spi)+" • "+feeding(spi)+" feeding • "+strikeWindow
-
+updateTacticalBar(confidence(spi), feeding(spi), strikeWindow, trend);
 generateAI(spi,p,w,c,windDir,t)
 }
 
@@ -1154,8 +1149,6 @@ return false
 }
   
 function updateSPI(v){
-
-generateAI(spi, pressure, wind, cloud, WindDirection, airTemp);  
   
 if(lastSPI !== null){
 v = Math.round((v + lastSPI) /2)
@@ -2012,12 +2005,13 @@ document.getElementById("planScreen").remove();
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
 
 if(!pressureTrend){
-pressureTrent = "stable pressure";
+pressureTrend = "stable pressure";
 }
+  
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
-window + " bite window active • " + "Presure " + pressureTrend;  
+window + " bite window active • " + "Pressure " + pressureTrend;  
 
 document.getElementById("tactical").innerText = text;
 
