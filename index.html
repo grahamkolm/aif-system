@@ -1152,7 +1152,9 @@ return true
 return false
 
 }
-    
+
+generateAI(spi, pressure, wind, cloud, WindDirection, airTemp);
+  
 function updateSPI(v){
 
 if(lastSPI !== null){
@@ -1358,7 +1360,6 @@ aiText += "Likely patrol route: <b>" + patrol + "</b><br>";
 /* OUTPUT */
 
 document.getElementById("aiContent").innerHTML = aiText;
-
 }
 
 function toggleAI(){
