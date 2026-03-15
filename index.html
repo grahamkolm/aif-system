@@ -482,12 +482,6 @@ Waiting for environmental data...
 
 </div>
 
-<div class="tile">
-<i data-lucide="activity"></i>
-<div class="tile-title">Pressure Trend</div>
-<div class="tile-value" id="trend">--</div>
-</div>
-
 <div class="ai-box" onclick="toggleAI()">
 
 <b>AI Tactical Analysis</b>
@@ -2014,18 +2008,18 @@ function closePlan(){
 document.getElementById("planScreen").remove();
 }
 
-function updateTacticalBar(confidence, feeding, window){
+function updateTacticalBar(confidence, feeding, window, pressureTrend){
 
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
-window + " bite window active";
+window + " bite window active • " + "Presure " + pressureTrend;  
 
 document.getElementById("tactical").innerText = text;
 
 }
 
-updateTacticalBar("Very high", "Heavy", "Sunrise");
+updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
   
 </script>
 
