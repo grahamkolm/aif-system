@@ -2010,6 +2010,9 @@ document.getElementById("planScreen").remove();
 
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
 
+if(!pressureTrend){
+pressureTrent = "stable pressure";
+}
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
