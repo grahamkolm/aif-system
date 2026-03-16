@@ -2039,9 +2039,9 @@ let weekends = bestFishingWeekends();
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
-window + " bite window active • " +
+window + " • " 
 "Pressure " + pressureTrend + " • " +
-"Best weekend: " + weekends.join(" • ");
+"Best weekends: " + weekends.join(" • ")
 
 document.getElementById("tactical").innerText = text;
 
