@@ -2054,7 +2054,11 @@ pressureTrend = "stable pressure";
 }
 
 let weekends = bestFishingWeekends();
+let forecastText = "";
 
+if(bestTime){
+  forecastText = "Best Forecast window: " +bestTime + " SPI " + bestForecastSPI + "%";
+}
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
