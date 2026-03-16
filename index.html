@@ -1133,6 +1133,27 @@ seasonIcon.style.stroke="#00ffa6"
 }
 
 document.getElementById("feed").innerText=feeding(spi)
+let oxygen = estimateOxygen(t, w, c);
+
+document.getElementById("oxygen").innerText =
+oxygen.toFixed(1) + " mg/L";
+
+let oxygenIcon = document.querySelector('[data-lucide="droplets"]');
+
+if(oxygenIcon){
+
+if(oxygen >= 9){
+oxygenIcon.style.stroke="#00ffa6";
+}
+else if(oxygen >= 7){
+oxygenIcon.style.stroke="#ffc400";
+}
+else{
+oxygenIcon.style.stroke="#ff3b3b";
+}
+
+}
+    
 let feedIcon=document.querySelector('[data-lucide="fish"]')
 
 if(feedIcon){
