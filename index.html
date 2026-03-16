@@ -2041,26 +2041,80 @@ let today = new Date();
 let month = today.getMonth();
 let year = today.getFullYear();
 
-let bestDate = null;
+let bestScore = 0;
+let bestWeekend = null;
 
 for(let d = 1; d <= 31; d++){
 
-let date = new Date(year, month, d);
+let saturday = new Date(year, month, d);
 
-if(date.getMonth() !== month) break;
+if(saturday.getMonth() !== month) break;
 
-if(date.getDay() === 6){ // Saturday
-bestDate = date;
-break;
+if(saturday.getDay() === 6){ // Saturday
+
+let sunday = new Date(year, month, d+1);
+
+let scoreSat = estimateDailySPI(saturday); let scoreSun = estimateDailySPI(sunday);
+
+let weekendScore = (scoreSat + scoreSun) / 2;
+
+if(weekendScore > bestScore){
+
+bestScore = weekendScore;
+bestWeekend = saturday;
+
 }
 
 }
 
-if(bestDate){
-return bestDate.toLocaleDateString(undefined,{day:'numeric',month:'short'});
 }
 
-return "None";
+if(bestWeekend){
+
+let options = { day:'numeric', month:'short' };
+
+let sunday = new Date(bestWeekend);
+sunday.setDate(bestWeekend.getDate()+1);
+
+return bestWeekend.toLocaleDateString(undefined,options) + " – " + sunday.toLocaleDateString(undefined,options);
+
+}
+
+return "No prediction";
+
+}
+
+function estimateDailySPI(date){
+
+let score = 50;
+
+let month = date.getMonth()+1;
+let hour = 6; // simulate morning feeding
+
+/* seasonal weight */
+
+if(month <=2 || month==12) score += 8;
+else if(month <=5) score += 4;
+else if(month <=8) score -= 4;
+else score += 6;
+
+/* moon phase */
+
+let moon = getMoonPhase();
+
+if(moon === "Full") score += 6;
+if(moon === "Waxing") score += 4;
+if(moon === "Waning") score += 2;
+
+/* sunrise feeding */
+
+score += 8;
+
+/* simulated pressure stability */
+
+score += Math.random()*6;
+
+return score;
 
 }
   
