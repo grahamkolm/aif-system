@@ -2074,7 +2074,7 @@ function startCompass(){
 
 window.addEventListener("deviceorientation", function(event){
 
-let heading = Math.round(event.alpha);
+let heading = 360 - event.alpha;
 
 let dir="";
 
@@ -2120,7 +2120,7 @@ compassActive = true;
 
 window.addEventListener("deviceorientation", function(event){
 
-let heading = event.alpha;
+let heading = 360 - event.alpha;
 
 if(heading === null) return;
 
