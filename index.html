@@ -936,12 +936,31 @@ async function fetchWeather(){
 
 try{
 
-let r = await fetch("https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
-
+let r = await fetch("https://api.openweathermap.org/data/2.5/forecast?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
 let d = await r.json();
+let forecast = d.list;
+let bestForecastSPI = 0;
+let bestTime = null;
 
-if(d.main){
-render(d);
+forecast.forEach(f => {
+
+let t = f.main.temp;
+let p = f.main.pressure;
+let w = f.wind.speed * 3.6;
+let c = f.clouds.all;
+let windDir = f.wind.deg;
+
+let spi = calculateSPI(p,w,c,windDir,t);
+
+if(spi > bestForecastSPI){
+bestForecastSPI = spi;
+bestTime = f.dt_txt;
+}
+
+});
+
+if(forecast && forecast.length){
+render(forecast[0]);
 }
 
 }catch(e){
