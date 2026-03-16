@@ -586,6 +586,8 @@ let pressureHistory=[]
 let lastSPI = null
 let lastWindSpeed = 0
 let lastCloud = 0
+let bestForecastSPI = 0;
+let bestTime = null;
 
 function getMoonPhase(){
 let d=new Date()
@@ -1695,6 +1697,33 @@ iconAnchor:[15,30]
 /* ===== DASHBOARD START ===== */
 
 document.addEventListener("DOMContentLoaded", function(){
+let compassActive = false;
+
+document.getElementById("compassTile").addEventListener("click", enableCompass);
+
+function enableCompass(){
+
+if(compassActive) return;
+
+if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+
+DeviceOrientationEvent.requestPermission()
+.then(response => {
+
+if(response === "granted"){
+startCompass();
+}
+
+})
+.catch(console.error);
+
+}else{
+
+startCompass();
+
+}
+
+}
 
 enableCompass();
 
@@ -2124,34 +2153,6 @@ if(heading >=337 || heading <22) dir="N"; else if(heading <67) dir="NE"; else if
 document.getElementById("compassDir").innerText = dir;
 
 });
-
-}
-
-let compassActive = false;
-
-document.getElementById("compassTile").addEventListener("click", enableCompass);
-
-function enableCompass(){
-
-if(compassActive) return;
-
-if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-
-DeviceOrientationEvent.requestPermission()
-.then(response => {
-
-if(response === "granted"){
-startCompass();
-}
-
-})
-.catch(console.error);
-
-}else{
-
-startCompass();
-
-}
 
 }
 
