@@ -1475,6 +1475,66 @@ return Math.max(20, Math.min(score,95));
 }
   
 function scoutSpot(){
+openScoutScreen();
+}
+
+function openScoutScreen(){
+
+let html = `
+<div id="scoutScreen" class="popup">
+
+<h2>Scout Spot</h2>
+
+<div style="text-align:left;margin-top:10px">
+
+<p><b>Scout Process</b></p>
+
+<ol>
+<li>Ensure probe cable is connected</li> <li>Press START SCAN</li> <li>Slowly lower probe to bottom</li> <li>Watch live temperature changes</li> <li>Enter depth when probe reaches bottom</li> </ol>
+
+</div>
+
+<div style="margin-top:15px">
+Probe Status: <span id="probeStatus">Checking...</span>
+</div>
+
+<div style="margin-top:20px">
+<button onclick="startScout()">START SCAN</button> <button onclick="closeScout()">Cancel</button>
+</div>
+
+</div>
+`;
+
+document.body.insertAdjacentHTML("beforeend",html);
+
+checkProbeConnection();
+
+}
+
+function closeScout(){
+  document.getElementById("scoutScreen").remove();
+}
+
+function checkProbeConnection(){
+
+let status = document.getElementById("probeStatus");
+
+setTimeout(()=>{
+status.innerText="Connected";
+status.style.color="#00ff88";
+},1000);
+
+}
+
+function startScout(){
+
+document.getElementById("probeStatus").innerText="Scanning...";
+
+// later we will start the probe here
+
+}
+
+function getBestScout(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
@@ -1521,9 +1581,7 @@ alert(
 })
 
 }
-
-function getBestScout(){
-
+  
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]")
 
 if(scouts.length === 0) return null
