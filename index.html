@@ -2022,7 +2022,7 @@ if(!pressureTrend){
 pressureTrend = "stable pressure";
 }
 
-let bestWeekend = bestWeekendThisMonth();
+let bestWeekend = bestFishingWeekendsNext3Months();
 
 let text =
 confidence + " confidence • " +
@@ -2187,6 +2187,64 @@ if(heading >=337 || heading <22) dir="N"; else if(heading <67) dir="NE"; else if
 document.getElementById("compassDir").innerText = dir;
 
 });
+
+}
+
+function bestFishingWeekendsNext3Months(){
+
+let results = [];
+
+let today = new Date();
+
+for(let m = 0; m < 3; m++){
+
+let monthDate = new Date(today.getFullYear(), today.getMonth()+m, 1);
+
+let bestScore = 0;
+let bestSaturday = null;
+
+for(let d = 1; d <= 31; d++){
+
+let saturday = new Date(monthDate.getFullYear(), monthDate.getMonth(), d);
+
+if(saturday.getMonth() !== monthDate.getMonth()) break;
+
+if(saturday.getDay() === 6){
+
+let sunday = new Date(saturday);
+sunday.setDate(saturday.getDate()+1);
+
+let scoreSat = estimateDailySPI(saturday); let scoreSun = estimateDailySPI(sunday);
+
+let weekendScore = (scoreSat + scoreSun)/2;
+
+if(weekendScore > bestScore){
+bestScore = weekendScore;
+bestSaturday = saturday;
+}
+
+}
+
+}
+
+if(bestSaturday){
+
+let sunday = new Date(bestSaturday);
+sunday.setDate(bestSaturday.getDate()+1);
+
+let label = bestSaturday.toLocaleDateString(undefined,{month:'short'}) +
+": " +
+bestSaturday.getDate() +
+"–" +
+sunday.getDate();
+
+results.push(label);
+
+}
+
+}
+
+return results.join(" | ");
 
 }
   
