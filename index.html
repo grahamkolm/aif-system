@@ -1534,8 +1534,7 @@ document.getElementById("probeStatus").innerText="Scanning...";
 
 }
 
-function getBestScout(){
-
+function scoutSpot(){
 navigator.geolocation.getCurrentPosition(function(pos){
 
 let lat = pos.coords.latitude;
@@ -1577,7 +1576,7 @@ alert(
 
 "\n\nSWIM SCORE: "+score+"%"
 );
-})
+});
 }
 
 fucntion getBestScout(){
