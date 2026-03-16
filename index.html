@@ -941,9 +941,8 @@ try{
 let r = await fetch("https://api.openweathermap.org/data/2.5/forecast?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
 let d = await r.json();
 let forecast = d.list;
-let bestForecastSPI = 0;
-let bestTime = null;
-
+bestForecastSPI = 0;
+bestTime = null;
 forecast.forEach(f => {
 
 let t = f.main.temp;
@@ -2091,7 +2090,7 @@ if(bestTime){
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
-window + " • " 
+window + " • " + 
 "Pressure " + pressureTrend + " • " +
 forecastText + " • " +
 "Best weekends: " + weekends.join(" • ");
