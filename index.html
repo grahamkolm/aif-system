@@ -627,14 +627,21 @@ return "South-East bank"
 
 }
 
-function bestWeekendThisMonth(){
+function bestFishingWeekends(){
 
+let results = [];
 let today = new Date();
-let month = today.getMonth();
-let year = today.getFullYear();
+
+for(let m = 0; m < 3; m++){
+
+let date = new Date();
+date.setMonth(today.getMonth() + m);
+
+let month = date.getMonth();
+let year = date.getFullYear();
 
 let bestScore = 0;
-let bestDate = null;
+let bestSaturday = null;
 
 for(let d = 1; d <= 31; d++){
 
@@ -642,38 +649,43 @@ let testDate = new Date(year, month, d);
 
 if(testDate.getMonth() !== month) break;
 
-let day = testDate.getDay();
+if(testDate < today) continue;
 
-if(day === 6 || day === 0){   // Saturday or Sunday
+if(testDate.getDay() === 6){
 
-let score = 50;
+let sunday = new Date(testDate);
+sunday.setDate(testDate.getDate()+1);
 
-let moon = getMoonPhase();
+let scoreSat = estimateDailySPI(testDate); let scoreSun = estimateDailySPI(sunday);
 
-if(moon === "Full") score += 10;
-if(moon === "Waxing") score += 6;
+let weekendScore = (scoreSat + scoreSun)/2;
 
-score += seasonalWeight();
-score += sunriseWindow();
+if(weekendScore > bestScore){
 
-if(score > bestScore){
-bestScore = score;
-bestDate = testDate;
-}
+bestScore = weekendScore;
+bestSaturday = testDate;
 
 }
 
 }
 
-if(bestDate){
+}
 
-let options = { weekday: 'long', day: 'numeric', month: 'short' };
+if(bestSaturday){
 
-return bestDate.toLocaleDateString(undefined, options);
+let sunday = new Date(bestSaturday);
+sunday.setDate(bestSaturday.getDate()+1);
+
+results.push(
+bestSaturday.toLocaleDateString(undefined,{day:'numeric',month:'short'}) + " – " +
+sunday.toLocaleDateString(undefined,{day:'numeric',month:'short'})
+);
 
 }
 
-return "No prediction";
+}
+
+return results;
 
 }
 
@@ -2022,65 +2034,16 @@ if(!pressureTrend){
 pressureTrend = "stable pressure";
 }
 
-let bestWeekend = bestFishingWeekendsNext3Months();
+let weekends = bestFishingWeekends();
 
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
 window + " bite window active • " +
 "Pressure " + pressureTrend + " • " +
-"Best weekend: " + bestWeekend;
+"Best weekend: " + weekends.join(" • ");
 
 document.getElementById("tactical").innerText = text;
-
-}
-
-function bestWeekendThisMonth(){
-
-let today = new Date();
-let month = today.getMonth();
-let year = today.getFullYear();
-
-let bestScore = 0;
-let bestWeekend = null;
-
-for(let d = 1; d <= 31; d++){
-
-let saturday = new Date(year, month, d);
-
-if(saturday.getMonth() !== month) break;
-
-if(saturday.getDay() === 6){ // Saturday
-
-let sunday = new Date(year, month, d+1);
-
-let scoreSat = estimateDailySPI(saturday); let scoreSun = estimateDailySPI(sunday);
-
-let weekendScore = (scoreSat + scoreSun) / 2;
-
-if(weekendScore > bestScore){
-
-bestScore = weekendScore;
-bestWeekend = saturday;
-
-}
-
-}
-
-}
-
-if(bestWeekend){
-
-let options = { day:'numeric', month:'short' };
-
-let sunday = new Date(bestWeekend);
-sunday.setDate(bestWeekend.getDate()+1);
-
-return bestWeekend.toLocaleDateString(undefined,options) + " – " + sunday.toLocaleDateString(undefined,options);
-
-}
-
-return "No prediction";
 
 }
 
