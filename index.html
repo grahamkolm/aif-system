@@ -2085,8 +2085,15 @@ let weekends = bestFishingWeekends();
 let forecastText = "";
 
 if(bestTime){
-  forecastText = "Best Forecast window: " +bestTime + " SPI " + bestForecastSPI + "%";
+let date = new Date(bestTime);
+
+forecastText =
+"Best Forecast window: " +
+date.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'}) + " " +
+date.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}) + " • SPI " + bestForecastSPI + "%";
+
 }
+
 let text =
 confidence + " confidence • " +
 feeding + " feeding activity • " +
