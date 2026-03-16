@@ -1499,7 +1499,7 @@ Probe Status: <span id="probeStatus">Checking...</span>
 </div>
 
 <div style="margin-top:20px">
-<button onclick="startScout()">START SCAN</button> <button onclick="closeScout()">Cancel</button>
+<button onclick="performScout()">START SCAN</button> <button onclick="closeScout()">Cancel</button>
 </div>
 
 </div>
@@ -1534,7 +1534,7 @@ document.getElementById("probeStatus").innerText="Scanning...";
 
 }
 
-function scoutSpot(){
+function performScout(){
 navigator.geolocation.getCurrentPosition(function(pos){
 
 let lat = pos.coords.latitude;
@@ -1577,9 +1577,9 @@ alert(
 );
 });
 
-fucntion getBestScout(){
+function getBestScout(){
   
-let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]")
+let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
 
 if(scouts.length === 0) return null
 
