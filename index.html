@@ -2518,32 +2518,22 @@ function estimateSurfaceTemp({
   return newTemp;
 }
 
-function estimateBottomTemp({
-  surfaceTemp,
-  airTemp,
-  depth = 6,
-  windSpeed
-}){
+function estimateBottomTemp(data){
 
-  // Base temperature drop per meter
-  let dropRate = 0.35;
+  let surfaceTemp = data.surfaceTemp;
+  let depth = data.depth;
+  let w = data.windSpeed || 2;
 
-  // Wind mixing reduces stratification
-  if(windSpeed > 10){
-    dropRate = 0.25;
-  }
+  let dropRate = 0.1;
 
-  if(windSpeed > 18){
+  if(w > 18){
     dropRate = 0.15;
   }
 
-  // Total drop from surface
   let tempDrop = depth * dropRate;
 
-  // ✅ ALWAYS based on surface temp
   let bottomTemp = surfaceTemp - tempDrop;
 
-  // Safety clamp (never allow warmer than surface)
   if(bottomTemp >= surfaceTemp){
     bottomTemp = surfaceTemp - 0.5;
   }
@@ -2551,7 +2541,6 @@ function estimateBottomTemp({
   return bottomTemp;
 }
 
-  
 </script>
 
 </body>
