@@ -2179,7 +2179,15 @@ let weekends = bestFishingWeekends();
 let forecastText = "";
 
 if(bestTime){
-let date = new Date(bestTime);
+  let date = new Date(bestTime);
+  
+  if(!isNaN(date)){
+    forecastText =
+      "Best Forecast window: " +
+      date.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'}) + " " +
+      date.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}) + " • SPI " + bestForecastSPI + "%";
+  }
+}
 
 forecastText =
 "Best Forecast window: " +
