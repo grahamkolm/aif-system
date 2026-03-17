@@ -589,6 +589,8 @@ let lastWindSpeed = 0
 let lastCloud = 0
 let bestForecastSPI = 0;
 let bestTime = null;
+let sensorTemp = null;
+let lastSurfaceTemp = null;
 
 function getMoonPhase(){
 let d=new Date()
@@ -1033,7 +1035,7 @@ airIcon.style.stroke="#00ffa6"
 }
 }
   
-document.getElementById("surface").innerText=(t-0.5).toFixed(1)+"°C"
+document.getElementById("surface").innerText=surfaceTemp.toFixed(1) + "°C";
 let surfaceIcon=document.querySelector('[data-lucide="waves"]')
 
 if(surfaceIcon){
@@ -1052,7 +1054,7 @@ surfaceIcon.style.stroke="#00ffa6"
 
 }
 
-document.getElementById("bottom").innerText=(t-1.5).toFixed(1)+"°C"
+document.getElementById("bottom").innerText= bottomTemp.toFixed(1) + "°C";
 let bottomIcon=document.querySelector('[data-lucide="arrow-down"]')
 
 if(bottomIcon){
