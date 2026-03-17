@@ -952,8 +952,13 @@ let r = await fetch("https://api.openweathermap.org/data/2.5/forecast?lat=-26.2&
 console.log("Response status:", r.status);
 
 if(!r.ok){
-  throw new Error("API ERROR: " + r.status); }
+  throw new Error("API ERROR: " + r.status); 
+}
 
+let d = await r.json();
+  console.log("Weather data:", d);
+let forecast = d.list;
+  
 bestForecastSPI = 0;
 bestTime = null;
 forecast.forEach(f => {
@@ -987,6 +992,13 @@ document.getElementById("tactical").innerText="Weather connection failed";
 
 function render(d){
 
+let t = d.main.temp;
+let p = d.main.pressure;
+let w = d.wind.speed * 3.6;
+let c = d.clouds.all;
+let windDir = d.wind.deg;
+
+// ✅ ADD THIS BLOCK HERE
 let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   prevWaterTemp: lastSurfaceTemp || (t - 0.5),
   airTemp: t,
@@ -998,7 +1010,7 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
 lastSurfaceTemp = surfaceTemp;
 
 let bottomTemp = t - 1.5;
-  
+
 let t=d.main.temp
 let p=d.main.pressure
 lastPressure = p
