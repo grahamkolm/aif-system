@@ -785,8 +785,7 @@ score -= 4
 lastWindDir = windDir
   
 /* CLOUD COVER */
-
-let cloudCover = weather.clouds || 0;  
+  
 if(c >= 20 && c <= 70) score += 10
 if(c > 80) score += 4
 if(c < 10) score -= 3
@@ -802,14 +801,10 @@ score += 4
 }
 
 /* THERMO STABILITY */
-let t= t || 20;
-let windSpeed = windSpeed || 2;
-let c = c || 20;
-
 let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   prevWaterTemp: lastSurfaceTemp || (t - 0.5),
   airTemp: t,
-  windSpeed: windSpeed || 2,
+  windSpeed: w || 2,
   sunFactor: 1 - (c || 0) / 100,
   hour: new Date().getHours()
 });
