@@ -2175,7 +2175,7 @@ if(!pressureTrend){
 pressureTrend = "stable pressure";
 }
 
-let weekends = bestFishingWeekends();
+let weekends = bestFishingWeekends() || [];
 
 let forecastText = "";
 
@@ -2197,7 +2197,7 @@ feeding + " feeding activity • " +
 window + " • " + 
 "Pressure " + pressureTrend + " • " +
 forecastText + " • " +
-"Best weekends: " + weekends.join(" • ");
+"Best weekends: " + (Array.isArray(weekends) ? weekends.join(" • ") : "N/A");
 
 document.getElementById("tactical").innerText = text;
 
