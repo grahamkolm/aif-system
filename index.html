@@ -1581,6 +1581,7 @@ function performScout(){
 
 /* SAVE SCOUT POINT */
 
+function saveScout(){
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]")
 
 scouts.push({
@@ -1590,7 +1591,9 @@ score: score,
 time: new Date().toISOString()
 })
 
-localStorage.setItem("aif_scout", JSON.stringify(scouts))
+localStorage.setItem("aif_scout", JSON.stringify(scouts));
+
+closeScout();
 }
 
 function getBestScout(){
