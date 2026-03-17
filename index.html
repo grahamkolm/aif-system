@@ -810,6 +810,7 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   sunFactor: 1 - (c || 0) / 100,
   hour: new Date().getHours()
 });
+
 lastSurfaceTemp = surfaceTemp;
 let bottomTemp;
 
@@ -822,9 +823,10 @@ try {
   });
 } catch(e) {
   console.error("Bottom temp error:", e);
-  bottomTemp = surfaceTemp - 1.5 + (w * 0.05); // fallback }
-
-let diff = Math.abs(surfaceTemp - bottomTemp)
+  bottomTemp = surfaceTemp - 1.5 + (w * 0.05); // fallback 
+}
+  
+let diff = Math.abs(surfaceTemp - bottomTemp);
 
 if(diff < 1){
 score += 4
