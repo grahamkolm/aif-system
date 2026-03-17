@@ -2492,26 +2492,20 @@ function estimateSurfaceTemp({
   prevWaterTemp,
   airTemp,
   windSpeed,
-  sunFactor,   // 0–1 (clouds)
+  sunFactor,
   hour
 }) {
 
-  // Day/night factor
   let dayFactor = (hour >= 6 && hour <= 18) ? 1 : -0.5;
-
-  // Air influence (slow adjustment)
   let airEffect = (airTemp - prevWaterTemp) * 0.1;
-
-  // Sun heating (only daytime)
   let sunEffect = sunFactor * 0.5 * dayFactor;
-
-  // Wind cooling (mixing effect)
   let windEffect = -windSpeed * 0.03;
 
-  // Final temp
   let newTemp = prevWaterTemp + airEffect + sunEffect + windEffect;
 
   return newTemp;
+}  // ✅ THIS WAS MISSING
+
 
 function estimateBottomTemp(data){
 
