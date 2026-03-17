@@ -1227,9 +1227,10 @@ let windDirName = windDirectionName(windDir)
 let strikeWindow = detectStrikeWindow(spi,trend,w,c)
 let stabilization = detectPressureStabilization()
 updateTacticalBar(confidence(spi), feeding(spi), strikeWindow, trend);
-generateAI(spi,p,w,c,windDir,t)
+generateAI(spi,p,w,c,windDir,t);
 }
-
+}
+  
 function detectPressureStabilization(){
 
 if(pressureHistory.length < 4){
