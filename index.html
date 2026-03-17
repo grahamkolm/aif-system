@@ -1000,12 +1000,6 @@ if(forecast && forecast.length){
 render(forecast[0]);
 }
 
-}catch(e){
-
-document.getElementById("tactical").innerText="Weather connection failed";
-
-}
-
 function render(d){
 
 let t = d.main.temp;
