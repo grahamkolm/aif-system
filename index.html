@@ -1708,7 +1708,12 @@ alert("Scout data cleared");
 }
 
 function openMap(){
-
+// show your map screen here
+    setTimeout(() =>{
+        map.invalidateSize();
+        map.setview([-25.88, 28.15], 15);
+    }, 500);
+}
 navigator.geolocation.getCurrentPosition(function(pos){
 
 let lat = pos.coords.latitude;
