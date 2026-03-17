@@ -1019,8 +1019,6 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
 
 lastSurfaceTemp = surfaceTemp;
 
-let bottomTemp = t - 1.5;
-
 let spi=calculateSPI(p,w,c,windDir,t)
 
 updateSPI(spi)
