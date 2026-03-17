@@ -999,6 +999,11 @@ let c = d.clouds.all;
 let windDir = d.wind.deg;
 
 // ✅ ADD THIS BLOCK HERE
+
+lastPressure = p;
+lastWindSpeed = w;
+lastCloud = c;
+  
 let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   prevWaterTemp: lastSurfaceTemp || (t - 0.5),
   airTemp: t,
