@@ -802,8 +802,9 @@ score += 4
 }
 
 /* THERMO STABILITY */
-let sensorTemp = null;
-let lastSurfaceTemp = null;
+let t= t || 20;
+let windSpeed = windSpeed || 2;
+let c = c || 20;
 
 let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   prevWaterTemp: lastSurfaceTemp || (t - 0.5),
