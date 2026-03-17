@@ -956,14 +956,22 @@ if(!r.ok){
 }
 
 let d = await r.json();
-  console.log("Weather data:", d);
+console.log("Weather data:", d);
 let forecast = d.list;
   
 bestForecastSPI = 0;
 bestTime = null;
 forecast.forEach(f => {
 
-let spi = calculateSPI(p,w,c,windDir,t);
+  let t = f.main.temp;
+  let p = f.main.pressure;
+  let w = f.wind.speed * 3.6;
+  let c = f.clouds.all;
+  let windDir = f.wind.deg;
+
+  let spi = calculateSPI(p, w, c, windDir, t);
+
+});
 
 if(spi > bestForecastSPI){
 bestForecastSPI = spi;
