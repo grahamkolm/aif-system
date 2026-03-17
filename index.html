@@ -811,7 +811,12 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   hour: new Date().getHours()
 });
 lastSurfaceTemp = surfaceTemp;
-let bottomTemp = t - 1.5
+let bottomTemp = estimateBottomTemp({
+  surfaceTemp: surfaceTemp,
+  airTemp: t,
+  depth: 6,
+  windSpeed: w
+});
 
 let diff = Math.abs(surfaceTemp - bottomTemp)
 
@@ -2514,6 +2519,38 @@ function estimateSurfaceTemp({
   let newTemp = prevWaterTemp + airEffect + sunEffect + windEffect;
 
   return newTemp;
+}
+
+function estimateBottomTemp({
+  surfaceTemp,
+  airTemp,
+  depth = 6,   // target depth (meters)
+  windSpeed
+}){
+
+  // Base drop rate (°C per meter)
+  let dropRate = 0.4;
+
+  // Wind mixes water → reduces stratification
+  if(windSpeed > 10){
+    dropRate = 0.25;
+  }
+
+  if(windSpeed > 18){
+    dropRate = 0.15;
+  }
+
+  // Calculate bottom temp
+  let tempDrop = depth * dropRate;
+
+  let bottomTemp = surfaceTemp - tempDrop;
+
+  // Prevent unrealistic values
+  if(bottomTemp > surfaceTemp){
+    bottomTemp = surfaceTemp - 0.2;
+  }
+
+  return bottomTemp;
 }
   
 </script>
