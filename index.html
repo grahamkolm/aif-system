@@ -970,13 +970,7 @@ let d = await r.json();
 console.log("Weather data:", d);
 
 let forecast = d.list;
-
-try{
-render(forecast[0]);
-} catch(e){
-  console.error("Render error:",e);
-}  
-  
+ 
 bestForecastSPI = 0;
 bestTime = null;
 forecast.forEach(f => {
