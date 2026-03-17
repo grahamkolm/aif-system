@@ -12,6 +12,19 @@
 body{
 margin:0;
 background:#05080d;
+input, select {
+    font-size: 16px;
+}
+
+input, select {
+    padding: 12px;
+    border-radius: 12px;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
 color:#e6edf3;
 display:flex;
@@ -454,7 +467,7 @@ class="spi-desc">Strike Probability Index</text>
 <li>Prepare first bait drop</li>
 </ul>
 
-<label>Target depth confirmed (m)</label> <input type="number" id="obs_targetDepth" step="0.1">
+<label>Target depth confirmed (m)</label> < type="number" id="obs_targetDepth" step="0.1">
 
 <label>Patrol direction observed</label> <select id="obs_patrol"> <option>Shallow to deep</option> <option>Deep to shallow</option> <option>Along margin</option> <option>Across wind</option> </select>
 
