@@ -1740,17 +1740,18 @@ document.body.appendChild(btn);
 
 /* CREATE MAP */
 
-let map = L.map('map').setView([lat, lon], 15);
-
+let map = L.map('map').setView([-25.88, 28.15], 15);
+    
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-maxZoom: 18
+maxZoom: 18,
+    attribution: '&copy: OpenStreetMap contributors'
 }).addTo(map);
 
 /* USER POSITION */
 
-L.marker([lat, lon])
+L.marker([-25.88, 28.15]).addTo(map);
 .addTo(map)
-.bindPopup("Your Position")
+.bindPopup("test")
 .openPopup();
 
 /* LOAD SCOUT POINTS */
