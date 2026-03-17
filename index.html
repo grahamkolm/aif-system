@@ -811,12 +811,18 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   hour: new Date().getHours()
 });
 lastSurfaceTemp = surfaceTemp;
-let bottomTemp = estimateBottomTemp({
-  surfaceTemp: surfaceTemp,
-  airTemp: t,
-  depth: 6,
-  windSpeed: w
-});
+let bottomTemp;
+
+try {
+  bottomTemp = estimateBottomTemp({
+    surfaceTemp: surfaceTemp,
+    airTemp: t,
+    depth: 6,
+    windSpeed: w
+  });
+} catch(e) {
+  console.error("Bottom temp error:", e);
+  bottomTemp = surfaceTemp - 1.5 + (w * 0.05)); // fallback }
 
 let diff = Math.abs(surfaceTemp - bottomTemp)
 
@@ -2526,10 +2532,10 @@ function estimateBottomTemp({
   windSpeed
 }){
 
-  // Base drop per meter
+  // Base temperature drop per meter
   let dropRate = 0.35;
 
-  // Wind mixing reduces difference
+  // Wind mixing reduces stratification
   if(windSpeed > 10){
     dropRate = 0.25;
   }
@@ -2538,19 +2544,20 @@ function estimateBottomTemp({
     dropRate = 0.15;
   }
 
-  // Total drop
+  // Total drop from surface
   let tempDrop = depth * dropRate;
 
-  // 🔥 CRITICAL: ALWAYS base off surfaceTemp
+  // ✅ ALWAYS based on surface temp
   let bottomTemp = surfaceTemp - tempDrop;
 
-  // Safety clamp (never allow inversion)
+  // Safety clamp (never allow warmer than surface)
   if(bottomTemp >= surfaceTemp){
     bottomTemp = surfaceTemp - 0.5;
   }
 
   return bottomTemp;
 }
+
   
 </script>
 
