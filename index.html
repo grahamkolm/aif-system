@@ -6,7 +6,8 @@
     
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script> 
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://maps.googleapis.com/maps/api/js"></script> 
 
 <style> 
 body{
@@ -511,12 +512,14 @@ Tap to expand
 
 </div>
 
+<div id="map" style="width:100%; height:70vh;"></div>  
+
 <div class="dock">
 <div class="dock-btn" onclick="refreshDashboard()"> 
 <i id="refreshIcon" data-lucide="refresh-cw"></i> 
 Refresh 
-</div>
-
+</div>  
+    
 <div class="dock-btn" onclick="openScout()">
 <i data-lucide="map-pin"></i> 
 Scout 
@@ -2660,6 +2663,41 @@ function estimateBottomTemp(data){
   }
 
   return bottomTemp;
+}
+let map;
+let marker;
+
+function initMap(){
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 18,
+        center: {lat: -25.88, lng: 28.15},
+        mapTypeId: "satellite"
+    });
+
+    marker = new google.maps.Marker({
+        position: {lat: -25.88, lng: 28.15},
+        map: map
+    });
+
+    setInterval(updateGPS, 1000);
+}
+
+async function updateGPS(){
+    try{
+        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:5000/gps__;!!LtDMhTYuqQ!QDAuiNZtodHupGfhbUBi-Wegi2zI71Ibz-hA6iLmvddq0OUCHNVtty8FalKC7mKOpRJ1BwWJe1EimzH9PKBSaRyW$ ");
+        let data = await res.json();
+
+        let pos = {
+            lat: data.lat,
+            lng: data.lon
+        };
+
+        marker.setPosition(pos);
+        map.setCenter(pos);
+
+    } catch(e){
+        console.log("GPS error");
+    }
 }
 
 </script>
