@@ -1016,6 +1016,12 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
   hour: new Date().getHours()
 });
 
+let bottomTemp = estimateBottomTemp({
+  surfaceTemp: surfaceTemp,
+  depth: 6,
+  WindSpeed: w
+});
+  
 lastSurfaceTemp = surfaceTemp;
 
 let spi=calculateSPI(p,w,c,windDir,t)
