@@ -2524,14 +2524,14 @@ function estimateSurfaceTemp({
 function estimateBottomTemp({
   surfaceTemp,
   airTemp,
-  depth = 6,   // target depth (meters)
+  depth = 6,
   windSpeed
 }){
 
-  // Base drop rate (°C per meter)
-  let dropRate = 0.4;
+  // Base drop per meter
+  let dropRate = 0.35;
 
-  // Wind mixes water → reduces stratification
+  // Wind mixing reduces difference
   if(windSpeed > 10){
     dropRate = 0.25;
   }
@@ -2540,14 +2540,15 @@ function estimateBottomTemp({
     dropRate = 0.15;
   }
 
-  // Calculate bottom temp
+  // Total drop
   let tempDrop = depth * dropRate;
 
+  // 🔥 CRITICAL: ALWAYS base off surfaceTemp
   let bottomTemp = surfaceTemp - tempDrop;
 
-  // Prevent unrealistic values
-  if(bottomTemp > surfaceTemp){
-    bottomTemp = surfaceTemp - 0.2;
+  // Safety clamp (never allow inversion)
+  if(bottomTemp >= surfaceTemp){
+    bottomTemp = surfaceTemp - 0.5;
   }
 
   return bottomTemp;
