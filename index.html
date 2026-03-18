@@ -288,39 +288,7 @@ box-sizing:border-box;
   margin-bottom: 2px;
 }
 
-<div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-
-<button onclick="startScoutScan()" style="
-flex:1;
-background:#007aff;
-border:none;
-padding:10px;
-border-radius:8px;
-font-weight:600;
-color:white;
-">Start Scan</button>
-
-<button onclick="saveScout()" style="
-flex:1;
-background:#00ffa6;
-border:none;
-padding:10px;
-border-radius:8px;
-font-weight:600;
-">Save</button>
-
-<button onclick="closeScoutPopup()" style="
-flex:1;
-background:#111;
-color:#fff;
-border:1px solid #333;
-padding:10px;
-border-radius:8px;
-">Cancel</button>
-
 </div>
-
-
   
 </style>
 </head>
@@ -2493,6 +2461,12 @@ document.body.insertAdjacentHTML("beforeend",html);
 
 }
 
+<div style="margin-top:12px; display:flex; gap:8px;">
+  <button onclick="startScoutScan()" style="flex:1;background:#007aff;border:none;padding:10px;border-radius:8px;color:white;">Scan</button>
+  <button onclick="saveScout()" style="flex:1;background:#00ffa6;border:none;padding:10px;border-radius:8px;">Save</button>
+  <button onclick="closeScoutPopup()" style="flex:1;background:#111;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;">Cancel</button>
+</div>
+  
 function closeScoutPopup(){
 document.getElementById("scoutPopup").remove();
 }
