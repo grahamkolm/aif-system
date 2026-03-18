@@ -611,7 +611,8 @@ let bestForecastSPI = 0;
 let bestTime = null;
 let sensorTemp = null;
 let lastSurfaceTemp = null;
-
+let compassActive = false;
+    
 function getMoonPhase(){
 let d=new Date()
 let lp=2551443
@@ -1764,41 +1765,6 @@ if(best){
 }
 
 /* ===== DASHBOARD START ===== */
-
-document.addEventListener("DOMContentLoaded", function(){
-let compassActive = false;
-
-document.getElementById("compassTile").addEventListener("click", enableCompass);
-
-function enableCompass(){
-
-  if(compassActive) return;
-
-  if (typeof DeviceOrientationEvent !== "undefined" &&
-      typeof DeviceOrientationEvent.requestPermission === "function") {
-
-    DeviceOrientationEvent.requestPermission()
-      .then(response => {
-        if(response === "granted"){
-          startCompass();
-        }
-      })
-      .catch(err => console.error(err));
-
-  } else {
-    startCompass();
-  }
-}
-
-enableCompass();
-
-fetchWeather();
-
-setInterval(fetchWeather,600000);
-
-if(typeof lucide !== "undefined"){
-lucide.createIcons();
-}
                                              
 function closeMap(){
 document.getElementById("map").remove();
@@ -2621,6 +2587,41 @@ async function updateGPS(){
 
 setInterval(updateGPS, 2000);
 updateGPS();
+
+document.addEventListener("DOMContentLoaded", function(){
+let compassActive = false;
+
+document.getElementById("compassTile").addEventListener("click", enableCompass);
+
+function enableCompass(){
+
+  if(compassActive) return;
+
+  if (typeof DeviceOrientationEvent !== "undefined" &&
+      typeof DeviceOrientationEvent.requestPermission === "function") {
+
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if(response === "granted"){
+          startCompass();
+        }
+      })
+      .catch(err => console.error(err));
+
+  } else {
+    startCompass();
+  }
+}
+
+enableCompass();
+
+fetchWeather();
+
+setInterval(fetchWeather,600000);
+
+if(typeof lucide !== "undefined"){
+lucide.createIcons();
+}
     
 </script>
 
