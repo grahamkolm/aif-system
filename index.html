@@ -1,5 +1,5 @@
 <!DOCTYPE html> 
-<html> 
+<html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>AIF Dashboard v5</title> 
@@ -1768,29 +1768,6 @@ async function updateGPS(){
         console.log("GPS fetch error:", e);
     }
 }
-
-/* LOAD SCOUT POINTS */
-
-let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
-
-scouts.forEach(function(s){
-
-let color = "red";
-
-if(s.score >= 80) color = "green";
-else if(s.score >= 60) color = "orange";
-
-let marker = L.circleMarker([s.lat, s.lon],{ radius:8, color:color, fillColor:color,
-fillOpacity:0.8
-}).addTo(map);
-
-marker.bindPopup(
-"<b>Scout Spot</b><br>" +
-"Score: " + s.score + "%<br>" +
-new Date(s.time).toLocaleString()
-);
-
-});
 
 /* BEST SWIM */
 
