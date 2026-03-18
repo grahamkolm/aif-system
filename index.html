@@ -2662,6 +2662,7 @@ function estimateBottomTemp(data){
 async function updateGPS(){
 
     try{
+
         let res = await fetch("http://192.168.1.85:8000/gps.json");
         let data = await res.json();
 
@@ -2673,15 +2674,14 @@ async function updateGPS(){
             map.setView([lat, lon]);
         }
 
-    }catch(e){
+    } catch(e){
         console.log("GPS fetch error:", e);
     }
 
-}
+} // ✅ THIS WAS MISSING OR MISPLACED
 
 setInterval(updateGPS, 2000);
 updateGPS();
-
 
 </script>
 </body>
