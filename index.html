@@ -1749,27 +1749,28 @@ function openMap(){
         let marker = L.marker([lat, lon]).addTo(map);
 
         // LIVE GPS
-        async function updateGPS(){
-            try{
-                let res = await fetch("http://192.168.1.85:8000/gps.json");
-                let data = await res.json();
+        setInterval(updateGPS, 1000);
 
-                if(data.lat && data.lon){
-                    marker.setLatLng([data.lat, data.lon]);
-                    map.setView([data.lat, data.lon]);
-                }
+async function updateGPS(){
+    try{
+        let res = await fetch(http://192.168.1.85:8000/gps.json);
+        let data = await res.json();
 
-            } catch(e){
-                console.log("GPS error:", e);
-            }
+        let lat = data.lat;
+        let lon = data.lon;
+
+        if(lat && lon){
+            marker.setLatLng([lat, lon]);
+            map.setView([lat, lon]);
         }
 
-        setInterval(updateGPS, 2000);
-        updateGPS();
-
-    });
-
+    } catch(e){
+        console.log("GPS fetch error:", e);
+    }
 }
+
+setInterval(updateGPS, 2000);
+updateGPS();
 
 /* LOAD SCOUT POINTS */
 
