@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://maps.googleapis.com/maps/api/js"></script> 
 
 <style> 
 body{
@@ -468,7 +467,8 @@ class="spi-desc">Strike Probability Index</text>
 <li>Prepare first bait drop</li>
 </ul>
 
-<label>Target depth confirmed (m)</label> < type="number" id="obs_targetDepth" step="0.1">
+<label>Target depth confirmed (m)</label>
+<input type="number" id="obs_targetDepth" step="0.1">
 
 <label>Patrol direction observed</label> <select id="obs_patrol"> <option>Shallow to deep</option> <option>Deep to shallow</option> <option>Along margin</option> <option>Across wind</option> </select>
 
@@ -1711,7 +1711,7 @@ function openMap(){
 // show your map screen here
     setTimeout(() =>{
         map.invalidateSize();
-        map.setview([-25.88, 28.15], 15);
+        map.setView([-25.88, 28.15], 15);
     }, 500);
 }
 navigator.geolocation.getCurrentPosition(function(pos){
@@ -1747,7 +1747,7 @@ document.body.appendChild(btn);
 setTimeout(() => {
 let map = L.map('map').setView([-25.88, 28.15], 15);
 
-L.tileLayer('https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!VA-3bVW27wegyIafWA8rAzsLbQo7w9OwVoEh-ysThcArIBGM1eNZOiHHVxUiClobs1d1sCW-IdyonVxjWDPA_f2v$ ', {
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
@@ -1758,7 +1758,7 @@ let marker = L.marker([-25.88, 28.15]).addTo(map);
 async function updateGPS(){
 
     try{
-        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:8000/gps.json__;!!LtDMhTYuqQ!VA-3bVW27wegyIafWA8rAzsLbQo7w9OwVoEh-ysThcArIBGM1eNZOiHHVxUiClobs1d1sCW-IdyonVxjWJmw-7Es$ "); // ⚠️ CHANGE IP if needed
+        let res = await fetch("https://192.168.1.85:8000/gps.json"); // ⚠️ CHANGE IP if needed
         let data = await res.json();
 
         let lat = data.lat;
@@ -2689,20 +2689,6 @@ function estimateBottomTemp(data){
 
   return bottomTemp;
 }
-let map;
-let marker;
-
-function initMap(){
-    map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 18,
-        center: {lat: -25.88, lng: 28.15},
-        mapTypeId: "satellite"
-    });
-
-    marker = new google.maps.Marker({
-        position: {lat: -25.88, lng: 28.15},
-        map: map
-    });
 
     setInterval(updateGPS, 1000);
 }
