@@ -1769,9 +1769,6 @@ async function updateGPS(){
     }
 }
 
-setInterval(updateGPS, 2000);
-updateGPS();
-
 /* LOAD SCOUT POINTS */
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
