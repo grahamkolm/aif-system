@@ -1730,26 +1730,19 @@ function openMap(){
 
         document.body.appendChild(mapDiv);
 
-        // CLOSE BUTTON
-        let btn = document.createElement("button");
-        btn.innerText = "Close";
-        btn.id = closeMap;
+// CLOSE BUTTON
+let btn = document.createElement("button"); btn.innerText = "Close"; btn.id = "closeMap";
 
-        btn.style.position = "fixed";
-        btn.style.top = "20px";
-        btn.style.right = "20px";
-        btn.style.zIndex = "1000";
+document.body.appendChild(btn);
 
-        document.body.appendChild(btn);
+// CREATE MAP
+map = L.map('map').setView([lat, lon], 15);
 
-        // CREATE MAP
-        let map = L.map('map').setView([lat, lon], 15);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 18
+}).addTo(map);
 
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 18
-        }).addTo(map);
-
-        let marker = L.marker([lat, lon]).addTo(map);
+marker = L.marker([lat, lon]).addTo(map);
 
 /* BEST SWIM */
 
