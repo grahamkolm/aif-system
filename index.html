@@ -553,7 +553,10 @@ Report
 </div>
 
 <script>  
-  
+
+let map;
+let marker;
+    
 function confirmDrop(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
@@ -1897,7 +1900,7 @@ setTimeout(function(){
 
 let centerLat = scouts.length ? scouts[0].lat : -26; let centerLon = scouts.length ? scouts[0].lon : 28;
 
-let map = L.map('reportMap').setView([centerLat, centerLon], 15);
+map = L.map('map').setView([lat, lon], 15); marker = L.marker([lat, lon]).addTo(map);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
 maxZoom:18
