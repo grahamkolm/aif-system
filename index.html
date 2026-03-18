@@ -1752,21 +1752,19 @@ function openMap(){
 
 let best = getBestScout();
 
-document.addEventListener("DOMcontentLoaded"
-                          }
-                                             
 if(best){
 
-let dist = distanceBetween(lat, lon, best.lat, best.lon);
+    let dist = distanceBetween(lat, lon, best.lat, best.lon);
 
-L.marker([best.lat, best.lon])
-    .addTo(map)
-    .bindPopup(
-        "<b>Best Swim</b><br>" +
-        "Score: " + best.score + "%<br>" +
-        "Distance: " + Math.round(dist) + " m"
-    )
-    .openPopup();
+    L.marker([best.lat, best.lon])
+        .addTo(map)
+        .bindPopup(
+            "<b>Best Swim</b><br>" +
+            "Score: " + best.score + "%<br>" +
+            "Distance: " + Math.round(dist) + " m"
+        );
+
+}
 
 /* ===== DASHBOARD START ===== */
 
