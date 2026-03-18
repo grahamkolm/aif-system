@@ -1742,7 +1742,7 @@ function openMap(){
         // CREATE MAP
         let map = L.map('map').setView([lat, lon], 15);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 18
         }).addTo(map);
 
