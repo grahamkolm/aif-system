@@ -2400,6 +2400,12 @@ color:white;
 overflow:auto;
 ">
 
+<div style="margin-top:12px; display:flex; gap:8px;">
+  <button onclick="startScoutScan()" style="flex:1;background:#007aff;border:none;padding:10px;border-radius:8px;color:white;">Scan</button>
+  <button onclick="saveScout()" style="flex:1;background:#00ffa6;border:none;padding:10px;border-radius:8px;">Save</button>
+  <button onclick="closeScoutPopup()" style="flex:1;background:#111;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;">Cancel</button>
+</div>
+
 <h2 style="margin-bottom:10px;">Scout Spot</h2>
 
 <div class="scout-card">
@@ -2450,12 +2456,6 @@ document.body.insertAdjacentHTML("beforeend",html);
 
 }
 
-<div style="margin-top:12px; display:flex; gap:8px;">
-  <button onclick="startScoutScan()" style="flex:1;background:#007aff;border:none;padding:10px;border-radius:8px;color:white;">Scan</button>
-  <button onclick="saveScout()" style="flex:1;background:#00ffa6;border:none;padding:10px;border-radius:8px;">Save</button>
-  <button onclick="closeScoutPopup()" style="flex:1;background:#111;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;">Cancel</button>
-</div>
-  
 function closeScoutPopup(){
 document.getElementById("scoutPopup").remove();
 }
