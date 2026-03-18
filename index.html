@@ -547,7 +547,7 @@ async function updateGPS(){
 
     try{
 
-        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:8000/gps.json__;!!LtDMhTYuqQ!Tp7EfdaifLKhWuC5YU6I6fDhiYo3d61B5WQ_Yyf4JFYym0xGEFq1XslUlPNht7Wcm2OSTA_eV7KTP_WhLXnzvL2Q$ ");
+        let res = await fetch("http://192.168.1.85:8000/gps.json");
         let data = await res.json();
 
         let lat = data.lat;
@@ -608,7 +608,7 @@ document.body.appendChild(btn);
 
 mapInstance = L.map('map').setView([lat, lon], 15);
 
-L.tileLayer("https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!Tp7EfdaifLKhWuC5YU6I6fDhiYo3d61B5WQ_Yyf4JFYym0xGEFq1XslUlPNht7Wcm2OSTA_eV7KTP_WhLXvp-_Ze$ ", {
+L.tileLayer("https://{s}.tile.openstreetmap.org/{s}/{x/{y}}.png", {
 maxZoom: 18
 }).addTo(mapInstance);
 
