@@ -544,32 +544,26 @@ let mapInstance = null;
 let gpsMarker = null;
 
 async function updateGPS(){
-
     try{
-
-        let res = await fetch("http://192.168.1.85:8000/gps.json");
+        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:8000/gps.json__;!!LtDMhTYuqQ!TArLPVnIGuq35fqSQd-xS7554WhorqRW-ShINtoyfudc6GIKG6N8mKRdtdYr9VOOSaGYP3k7h2Ag4gF7fdcvvPSF$ ");
         let data = await res.json();
 
         let lat = data.lat;
         let lon = data.lon;
 
         if(lat && lon){
-
-            // If map is open → update marker
-            if(gpsMarker){
-                gpsMarker.setLatLng([lat, lon]);
-            }
-
-            // Store last GPS (for future use)
-            window.lastGPS = {lat, lon};
+            marker.setLatLng([lat, lon]);
+            map.setView([lat, lon]);
         }
 
     } catch(e){
         console.log("GPS fetch error:", e);
     }
-
 }
 
+// TEMP DISABLE FOR NOW
+// setInterval(updateGPS, 2000);
+// updateGPS();
 
 // ===== SAFE MAP UPGRADE =====
 
