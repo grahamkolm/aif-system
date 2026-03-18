@@ -1547,86 +1547,6 @@ function scoutSpot(){
 openScoutScreen();
 }
 
-function openScout(){
-
-let html = `
-<div id="scoutPopup" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#05080d;
-z-index:9999;
-padding:16px;
-color:white;
-overflow:auto;
-">
-
-<h2 style="margin-bottom:10px;">Scout Spot</h2>
-
-<div class="scout-card">
-<label>Depth (m)</label>
-<input id="scoutDepth" type="number" step="0.1">
-
-<label>Bottom Type</label>
-<select id="scoutBottom">
-<option>Gravel</option>
-<option>Silt</option>
-<option>Clay</option>
-<option>Weed</option>
-<option>Sand</option>
-</select>
-</div>
-
-<div class="scout-card">
-<label>Fish Activity</label>
-<select id="scoutFish">
-<option>None</option>
-<option>Bubbles</option>
-<option>Active feeding</option>
-<option>Fish showing</option>
-</select>
-
-<label>Water Colour</label>
-<select id="scoutColor">
-<option>Clear</option>
-<option>Green</option>
-<option>Brown</option>
-<option>Dirty</option>
-</select>
-</div>
-
-<div class="scout-card">
-<label>Notes (optional)</label>
-<input id="scoutNotes" type="text" placeholder="e.g. slope, drop-off"> </div>
-
-<div style="margin-top:15px; display:flex; gap:10px;"> <button onclick="saveScout()" style="
-flex:1;
-background:#00ffa6;
-border:none;
-padding:12px;
-border-radius:8px;
-font-weight:600;
-">Save</button>
-
-<button onclick="closeScoutPopup()" style="
-flex:1;
-background:#111;
-color:#fff;
-border:1px solid #333;
-padding:12px;
-border-radius:8px;
-">Cancel</button>
-</div>
-
-</div>
-`;
-
-document.body.insertAdjacentHTML("beforeend",html);
-
-}
-
 function closeScout(){
   document.getElementById("scoutScreen").remove();
 }
@@ -2454,14 +2374,16 @@ width:100%;
 height:100%;
 background:#05080d;
 z-index:9999;
-padding:20px;
+padding:16px;
 color:white;
+overflow:auto;
 ">
 
-<h2>Scout Spot</h2>
+<h2 style="margin-bottom:10px;">Scout Spot</h2>
 
+<div class="scout-card">
 <label>Depth (m)</label>
-<input id="scoutDepth" type="number" step="0.1" placeholder="Enter depth from sonar">
+<input id="scoutDepth" type="number" step="0.1">
 
 <label>Bottom Type</label>
 <select id="scoutBottom">
@@ -2471,7 +2393,9 @@ color:white;
 <option>Weed</option>
 <option>Sand</option>
 </select>
+</div>
 
+<div class="scout-card">
 <label>Fish Activity</label>
 <select id="scoutFish">
 <option>None</option>
@@ -2487,10 +2411,30 @@ color:white;
 <option>Brown</option>
 <option>Dirty</option>
 </select>
+</div>
 
-<br><br>
+<div class="scout-card">
+<label>Notes (optional)</label>
+<input id="scoutNotes" type="text" placeholder="e.g. slope, drop-off"> </div>
 
-<button onclick="saveScout()">Save Scout</button> <button onclick="closeScoutPopup()">Cancel</button>
+<div style="margin-top:15px; display:flex; gap:10px;"> <button onclick="saveScout()" style="
+flex:1;
+background:#00ffa6;
+border:none;
+padding:12px;
+border-radius:8px;
+font-weight:600;
+">Save</button>
+
+<button onclick="closeScoutPopup()" style="
+flex:1;
+background:#111;
+color:#fff;
+border:1px solid #333;
+padding:12px;
+border-radius:8px;
+">Cancel</button>
+</div>
 
 </div>
 `;
