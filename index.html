@@ -1714,6 +1714,7 @@ function openMap(){
         let lat = pos.coords.latitude;
         let lon = pos.coords.longitude;
 
+        // CREATE MAP DIV
         let mapDiv = document.createElement("div");
         mapDiv.id = "map";
         mapDiv.style.position = "fixed";
@@ -1726,6 +1727,19 @@ function openMap(){
 
         document.body.appendChild(mapDiv);
 
+        // CLOSE BUTTON
+        let btn = document.createElement("button");
+        btn.innerText = "Close";
+        btn.onclick = closeMap;
+
+        btn.style.position = "fixed";
+        btn.style.top = "20px";
+        btn.style.right = "20px";
+        btn.style.zIndex = "1000";
+
+        document.body.appendChild(btn);
+
+        // CREATE MAP
         let map = L.map('map').setView([lat, lon], 15);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1734,8 +1748,8 @@ function openMap(){
 
         let marker = L.marker([lat, lon]).addTo(map);
 
+        // LIVE GPS
         async function updateGPS(){
-
             try{
                 let res = await fetch("http://192.168.1.85:8000/gps.json");
                 let data = await res.json();
@@ -1748,48 +1762,14 @@ function openMap(){
             } catch(e){
                 console.log("GPS error:", e);
             }
-
         }
 
         setInterval(updateGPS, 2000);
         updateGPS();
 
-/* CREATE MAP CONTAINER */
+    });
 
-let mapDiv = document.createElement("div"); mapDiv.id = "map"; mapDiv.style.position = "fixed"; mapDiv.style.top = "0"; mapDiv.style.left = "0"; mapDiv.style.width = "100%"; mapDiv.style.height = "100%"; mapDiv.style.zIndex = "999"; mapDiv.style.background = "black";
-
-document.body.appendChild(mapDiv);
-
-/* CLOSE BUTTON */
-
-let btn = document.createElement("button"); btn.id = "closeMap"; btn.innerText = "Close"; btn.onclick = closeMap;
-
-btn.style.position = "fixed";
-btn.style.top = "20px";
-btn.style.right = "20px";
-btn.style.zIndex = "1000";
-btn.style.background = "#00ffa6";
-btn.style.color = "#081018";
-btn.style.border = "none";
-btn.style.padding = "10px 16px";
-btn.style.borderRadius = "8px";
-btn.style.fontWeight = "600";
-btn.style.cursor = "pointer";
-
-document.body.appendChild(btn);
-
-/* CREATE MAP */
-setTimeout(() => {
-let map = L.map('map').setView([-25.88, 28.15], 15);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-let marker = L.marker([-25.88, 28.15]).addTo(map);
-
-// 🔥 LIVE GPS UPDATE FUNCTION
+}
 
 /* LOAD SCOUT POINTS */
 
