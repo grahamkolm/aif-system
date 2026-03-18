@@ -1758,7 +1758,7 @@ let marker = L.marker([-25.88, 28.15]).addTo(map);
 async function updateGPS(){
 
     try{
-        let res = await fetch("https://192.168.1.85:8000/gps.json"); // ⚠️ CHANGE IP if needed
+        let res = await fetch("http://192.168.1.85:8000/gps.json"); // ⚠️ CHANGE IP if needed
         let data = await res.json();
 
         let lat = data.lat;
