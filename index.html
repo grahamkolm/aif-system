@@ -1746,22 +1746,49 @@ document.body.appendChild(btn);
 /* CREATE MAP */
 setTimeout(() => {
 let map = L.map('map').setView([-25.88, 28.15], 15);
-    
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-maxZoom: 18,
-    attribution: '&copy: OpenStreetMap contributors'
+
+L.tileLayer('https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!VA-3bVW27wegyIafWA8rAzsLbQo7w9OwVoEh-ysThcArIBGM1eNZOiHHVxUiClobs1d1sCW-IdyonVxjWDPA_f2v$ ', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-/* USER POSITION */
+let marker = L.marker([-25.88, 28.15]).addTo(map);
 
-L.marker([-25.88, 28.15])
-.addTo(map)
-.bindPopup("test")
-.openPopup();
+// 🔥 LIVE GPS UPDATE FUNCTION
+async function updateGPS(){
 
-map.invalidateSize();
+    try{
+        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:8000/gps.json__;!!LtDMhTYuqQ!VA-3bVW27wegyIafWA8rAzsLbQo7w9OwVoEh-ysThcArIBGM1eNZOiHHVxUiClobs1d1sCW-IdyonVxjWJmw-7Es$ "); // ⚠️ CHANGE IP if needed
+        let data = await res.json();
 
-}, 300);
+        let lat = data.lat;
+        let lon = data.lon;
+
+        if(lat && lon){
+
+            marker.setLatLng([lat, lon]);
+
+            map.setView([lat, lon]);
+
+        }
+
+    }catch(e){
+        console.log("GPS fetch error:", e);
+    }
+
+}
+
+// 🔁 AUTO REFRESH EVERY 2 SECONDS
+setInterval(updateGPS, 2000);
+
+// First call immediately
+updateGPS();
+
+// Fix rendering if inside popup
+setTimeout(() => {
+    map.invalidateSize();
+}, 500);
+
 
 /* LOAD SCOUT POINTS */
 
