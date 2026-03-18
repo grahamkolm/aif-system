@@ -1698,20 +1698,6 @@ let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 return R * c
 
 }
-
-function startScoutScan(){
-
-  let status = detectProbe();
-
-  if(!status){
-    alert("No probe detected.\n\nYou can still manually enter data.");
-    return;
-  }
-
-  alert("Probe detected.\nStarting scan...");
-
-  // future: live scan screen
-}
   
 function closeScout(){
   document.getElementById("scoutScreen").remove();
