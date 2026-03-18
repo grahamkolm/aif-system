@@ -2536,6 +2536,28 @@ function estimateBottomTemp(data){
   return bottomTemp;
 }
 
+async function updateGPS(){
+    try{
+        let res = await fetch("http://192.168.1.85:8000/gps.json");
+        let data = await res.json();
+
+        let lat = data.lat;
+        let lon = data.lon;
+
+        if(lat && lon){
+            marker.setLatLng([lat, lon]);
+            map.setView([lat, lon]);
+        }
+
+    } catch(e){
+        console.log("GPS fetch error:", e);
+    }
+}
+
+// TEMP DISABLE FOR NOW
+// setInterval(updateGPS, 2000);
+// updateGPS();
+  
 </script>
 </body>
 </html>
