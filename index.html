@@ -280,12 +280,37 @@ box-sizing:border-box;
   margin-top: 8px;
 }
 
-.scout-card {
-  background: rgba(15,20,28,0.75);
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(255,255,255,0.05); }
+<div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+
+<button onclick="startScoutScan()" style="
+flex:1;
+background:#007aff;
+border:none;
+padding:10px;
+border-radius:8px;
+font-weight:600;
+color:white;
+">Start Scan</button>
+
+<button onclick="saveScout()" style="
+flex:1;
+background:#00ffa6;
+border:none;
+padding:10px;
+border-radius:8px;
+font-weight:600;
+">Save</button>
+
+<button onclick="closeScoutPopup()" style="
+flex:1;
+background:#111;
+color:#fff;
+border:1px solid #333;
+padding:10px;
+border-radius:8px;
+">Cancel</button>
+
+</div>
   
 </style>
 </head>
@@ -2417,23 +2442,20 @@ overflow:auto;
 <label>Notes (optional)</label>
 <input id="scoutNotes" type="text" placeholder="e.g. slope, drop-off"> </div>
 
-<div style="margin-top:15px; display:flex; gap:10px;"> <button onclick="saveScout()" style="
-flex:1;
-background:#00ffa6;
-border:none;
-padding:12px;
-border-radius:8px;
-font-weight:600;
-">Save</button>
+function startScoutScan(){
 
-<button onclick="closeScoutPopup()" style="
-flex:1;
-background:#111;
-color:#fff;
-border:1px solid #333;
-padding:12px;
-border-radius:8px;
-">Cancel</button>
+  let status = detectProbe();
+
+  if(!status){
+    alert("No probe detected.\n\nYou can still manually enter data.");
+    return;
+  }
+
+  alert("Probe detected.\nStarting scan...");
+
+  // future: live scan screen
+}
+
 </div>
 
 </div>
