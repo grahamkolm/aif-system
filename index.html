@@ -1,6 +1,12 @@
 <!DOCTYPE html> 
 <html> 
+<!-- ========================= -->
+<!-- ===== AIF DASHBOARD ===== -->
+<!-- ========================= --> 
 <head> 
+<!-- ========================= -->
+<!-- ===== HEAD (META / LIBS / CSS) ===== -->
+<!-- ========================= -->
 <meta name="viewport" content="width=device-width, initial-scale=1"> 
 <title>AIF Dashboard v5</title> 
 
@@ -9,6 +15,9 @@
 <script src="https://unpkg.com/lucide@latest"></script> 
 
 <style> 
+/* ========================= */
+/* ===== GLOBAL STYLES ===== */
+/* ========================= */
 body{
 margin:0;
 background:#05080d;
@@ -18,12 +27,20 @@ display:flex;
 justify-content:center;
 }
 
+/* ========================= */
+/* ===== MAIN LAYOUT ===== */
+/* ========================= */
+  
 .main{
 width:100%;
 max-width:420px;
 padding-bottom:120px;
 }
 
+/* ========================= */
+/* ===== HEADER ===== */
+/* ========================= */
+  
 .header{
 text-align:center;
 margin-top:18px;
@@ -37,6 +54,10 @@ color:#00ff9c;
 
 .subtitle1{font-size:20px;color:#b9c3cc;}
 .subtitle2{font-size:15px;color:#7fffb2;margin-top:6px;margin-bottom:10px;}
+
+/* ========================= */
+/* ===== SPI GAUGE ===== */
+/* ========================= */
   
 .instrument{
 margin-top:18px;
@@ -135,6 +156,10 @@ font-size:13px;
 fill:#9aa4ad;
 }
 
+/* ========================= */
+/* ===== TILES ===== */
+/* ========================= */
+  
 .tile i{
 width:28px;
 height:28px;
@@ -245,6 +270,10 @@ font-size:20px;
 display:block;
 }
 
+/* ========================= */
+/* ===== POPUPS (SETUP / SCOUT) ===== */
+/* ========================= */
+  
 #setupPopup{
 position:fixed;
 top:0;
@@ -259,12 +288,20 @@ overflow:auto;
 padding:20px;
 box-sizing:border-box;
 }
+
+/* ========================= */
+/* ===== END OF CSS ===== */
+/* ========================= */
   
 </style>
 </head>
 
 <body>
 
+<!-- ========================= -->
+<!-- ===== UI / HTML ===== -->
+<!-- ========================= -->
+  
 <div class="main">
 
 <div class="header">
@@ -272,6 +309,10 @@ box-sizing:border-box;
 <div class="subtitle1">Artificial Intelligence Fishing</div>
 <div class="subtitle2">Drop • Scan • Strike</div>
 </div>
+
+<!-- ========================= -->
+<!-- ===== MAIN DASHBOARD ===== -->
+<!-- ========================= -->
   
 <div class="instrument">
 <div class="spi-container">
@@ -323,6 +364,10 @@ class="spi-desc">Strike Probability Index</text>
 </div>
 </div>
 
+<!-- ========================= -->
+<!-- ===== POPUPS (SCOUT / SETUP / MAP) ===== -->
+<!-- ========================= -->
+  
 <div id="setupPopup">
   
 <h2 class="setup-title">AIF™ 60-Minute Tactical Plan</h2>
@@ -536,10 +581,23 @@ Report
 
 </div>
 
+<!-- ========================= -->
+<!-- ===== JAVASCRIPT LOGIC ===== -->
+<!-- ========================= -->
+  
 <script>  
+  
+/* ========================= */
+/* ===== NAVIGATION / CORE ===== */
+/* ========================= */
+
   
 function confirmDrop(){
 
+/* ========================= */
+/* ===== API + WEATHER ===== */
+/* ========================= */
+  
 navigator.geolocation.getCurrentPosition(function(pos){
 
 let lat = pos.coords.latitude;
@@ -1024,8 +1082,16 @@ let bottomTemp = estimateBottomTemp({
   
 lastSurfaceTemp = surfaceTemp;
 
+/* ========================= */
+/* ===== SPI CALCULATIONS ===== */
+/* ========================= */
+  
 let spi=calculateSPI(p,w,c,windDir,t)
 
+/* ========================= */
+/* ===== UI RENDERING ===== */
+/* ========================= */
+  
 updateSPI(spi)
 
 let gauge=document.getElementById("spiGauge")
@@ -1714,6 +1780,10 @@ alert("Scout data cleared");
 
 }
 
+/* ========================= */
+/* ===== MAP SYSTEM ===== */
+/* ========================= */
+  
 function openMap(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
@@ -1856,6 +1926,10 @@ document.getElementById("map").remove();
 document.getElementById("closeMap").remove();
 }
 
+/* ========================= */
+/* ===== REPORT / PLAN ===== */
+/* ========================= */
+  
 function openReport(){
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]"); let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
@@ -2264,6 +2338,10 @@ function openSetup(){
   document.getElementById("setupPopup").style.display = "block";
 }
 
+/* ========================= */
+/* ===== SENSORS (GPS / COMPASS) ===== */
+/* ========================= */
+  
 function startCompass(){
 
 window.addEventListener("deviceorientation", function(event){
@@ -2360,6 +2438,10 @@ return results.join(" | ");
 
 }
 
+/* ========================= */
+/* ===== UTILITIES ===== */
+/* ========================= */
+ 
 function estimateOxygen(temp, wind, cloud){
 
 let oxygen = 9;
@@ -2385,6 +2467,10 @@ return oxygen;
 
 }
 
+/* ========================= */
+/* ===== SCOUT SYSTEM ===== */
+/* ========================= */
+  
 function openScout(){
 
 let html = `
