@@ -1755,40 +1755,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let marker = L.marker([-25.88, 28.15]).addTo(map);
 
 // 🔥 LIVE GPS UPDATE FUNCTION
-async function updateGPS(){
-
-    try{
-        let res = await fetch("http://192.168.1.85:8000/gps.json"); // ⚠️ CHANGE IP if needed
-        let data = await res.json();
-
-        let lat = data.lat;
-        let lon = data.lon;
-
-        if(lat && lon){
-
-            marker.setLatLng([lat, lon]);
-
-            map.setView([lat, lon]);
-
-        }
-
-    }catch(e){
-        console.log("GPS fetch error:", e);
-    }
-
-}
-
-// 🔁 AUTO REFRESH EVERY 2 SECONDS
-setInterval(updateGPS, 2000);
-
-// First call immediately
-updateGPS();
-
-// Fix rendering if inside popup
-setTimeout(() => {
-    map.invalidateSize();
-}, 500);
-
 
 /* LOAD SCOUT POINTS */
 
@@ -2694,22 +2660,28 @@ function estimateBottomTemp(data){
 }
 
 async function updateGPS(){
+
     try{
-        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:5000/gps__;!!LtDMhTYuqQ!QDAuiNZtodHupGfhbUBi-Wegi2zI71Ibz-hA6iLmvddq0OUCHNVtty8FalKC7mKOpRJ1BwWJe1EimzH9PKBSaRyW$ ");
+        let res = await fetch("http://192.168.1.85:8000/gps.json");
         let data = await res.json();
 
-        let pos = {
-            lat: data.lat,
-            lng: data.lon
-        };
+        let lat = data.lat;
+        let lon = data.lon;
 
-        marker.setPosition(pos);
-        map.setCenter(pos);
+        if(lat && lon){
+            marker.setLatLng([lat, lon]);
+            map.setView([lat, lon]);
+        }
 
-    } catch(e){
-        console.log("GPS error");
+    }catch(e){
+        console.log("GPS fetch error:", e);
     }
+
 }
+
+setInterval(updateGPS, 2000);
+updateGPS();
+
 
 </script>
 </body>
