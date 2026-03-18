@@ -2438,17 +2438,6 @@ overflow:auto;
 <label>Notes (optional)</label>
 <input id="scoutNotes" type="text" placeholder="e.g. slope, drop-off"> </div>
 
-function startScoutScan(){
-
-  let status = detectProbe();
-
-  if(!status){
-    alert("No probe detected.\n\nYou can still manually enter data.");
-    return;
-  }
-
-  alert("Probe detected.\nStarting scan...");
-
   // future: live scan screen
 }
 
