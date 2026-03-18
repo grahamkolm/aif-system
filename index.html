@@ -1728,9 +1728,9 @@ function openMap(){
         document.body.appendChild(mapDiv);
 
         // CLOSE BUTTON
-        let btn = document.createElement("closeMap");
+        let btn = document.createElement("button");
         btn.innerText = "Close";
-        btn.onclick = closeMap;
+        btn.id = closeMap;
 
         btn.style.position = "fixed";
         btn.style.top = "20px";
