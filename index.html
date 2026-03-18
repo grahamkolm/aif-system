@@ -591,6 +591,7 @@ let bestForecastSPI = 0;
 let bestTime = null;
 let sensorTemp = null;
 let lastSurfaceTemp = null;
+let compassActive = false;
 
 function getMoonPhase(){
 let d=new Date()
@@ -1019,7 +1020,7 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
 let bottomTemp = estimateBottomTemp({
   surfaceTemp: surfaceTemp,
   depth: 6,
-  WindSpeed: w
+  windSpeed: w
 });
   
 lastSurfaceTemp = surfaceTemp;
@@ -1815,7 +1816,6 @@ iconAnchor:[15,30]
 /* ===== DASHBOARD START ===== */
 
 document.addEventListener("DOMContentLoaded", function(){
-let compassActive = false;
 
 document.getElementById("compassTile").addEventListener("click", enableCompass);
 
@@ -2262,22 +2262,6 @@ updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
 
 function openSetup(){
   document.getElementById("setupPopup").style.display = "block";
-}
-
-function startCompass(){
-
-window.addEventListener("deviceorientation", function(event){
-
-let heading = 360 - event.alpha;
-
-let dir="";
-
-if(heading >=337 || heading <22) dir="N"; else if(heading <67) dir="NE"; else if(heading <112) dir="E"; else if(heading <157) dir="SE"; else if(heading <202) dir="S"; else if(heading <247) dir="SW"; else if(heading <292) dir="W"; else dir="NW";
-
-document.getElementById("compassDir").innerText = dir;
-
-});
-
 }
 
 function startCompass(){
