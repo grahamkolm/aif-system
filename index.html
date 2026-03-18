@@ -1572,6 +1572,20 @@ function scoutSpot(){
 openScoutScreen();
 }
 
+function startScoutScan(){
+
+  let status = detectProbe();
+
+  if(!status){
+    alert("No probe detected.\n\nYou can still manually enter data.");
+    return;
+  }
+
+  alert("Probe detected.\nStarting scan...");
+
+  // future: live scan screen
+}
+  
 function closeScout(){
   document.getElementById("scoutScreen").remove();
 }
@@ -1587,6 +1601,23 @@ status.style.color="#00ff88";
 
 }
 
+function detectProbe(){
+
+  try{
+    // future: replace with real sensor check
+    if(typeof window.probeConnected !== "undefined"){
+      return true;
+    }
+
+    return false;
+
+  }catch(e){
+    console.warn("Probe check failed", e);
+    return false;
+  }
+
+}
+  
 function startScout(){
 
 document.getElementById("probeStatus").innerText="Scanning...";
