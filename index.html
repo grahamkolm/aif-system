@@ -261,23 +261,31 @@ box-sizing:border-box;
 }
 
 /* FIX SCOUT INPUT ZOOM + LAYOUT */
+.scout-card {
+  background: rgba(15,20,28,0.55);
+  padding: 8px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.03); }
+
 #scoutPopup input,
 #scoutPopup select {
-  font-size: 16px; /* prevents iPhone zoom */
-  padding: 8px;
-  margin-bottom: 10px;
+  font-size: 14px;
+  padding: 5px;
+  margin-bottom: 6px;
+  height: 36px;
   width: 100%;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: #0b1118;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #0a0f14;
   color: white;
 }
 
 #scoutPopup label {
-  font-size: 12px;
-  color: #9aa4ad;
-  display: block;
-  margin-top: 8px;
+  font-size: 10px;
+  color: #7f8b96;
+  margin-top: 4px;
+  margin-bottom: 2px;
 }
 
 <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
@@ -311,6 +319,8 @@ border-radius:8px;
 ">Cancel</button>
 
 </div>
+
+
   
 </style>
 </head>
@@ -1572,24 +1582,6 @@ function scoutSpot(){
 openScoutScreen();
 }
 
-function startScoutScan(){
-
-  let status = detectProbe();
-
-  if(!status){
-    alert("No probe detected.\n\nYou can still manually enter data.");
-    return;
-  }
-
-  alert("Probe detected.\nStarting scan...");
-
-  // future: live scan screen
-}
-  
-function closeScout(){
-  document.getElementById("scoutScreen").remove();
-}
-
 function checkProbeConnection(){
 
 let status = document.getElementById("probeStatus");
@@ -1706,7 +1698,26 @@ let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 return R * c
 
 }
-  function openDrop(){
+
+function startScoutScan(){
+
+  let status = detectProbe();
+
+  if(!status){
+    alert("No probe detected.\n\nYou can still manually enter data.");
+    return;
+  }
+
+  alert("Probe detected.\nStarting scan...");
+
+  // future: live scan screen
+}
+  
+function closeScout(){
+  document.getElementById("scoutScreen").remove();
+}
+  
+function openDrop(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
