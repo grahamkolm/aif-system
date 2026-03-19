@@ -1696,22 +1696,6 @@ function analyzeScout(){
 
     alert(msg);
 }
-
-function analyzeScout(){
-
-let depth = document.getElementById("scoutDepth").value;
-
-let msg =
-"SCOUT ANALYSIS\n\n"+
-"Depth: "+depth+"m\n"+
-"Bottom: "+scoutData.bottom+"\n"+
-"Activity: "+scoutData.fish+"\n"+
-"Colour: "+scoutData.color;
-
-alert(msg);
-
-}
-
   
 function closeScout(){
   document.getElementById("scoutScreen").remove();
@@ -1751,7 +1735,7 @@ let drift = windDriftStrength(windSpeed);
 let entry = predictFeedingEntry(windSpeed, windDir); 
 let patrol = predictPatrolRoute(spi, windSpeed, windDir);
 
-let score = calcuboatLateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
+let score = calcuLateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
 
 /* SAVE SCOUT POINT */
 
