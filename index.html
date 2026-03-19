@@ -1927,8 +1927,8 @@ async function updateBoatPosition(){
     } else {
       boatMarker.setLatLng([boatLat, boatLon]);
     }
-// FOLLOW BOAT
-    map.panTo([boatLat, boatLon]), {animate: true});
+    // FOLLOW BOAT
+    map.panTo([boatLat, boatLon], {animate: true});
     
     // OPTIONAL PATH
     if(typeof boatPath !== "undefined"){
