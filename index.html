@@ -1922,6 +1922,7 @@ async function updateBoatPosition(){
 
     if(!boatMarker){
       boatMarker = L.marker([boatLat, boatLon])
+        map.panTo([boatLat, boatLon]), {animate: true});
         .addTo(map)
         .bindPopup("🚤 Bait Boat");
     } else {
