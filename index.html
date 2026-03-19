@@ -4,9 +4,9 @@
 <!-- ===== AIF DASHBOARD ===== -->
 <!-- ========================= --> 
 <head> 
-<!-- ========================= -->
+<!-- ==================================== -->
 <!-- ===== HEAD (META / LIBS / CSS) ===== -->
-<!-- ========================= -->
+<!-- ==================================== -->
 <meta name="viewport" content="width=device-width, initial-scale=1"> 
 <title>AIF Dashboard v5</title> 
 
@@ -21,14 +21,14 @@
 body{
 margin:0;
 background:#05080d;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 color:#e6edf3;
 display:flex;
 justify-content:center;
 }
 
 /* ========================= */
-/* ===== MAIN LAYOUT ===== */
+/* ===== MAIN LAYOUT ======= */
 /* ========================= */
   
 .main{
@@ -418,7 +418,8 @@ class="spi-desc">Strike Probability Index</text>
 <!-- 5–20 Minutes -->
 <div class="setup-card">
 
-<h3 class="setup-section">5–20 Minutes • Water Intelligence</h3> <div class="setup-divider"></div>
+<h3 class="setup-section">5–20 Minutes • Water Intelligence</h3> 
+<div class="setup-divider"></div>
 
 <p>Use sonar, camera or marker rod to understand the water structure.</p>
 
@@ -451,7 +452,8 @@ class="spi-desc">Strike Probability Index</text>
 <!-- 20–40 Minutes -->
 <div class="setup-card">
 
-<h3 class="setup-section">20–40 Minutes • Tactical Decision</h3> <div class="setup-divider"></div>
+<h3 class="setup-section">20–40 Minutes • Tactical Decision</h3> 
+<div class="setup-divider"></div>
 
 <p>Based on observations decide how the swim will be fished.</p>
 
@@ -489,7 +491,8 @@ class="spi-desc">Strike Probability Index</text>
 <!-- 40–60 Minutes -->
 <div class="setup-card">
 
-<h3 class="setup-section">40–60 Minutes • Drop Preparation</h3> <div class="setup-divider"></div>
+<h3 class="setup-section">40–60 Minutes • Drop Preparation</h3> 
+<div class="setup-divider"></div>
 
 <p>Prepare rods and finalize the first drop.</p>
 
@@ -591,12 +594,11 @@ Report
 /* ===== NAVIGATION / CORE ===== */
 /* ========================= */
 
-  
-function confirmDrop(){
-
 /* ========================= */
 /* ===== API + WEATHER ===== */
 /* ========================= */
+  
+function confirmDrop(){
   
 navigator.geolocation.getCurrentPosition(function(pos){
 
@@ -1077,7 +1079,7 @@ let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
 let bottomTemp = estimateBottomTemp({
   surfaceTemp: surfaceTemp,
   depth: 6,
-  WindSpeed: w
+  windSpeed: w
 });
   
 lastSurfaceTemp = surfaceTemp;
