@@ -1828,12 +1828,17 @@ document.body.appendChild(btn);
 
 /* CREATE MAP */
 
-let map = L.map('map').setView([boatLat, boatLon], 15);
+let map = L.map('map').setView([boatLat, Lon], 15);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-maxZoom: 18
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+maxZoom: 19
+attribution: "@ OpenstreetMap"
 }).addTo(map);
 
+setTimeout(() => {
+  map.invalidateSize();
+}, 200);
+  
 async function updateBoatPosition(){
     try{
         let res = await fetch("http://192.168.4.1/gps");
