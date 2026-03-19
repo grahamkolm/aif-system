@@ -2032,42 +2032,6 @@ lucide.createIcons();
 
 });
 
-// =====================
-// 🚤 BOAT GPS TRACKING
-// =====================
-
-(function(){
-console.log("Boat position:", boatLat,boatLon);
-let boatMarker = null;
-
-async function updateBoatPosition(){
-  try {
-
-    let res = await fetch("http://192.168.1.85:5000/gps");
-    let data = await res.json();
-
-    let boatLat = data.lat;
-    let boatLon = data.lon;
-
-    if(!boatMarker){
-      boatMarker = L.marker([boatLat, boatLon])
-        .addTo(map)
-        .bindPopup("🚤 Bait Boat");
-    } else {
-      boatMarker.setLatLng([boatLat, boatLon]);
-    }
-
-    map.setView([boatLat, boatLon], 18);
-
-  } catch(e){
-    console.log("No boat signal");
-  }
-}
-
-setInterval(updateBoatPosition, 3000);
-
-})();
-
 // =========================
 // 📡 STATUS DISPLAY
 // =========================
