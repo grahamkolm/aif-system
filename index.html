@@ -2037,7 +2037,7 @@ lucide.createIcons();
 // =====================
 
 (function(){
-
+console.log("Boat position:", boatLat,boatLon);
 let boatMarker = null;
 
 async function updateBoatPosition(){
@@ -2057,7 +2057,7 @@ async function updateBoatPosition(){
       boatMarker.setLatLng([boatLat, boatLon]);
     }
 
-    map.panTo([boatLat, boatLon], {animate: true});
+    map.setView([boatLat, boatLon], 18);
 
   } catch(e){
     console.log("No boat signal");
