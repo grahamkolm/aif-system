@@ -12,7 +12,7 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script> 
+<script src="https://unpkg.com/lucide@boatLatest"></script> 
 
 <style> 
 /* ========================= */
@@ -67,7 +67,7 @@ justify-content:center;
 }
 
 .spi-container{
-position:relative;
+position:reboatLative;
 margin-top:5px;
 width:260px;
 height:240px;
@@ -104,13 +104,13 @@ z-index:10;
 /* Left Cirle */
 .env-circle{
 left:-20px;
-transform:translate(-30px, 10px);
+transform:transboatLate(-30px, 10px);
 }
 
 /* Right Circle */
 .conf-circle{
 right:20px;
-transform:translate(69px, 10px);
+transform:transboatLate(69px, 10px);
 }
   
 .mini-value{
@@ -130,9 +130,9 @@ opacity:0.7;
 margin-top:-25px;
 width:260px;
 height:260px;
-position:relative;
+position:reboatLative;
 z-index:2;
-transform: translateY(-8px);
+transform: transboatLateY(-8px);
 filter: 
 drop-shadow(0 0 6px rgba(0,255,156,0.06))
 drop-shadow(0 0 18px rgba(0,255,156,0.35))
@@ -170,7 +170,7 @@ margin-bottom:6px;
 
 .tile-grid{
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-tempboatLate-columns:repeat(3,1fr);
 gap:12px;
 margin:18px;
 }
@@ -233,7 +233,7 @@ max-height:1000px;
 position:fixed;
 bottom:0;
 left:50%;
-transform:translateX(-50%);
+transform:transboatLateX(-50%);
 width:100%;
 max-width:420px;
 background:black;
@@ -607,13 +607,13 @@ function confirmDrop(){
   
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude;
+let boatLat = pos.coords.boatLatitude;
 let lon = pos.coords.longitude;
 
 let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
 
 drops.push({
-lat:lat,
+boatLat:boatLat,
 lon:lon,
 time:Date.now()
 });
@@ -656,6 +656,10 @@ let bestForecastSPI = 0;
 let bestTime = null;
 let sensorTemp = null;
 let lastSurfaceTemp = null;
+let boatMarker = null;
+let boatPath = [];
+let boatLine = null;
+let boatConnected = false;
 
 function getMoonPhase(){
 let d=new Date()
@@ -781,7 +785,7 @@ return "North-West"
 
 }
   
-function calculateSPI(p,w,c,windDir,t){
+function calcuboatLateSPI(p,w,c,windDir,t){
 
 let score = 45
 
@@ -832,7 +836,7 @@ score -= 3
 
 if(w >= 5){
 
-// simulate windward feeding advantage
+// simuboatLate windward feeding advantage
 score += 5
 
 }
@@ -1023,7 +1027,7 @@ return"stable"
 
 async function fetchWeather(){
 
-let r = await fetch("https://api.openweathermap.org/data/2.5/forecast?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
+let r = await fetch("https://api.openweathermap.org/data/2.5/forecast?boatLat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
 
 console.log("Response status:", r.status);
 
@@ -1046,7 +1050,7 @@ forecast.forEach(f => {
   let c = f.clouds.all;
   let windDir = f.wind.deg;
 
-  let spi = calculateSPI(p, w, c, windDir, t);
+  let spi = calcuboatLateSPI(p, w, c, windDir, t);
 
 if(spi > bestForecastSPI){
 bestForecastSPI = spi;
@@ -1090,10 +1094,10 @@ let bottomTemp = estimateBottomTemp({
 lastSurfaceTemp = surfaceTemp;
 
 /* ========================= */
-/* ===== SPI CALCULATIONS ===== */
+/* ===== SPI CALCUboatLatIONS ===== */
 /* ========================= */
   
-let spi=calculateSPI(p,w,c,windDir,t)
+let spi=calcuboatLateSPI(p,w,c,windDir,t)
 
 /* ========================= */
 /* ===== UI RENDERING ===== */
@@ -1570,7 +1574,7 @@ icon.style.transform = "rotate(0deg)";
 
 }
 
-function calculateSwimScore(spi, windSpeed, cloud, pressure){
+function calcuboatLateSwimScore(spi, windSpeed, cloud, pressure){
 
 let score = spi;
 
@@ -1644,14 +1648,14 @@ function startScout(){
 
 document.getElementById("probeStatus").innerText="Scanning...";
 
-// later we will start the probe here
+// boatLater we will start the probe here
 
 }
 
 function performScout(){
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude;
+let boatLat = pos.coords.boatLatitude;
 let lon = pos.coords.longitude;
 
 let windDir = lastWindDir || 0;
@@ -1663,14 +1667,14 @@ let drift = windDriftStrength(windSpeed);
 let entry = predictFeedingEntry(windSpeed, windDir); 
 let patrol = predictPatrolRoute(spi, windSpeed, windDir);
 
-let score = calculateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
+let score = calcuboatLateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
 
 /* SAVE SCOUT POINT */
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]")
 
 scouts.push({
-lat: lat,
+boatLat: boatLat,
 lon: lon,
 score: score,
 time: new Date().toISOString()
@@ -1680,7 +1684,7 @@ localStorage.setItem("aif_scout", JSON.stringify(scouts))
 
 alert(
 "SCOUT TACTICAL ANALYSIS\n\n"+
-"Latitude: "+lat.toFixed(5)+
+"boatLatitude: "+boatLat.toFixed(5)+
 "\nLongitude: "+lon.toFixed(5)+
 
 "\n\nWindward bank: "+bank+
@@ -1710,12 +1714,12 @@ return best
 
 }
 
-function distanceBetween(lat1,lon1,lat2,lon2){
+function distanceBetween(boatLat1,lon1,boatLat2,lon2){
 
 let R = 6371e3
-let φ1 = lat1 * Math.PI/180
-let φ2 = lat2 * Math.PI/180
-let Δφ = (lat2-lat1) * Math.PI/180
+let φ1 = boatLat1 * Math.PI/180
+let φ2 = boatLat2 * Math.PI/180
+let Δφ = (boatLat2-boatLat1) * Math.PI/180
 let Δλ = (lon2-lon1) * Math.PI/180
 
 let a =
@@ -1732,7 +1736,7 @@ return R * c
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude;
+let boatLat = pos.coords.boatLatitude;
 let lon = pos.coords.longitude;
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
@@ -1742,7 +1746,7 @@ let bestDist = 999999;
 
 scouts.forEach(s => {
 
-let d = distanceBetween(lat,lon,s.lat,s.lon);
+let d = distanceBetween(boatLat,lon,s.boatLat,s.lon);
 
 if(d < bestDist){
 bestDist = d;
@@ -1756,7 +1760,7 @@ let spi = document.getElementById("spiValue").innerText || "0";
 let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
 
 drops.push({
-lat:lat,
+boatLat:boatLat,
 lon:lon,
 time:Date.now(),
 spi:spi,
@@ -1795,7 +1799,7 @@ function openMap(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude;
+let boatLat = pos.coords.boatLatitude;
 let lon = pos.coords.longitude;
 
 /* CREATE MAP CONTAINER */
@@ -1824,7 +1828,7 @@ document.body.appendChild(btn);
 
 /* CREATE MAP */
 
-let map = L.map('map').setView([lat, lon], 15);
+let map = L.map('map').setView([boatLat, lon], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 maxZoom: 18
@@ -1837,42 +1841,39 @@ async function updateBoatPosition(){
         let res = await fetch("http://192.168.4.1/gps");
         let data = await res.json();
 
-        let boatLat = data.lat;
+        let boatboatLat = data.boatLat;
         let boatLon = data.lon;
 
-// save path
-boatPath.push([boatLat, boatLon]);
+if(boatLat && lon){
 
-// limit path length (last 50 points)
-if(boatPath.length > 50){
-    boatPath.shift();
-}
+    boatConnected = true;
 
-// draw line
-if(!boatLine){
-    boatLine = L.polyline(boatPath, {
-        color: '#00ffa6',
-        weight: 3
-    }).addTo(map);
-} else {
-    boatLine.setLatLngs(boatPath);
-}
-     
-        if(!boatMarker){
-            boatMarker = L.marker([boatLat, boatLon], {
-                icon: L.icon({
-                    iconUrl: "https://urldefense.com/v3/__https://cdn-icons-png.flaticon.com/512/616/616490.png__;!!LtDMhTYuqQ!T6k4TQW7ooKBul4gXEUlyQ-quHroiEn__33Md4TZzY1jNt7mjuMwVq2YagQ68Jr2fHXEX_PMoyiqKl6Cn4lRdiqh$ ",
-                    iconSize: [32,32]
-                })
-            }).addTo(map).bindPopup("Boat");
-        } else {
-            boatMarker.setLatLng([boatLat, boatLon]);
-        }
-
-    } catch(e){
-        console.log("No boat signal");
+    // 🔵 BOAT MARKER
+    if(!boatMarker){
+        boatMarker = L.marker([boatLat, lon]).addTo(map)
+            .bindPopup("Boat Position");
+    } else {
+        boatMarker.setboatLatLng([boatLat, lon]);
     }
-}
+
+    // 🟢 BOAT PATH
+    boatPath.push([boatLat, lon]);
+
+    if(boatPath.length > 50){
+        boatPath.shift();
+    }
+
+    if(!boatLine){
+        boatLine = L.polyline(boatPath, {
+            color: '#00ffa6',
+            weight: 3
+        }).addTo(map);
+    } else {
+        boatLine.setboatLatLngs(boatPath);
+    }
+
+    // ✅ STATUS
+    updateBoatStatus("Connected", "#00ffa6"); }
 
 // 🔁 update every 3 seconds
 setInterval(updateBoatPosition, 3000);
@@ -1882,7 +1883,7 @@ let boatLine = null;
   
 /* USER POSITION */
 
-L.marker([lat, lon])
+L.marker([boatLat, lon])
 .addTo(map)
 .bindPopup("Your Position")
 .openPopup();
@@ -1898,7 +1899,7 @@ let color = "red";
 if(s.score >= 80) color = "green";
 else if(s.score >= 60) color = "orange";
 
-let marker = L.circleMarker([s.lat, s.lon],{ radius:8, color:color, fillColor:color,
+let marker = L.circleMarker([s.boatLat, s.lon],{ radius:8, color:color, fillColor:color,
 fillOpacity:0.8
 }).addTo(map);
 
@@ -1916,11 +1917,11 @@ let best = getBestScout();
 
 if(best){
 
-let dist = distanceBetween(lat, lon, best.lat, best.lon);
+let dist = distanceBetween(boatLat, lon, best.boatLat, best.lon);
 
-L.marker([best.lat, best.lon],{
+L.marker([best.boatLat, best.lon],{
 icon: L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+iconUrl:"https://cdn-icons-png.fboatLaticon.com/512/1828/1828884.png",
 iconSize:[30,30],
 iconAnchor:[15,30]
 })
@@ -1995,23 +1996,23 @@ async function updateBoatGPS(){
 
         let data = await res.json();
 
-        let lat = data.lat;
-        let lon = data.lon;
+        let boatLat = data.Lat;
+        let boatLon = data.lon;
 
-        if(lat && lon){
+        if(boatLat && boatLon){
 
             boatConnected = true;
 
-            console.log("Boat GPS:", lat, lon);
+            console.log("Boat GPS:", boatLat, boatLon);
 
             // If map exists
             if(typeof map !== "undefined"){
 
                 if(!boatMarker){
-                    boatMarker = L.marker([lat, lon]).addTo(map)
+                    boatMarker = L.marker([boatLat, boatLon]).addTo(map)
                         .bindPopup("Boat Position");
                 } else {
-                    boatMarker.setLatLng([lat, lon]);
+                    boatMarker.setboatLatLng([boatLat, boatLon]);
                 }
 
             }
@@ -2021,11 +2022,9 @@ async function updateBoatGPS(){
         }
 
     } catch(e){
-
+        console.log("No boat signal");
+        
         boatConnected = false;
-
-        console.log("Boat GPS offline");
-
         updateBoatStatus("No boat detected", "#ff3b3b");
 
     }
@@ -2145,9 +2144,9 @@ margin-top:10px;
 
 setTimeout(function(){
 
-let centerLat = scouts.length ? scouts[0].lat : -26; let centerLon = scouts.length ? scouts[0].lon : 28;
+let centerboatLat = scouts.length ? scouts[0].boatLat : -26; let centerLon = scouts.length ? scouts[0].lon : 28;
 
-let map = L.map('reportMap').setView([centerLat, centerLon], 15);
+let map = L.map('reportMap').setView([centerboatLat, centerLon], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
 maxZoom:18
@@ -2163,7 +2162,7 @@ let color = "red";
 if(s.score >= 80) color = "green";
 else if(s.score >= 60) color = "orange";
 
-L.circleMarker([s.lat,s.lon],{
+L.circleMarker([s.boatLat,s.lon],{
 radius:6,
 color:color,
 fillColor:color,
@@ -2177,7 +2176,7 @@ fillOpacity:0.8
 
 drops.forEach(d=>{
 
-L.marker([d.lat,d.lon]).addTo(map)
+L.marker([d.boatLat,d.lon]).addTo(map)
 .bindPopup("Drop<br>SPI: "+d.spi+"%");
 
 });
@@ -2187,9 +2186,9 @@ L.marker([d.lat,d.lon]).addTo(map)
 
 if(bestSpot){
 
-L.marker([bestSpot.lat,bestSpot.lon],{
+L.marker([bestSpot.boatLat,bestSpot.lon],{
 icon: L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+iconUrl:"https://cdn-icons-png.fboatLaticon.com/512/1828/1828884.png",
 iconSize:[30,30],
 iconAnchor:[15,30]
 })
@@ -2434,7 +2433,7 @@ function estimateDailySPI(date){
 let score = 50;
 
 let month = date.getMonth()+1;
-let hour = 6; // simulate morning feeding
+let hour = 6; // simuboatLate morning feeding
 
 /* seasonal weight */
 
@@ -2455,7 +2454,7 @@ if(moon === "Waning") score += 2;
 
 score += 8;
 
-/* simulated pressure stability */
+/* simuboatLated pressure stability */
 
 score += Math.random()*6;
 
@@ -2655,12 +2654,12 @@ let color = document.getElementById("scoutColor").value;
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let lat = pos.coords.latitude;
+let boatLat = pos.coords.boatLatitude;
 let lon = pos.coords.longitude;
 
 let spi = lastSPI || 50;
 
-let score = calculateSwimScore(
+let score = calcuboatLateSwimScore(
 spi,
 lastWindSpeed || 0,
 lastCloud || 0,
@@ -2670,7 +2669,7 @@ lastPressure || 1015
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
 
 scouts.push({
-lat:lat,
+boatLat:boatLat,
 lon:lon,
 depth:depth,
 bottom:bottom,
