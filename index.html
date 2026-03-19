@@ -2036,10 +2036,11 @@ lucide.createIcons();
 // 🚤 BOAT GPS TRACKING (SAFE)
 // =========================
  
-  let boatMarker = null;
+let boatMarker = null;
 
 async function updateBoatPosition(){
   try {
+
     let res = await fetch("http://192.168.1.85:5000/gps");
     let data = await res.json();
 
@@ -2054,14 +2055,13 @@ async function updateBoatPosition(){
       boatMarker.setLatLng([boatLat, boatLon]);
     }
 
-    map.panTo([boatLat, boatLon]);
+    map.panTo([boatLat, boatLon], {animate: true});
 
   } catch(e){
     console.log("No boat signal");
   }
 }
 
-// Run every 3 seconds
 setInterval(updateBoatPosition, 3000);
 
 // =========================
