@@ -1935,17 +1935,7 @@ async function updateBoatPosition(){
       if(typeof boatPath !== "undefined"){
         boatPath.push([boatLat, boatLon]);
       }
-
-    }
-
-  } catch(e){
-    console.log("GPS error", e);
-  }
-}
- 
-            updateBoatStatus("Connected", "#00ffa6");
-        }
-
+   
     } catch(e){
         console.log("No boat signal");
     }
