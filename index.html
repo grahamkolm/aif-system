@@ -614,7 +614,7 @@ let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
 
 drops.push({
 boatLat:boatLat,
-lon:lon,
+lon:boatLon,
 time:Date.now()
 });
 
@@ -1655,7 +1655,7 @@ document.getElementById("probeStatus").innerText="Scanning...";
 function performScout(){
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let boatLat = pos.coords.boatLatitude;
+let boatLat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
 let windDir = lastWindDir || 0;
@@ -1684,7 +1684,7 @@ localStorage.setItem("aif_scout", JSON.stringify(scouts))
 
 alert(
 "SCOUT TACTICAL ANALYSIS\n\n"+
-"boatLatitude: "+boatLat.toFixed(5)+
+"\nLatitude: "+boatLat.toFixed(5)+
 "\nLongitude: "+lon.toFixed(5)+
 
 "\n\nWindward bank: "+bank+
@@ -1736,7 +1736,7 @@ return R * c
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let boatLat = pos.coords.boatLatitude;
+let boatLat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
@@ -1799,7 +1799,7 @@ function openMap(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let boatLat = pos.coords.boatLatitude;
+let boatLat = pos.coords.latitude;
 let lon = pos.coords.longitude;
 
 /* CREATE MAP CONTAINER */
@@ -1833,8 +1833,6 @@ let map = L.map('map').setView([boatLat, lon], 15);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 maxZoom: 18
 }).addTo(map);
-
-let boatMarker = null;
 
 async function updateBoatPosition(){
     try{
@@ -1992,7 +1990,7 @@ async function updateBoatGPS(){
 
     try{
 
-        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:8000/gps.json__;!!LtDMhTYuqQ!UqvkEhEh4FtoPPd_BQmmZhXbcgvCm6i8HlUpndRJiTR4Spzdyb4XPa1FfHTqKiXK18Fis0QsVV0scrfAAAIxdONA$ ");
+        let res = await fetch("http://192.168.1.85:8000/gps.json");
 
         if(!res.ok) throw new Error("No response");
 
@@ -2232,7 +2230,7 @@ document.getElementById("dropList").innerHTML = log;
 }
 
 function closeReport(){
-document.getElementById("reportScreen");
+let el = document.getElementById("reportScreen");
 if(el) el.remove();
 }
 
@@ -2656,7 +2654,7 @@ let color = document.getElementById("scoutColor").value;
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let boatLat = pos.coords.boatLatitude;
+let boatLat = pos.coords.Latitude;
 let lon = pos.coords.longitude;
 
 let spi = lastSPI || 50;
