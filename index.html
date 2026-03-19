@@ -2035,7 +2035,7 @@ function openReport(){
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]"); let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
 
 let scoutCount = scouts.length;
-let dropCount = drops.length;
+let dropCount = 0;
 
 let bestScore = 0;
 let bestSpot = null;
