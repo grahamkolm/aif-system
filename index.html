@@ -2032,10 +2032,12 @@ lucide.createIcons();
 
 });
 
-// =========================
-// 🚤 BOAT GPS TRACKING (SAFE)
-// =========================
- 
+// =====================
+// 🚤 BOAT GPS TRACKING
+// =====================
+
+(function(){
+
 let boatMarker = null;
 
 async function updateBoatPosition(){
@@ -2063,6 +2065,8 @@ async function updateBoatPosition(){
 }
 
 setInterval(updateBoatPosition, 3000);
+
+})();
 
 // =========================
 // 📡 STATUS DISPLAY
