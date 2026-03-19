@@ -1909,42 +1909,40 @@ setTimeout(() => {
   map.invalidateSize();
 }, 200);
   
+let boatMarker = null;
+
 async function updateBoatPosition(){
-    try{
-        let res = await fetch("http://192.168.4.1/gps");
-        let data = await res.json();
+  try {
+    let res = await fetch("http://192.168.1.85:5000/gps");
+    let data = await res.json();
 
-        let boatLat = data.lat;
-        let boatLon = data.lon;
+    if(data.lat && data.lon){
 
-        if(boatLat && boatLon){
+      let boatLat = data.lat;
+      let boatLon = data.lon;
 
-            boatConnected = true;
+      // Create marker
+      if(!boatMarker){
+        boatMarker = L.marker([boatLat, boatLon]).addTo(map)
+          .bindPopup("🚤 Bait Boat");
+      } 
+      // Update marker
+      else{
+        boatMarker.setLatLng([boatLat, boatLon]);
+      }
 
-            // 🔵 BOAT MARKER
-            if(!boatMarker){
-                boatMarker = L.marker([boatLat, boatLon]).addTo(map)
-                    .bindPopup("Boat Position");
-            } else {
-                boatMarker.setLatLng([boatLat, boatLon]);
-            }
+      // OPTIONAL: boat path (INSIDE function)
+      if(typeof boatPath !== "undefined"){
+        boatPath.push([boatLat, boatLon]);
+      }
 
-            // 🟢 BOAT PATH
-            boatPath.push([boatLat, boatLon]);
+    }
 
-            if(boatPath.length > 50){
-                boatPath.shift();
-            }
-
-            if(!boatLine){
-                boatLine = L.polyline(boatPath, {
-                    color: '#00ffa6',
-                    weight: 3
-                }).addTo(map);
-            } else {
-                boatLine.setLatLngs(boatPath);
-            }
-
+  } catch(e){
+    console.log("GPS error", e);
+  }
+}
+ 
             updateBoatStatus("Connected", "#00ffa6");
         }
 
@@ -1956,13 +1954,6 @@ async function updateBoatPosition(){
 // 🔁 run every 3 seconds
 setInterval(updateBoatPosition, 3000);
   
-/* USER POSITION */
-
-L.marker([boatLat, lon])
-.addTo(map)
-.bindPopup("Your Position")
-.openPopup();
-
 /* LOAD SCOUT POINTS */
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
