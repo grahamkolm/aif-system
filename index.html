@@ -1830,9 +1830,11 @@ document.body.appendChild(btn);
 
 let map = L.map('map').setView([boatLat, lon], 15);
 
+console.log("MAP INIT OK");
+  
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-maxZoom: 19
-attribution: "© OpenStreetMap"
+    maxZoon: 19,
+    attribution: "© OpenStreetMap contributors"
 }).addTo(map);
 
 setTimeout(() => {
