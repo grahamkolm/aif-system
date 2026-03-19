@@ -1899,7 +1899,7 @@ let color = "red";
 if(s.score >= 80) color = "green";
 else if(s.score >= 60) color = "orange";
 
-let marker = L.circleMarker([s.lat, s.lon],{ radius:8, color:color, fillColor:color,
+let marker = L.circleMarker([s.boatLat, s.lon],{ radius:8, color:color, fillColor:color,
 fillOpacity:0.8
 }).addTo(map);
 
@@ -1982,10 +1982,7 @@ lucide.createIcons();
 // =========================
 // 🚤 BOAT GPS TRACKING (SAFE)
 // =========================
-
-var boatMarker = null;
-var boatConnected = false;
-  
+ 
   async function updateBoatGPS(){
 
     try{
