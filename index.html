@@ -1922,13 +1922,14 @@ async function updateBoatPosition(){
 
     if(!boatMarker){
       boatMarker = L.marker([boatLat, boatLon])
-        map.panTo([boatLat, boatLon]), {animate: true});
         .addTo(map)
         .bindPopup("🚤 Bait Boat");
     } else {
       boatMarker.setLatLng([boatLat, boatLon]);
     }
-
+// FOLLOW BOAT
+    map.panTo([boatLat, boatLon]), {animate: true});
+    
     // OPTIONAL PATH
     if(typeof boatPath !== "undefined"){
       boatPath.push([boatLat, boatLon]);
