@@ -1923,6 +1923,79 @@ lucide.createIcons();
 
 });
 
+// =========================
+// 🚤 BOAT GPS TRACKING (SAFE)
+// =========================
+
+let boatMarker = null;
+let boatConnected = false;
+
+async function updateBoatGPS(){
+
+    try{
+
+        let res = await fetch("https://urldefense.com/v3/__http://192.168.1.85:8000/gps.json__;!!LtDMhTYuqQ!UqvkEhEh4FtoPPd_BQmmZhXbcgvCm6i8HlUpndRJiTR4Spzdyb4XPa1FfHTqKiXK18Fis0QsVV0scrfAAAIxdONA$ ");
+
+        if(!res.ok) throw new Error("No response");
+
+        let data = await res.json();
+
+        let lat = data.lat;
+        let lon = data.lon;
+
+        if(lat && lon){
+
+            boatConnected = true;
+
+            console.log("Boat GPS:", lat, lon);
+
+            // If map exists
+            if(typeof map !== "undefined"){
+
+                if(!boatMarker){
+                    boatMarker = L.marker([lat, lon]).addTo(map)
+                        .bindPopup("Boat Position");
+                } else {
+                    boatMarker.setLatLng([lat, lon]);
+                }
+
+            }
+
+            updateBoatStatus("Connected", "#00ffa6");
+
+        }
+
+    } catch(e){
+
+        boatConnected = false;
+
+        console.log("Boat GPS offline");
+
+        updateBoatStatus("No boat detected", "#ff3b3b");
+
+    }
+
+}
+
+// Run every 2 seconds
+setInterval(updateBoatGPS, 2000);
+
+
+// =========================
+// 📡 STATUS DISPLAY
+// =========================
+
+function updateBoatStatus(text, color){
+
+    let el = document.getElementById("boatStatus");
+
+    if(el){
+        el.innerText = text;
+        el.style.color = color;
+    }
+
+}
+  
 function closeMap(){
 document.getElementById("map").remove();
 document.getElementById("closeMap").remove();
