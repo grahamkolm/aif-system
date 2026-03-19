@@ -67,7 +67,7 @@ justify-content:center;
 }
 
 .spi-container{
-position:reboatLative;
+position:relative;
 margin-top:5px;
 width:260px;
 height:240px;
@@ -104,13 +104,13 @@ z-index:10;
 /* Left Cirle */
 .env-circle{
 left:-20px;
-transform:transboatLate(-30px, 10px);
+transform:translate(-30px, 10px);
 }
 
 /* Right Circle */
 .conf-circle{
 right:20px;
-transform:transboatLate(69px, 10px);
+transform:translate(69px, 10px);
 }
   
 .mini-value{
@@ -130,9 +130,9 @@ opacity:0.7;
 margin-top:-25px;
 width:260px;
 height:260px;
-position:reboatLative;
+position:relative;
 z-index:2;
-transform: transboatLateY(-8px);
+transform: translateY(-8px);
 filter: 
 drop-shadow(0 0 6px rgba(0,255,156,0.06))
 drop-shadow(0 0 18px rgba(0,255,156,0.35))
@@ -170,7 +170,7 @@ margin-bottom:6px;
 
 .tile-grid{
 display:grid;
-grid-tempboatLate-columns:repeat(3,1fr);
+grid-template-columns:repeat(3,1fr);
 gap:12px;
 margin:18px;
 }
@@ -233,7 +233,7 @@ max-height:1000px;
 position:fixed;
 bottom:0;
 left:50%;
-transform:transboatLateX(-50%);
+transform:translateX(-50%);
 width:100%;
 max-width:420px;
 background:black;
@@ -607,8 +607,8 @@ function confirmDrop(){
   
 navigator.geolocation.getCurrentPosition(function(pos){
 
-let boatLat = pos.coords.boatLatitude;
-let lon = pos.coords.longitude;
+let boatLat = pos.coords.latitude;
+let boatLon = pos.coords.longitude;
 
 let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
 
@@ -785,7 +785,7 @@ return "North-West"
 
 }
   
-function calcuboatLateSPI(p,w,c,windDir,t){
+function calculateSPI(p,w,c,windDir,t){
 
 let score = 45
 
@@ -1050,7 +1050,7 @@ forecast.forEach(f => {
   let c = f.clouds.all;
   let windDir = f.wind.deg;
 
-  let spi = calcuboatLateSPI(p, w, c, windDir, t);
+  let spi = calculateSPI(p, w, c, windDir, t);
 
 if(spi > bestForecastSPI){
 bestForecastSPI = spi;
@@ -1097,7 +1097,7 @@ lastSurfaceTemp = surfaceTemp;
 /* ===== SPI CALCUboatLatIONS ===== */
 /* ========================= */
   
-let spi=calcuboatLateSPI(p,w,c,windDir,t)
+let spi=calculateSPI(p,w,c,windDir,t)
 
 /* ========================= */
 /* ===== UI RENDERING ===== */
@@ -1841,45 +1841,47 @@ async function updateBoatPosition(){
         let res = await fetch("http://192.168.4.1/gps");
         let data = await res.json();
 
-        let boatboatLat = data.boatLat;
+        let boatLat = data.lat;
         let boatLon = data.lon;
 
-if(boatLat && lon){
+        if(boatLat && boatLon){
 
-    boatConnected = true;
+            boatConnected = true;
 
-    // 🔵 BOAT MARKER
-    if(!boatMarker){
-        boatMarker = L.marker([boatLat, lon]).addTo(map)
-            .bindPopup("Boat Position");
-    } else {
-        boatMarker.setboatLatLng([boatLat, lon]);
+            // 🔵 BOAT MARKER
+            if(!boatMarker){
+                boatMarker = L.marker([boatLat, boatLon]).addTo(map)
+                    .bindPopup("Boat Position");
+            } else {
+                boatMarker.setLatLng([boatLat, boatLon]);
+            }
+
+            // 🟢 BOAT PATH
+            boatPath.push([boatLat, boatLon]);
+
+            if(boatPath.length > 50){
+                boatPath.shift();
+            }
+
+            if(!boatLine){
+                boatLine = L.polyline(boatPath, {
+                    color: '#00ffa6',
+                    weight: 3
+                }).addTo(map);
+            } else {
+                boatLine.setLatLngs(boatPath);
+            }
+
+            updateBoatStatus("Connected", "#00ffa6");
+        }
+
+    } catch(e){
+        console.log("No boat signal");
     }
+}
 
-    // 🟢 BOAT PATH
-    boatPath.push([boatLat, lon]);
-
-    if(boatPath.length > 50){
-        boatPath.shift();
-    }
-
-    if(!boatLine){
-        boatLine = L.polyline(boatPath, {
-            color: '#00ffa6',
-            weight: 3
-        }).addTo(map);
-    } else {
-        boatLine.setboatLatLngs(boatPath);
-    }
-
-    // ✅ STATUS
-    updateBoatStatus("Connected", "#00ffa6"); }
-
-// 🔁 update every 3 seconds
+// 🔁 run every 3 seconds
 setInterval(updateBoatPosition, 3000);
-
-let boatPath = [];
-let boatLine = null;
   
 /* USER POSITION */
 
@@ -2012,7 +2014,7 @@ async function updateBoatGPS(){
                     boatMarker = L.marker([boatLat, boatLon]).addTo(map)
                         .bindPopup("Boat Position");
                 } else {
-                    boatMarker.setboatLatLng([boatLat, boatLon]);
+                    boatMarker.setLatLng([boatLat, boatLon]);
                 }
 
             }
