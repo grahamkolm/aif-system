@@ -1913,32 +1913,29 @@ let boatMarker = null;
 
 async function updateBoatPosition(){
   try {
+
     let res = await fetch("http://192.168.1.85:5000/gps");
     let data = await res.json();
 
-    if(data.lat && data.lon){
+    let boatLat = data.lat;
+    let boatLon = data.lon;
 
-      let boatLat = data.lat;
-      let boatLon = data.lon;
-
-      // Create marker
-      if(!boatMarker){
-        boatMarker = L.marker([boatLat, boatLon]).addTo(map)
-          .bindPopup("🚤 Bait Boat");
-      } 
-      // Update marker
-      else{
-        boatMarker.setLatLng([boatLat, boatLon]);
-      }
-
-      // OPTIONAL: boat path (INSIDE function)
-      if(typeof boatPath !== "undefined"){
-        boatPath.push([boatLat, boatLon]);
-      }
-   
-    } catch(e){
-        console.log("No boat signal");
+    if(!boatMarker){
+      boatMarker = L.marker([boatLat, boatLon])
+        .addTo(map)
+        .bindPopup("🚤 Bait Boat");
+    } else {
+      boatMarker.setLatLng([boatLat, boatLon]);
     }
+
+    // OPTIONAL PATH
+    if(typeof boatPath !== "undefined"){
+      boatPath.push([boatLat, boatLon]);
+    }
+
+  } catch(e){
+    console.log("No boat signal");
+  }
 }
 
 // 🔁 run every 3 seconds
