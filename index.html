@@ -1911,37 +1911,6 @@ setTimeout(() => {
   
 let boatMarker = null;
 
-async function updateBoatPosition(){
-  try {
-
-    let res = await fetch("http://192.168.1.85:5000/gps");
-    let data = await res.json();
-
-    let boatLat = data.lat;
-    let boatLon = data.lon;
-
-    if(!boatMarker){
-      boatMarker = L.marker([boatLat, boatLon])
-        .addTo(map)
-        .bindPopup("🚤 Bait Boat");
-    } else {
-      boatMarker.setLatLng([boatLat, boatLon]);
-    }
-
-    // FOLLOW BOAT
-    map.panTo([boatLat, boatLon], { animate: true });
-
-    // ✅ THIS MUST BE INSIDE TRY
-    updateBoatStatus("Connected", "#00ffa6");
-
-  } catch(e){
-    console.log("No boat signal");
-
-    boatConnected = false;
-    updateBoatStatus("No boat detected", "#ff3b3b");
-  }
-}
-
 // 🔁 run every 3 seconds
 setInterval(updateBoatPosition, 3000);
   
