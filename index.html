@@ -1130,7 +1130,7 @@ let bottomTemp = estimateBottomTemp({
 lastSurfaceTemp = surfaceTemp;
 
 /* ========================= */
-/* ===== SPI CALCUboatLatIONS ===== */
+/* ===== SPI CALCULATELatIONS ===== */
 /* ========================= */
   
 let spi=calculateSPI(p,w,c,windDir,t)
@@ -1610,7 +1610,7 @@ icon.style.transform = "rotate(0deg)";
 
 }
 
-function calcuboatLateSwimScore(spi, windSpeed, cloud, pressure){
+function calculateSwimScore(spi, windSpeed, cloud, pressure){
 
 let score = spi;
 
@@ -1901,7 +1901,7 @@ let map = L.map('map').setView([boatLat, lon], 15);
 console.log("MAP INIT OK");
   
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoon: 19,
+    maxZoom: 19,
     attribution: "© OpenStreetMap contributors"
 }).addTo(map);
 
@@ -2238,7 +2238,7 @@ if(bestSpot){
 
 L.marker([bestSpot.boatLat,bestSpot.lon],{
 icon: L.icon({
-iconUrl:"https://cdn-icons-png.fboatLaticon.com/512/1828/1828884.png",
+iconUrl:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
 iconSize:[30,30],
 iconAnchor:[15,30]
 })
