@@ -2103,7 +2103,8 @@ document.getElementById("dropList").innerHTML = log;
 }
 
 function closeReport(){
-document.getElementById("reportScreen").remove();
+document.getElementById("reportScreen");
+if(el) el.remove();
 }
 
 function clearDrops(){
@@ -2344,22 +2345,6 @@ function openSetup(){
 /* ===== SENSORS (GPS / COMPASS) ===== */
 /* ========================= */
   
-function startCompass(){
-
-window.addEventListener("deviceorientation", function(event){
-
-let heading = 360 - event.alpha;
-
-let dir="";
-
-if(heading >=337 || heading <22) dir="N"; else if(heading <67) dir="NE"; else if(heading <112) dir="E"; else if(heading <157) dir="SE"; else if(heading <202) dir="S"; else if(heading <247) dir="SW"; else if(heading <292) dir="W"; else dir="NW";
-
-document.getElementById("compassDir").innerText = dir;
-
-});
-
-}
-
 function startCompass(){
 
 compassActive = true;
