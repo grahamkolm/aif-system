@@ -1840,6 +1840,24 @@ async function updateBoatPosition(){
         let boatLat = data.lat;
         let boatLon = data.lon;
 
+// save path
+boatPath.push([boatLat, boatLon]);
+
+// limit path length (last 50 points)
+if(boatPath.length > 50){
+    boatPath.shift();
+}
+
+// draw line
+if(!boatLine){
+    boatLine = L.polyline(boatPath, {
+        color: '#00ffa6',
+        weight: 3
+    }).addTo(map);
+} else {
+    boatLine.setLatLngs(boatPath);
+}
+     
         if(!boatMarker){
             boatMarker = L.marker([boatLat, boatLon], {
                 icon: L.icon({
@@ -1858,6 +1876,9 @@ async function updateBoatPosition(){
 
 // 🔁 update every 3 seconds
 setInterval(updateBoatPosition, 3000);
+
+let boatPath = [];
+let boatLine = null;
   
 /* USER POSITION */
 
