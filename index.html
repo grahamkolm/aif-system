@@ -1847,7 +1847,7 @@ alert(
 
 }
 
-function clearScouts(){
+function clearScouts(){ 
 
 if(confirm("Delete all scout points?")){
 
@@ -1901,7 +1901,7 @@ let map = L.map('map').setView([boatLat, lon], 15);
 console.log("MAP INIT OK");
   
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoon: 19,
+    maxZoom: 19,
     attribution: "© OpenStreetMap contributors"
 }).addTo(map);
 
@@ -2070,8 +2070,6 @@ lucide.createIcons();
             }
 
             updateBoatStatus("Connected", "#00ffa6");
-
-        }
 
     } catch(e){
         console.log("No boat signal");
