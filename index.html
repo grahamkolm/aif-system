@@ -1911,9 +1911,6 @@ setTimeout(() => {
   
 let boatMarker = null;
 
-// 🔁 run every 3 seconds
-setInterval(updateBoatPosition, 3000);
-  
 /* LOAD SCOUT POINTS */
 
 let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
@@ -2009,53 +2006,6 @@ lucide.createIcons();
 // 🚤 BOAT GPS TRACKING (SAFE)
 // =========================
  
-  async function updateBoatGPS(){
-
-    try{
-
-        let res = await fetch("http://192.168.1.85:8000/gps.json");
-
-        if(!res.ok) throw new Error("No response");
-
-        let data = await res.json();
-
-        let boatLat = data.Lat;
-        let boatLon = data.lon;
-
-        if(boatLat && boatLon){
-
-            boatConnected = true;
-
-            console.log("Boat GPS:", boatLat, boatLon);
-
-            // If map exists
-            if(typeof map !== "undefined"){
-
-                if(!boatMarker){
-                    boatMarker = L.marker([boatLat, boatLon]).addTo(map)
-                        .bindPopup("Boat Position");
-                } else {
-                    boatMarker.setLatLng([boatLat, boatLon]);
-                }
-
-            }
-
-            updateBoatStatus("Connected", "#00ffa6");
-
-    } catch(e){
-        console.log("No boat signal");
-        
-        boatConnected = false;
-        updateBoatStatus("No boat detected", "#ff3b3b");
-
-    }
-
-}
-
-// Run every 2 seconds
-setInterval(updateBoatGPS, 2000);
-
-
 // =========================
 // 📡 STATUS DISPLAY
 // =========================
@@ -2785,6 +2735,54 @@ function estimateBottomTemp(data){
   return bottomTemp;
 }
 
+let boatMarker = null;
+let boatConnected = false;
+
+async function updateBoatGPS(){
+    try {
+        let res = await fetch("http://192.168.1.85:8000/gps.json");
+
+        if (!res.ok) throw new Error("No response");
+
+        let data = await res.json();
+
+        let boatLat = data.lat || data.Lat;
+        let boatLon = data.lon || data.Lon;
+
+        if (boatLat && boatLon) {
+
+            boatConnected = true;
+
+            console.log("Boat GPS:", boatLat, boatLon);
+
+            if (typeof map !== "undefined") {
+
+                if (!boatMarker) {
+                    boatMarker = L.marker([boatLat, boatLon])
+                        .addTo(map)
+                        .bindPopup("🚤 Boat");
+                } else {
+                    boatMarker.setLatLng([boatLat, boatLon]);
+                }
+
+            }
+
+            updateBoatStatus("Connected", "#00ffa6");
+
+        }
+
+    } catch (e) {
+        console.log("No boat signal");
+
+        boatConnected = false;
+        updateBoatStatus("No boat detected", "#ff3b3b");
+    }
+}
+
+// Run every 3 seconds
+setInterval(updateBoatGPS, 3000);
+
+  
 </script>
 </body>
 </html>
