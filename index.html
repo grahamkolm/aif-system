@@ -1927,16 +1927,18 @@ async function updateBoatPosition(){
     } else {
       boatMarker.setLatLng([boatLat, boatLon]);
     }
+
     // FOLLOW BOAT
-    map.panTo([boatLat, boatLon], {animate: true});
-    
-    // OPTIONAL PATH
-    if(typeof boatPath !== "undefined"){
-      boatPath.push([boatLat, boatLon]);
-    }
+    map.panTo([boatLat, boatLon], { animate: true });
+
+    // ✅ THIS MUST BE INSIDE TRY
+    updateBoatStatus("Connected", "#00ffa6");
 
   } catch(e){
     console.log("No boat signal");
+
+    boatConnected = false;
+    updateBoatStatus("No boat detected", "#ff3b3b");
   }
 }
 
