@@ -1100,52 +1100,41 @@ render(forecast[0]);
 }
 
 function render(d){
+  try {
 
-let t = d.main.temp;
-let p = d.main.pressure;
-let w = d.wind.speed * 3.6;
-let c = d.clouds.all;
-let windDir = d.wind.deg;
+    let t = d.main.temp;
+    let p = d.main.pressure;
+    let w = d.wind.speed * 3.6;
+    let c = d.clouds.all;
+    let windDir = d.wind.deg;
 
-// ✅ ADD THIS BLOCK HERE
+    lastPressure = p;
+    lastWindSpeed = w;
+    lastCloud = c;
 
-lastPressure = p;
-lastWindSpeed = w;
-lastCloud = c;
-  
-let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
-  prevWaterTemp: lastSurfaceTemp || (t - 0.5),
-  airTemp: t,
-  windSpeed: w || 2,
-  sunFactor: 1 - (c || 0) / 100,
-  hour: new Date().getHours()
-});
+    let surfaceTemp = estimateSurfaceTemp({
+      prevWaterTemp: lastSurfaceTemp || (t - 0.5),
+      airTemp: t,
+      windSpeed: w || 2,
+      sunFactor: 1 - (c || 0) / 100,
+      hour: new Date().getHours()
+    });
 
-let bottomTemp = estimateBottomTemp({
-  surfaceTemp: surfaceTemp,
-  depth: 6,
-  windSpeed: w
-});
-  
-lastSurfaceTemp = surfaceTemp;
+    let bottomTemp = estimateBottomTemp({
+      surfaceTemp: surfaceTemp,
+      depth: 6,
+      windSpeed: w
+    });
 
-/* ========================= */
-/* ===== SPI CALCULATELatIONS ===== */
-/* ========================= */
-  
-let spi=calculateSPI(p,w,c,windDir,t)
+    let spi = calculateSPI(p,w,c,windDir,t);
 
-/* ========================= */
-/* ===== UI RENDERING ===== */
-/* ========================= */
-  
-updateSPI(spi)
+    updateSPI(spi);
 
-let gauge=document.getElementById("spiGauge")
-if(spi>=70){
-gauge.style.filter="drop-shadow(0 0 12px rgba(0,255,156,0.35))"
-}else{
-gauge.style.filter="drop-shadow(0 0 6px rgba(0,255,156,0.15))"
+    document.getElementById("air").innerText = t.toFixed(1)+"°C";
+
+  } catch(e){
+    console.error("RENDER ERROR:", e);
+  }
 }
 
 if(spi >= 70){
