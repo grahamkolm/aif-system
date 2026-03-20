@@ -2185,106 +2185,101 @@ alert("Drop log cleared");
 
 function openPlan(){
 
-document.body.innerHTML += `
-<div id="planScreen" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#05080d;
-color:white;
-z-index:999;
-overflow:auto;
-padding:20px;
-font-family:Arial;
-">
+    let existing = document.getElementById("planScreen");
+    if(existing) existing.remove();
 
-<button onclick="closePlan()" style="
-position:fixed;
-top:20px;
-right:20px;
-background:#00ffa6;
-border:none;
-padding:10px 14px;
-border-radius:8px;
-font-weight:600;
-cursor:pointer;
-">Close</button>
+    let plan = document.createElement("div");
+    plan.id = "planScreen";
 
-<h2 style="color:#00ffa6;">AIF™ Tactical Plan</h2>
+    plan.style.position = "fixed";
+    plan.style.top = "0";
+    plan.style.left = "0";
+    plan.style.width = "100%";
+    plan.style.height = "100%";
+    plan.style.background = "#05080d";
+    plan.style.color = "white";
+    plan.style.zIndex = "9999";
+    plan.style.overflow = "auto";
+    plan.style.padding = "20px";
 
-<h3>Arrival Scan</h3>
+    plan.innerHTML = `
+        <button onclick="closePlan()" style="
+            position:fixed;
+            top:20px;
+            right:20px;
+            background:#00ffa6;
+            color:white;
+            border:none;
+            padding:10px 14px;
+            border-radius:8px;
+            font-weight:600;
+        ">Close</button>
 
-<p>Wind Direction</p>
-<div class="tiles">
-<div class="tile">N</div>
-<div class="tile">E</div>
-<div class="tile">S</div>
-<div class="tile">W</div>
-</div>
+        <h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
 
-<p>Surface Activity</p>
-<div class="tiles">
-<div class="tile">None</div>
-<div class="tile">Showing</div>
-<div class="tile">Feeding</div>
-</div>
+        <h3>Arrival Scan</h3>
 
-<p>Water Colour</p>
-<div class="tiles">
-<div class="tile">Clear</div>
-<div class="tile">Green</div>
-<div class="tile">Dirty</div>
-</div>
+        <p>Wind Direction</p>
+        <div class="tiles">
+            <div class="tile">N</div>
+            <div class="tile">E</div>
+            <div class="tile">S</div>
+            <div class="tile">W</div>
+        </div>
 
-<h3>Water Intelligence</h3>
+        <p>Surface Activity</p>
+        <div class="tiles">
+            <div class="tile">None</div>
+            <div class="tile">Showing</div>
+            <div class="tile">Feeding</div>
+        </div>
 
-<input placeholder="Depth (m)">
+        <p>Water Colour</p>
+        <div class="tiles">
+            <div class="tile">Clear</div>
+            <div class="tile">Green</div>
+            <div class="tile">Dirty</div>
+        </div>
 
-<p>Bottom Composition</p>
-<div class="tiles">
-<div class="tile">Gravel</div>
-<div class="tile">Silt</div>
-<div class="tile">Weed</div>
-</div>
+        <h3>Water Intelligence</h3>
 
-<input placeholder="Surface Temp (°C)">
-<input placeholder="Bottom Temp (°C)">
+        <input placeholder="Depth (m)">
 
-<h3>Tactical Decision</h3>
+        <p>Bottom Composition</p>
+        <div class="tiles">
+            <div class="tile">Gravel</div>
+            <div class="tile">Silt</div>
+            <div class="tile">Weed</div>
+        </div>
 
-<p>Bait Type</p>
-<div class="tiles">
-<div class="tile">Boilie</div>
-<div class="tile">Particle</div>
-<div class="tile">Pop-up</div>
-</div>
+        <input placeholder="Surface Temp (°C)">
+        <input placeholder="Bottom Temp (°C)">
 
-<p>Hookbait</p>
-<div class="tiles">
-<div class="tile">Bottom</div>
-<div class="tile">Wafter</div>
-<div class="tile">Pop-up</div>
-</div>
+        <h3>Tactical Decision</h3>
 
-<p>Feed Approach</p>
-<div class="tiles">
-<div class="tile">Light</div>
-<div class="tile">Medium</div>
-<div class="tile">Heavy</div>
-</div>
+        <p>Bait Type</p>
+        <div class="tiles">
+            <div class="tile">Boilie</div>
+            <div class="tile">Particle</div>
+            <div class="tile">Pop-up</div>
+        </div>
 
-</div>
-`;
-}
+        <p>Hookbait</p>
+        <div class="tiles">
+            <div class="tile">Bottom</div>
+            <div class="tile">Wafter</div>
+            <div class="tile">Pop-up</div>
+        </div>
 
-function openPlan(){
+        <p>Feed Approach</p>
+        <div class="tiles">
+            <div class="tile">Light</div>
+            <div class="tile">Medium</div>
+            <div class="tile">Heavy</div>
+        </div>
+    `;
 
-document.body.classList.add("popup-open");
-
-document.body.innerHTML += `... YOUR PLAN HTML ...`;
-
+    document.body.appendChild(plan);
 }
 
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
