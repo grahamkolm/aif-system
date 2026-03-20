@@ -1909,8 +1909,8 @@ setTimeout(() => {
   map.invalidateSize();
 }, 200);
   
-console.log("UPDATING BOAT PISITION");
 async function updateBoatPosition(){
+console.log("UPDATING BOAT PISITION");
   try {
 
     let res = await fetch("http://192.168.1.85:5000/gps");
