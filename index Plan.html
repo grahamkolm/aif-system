@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html> 
 <!-- ========================= --> 
-<!-- ===== AIF DASHBOARD ===== -->
+<!-- ===== AIF DASHBOARD ===== --> 
 <!-- ========================= --> 
 <head> 
 <!-- ==================================== -->
@@ -43,6 +43,32 @@ h2 { margin-top: 24px; }
     margin-top: 10px;
 }
 
+/* ✅ FIX GREEN BUTTON TEXT */
+button,
+.setup-close {
+    color: white !important;
+}
+
+/* ✅ PREVENT BACKGROUND SCROLL WHEN POPUP OPEN */ body.popup-open {
+    overflow: hidden;
+}
+
+/* ✅ TILE ACTIVE STATE IMPROVED */
+.tiles .tile {
+    transition: all 0.2s ease;
+}
+
+.tiles .tile.active {
+    background: #00ffa6 !important;
+    color: #081018 !important;
+    border: none;
+    box-shadow: 0 0 10px rgba(0,255,166,0.4); }
+
+/* ✅ IMPROVE TILE TOUCH FEEL */
+.tiles .tile:active {
+    transform: scale(0.95);
+}
+    
 .tile {
     padding: 10px 14px;
     border-radius: 10px;
@@ -1894,6 +1920,21 @@ iconAnchor:[15,30]
 
 /* ===== DASHBOARD START ===== */
 
+document.addEventListener("click", function(e){
+
+    if(e.target.classList.contains("tile")){
+
+        let group = e.target.parentElement;
+
+        // remove active from group
+        group.querySelectorAll(".tile").forEach(t => t.classList.remove("active"));
+
+        // activate clicked
+        e.target.classList.add("active");
+    }
+
+});
+    
 document.addEventListener("DOMContentLoaded", function(){
 let compassActive = false;
 
@@ -2238,8 +2279,12 @@ cursor:pointer;
 `;
 }
 
-function closePlan(){
-document.getElementById("planScreen").remove();
+function openPlan(){
+
+document.body.classList.add("popup-open");
+
+document.body.innerHTML += `... YOUR PLAN HTML ...`;
+
 }
 
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
