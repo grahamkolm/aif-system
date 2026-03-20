@@ -1915,10 +1915,23 @@ async function updateBoatPosition(){
   try {
 
     let res = await fetch("http://192.168.1.85:5000/gps");
+
+    if(!res.ok){
+      throw new Error("Bad response");
+    }
+
     let data = await res.json();
+
+    // ✅ SAFETY CHECK
+    if(typeof data.lat !== "number" || typeof data.lon !== "number"){
+      console.log("Invalid GPS data", data);
+      return;
+    }
 
     let boatLat = data.lat;
     let boatLon = data.lon;
+
+    console.log("GPS OK:", boatLat, boatLon);
 
     if(!boatMarker){
       boatMarker = L.marker([boatLat, boatLon])
@@ -1928,15 +1941,11 @@ async function updateBoatPosition(){
       boatMarker.setLatLng([boatLat, boatLon]);
     }
 
-    // OPTIONAL PATH
-    if(typeof boatPath !== "undefined"){
-      boatPath.push([boatLat, boatLon]);
-    }
-
   } catch(e){
-    console.log("No boat signal");
+    console.log("No boat signal", e);
   }
 }
+
 
 // 🔁 run every 3 seconds
 setInterval(updateBoatPosition, 3000);
