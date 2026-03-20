@@ -424,57 +424,6 @@ color:white;
 <div class="subtitle1">Artificial Intelligence Fishing</div>
 <div class="subtitle2">Drop • Scan • Strike</div>
 </div>
-
-<!-- ========================= -->
-<!-- ===== SCOUT ===== -->
-<!-- ========================= -->
-
-<div id="scoutScreen" class="screen">
-
-  <h2>Scout Spot</h2>
-
-  <div class="scout-bar">
-    SPI: 52% • Wind: 13 km/h NW • Pressure: 1014
-  </div>
-
-  <div class="depth-card">
-    <div class="depth-value" id="depthValue">6m</div>
-  </div>
-
-  <!-- Bottom Type -->
-  <div class="section">
-    <h3>Bottom Type</h3>
-    <div class="tile-group" id="bottomType">
-      <div class="mini-tile brown">🪨<span>Gravel</span></div>
-      <div class="mini-tile brown active">🟤<span>Silt</span></div>
-      <div class="mini-tile clay">🧱<span>Clay</span></div>
-      <div class="mini-tile green">🌿<span>Weed</span></div>
-    </div>
-  </div>
-
-  <!-- Fish Activity -->
-  <div class="section">
-    <h3>Fish Activity</h3>
-    <div class="tile-group" id="fishActivity">
-      <div class="mini-tile">🐟<span>None</span></div>
-      <div class="mini-tile active green">🫧<span>Bubbles</span></div>
-      <div class="mini-tile">🐠<span>Active</span></div>
-      <div class="mini-tile">👁<span>Showing</span></div>
-    </div>
-  </div>
-
-  <!-- Water Colour -->
-  <div class="section">
-    <h3>Water Colour</h3>
-    <div class="tile-group" id="waterColour">
-      <div class="mini-tile">💧<span>Clear</span></div>
-      <div class="mini-tile green">🟢<span>Green</span></div>
-      <div class="mini-tile brown active">🟤<span>Brown</span></div>
-      <div class="mini-tile">🌫<span>Dirty</span></div>
-    </div>
-  </div>
-
-</div>
   
 <!-- ========================= -->
 <!-- ===== MAIN DASHBOARD ===== -->
@@ -723,7 +672,7 @@ Tap to expand
 Refresh 
 </div>
 
-<div class="dock-btn" onclick="openScout()">
+<div class="dock-btn" onclick="openScoutScreenNew()">
 <i data-lucide="crosshair"></i> 
 Scout 
 </div>
@@ -758,7 +707,57 @@ Report
 <!-- ========================= -->
 <!-- ===== JAVASCRIPT LOGIC ===== -->
 <!-- ========================= -->
-  
+<!-- ========================= -->
+<!-- ===== SCOUT ===== -->
+<!-- ========================= -->
+
+<div id="scoutScreen" class="screen">
+
+  <h2>Scout Spot</h2>
+
+  <div class="scout-bar">
+    SPI: 52% • Wind: 13 km/h NW • Pressure: 1014
+  </div>
+
+  <div class="depth-card">
+    <div class="depth-value" id="depthValue">6m</div>
+  </div>
+
+  <!-- Bottom Type -->
+  <div class="section">
+    <h3>Bottom Type</h3>
+    <div class="tile-group" id="bottomType">
+      <div class="mini-tile brown">🪨<span>Gravel</span></div>
+      <div class="mini-tile brown active">🟤<span>Silt</span></div>
+      <div class="mini-tile clay">🧱<span>Clay</span></div>
+      <div class="mini-tile green">🌿<span>Weed</span></div>
+    </div>
+  </div>
+
+  <!-- Fish Activity -->
+  <div class="section">
+    <h3>Fish Activity</h3>
+    <div class="tile-group" id="fishActivity">
+      <div class="mini-tile">🐟<span>None</span></div>
+      <div class="mini-tile active green">🫧<span>Bubbles</span></div>
+      <div class="mini-tile">🐠<span>Active</span></div>
+      <div class="mini-tile">👁<span>Showing</span></div>
+    </div>
+  </div>
+
+  <!-- Water Colour -->
+  <div class="section">
+    <h3>Water Colour</h3>
+    <div class="tile-group" id="waterColour">
+      <div class="mini-tile">💧<span>Clear</span></div>
+      <div class="mini-tile green">🟢<span>Green</span></div>
+      <div class="mini-tile brown active">🟤<span>Brown</span></div>
+      <div class="mini-tile">🌫<span>Dirty</span></div>
+    </div>
+  </div>
+
+</div>  
+
 <script>  
   
 /* ========================= */
