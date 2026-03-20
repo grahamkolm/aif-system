@@ -55,6 +55,85 @@ color:#00ff9c;
 .subtitle1{font-size:20px;color:#b9c3cc;}
 .subtitle2{font-size:15px;color:#7fffb2;margin-top:6px;margin-bottom:10px;}
 
+
+/* ========================= */
+/* ===== SCOUT BAR ===== */
+/* ========================= */
+  
+/* SCOUT BAR */
+.scout-bar {
+  background:rgba(0,255,150,0.1);
+  border:1px solid rgba(0,255,150,0.3);
+  padding:10px;
+  border-radius:20px;
+  text-align:center;
+  margin-bottom:15px;
+}
+
+/* DEPTH CARD */
+.depth-card {
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+    url('underwater.jpg');
+  background-size:cover;
+  background-position:center;
+  border-radius:20px;
+  padding:40px 20px;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.depth-value {
+  font-size:48px;
+  font-weight:600;
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.6),
+    0 0 20px rgba(0,255,150,0.5);
+}
+
+/* SECTIONS */
+.section {
+  margin-bottom:20px;
+}
+
+/* TILE GRID */
+.tile-group {
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:10px;
+}
+
+/* TILE */
+.mini-tile {
+  background:rgba(255,255,255,0.05);
+  border-radius:14px;
+  padding:12px;
+  text-align:center;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.1);
+  transition:0.2s;
+}
+
+.mini-tile span {
+  display:block;
+  margin-top:5px;
+  font-size:12px;
+}
+
+/* COLORS */
+.mini-tile.active.green {
+  background:linear-gradient(135deg, #00ff9c, #00d084);
+  color:#003322;
+  box-shadow:0 0 15px rgba(0,255,156,0.6); }
+
+.mini-tile.active.brown {
+  background:linear-gradient(135deg, #8b5a2b, #a9743a);
+  box-shadow:0 0 12px rgba(139,90,43,0.6); }
+
+.mini-tile.active.clay {
+  background:linear-gradient(135deg, #b5651d, #d27d2d); }
+
+  
 /* ========================= */
 /* ===== SPI GAUGE ===== */
 /* ========================= */
@@ -346,6 +425,57 @@ color:white;
 <div class="subtitle2">Drop • Scan • Strike</div>
 </div>
 
+<!-- ========================= -->
+<!-- ===== SCOUT ===== -->
+<!-- ========================= -->
+
+<div id="scoutScreen" class="screen">
+
+  <h2>Scout Spot</h2>
+
+  <div class="scout-bar">
+    SPI: 52% • Wind: 13 km/h NW • Pressure: 1014
+  </div>
+
+  <div class="depth-card">
+    <div class="depth-value" id="depthValue">6m</div>
+  </div>
+
+  <!-- Bottom Type -->
+  <div class="section">
+    <h3>Bottom Type</h3>
+    <div class="tile-group" id="bottomType">
+      <div class="mini-tile brown">🪨<span>Gravel</span></div>
+      <div class="mini-tile brown active">🟤<span>Silt</span></div>
+      <div class="mini-tile clay">🧱<span>Clay</span></div>
+      <div class="mini-tile green">🌿<span>Weed</span></div>
+    </div>
+  </div>
+
+  <!-- Fish Activity -->
+  <div class="section">
+    <h3>Fish Activity</h3>
+    <div class="tile-group" id="fishActivity">
+      <div class="mini-tile">🐟<span>None</span></div>
+      <div class="mini-tile active green">🫧<span>Bubbles</span></div>
+      <div class="mini-tile">🐠<span>Active</span></div>
+      <div class="mini-tile">👁<span>Showing</span></div>
+    </div>
+  </div>
+
+  <!-- Water Colour -->
+  <div class="section">
+    <h3>Water Colour</h3>
+    <div class="tile-group" id="waterColour">
+      <div class="mini-tile">💧<span>Clear</span></div>
+      <div class="mini-tile green">🟢<span>Green</span></div>
+      <div class="mini-tile brown active">🟤<span>Brown</span></div>
+      <div class="mini-tile">🌫<span>Dirty</span></div>
+    </div>
+  </div>
+
+</div>
+  
 <!-- ========================= -->
 <!-- ===== MAIN DASHBOARD ===== -->
 <!-- ========================= -->
@@ -2769,6 +2899,22 @@ function estimateBottomTemp(data){
   return bottomTemp;
 }
 
+// TILE SELECTION
+document.querySelectorAll('.tile-group').forEach(group => {
+  group.querySelectorAll('.mini-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+
+      // remove active in group
+      group.querySelectorAll('.mini-tile').forEach(t => {
+        t.classList.remove('active');
+      });
+
+      // add active to clicked
+      tile.classList.add('active');
+    });
+  });
+});
+ 
 </script>
 </body>
 </html>
