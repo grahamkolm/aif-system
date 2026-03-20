@@ -96,6 +96,12 @@ color:#00ff9c;
   margin-bottom:20px;
 }
 
+<div style="margin-top:20px;">
+  <button onclick="saveScoutFormTiles()" class="action-btn">
+  Save Scout
+  </button>
+  </div>
+  
 /* TILE GRID */
 .tile-group {
   display:grid;
@@ -1192,7 +1198,7 @@ return"stable"
 
 async function fetchWeather(){
 
-let r = await fetch("https://api.openweathermap.org/data/2.5/forecast?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
+let r = await fetch("s://api.openweathermap.org/data/2.5/forecast?lat=-26.2&lon=28.0&units=metric&appid=" + API_KEY);
 
 console.log("Response status:", r.status);
 
@@ -1757,49 +1763,6 @@ return Math.max(20, Math.min(score,95));
 
 }
   
-function scoutSpot(){
-openScoutScreen();
-}
-
-function openScoutScreen(){
-
-let html = `
-<div id="scoutScreen" class="popup">
-
-<h2>Scout Spot</h2>
-
-<div style="text-align:left;margin-top:10px">
-
-<p><b>Scout Process</b></p>
-
-<ol>
-<li>Ensure probe cable is connected</li> <li>Press START SCAN</li> <li>Slowly lower probe to bottom</li> <li>Watch live temperature changes</li> <li>Enter depth when probe reaches bottom</li> </ol>
-
-</div>
-
-<div style="margin-top:15px">
-Probe Status: <span id="probeStatus">Checking...</span>
-</div>
-
-<div style="margin-top:20px">
-<button onclick="performScout()">START SCAN</button> <button onclick="closeScout()">Cancel</button>
-</div>
-
-</div>
-`;
-
-document.body.insertAdjacentHTML("beforeend",html);
-
-checkProbeConnection();
-
-}
-
-let scoutData = {
-    bottom: null,
-    fish: null,
-    color: null
-};
-
 function selectOption(el, type, value){
 
     // remove active from group
@@ -1840,31 +1803,6 @@ status.style.color="#00ff88";
 },1000);
 
 }
-
-function startScout(){
-
-document.getElementById("probeStatus").innerText="Scanning...";
-
-// boatLater we will start the probe here
-
-}
-
-function performScout(){
-navigator.geolocation.getCurrentPosition(function(pos){
-
-let boatLat = pos.coords.latitude;
-let lon = pos.coords.longitude;
-
-let windDir = lastWindDir || 0;
-let windSpeed = lastWindSpeed || 0;
-let spi = lastSPI || 50;
-
-let bank = windBankPrediction(windDir);
-let drift = windDriftStrength(windSpeed); 
-let entry = predictFeedingEntry(windSpeed, windDir); 
-let patrol = predictPatrolRoute(spi, windSpeed, windDir);
-
-let score = calcuLateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
 
 /* SAVE SCOUT POINT */
 
@@ -2029,7 +1967,7 @@ let map = L.map('map').setView([boatLat, lon], 15);
 
 console.log("MAP INIT OK");
   
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+L.tileLayer("s://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors"
 }).addTo(map);
@@ -2042,7 +1980,7 @@ async function updateBoatPosition(){
 console.log("UPDATING BOAT PISITION");
   try {
 
-    let res = await fetch("http://192.168.1.85:5000/gps");
+    let res = await fetch("://192.168.1.85:5000/gps");
 
     if(!res.ok){
       throw new Error("Bad response");
@@ -2111,7 +2049,7 @@ let dist = distanceBetween(boatLat, lon, best.boatLat, best.lon);
 
 L.marker([best.boatLat, best.lon],{
 icon: L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+iconUrl:"s://cdn-icons-png.flaticon.com/512/1828/1828884.png",
 iconSize:[30,30],
 iconAnchor:[15,30]
 })
@@ -2282,7 +2220,7 @@ let centerboatLat = scouts.length ? scouts[0].boatLat : -26; let centerLon = sco
 
 let map = L.map('reportMap').setView([centerboatLat, centerLon], 15);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+L.tileLayer("s://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
 maxZoom:18
 }).addTo(map);
 
@@ -2322,7 +2260,7 @@ if(bestSpot){
 
 L.marker([bestSpot.boatLat,bestSpot.lon],{
 icon: L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+iconUrl:"s://cdn-icons-png.flaticon.com/512/1828/1828884.png",
 iconSize:[30,30],
 iconAnchor:[15,30]
 })
@@ -2820,7 +2758,7 @@ let lon = pos.coords.longitude;
 
 let spi = lastSPI || 50;
 
-let score = calcuboatLateSwimScore(
+let score = calculateSwimScore(
   spi,
   lastWindSpeed || 0,
   lastCloud || 0,
@@ -2898,21 +2836,73 @@ function estimateBottomTemp(data){
   return bottomTemp;
 }
 
-// TILE SELECTION
+// =========================
+// 🎯 SCOUT TILE LOGIC (FINAL)
+// =========================
+
+let scoutSelection = {
+    bottom: null,
+    fish: null,
+    color: null
+};
+
+// Capture tile clicks
 document.querySelectorAll('.tile-group').forEach(group => {
-  group.querySelectorAll('.mini-tile').forEach(tile => {
-    tile.addEventListener('click', () => {
+    group.querySelectorAll('.mini-tile').forEach(tile => {
 
-      // remove active in group
-      group.querySelectorAll('.mini-tile').forEach(t => {
-        t.classList.remove('active');
-      });
+        tile.addEventListener('click', () => {
 
-      // add active to clicked
-      tile.classList.add('active');
+            group.querySelectorAll('.mini-tile').forEach(t => {
+                t.classList.remove('active');
+            });
+
+            tile.classList.add('active');
+
+            let groupId = group.id;
+            let value = tile.innerText.trim();
+
+            if(groupId === "bottomType") scoutSelection.bottom = value;
+            if(groupId === "fishActivity") scoutSelection.fish = value;
+            if(groupId === "waterColour") scoutSelection.color = value;
+
+        });
+
     });
-  });
 });
+
+// SAVE SCOUT FROM TILE SCREEN
+function saveScoutFromTiles(){
+
+    navigator.geolocation.getCurrentPosition(function(pos){
+
+        let boatLat = pos.coords.latitude;
+        let lon = pos.coords.longitude;
+
+        let score = calculateSwimScore(
+            lastSPI || 50,
+            lastWindSpeed || 0,
+            lastCloud || 0,
+            lastPressure || 1015
+        );
+
+        let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
+
+        scouts.push({
+            boatLat: boatLat,
+            lon: lon,
+            bottom: scoutSelection.bottom,
+            fish: scoutSelection.fish,
+            color: scoutSelection.color,
+            score: score,
+            time: new Date().toISOString()
+        });
+
+        localStorage.setItem("aif_scout", JSON.stringify(scouts));
+
+        alert("Scout saved ✅\nScore: " + score + "%");
+
+    });
+}
  
 </script>
 </body>
