@@ -27,6 +27,46 @@ display:flex;
 justify-content:center;
 }
 
+body {
+    background: #0b0f14;
+    color: white;
+    font-family: Arial;
+    padding: 16px;
+}
+h1 { margin-bottom: 20px; }
+h2 { margin-top: 24px; }
+
+.tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.tile {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #2a2f36;
+    background: #141a21;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.tile.active {
+    background: #00d084;
+    color: black;
+    border: none;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+  
 /* ========================= */
 /* ===== MAIN LAYOUT ======= */
 /* ========================= */
@@ -413,140 +453,67 @@ class="spi-desc">Strike Probability Index</text>
 <b>Boat Connection:</b> <span id="boatStatus" style="margin-left:10px;color:#ffc400;">Checking...</span>
 </div>  
 
-<!-- 0–5 Minutes -->
-<div class="setup-card">
+<h1>AIF Tactical Plan</h1>
 
-<h3 class="setup-section">0–5 Minutes • Arrival Scan</h3> <div class="setup-divider"></div>
+<h2>Arrival Scan</h2>
 
-<p>Observe the water before deploying any gear.</p>
-
-<ul>
-<li>Wind direction</li>
-<li>Surface activity</li>
-<li>Water colour</li>
-</ul>
-
-<label>Wind direction</label>
-<select id="obs_wind">
-<option>N</option>
-<option>NE</option>
-<option>E</option>
-<option>SE</option>
-<option>S</option>
-<option>SW</option>
-<option>W</option>
-<option>NW</option>
-</select>
-
-<label>Surface activity</label>
-<select id="obs_activity">
-<option>None</option>
-<option>Light</option>
-<option>Active</option>
-<option>Heavy</option>
-</select>
-
-<label>Water colour</label>
-<select id="obs_colour">
-<option>Clear</option>
-<option>Green</option>
-<option>Brown</option>
-<option>Dirty</option>
-</select>
-
-</div>
-  
-<!-- 5–20 Minutes -->
-<div class="setup-card">
-
-<h3 class="setup-section">5–20 Minutes • Water Intelligence</h3> 
-<div class="setup-divider"></div>
-
-<p>Use sonar, camera or marker rod to understand the water structure.</p>
-
-<ul>
-<li>Depth at target area</li>
-<li>Bottom composition</li>
-<li>Surface and bottom temperature</li>
-</ul>
-
-<label>Depth at target area (m)</label>
-<input type="number" id="obs_depth" step="0.1">
-
-<label>Bottom composition</label>
-<select id="obs_bottom">
-<option>Gravel</option>
-<option>Silt</option>
-<option>Clay</option>
-<option>Weed</option>
-<option>Sand</option>
-</select>
-
-<label>Surface temperature (°C)</label>
-<input type="number" id="obs_surfaceTemp" step="0.1">
-
-<label>Bottom temperature (°C)</label>
-<input type="number" id="obs_bottomTemp" step="0.1">
-
+<p>Wind Direction</p>
+<div class="tiles">
+<div class="tile">N</div>
+<div class="tile">E</div>
+<div class="tile">S</div>
+<div class="tile">W</div>
 </div>
 
-<!-- 20–40 Minutes -->
-<div class="setup-card">
-
-<h3 class="setup-section">20–40 Minutes • Tactical Decision</h3> 
-<div class="setup-divider"></div>
-
-<p>Based on observations decide how the swim will be fished.</p>
-
-<ul>
-<li>Bait selection</li>
-<li>Hookbait choice</li>
-<li>Feed approach</li>
-</ul>
-
-<label>Bait type</label>
-<select id="obs_bait">
-<option>Boilie</option>
-<option>Particles</option>
-<option>Pellets</option>
-<option>Mixed</option>
-</select>
-
-<label>Hookbait</label>
-<select id="obs_hookbait">
-<option>Bottom bait</option>
-<option>Popup</option>
-<option>Wafter</option>
-<option>Zig</option>
-</select>
-
-<label>Feed approach</label>
-<select id="obs_feed">
-<option>Light</option>
-<option>Moderate</option>
-<option>Heavy</option>
-</select>
-
+<p>Surface Activity</p>
+<div class="tiles">
+<div class="tile">None</div>
+<div class="tile">Showing</div>
+<div class="tile">Feeding</div>
 </div>
 
-<!-- 40–60 Minutes -->
-<div class="setup-card">
+<p>Water Colour</p>
+<div class="tiles">
+<div class="tile">Clear</div>
+<div class="tile">Green</div>
+<div class="tile">Dirty</div>
+</div>
 
-<h3 class="setup-section">40–60 Minutes • Drop Preparation</h3> 
-<div class="setup-divider"></div>
+<h2>Water Intelligence</h2>
 
-<p>Prepare rods and finalize the first drop.</p>
+<input placeholder="Depth (m)">
 
-<ul>
-<li>Confirm target depth</li>
-<li>Confirm patrol direction</li>
-<li>Prepare first bait drop</li>
-</ul>
+<p>Bottom Composition</p>
+<div class="tiles">
+<div class="tile">Gravel</div>
+<div class="tile">Silt</div>
+<div class="tile">Weed</div>
+</div>
 
-<label>Target depth confirmed (m)</label> <input type="number" id="obs_targetDepth" step="0.1">
+<input placeholder="Surface Temp (°C)">
+<input placeholder="Bottom Temp (°C)">
 
-<label>Patrol direction observed</label> <select id="obs_patrol"> <option>Shallow to deep</option> <option>Deep to shallow</option> <option>Along margin</option> <option>Across wind</option> </select>
+<h2>Tactical Decision</h2>
 
+<p>Bait Type</p>
+<div class="tiles">
+<div class="tile">Boilie</div>
+<div class="tile">Particle</div>
+<div class="tile">Pop-up</div>
+</div>
+
+<p>Hookbait</p>
+<div class="tiles">
+<div class="tile">Bottom</div>
+<div class="tile">Wafter</div>
+<div class="tile">Pop-up</div>
+</div>
+
+<p>Feed Approach</p>
+<div class="tiles">
+<div class="tile">Light</div>
+<div class="tile">Medium</div>
+<div class="tile">Heavy</div>
 </div>
 
 <button onclick="closeSetup()" class="setup-close">Close</button>
@@ -2769,6 +2736,15 @@ function estimateBottomTemp(data){
   return bottomTemp;
 }
 
+document.querySelectorAll(".tiles").forEach(group => {
+    group.querySelectorAll(".tile").forEach(tile => {
+        tile.addEventListener("click", () => {
+            group.querySelectorAll(".tile").forEach(t => t.classList.remove("active"));
+            tile.classList.add("active");
+        });
+    });
+});
+  
 </script>
 </body>
 </html>
