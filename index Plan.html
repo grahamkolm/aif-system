@@ -2224,14 +2224,7 @@ function openPlan(){
     plan.style.overflow = "auto";
     plan.style.padding = "20px";
 
-    plan.innerHTML = `
-<div style="
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:15px;
-">
-
+plan.innerHTML = `
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     
     <div style="font-size:14px;color:#7fffb2;">
@@ -2249,90 +2242,96 @@ function openPlan(){
 
 </div>
 
+<h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
 
-        <h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
-        
-        <div style="margin-bottom:18px;>
-        <h3 style="color:#00ffa6;">0-5  Minutes • Arrival Scan</h3>
+<!-- 0-5 -->
+<div style="margin-bottom:18px;">
+<h3 style="color:#00ffa6;">0–5 Minutes • Arrival Scan</h3>
 
-        <p>Wind Direction</p>
-        <div class="tiles">
-            <div class="tile">N</div>
-            <div class="tile">E</div>
-            <div class="tile">S</div>
-            <div class="tile">W</div>
-        </div>
-
-        <p>Surface Activity</p>
-        <div class="tiles">
-            <div class="tile">None</div>
-            <div class="tile">Showing</div>
-            <div class="tile">Feeding</div>
-        </div>
-
-        <p>Water Colour</p>
-        <div class="tiles">
-            <div class="tile">Clear</div>
-            <div class="tile">Green</div>
-            <div class="tile">Dirty</div>
-        </div>
-
-       <div style="margin-bottom:18px;>
-       <h3 style="color:#00ffa6;">5–20 Minutes • Water Intelligence</h3>
-
-        <input placeholder="Depth (m)">
-
-        <p>Bottom Composition</p>
-        <div class="tiles">
-            <div class="tile">Gravel</div>
-            <div class="tile">Silt</div>
-            <div class="tile">Weed</div>
-        </div>
-
-        <input placeholder="Surface Temp (°C)">
-        <input placeholder="Bottom Temp (°C)">
-
-        <div style="margin-bottom:18px;>
-        <h3 style="color:#00ffa6;"20-40 Minutes • Tactical Decisions</h3>
-
-        <p>Bait Type</p>
-        <div class="tiles">
-            <div class="tile">Boilie</div>
-            <div class="tile">Particle</div>
-            <div class="tile">Pop-up</div>
-        </div>
-
-        <p>Hookbait</p>
-        <div class="tiles">
-            <div class="tile">Bottom</div>
-            <div class="tile">Wafter</div>
-            <div class="tile">Pop-up</div>
-        </div>
-
-        <p>Feed Approach</p>
-        <div class="tiles">
-            <div class="tile">Light</div>
-            <div class="tile">Medium</div>
-            <div class="tile">Heavy</div>
-        </div>
-        
-        <div style="margin-bottom:18px;>
-        <h3 style="color:#00ffa6;"40-60 Minutes • Execution</h3>
-
-         <div style="margin-top:20px;">
-    <button onclick="savePlan()" style="
-        width:100%;
-        padding:14px;
-        background:#00ffa6;
-        color:#081018;
-        border:none;
-        border-radius:10px;
-        font-weight:700;
-    ">
-        Save Tactical Plan
-    </button>
+<p>Wind Direction</p>
+<div class="tiles">
+    <div class="tile">N</div>
+    <div class="tile">E</div>
+    <div class="tile">S</div>
+    <div class="tile">W</div>
 </div>
-    `;
+
+<p>Surface Activity</p>
+<div class="tiles">
+    <div class="tile">None</div>
+    <div class="tile">Showing</div>
+    <div class="tile">Feeding</div>
+</div>
+
+<p>Water Colour</p>
+<div class="tiles">
+    <div class="tile">Clear</div>
+    <div class="tile">Green</div>
+    <div class="tile">Dirty</div>
+</div>
+</div>
+
+<!-- 5-20 -->
+<div style="margin-bottom:18px;">
+<h3 style="color:#00ffa6;">5–20 Minutes • Water Intelligence</h3>
+
+<input placeholder="Depth (m)">
+
+<p>Bottom Composition</p>
+<div class="tiles">
+    <div class="tile">Gravel</div>
+    <div class="tile">Silt</div>
+    <div class="tile">Weed</div>
+</div>
+
+<input placeholder="Surface Temp (°C)">
+<input placeholder="Bottom Temp (°C)">
+</div>
+
+<!-- 20-40 -->
+<div style="margin-bottom:18px;">
+<h3 style="color:#00ffa6;">20–40 Minutes • Tactical Decisions</h3>
+
+<p>Bait Type</p>
+<div class="tiles">
+    <div class="tile">Boilie</div>
+    <div class="tile">Particle</div>
+    <div class="tile">Pop-up</div>
+</div>
+
+<p>Hookbait</p>
+<div class="tiles">
+    <div class="tile">Bottom</div>
+    <div class="tile">Wafter</div>
+    <div class="tile">Pop-up</div>
+</div>
+
+<p>Feed Approach</p>
+<div class="tiles">
+    <div class="tile">Light</div>
+    <div class="tile">Medium</div>
+    <div class="tile">Heavy</div>
+</div>
+</div>
+
+<!-- 40-60 -->
+<div style="margin-bottom:18px;">
+<h3 style="color:#00ffa6;">40–60 Minutes • Execution</h3> </div>
+
+<div style="margin-top:20px;">
+<button onclick="savePlan()" style="
+    width:100%;
+    padding:14px;
+    background:#00ffa6;
+    color:#081018;
+    border:none;
+    border-radius:10px;
+    font-weight:700;
+">
+    Save Tactical Plan
+</button>
+</div>
+`;
 
     document.body.appendChild(plan);
     document.body.classList.add("popup-open");
