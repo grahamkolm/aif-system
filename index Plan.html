@@ -37,7 +37,10 @@ h1 { margin-bottom: 20px; }
 h2 { margin-top: 24px; }
 
 .tiles {
-    display: flex;
+    display: grid;
+    width: 100%;
+    text-align: center;
+    grid-template-columns: repeat(3, 1fr);
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 10px;
@@ -2218,6 +2221,8 @@ function openPlan(){
     plan.style.color = "white";
     plan.style.zIndex = "9999";
     plan.style.overflow = "auto";
+    plan.style.maxWidth = "420px"
+    plan.style.margin = "0 auto";
     plan.style.padding = "20px";
     plan.style.paddingBottom = "100px";
 
@@ -2261,25 +2266,6 @@ plan.innerHTML = `
     </button>
 
 </div> <!-- ✅ THIS LINE WAS MISSING -->
-
-<button onclick="closePlan()" style="
-    position:fixed;
-    top:18px;
-    right:18px;
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(0,255,166,0.4);
-    color:#00ffa6;
-    font-size:18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    backdrop-filter:blur(6px);
-">
-    ×
-</button>
 
 <h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
 
@@ -2774,7 +2760,7 @@ function estimateBottomTemp(data){
   return bottomTemp;
 }
 
-document.querySelectorAll(".tiles").forEach(group => {
+plan.querySelectorAll(".tiles").forEach(group => {
     group.querySelectorAll(".tile").forEach(tile => {
         tile.addEventListener("click", () => {
             group.querySelectorAll(".tile").forEach(t => t.classList.remove("active"));
