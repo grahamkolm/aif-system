@@ -53,7 +53,7 @@ button,
     overflow: hidden;
 }
 
-#planSCreen {
+#planScreen {
     overscroll-behavior: contain;
 }
     
@@ -104,11 +104,7 @@ input{
     margin-top: 6px;
     margin-bottom: 12px;
 }
-
-body.popup-open{
-    overflow: hidden;
-}
-    
+   
 /* ========================= */
 /* ===== MAIN LAYOUT ======= */
 /* ========================= */
@@ -2375,9 +2371,10 @@ function savePlan(){
 
     let selections = document.querySelectorAll(".tile.active");
     let data = [];
+
     let dam = document.getElementById("damInput")?.value || "";
     let swim = document.getElementById("swimInput")?.value || "";
-    
+
     selections.forEach(el=>{
         data.push(el.innerText);
     });
@@ -2386,7 +2383,11 @@ function savePlan(){
         dam,
         swim,
         selections: data
-}));
+    }));
+
+    alert("Plan saved");
+    closePlan();
+}
     
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
 
