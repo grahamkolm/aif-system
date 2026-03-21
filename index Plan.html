@@ -126,28 +126,34 @@ button,
 .setup-card{
     background: rgba(15,20,28,0.85);
     border-radius:16px;
-    padding:16px;
+    padding:14px;
     border:1px solid rgba(0,255,166,0.15);
     box-shadow:0 8px 25px rgba(0,0,0,0.4); }
 
 .setup-title{
     font-size:16px;
     color:#00ffa6;
-    margin-bottom:12px;
+    margin-bottom:10px;
     font-weight:600;
 }
 
 .setup-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:12px;
+}
+
+.setup-grid .setup-item:last-child{
+    grid-column: span 2;
 }
 
 .setup-item{
     background:#0f141a;
     border-radius:10px;
-    padding:10px;
+    padding:8px 10px;
     border:1px solid #2a2f36;
+    width:100%;
+    box-sizing:border-box;
 }
 
 .setup-label{
@@ -156,7 +162,7 @@ button,
 }
 
 .setup-value{
-    font-size:16px;
+    font-size:15px;
     margin-top:2px;
     color:white;
 }
@@ -657,6 +663,16 @@ margin:0 auto;
                 <div class="setup-value" id="bankHumidity">-- %</div>
             </div>
 
+            <div class="setup-item">
+                <div class="setup-label">Altitude</div>
+                <div class="setup-value" id="bankAltitude">-- m</div> 
+            </div>
+
+            <div class="setup-item">
+                <div class="setup-label">Voltage</div>
+                <div class="setup-value" id="bankVoltage">-- V</div> 
+            </div>
+
         </div>
     </div>
 
@@ -690,6 +706,11 @@ margin:0 auto;
                 <div class="setup-value" id="turbidity">-- NTU</div>
             </div>
 
+            <div class="setup-item">
+                <div class="setup-label">Probe Voltage</div>
+                <div class="setup-value" id="probeVoltage">-- NTU</div>
+            </div>
+            
         </div>
     </div>
 
@@ -2148,17 +2169,20 @@ lucide.createIcons();
 
 function updateSetupDemo(){
 
-    // BANK (BME280)
+    // BANK
     document.getElementById("bankTemp").innerText = "22.5 °C";
     document.getElementById("bankPressure").innerText = "1018 hPa";
     document.getElementById("bankHumidity").innerText = "65 %";
+    document.getElementById("bankAltitude").innerText = "1450 m";
+    document.getElementById("bankVoltage").innerText = "5.0 V";
 
     // BOAT
     document.getElementById("boatBattery").innerText = "12.4 V";
 
     // WATER
     document.getElementById("waterTemp").innerText = "18.7 °C";
-    document.getElementById("turbidity").innerText = "12 NTU"; }
+    document.getElementById("turbidity").innerText = "12 NTU";
+    document.getElementById("probeVoltage").innerText = "4.9 V"; }
   
 // =========================
 // 📡 STATUS DISPLAY
