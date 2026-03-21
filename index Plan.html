@@ -2223,24 +2223,52 @@ function openPlan(){
     plan.style.zIndex = "9999";
     plan.style.overflow = "auto";
     plan.style.padding = "20px";
+    plan.style.paddingBottom = "100px";
 
 plan.innerHTML = `
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     
     <div style="font-size:14px;color:#7fffb2;">
-        Dam: ______ • Swim: ______
-    </div>
-
-    <button onclick="closePlan()" style="
-        background:#00ffa6;
-        border:none;
-        color:#081018;
-        padding:6px 12px;
+<div style="margin-bottom:10px;">
+    
+    <input id="damInput" placeholder="Dam / Venue" style="margin-bottom:8px;">
+    
+    <input id="swimInput" placeholder="Swim / Peg">
+    
+    <button onclick="useGPSLocation()" style="
+        margin-top:8px;
+        width:100%;
+        padding:10px;
+        background:#141a21;
+        color:#00ffa6;
+        border:1px solid #2a2f36;
         border-radius:8px;
-        font-weight:600;
-    ">Close</button>
+    ">
+        Use GPS Location
+    </button>
 
 </div>
+
+    </div>
+
+<button onclick="closePlan()" style="
+    position:fixed;
+    top:18px;
+    right:18px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(0,255,166,0.4);
+    color:#00ffa6;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(6px);
+">
+    ×
+</button>
 
 <h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
 
@@ -2318,18 +2346,24 @@ plan.innerHTML = `
 <div style="margin-bottom:18px;">
 <h3 style="color:#00ffa6;">40–60 Minutes • Execution</h3> </div>
 
-<div style="margin-top:20px;">
-<button onclick="savePlan()" style="
-    width:100%;
-    padding:14px;
-    background:#00ffa6;
-    color:#081018;
-    border:none;
-    border-radius:10px;
-    font-weight:700;
+<div style="
+    position:sticky;
+    bottom:0;
+    background:#05080d;
+    padding-top:10px;
 ">
-    Save Tactical Plan
-</button>
+    <button onclick="savePlan()" style="
+        width:100%;
+        padding:16px;
+        background:#00ffa6;
+        color:#081018;
+        border:none;
+        border-radius:12px;
+        font-weight:700;
+        font-size:16px;
+    ">
+        Save Tactical Plan
+    </button>
 </div>
 `;
 
@@ -2341,17 +2375,18 @@ function savePlan(){
 
     let selections = document.querySelectorAll(".tile.active");
     let data = [];
-
+    let dam = document.getElementById("damInput")?.value || "";
+    let swim = document.getElementById("swimInput")?.value || "";
+    
     selections.forEach(el=>{
         data.push(el.innerText);
     });
 
-    localStorage.setItem("aif_plan", JSON.stringify(data));
-
-    alert("Plan saved");
-
-    closePlan();
-}
+    localStorage.setItem("aif_plan", JSON.stringify({
+        dam,
+        swim,
+        selections: data
+}));
     
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
 
@@ -2731,7 +2766,16 @@ document.querySelectorAll(".tiles").forEach(group => {
         });
     });
 });
-  
+
+function useGPSLocation(){
+    navigator.geolocation.getCurrentPosition(function(pos){
+        let lat = pos.coords.latitude.toFixed(4);
+        let lon = pos.coords.longitude.toFixed(4);
+
+        document.getElementById("damInput").value = "GPS: " + lat + ", " + lon;
+    });
+}
+    
 </script>
 </body>
 </html>
