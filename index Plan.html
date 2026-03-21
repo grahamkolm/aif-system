@@ -11,6 +11,7 @@
 <title>AIF Dashboard v5</title> 
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script> 
 
@@ -739,7 +740,9 @@ Close
 </div>
     
 <script>  
-  
+
+const API_URL = "http://192.168.4.1/data";
+    
 /* ========================= */
 /* ===== NAVIGATION / CORE ===== */
 /* ========================= */
