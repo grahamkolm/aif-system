@@ -65,11 +65,23 @@ button,
     transition: all 0.2s ease;
 }
 
-.tiles .tile.active {
+.plan-card {
+    background: rgba(15,20,28,0.6);
+    border: 1px solid rgba(0,255,166,0.15);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+}
+   
+    .tiles .tile.active {
     background: #00ffa6 !important;
     color: #081018 !important;
     border: none;
-    box-shadow: 0 0 10px rgba(0,255,166,0.4); }
+    box-shadow: 0 0 10px rgba(0,255,166,0.6),
+    box-shadow: 0 0 10px rgba(0,255,166,0.3);
+    transform: scale(1.05);
+    }
 
 /* ✅ IMPROVE TILE TOUCH FEEL */
 .tiles .tile:active {
@@ -91,6 +103,11 @@ button,
     border: none;
 }
 
+.tile.recommended {
+    border: 1px solid #00ffa6;
+    box-shadow: 0 0 8px rgba(0,255,166,0.4);
+}
+    
 input{
     width: 100%;
     max-width: 100%;
@@ -248,7 +265,7 @@ stroke:#00ffa6;
 stroke-width:1.5;
 margin-bottom:6px;
 }
-
+    
 .tile-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -2273,7 +2290,7 @@ plan.innerHTML = `
    <!-- section content -->
 
 <!-- 0-5 -->
-<div style="margin-bottom:18px;">
+<div class="plan-card">
 <h3 style="color:#00ffa6;">0–5 Minutes • Arrival Scan</h3>
 
 <p>Wind Direction</p>
@@ -2301,7 +2318,7 @@ plan.innerHTML = `
 </div>
 
 <!-- 5-20 -->
-<div style="margin-bottom:18px;">
+<div class="plan-card">
 <h3 style="color:#00ffa6;">5–20 Minutes • Water Intelligence</h3>
 
 <input placeholder="Depth (m)">
@@ -2318,7 +2335,7 @@ plan.innerHTML = `
 </div>
 
 <!-- 20-40 -->
-<div style="margin-bottom:18px;">
+<div class="plan-card">
 <h3 style="color:#00ffa6;">20–40 Minutes • Tactical Decisions</h3>
 
 <p>Bait Type</p>
@@ -2344,7 +2361,7 @@ plan.innerHTML = `
 </div>
 
 <!-- 40-60 -->
-<div style="margin-bottom:18px;">
+<div class="plan-card">
 <h3 style="color:#00ffa6;">40–60 Minutes • Execution</h3> </div>
 
 <div style="
