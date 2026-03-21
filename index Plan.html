@@ -123,6 +123,12 @@ button,
     margin-top:10px;
 }
 
+.setup-status{
+    font-size:12px;
+    margin-bottom:8px;
+    color:#ffc400;
+}
+    
 .setup-card{
     background: rgba(15,20,28,0.85);
     border-radius:16px;
@@ -154,6 +160,7 @@ button,
     border:1px solid #2a2f36;
     width:100%;
     box-sizing:border-box;
+    min-height:60px;
 }
 
 .setup-label{
@@ -645,7 +652,7 @@ margin:0 auto;
     <!-- BANK SYSTEM -->
     <div class="setup-card">
         <div class="setup-title">Bank System</div>
-
+        <div class="setup-status" id="bankStatus">Connecting...</div>
         <div class="setup-grid">
 
             <div class="setup-item">
@@ -2657,7 +2664,8 @@ updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
 
 function openSetup(){
     let popup = document.getElementById("setupPopup");
-
+    setInterval(fetchBankData, 3000);
+    
     if(!popup){
         console.log("Setup popup not found");
         return;
@@ -2666,6 +2674,69 @@ function openSetup(){
     popup.style.display = "block";
 
     updateSetupDemo(); // load values
+}
+
+function fetchBankData(){
+
+    fetch("http://192.168.4.1/data")
+    .then(res => res.json())
+    .then(data => {
+
+        // ✅ SAFE VALUE HANDLING
+        document.getElementById("bankTemp").innerText =
+            data.temp !== undefined ? data.temp.toFixed(1) + " °C" : "—";
+
+        document.getElementById("bankHumidity").innerText =
+            data.hum !== undefined ? data.hum.toFixed(0) + " %" : "—";
+
+        document.getElementById("bankPressure").innerText =
+            data.pres !== undefined ? data.pres.toFixed(0) + " hPa" : "—";
+
+        document.getElementById("bankAltitude").innerText =
+            data.alt !== undefined ? data.alt.toFixed(0) + " m" : "—";
+
+        if(document.getElementById("bankVoltage")){
+            document.getElementById("bankVoltage").innerText =
+                data.volt !== undefined ? data.volt.toFixed(2) + " V" : "—";
+        }
+
+        updateBankStatus(true);
+
+    })
+    .catch(err => {
+
+        console.log("ESP not reachable");
+
+        updateBankStatus(false);
+        setBankOffline();
+
+    });
+}
+
+function updateBankStatus(connected){
+
+    let el = document.getElementById("bankStatus");
+
+    if(!el) return;
+
+    if(connected){
+        el.innerText = "● Connected";
+        el.style.color = "#00ffa6";
+    } else {
+        el.innerText = "● Not Connected";
+        el.style.color = "#ff3b3b";
+    }
+}
+
+function setBankOffline(){
+
+    document.getElementById("bankTemp").innerText = "—";
+    document.getElementById("bankHumidity").innerText = "—";
+    document.getElementById("bankPressure").innerText = "—";
+    document.getElementById("bankAltitude").innerText = "—";
+
+    let volt = document.getElementById("bankVoltage");
+    if(volt) volt.innerText = "—";
 }
 
 /* ========================= */
