@@ -53,6 +53,10 @@ button,
     overflow: hidden;
 }
 
+#planSCreen {
+    overscroll-behavior: contain;
+}
+    
 /* ✅ TILE ACTIVE STATE IMPROVED */
 .tiles .tile {
     transition: all 0.2s ease;
@@ -89,16 +93,16 @@ input{
     max-width: 100%;
     box-sizing: border-box;
 
-    padding: 12px;
-    border-radius: 10px;
+    padding: 10px;
+    border-radius: 08px;
 
-    background: #11161c;
+    background: #0f141a;
     color: white;
 
     border: 1px solid #2a2f36;
 
-    margin-top: 8px;
-    margin-bottom: 16px;
+    margin-top: 6px;
+    margin-bottom: 12px;
 }
 
 body.popup-open{
@@ -2228,19 +2232,28 @@ function openPlan(){
     margin-bottom:15px;
 ">
 
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    
+    <div style="font-size:14px;color:#7fffb2;">
+        Dam: ______ • Swim: ______
+    </div>
+
     <button onclick="closePlan()" style="
-        background:none;
-        border:1px solid #00ffa6;
-        color:#00ffa6;
+        background:#00ffa6;
+        border:none;
+        color:#081018;
         padding:6px 12px;
         border-radius:8px;
-    ">✕</button>
+        font-weight:600;
+    ">Close</button>
 
 </div>
 
-        <h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
 
-        <h3style="color:#00ffa6;">0-5 Minutes * Arrival Scan</h3>
+        <h2 style="color:#00ffa6;">AIF™ 60-Minute Tactical Plan</h2>
+        
+        <div style="margin-bottom:18px;>
+        <h3 style="color:#00ffa6;">0-5  Minutes • Arrival Scan</h3>
 
         <p>Wind Direction</p>
         <div class="tiles">
@@ -2264,7 +2277,8 @@ function openPlan(){
             <div class="tile">Dirty</div>
         </div>
 
-        <h3style="color:#00ffa6;"5-20 Minutes * Water Intelligence</h3>
+       <div style="margin-bottom:18px;>
+       <h3 style="color:#00ffa6;">5–20 Minutes • Water Intelligence</h3>
 
         <input placeholder="Depth (m)">
 
@@ -2278,7 +2292,8 @@ function openPlan(){
         <input placeholder="Surface Temp (°C)">
         <input placeholder="Bottom Temp (°C)">
 
-        <h3style="color:#00ffa6;"20-40 Minutes * Tactical Decisions</h3>
+        <div style="margin-bottom:18px;>
+        <h3 style="color:#00ffa6;"20-40 Minutes • Tactical Decisions</h3>
 
         <p>Bait Type</p>
         <div class="tiles">
@@ -2300,8 +2315,9 @@ function openPlan(){
             <div class="tile">Medium</div>
             <div class="tile">Heavy</div>
         </div>
-
-        <h3style="color:#00ffa6;"40-60 Minutes * Execution</h3>
+        
+        <div style="margin-bottom:18px;>
+        <h3 style="color:#00ffa6;"40-60 Minutes • Execution</h3>
     `;
 
     document.body.appendChild(plan);
@@ -2323,6 +2339,20 @@ function savePlan(){
 
     closePlan();
 }
+
+<div style="margin-top:20px;">
+    <button onclick="savePlan()" style="
+        width:100%;
+        padding:14px;
+        background:#00ffa6;
+        color:#081018;
+        border:none;
+        border-radius:10px;
+        font-weight:700;
+    ">
+        Save Tactical Plan
+    </button>
+</div>
     
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
 
