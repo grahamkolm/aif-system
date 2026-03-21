@@ -2318,6 +2318,20 @@ function openPlan(){
         
         <div style="margin-bottom:18px;>
         <h3 style="color:#00ffa6;"40-60 Minutes • Execution</h3>
+
+         <div style="margin-top:20px;">
+    <button onclick="savePlan()" style="
+        width:100%;
+        padding:14px;
+        background:#00ffa6;
+        color:#081018;
+        border:none;
+        border-radius:10px;
+        font-weight:700;
+    ">
+        Save Tactical Plan
+    </button>
+</div>
     `;
 
     document.body.appendChild(plan);
@@ -2339,20 +2353,6 @@ function savePlan(){
 
     closePlan();
 }
-
-<div style="margin-top:20px;">
-    <button onclick="savePlan()" style="
-        width:100%;
-        padding:14px;
-        background:#00ffa6;
-        color:#081018;
-        border:none;
-        border-radius:10px;
-        font-weight:700;
-    ">
-        Save Tactical Plan
-    </button>
-</div>
     
 function updateTacticalBar(confidence, feeding, window, pressureTrend){
 
