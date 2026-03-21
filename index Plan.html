@@ -40,7 +40,7 @@ h2 { margin-top: 24px; }
     display: grid;
     width: 100%;
     text-align: center;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0,1fr));
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 10px;
@@ -185,6 +185,7 @@ input{
 .main{
 width:100%;
 max-width:420px;
+padding: 0 12px;
 padding-bottom:120px;
 }
 
@@ -421,90 +422,6 @@ font-size:20px;
 display:block;
 }
 
-/* ========================= */
-/* ===== POPUPS (SETUP / SCOUT) ===== */
-/* ========================= */
-  
-<div id="setupPopup">
-
-<h2 style="color:#00ffa6;">AIF™ System Setup</h2>
-
-<div class="setup-container">
-
-    <!-- BANK SYSTEM -->
-    <div class="setup-card">
-        <div class="setup-title">Bank System</div>
-
-        <div class="setup-grid">
-
-            <div class="setup-item">
-                <div class="setup-label">Air Temp</div>
-                <div class="setup-value" id="bankTemp">-- °C</div>
-            </div>
-
-            <div class="setup-item">
-                <div class="setup-label">Pressure</div>
-                <div class="setup-value" id="bankPressure">-- hPa</div>
-            </div>
-
-            <div class="setup-item">
-                <div class="setup-label">Humidity</div>
-                <div class="setup-value" id="bankHumidity">-- %</div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- BOAT SYSTEM -->
-    <div class="setup-card">
-        <div class="setup-title">Boat System</div>
-
-        <div class="setup-grid">
-
-            <div class="setup-item">
-                <div class="setup-label">Battery</div>
-                <div class="setup-value" id="boatBattery">-- V</div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- WATER PROBE -->
-    <div class="setup-card">
-        <div class="setup-title">Water Probe</div>
-
-        <div class="setup-grid">
-
-            <div class="setup-item">
-                <div class="setup-label">Water Temp</div>
-                <div class="setup-value" id="waterTemp">-- °C</div>
-            </div>
-
-            <div class="setup-item">
-                <div class="setup-label">Turbidity</div>
-                <div class="setup-value" id="turbidity">-- NTU</div>
-            </div>
-
-        </div>
-    </div>
-
-</div>
-
-<button onclick="closeSetup()" style="
-margin-top:20px;
-width:100%;
-padding:14px;
-background:#00ffa6;
-color:#081018;
-border:none;
-border-radius:12px;
-font-weight:600;
-">
-Close
-</button>
-
-</div>
-
 .quick-row{
 display:flex;
 gap:8px;
@@ -695,7 +612,104 @@ Report
 <!-- ========================= -->
 <!-- ===== JAVASCRIPT LOGIC ===== -->
 <!-- ========================= -->
+
+/* ========================= */
+/* ===== POPUPS (SETUP / SCOUT) ===== */
+/* ========================= */
   
+<div id="setupPopup" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#05080d;
+z-index:9999;
+padding:20px;
+overflow:auto;
+max-width:420px;
+margin:0 auto;
+">
+
+<h2 style="color:#00ffa6;">AIF™ System Setup</h2>
+
+<div class="setup-container">
+
+    <!-- BANK SYSTEM -->
+    <div class="setup-card">
+        <div class="setup-title">Bank System</div>
+
+        <div class="setup-grid">
+
+            <div class="setup-item">
+                <div class="setup-label">Air Temp</div>
+                <div class="setup-value" id="bankTemp">-- °C</div>
+            </div>
+
+            <div class="setup-item">
+                <div class="setup-label">Pressure</div>
+                <div class="setup-value" id="bankPressure">-- hPa</div>
+            </div>
+
+            <div class="setup-item">
+                <div class="setup-label">Humidity</div>
+                <div class="setup-value" id="bankHumidity">-- %</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOAT SYSTEM -->
+    <div class="setup-card">
+        <div class="setup-title">Boat System</div>
+
+        <div class="setup-grid">
+
+            <div class="setup-item">
+                <div class="setup-label">Battery</div>
+                <div class="setup-value" id="boatBattery">-- V</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- WATER PROBE -->
+    <div class="setup-card">
+        <div class="setup-title">Water Probe</div>
+
+        <div class="setup-grid">
+
+            <div class="setup-item">
+                <div class="setup-label">Water Temp</div>
+                <div class="setup-value" id="waterTemp">-- °C</div>
+            </div>
+
+            <div class="setup-item">
+                <div class="setup-label">Turbidity</div>
+                <div class="setup-value" id="turbidity">-- NTU</div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<button onclick="closeSetup()" style="
+margin-top:20px;
+width:100%;
+padding:14px;
+background:#00ffa6;
+color:#081018;
+border:none;
+border-radius:12px;
+font-weight:600;
+">
+Close
+</button>
+
+</div>
+    
 <script>  
   
 /* ========================= */
@@ -740,7 +754,11 @@ function closePlan(){
 }
     
 function closeSetup(){
-document.getElementById("setupPopup").style.display = "none";
+    let popup = document.getElementById("setupPopup");
+    if(popup){
+        popup.style.display = "none";
+        document.body.classList.remove("popup-open");
+    }
 }
 
 function resetSession(){
@@ -2141,12 +2159,7 @@ function updateSetupDemo(){
     // WATER
     document.getElementById("waterTemp").innerText = "18.7 °C";
     document.getElementById("turbidity").innerText = "12 NTU"; }
-
-openSetup = function(){
-    document.getElementById("setupPopup").style.display = "block";
-    updateSetupDemo();
-}
-    
+  
 // =========================
 // 📡 STATUS DISPLAY
 // =========================
@@ -2926,15 +2939,6 @@ function estimateBottomTemp(data){
 
   return bottomTemp;
 }
-
-plan.querySelectorAll(".tiles").forEach(group => {
-    group.querySelectorAll(".tile").forEach(tile => {
-        tile.addEventListener("click", () => {
-            group.querySelectorAll(".tile").forEach(t => t.classList.remove("active"));
-            tile.classList.add("active");
-        });
-    });
-});
 
 function useGPSLocation(){
     navigator.geolocation.getCurrentPosition(function(pos){
