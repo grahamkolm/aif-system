@@ -2619,7 +2619,16 @@ return score;
 updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
 
 function openSetup(){
-  document.getElementById("setupPopup").style.display = "block";
+    let popup = document.getElementById("setupPopup");
+
+    if(!popup){
+        console.log("Setup popup not found");
+        return;
+    }
+
+    popup.style.display = "block";
+
+    updateSetupDemo(); // load values
 }
 
 /* ========================= */
