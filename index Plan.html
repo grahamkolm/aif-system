@@ -819,6 +819,7 @@ var boatMarker = null;
 let boatPath = [];
 let boatLine = null;
 var boatConnected = false;
+let bankInterval = null;
 
 function getMoonPhase(){
 let d=new Date()
@@ -2074,7 +2075,7 @@ async function updateBoatPosition(){
   try {
 
     // only try local network if on local wifi
-    if(location.protocol === "http:"){
+    if(location.protocol === "http:" && location.hostname.startsWith("192.168")){
 
       let res = await fetch("http://192.168.1.85:5000/gps");
       let data = await res.json();
@@ -2192,10 +2193,6 @@ function enableCompass(){
 }
 
 enableCompass();
-
-fetchWeather();
-
-setInterval(fetchWeather,600000);
 
 if(typeof lucide !== "undefined"){
 lucide.createIcons();
@@ -2692,18 +2689,9 @@ return score;
 updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
 
 function openSetup(){
-    let popup = document.getElementById("setupPopup");
-    setInterval(fetchBankData, 3000);
-    
-    if(!popup){
-        console.log("Setup popup not found");
-        return;
-    }
-
-    popup.style.display = "block";
-
-    updateSetupDemo(); // load values 
-}
+  if(!bankInterval){
+    bankInterval = setInterval(fetchBankData, 3000);
+  }
 
 async function fetchBankData(){
   try {
@@ -2724,7 +2712,7 @@ async function fetchBankData(){
     let data = await res.json();
 
     document.getElementById("bankTemp").innerText =
-      data.temp?.toFixed(1) + " °C" || "--";
+      data.temp ? data.temp.toFixed(1) + " °C" || "--";
 
     document.getElementById("bankHumidity").innerText =
       data.humidity?.toFixed(0) + " %" || "--";
@@ -3003,7 +2991,7 @@ let lon = pos.coords.longitude;
 
 let spi = lastSPI || 50;
 
-let score = calcuboatLateSwimScore(
+let score = calculateSwimScore(
   spi,
   lastWindSpeed || 0,
   lastCloud || 0,
