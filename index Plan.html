@@ -1033,13 +1033,14 @@ score += 4
 
 /* THERMO STABILITY */
 let surfaceTemp = (sensorTemp !== null && sensorTemp !== undefined)
+    ? sensorTemp
     : estimateSurfaceTemp({
-  prevWaterTemp: lastSurfaceTemp || (t - 0.5),
-  airTemp: t,
-  windSpeed: w || 2,
-  sunFactor: 1 - (c || 0) / 100,
-  hour: new Date().getHours()
-});
+        prevWaterTemp: lastSurfaceTemp || (t - 0.5),
+        airTemp: t,
+        windSpeed: w || 2,
+        sunFactor: 1 - (c || 0) / 100,
+        hour: new Date().getHours()
+    });
 
 lastSurfaceTemp = surfaceTemp;
 let bottomTemp;
