@@ -2708,11 +2708,11 @@ async function fetchBankData(){
       throw new Error("ESP not reachable");
     }
 
-    let res = await fetch(url, { timeout: 2000 });
+    let res = await fetch(url);
     let data = await res.json();
 
     document.getElementById("bankTemp").innerText =
-      data.temp ? data.temp.toFixed(1) + " °C" || "--";
+    data.temp != null ? data.temp.toFixed(1) + " °C" : "--";
 
     document.getElementById("bankHumidity").innerText =
       data.humidity?.toFixed(0) + " %" || "--";
