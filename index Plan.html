@@ -14,17 +14,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/></script> 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script> 
-
-const IS_ESP = location.hostname ==="192.168.4.1:;
-
-if(IS_ESP){
-    // offline mode tweaks
-}
     
 <style> 
 /* ========================= */
 /* ===== GLOBAL STYLES ===== */
 /* ========================= */
+    
 body{
 margin:0;
 background:#05080d;
@@ -746,6 +741,11 @@ Close
 </div>
     
 <script>  
+const IS_ESP = location.hostname ==="192.168.4.1:;
+
+if(IS_ESP){
+    // offline mode tweaks
+}
 
 const API_URL = "http://192.168.4.1/data";
     
