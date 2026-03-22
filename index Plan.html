@@ -10,8 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"> 
 <title>AIF Dashboard v5</title> 
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/></script> 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script> 
     
@@ -741,11 +740,7 @@ Close
 </div>
     
 <script>  
-const IS_ESP = location.hostname ==="192.168.4.1:;
-
-if(IS_ESP){
-    // offline mode tweaks
-}
+const IS_ESP = location.hostname === "192.168.4.1";
 
 const API_URL = "http://192.168.4.1/data";
     
@@ -1189,55 +1184,58 @@ if(diff<-1)return"falling"
 return"stable"
 }
 
+const WEATHER_URL = "https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=YOUR_API_KEY&units=metric";
+
 async function fetchWeatherSafe(){
   try {
-    let res = await fetch("https://api.openweathermap.org/...");
+
+    let res = await fetch(WEATHER_URL);
     let data = await res.json();
 
-    // normal update
-    updateWeather(data);
+    fetchWeather(data);
 
   } catch(e){
-    console.log("No internet → using estimate");
 
-    // fallback estimate
+    console.log("No internet → using estimate");
     simulateWeather();
+
   }
 }
 
-async function fetchWeather(){
+function fetchWeather(d){
+
   try{
-    let res = await fetch("https://api.openweathermap.org/...");
-    let d = await res.json();
 
     let forecast = d.list;
-    ...
+
+    bestForecastSPI = 0;
+    bestTime = null;
+
+    forecast.forEach(f => {
+
+      let t = f.main.temp;
+      let p = f.main.pressure;
+      let w = f.wind.speed * 3.6;
+      let c = f.clouds.all;
+      let windDir = f.wind.deg;
+
+      let spi = calculateSPI(p, w, c, windDir, t);
+
+      if(spi > bestForecastSPI){
+        bestForecastSPI = spi;
+        bestTime = f.dt_txt;
+      }
+
+    });
+
+    if(forecast && forecast.length){
+      render(forecast[0]);
+    }
+
   } catch(e){
+    console.log("Weather parse error");
     simulateWeather();
   }
-}
- 
-bestForecastSPI = 0;
-bestTime = null;
-forecast.forEach(f => {
-
-  let t = f.main.temp;
-  let p = f.main.pressure;
-  let w = f.wind.speed * 3.6;
-  let c = f.clouds.all;
-  let windDir = f.wind.deg;
-
-  let spi = calculateSPI(p, w, c, windDir, t);
-
-if(spi > bestForecastSPI){
-bestForecastSPI = spi;
-bestTime = f.dt_txt;
-}
-
-});
-
-if(forecast && forecast.length){
-render(forecast[0]);
 }
 
 function render(d){
@@ -2054,7 +2052,7 @@ async function updateBoatPosition(){
 console.log("UPDATING BOAT PISITION");
   try {
 
-    let res = await fetch("http://192.168.1.85:5000/gps");
+    let res = await fetch("/gps");
 
     if(!res.ok){
       throw new Error("Bad response");
