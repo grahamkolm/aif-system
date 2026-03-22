@@ -11,10 +11,16 @@
 <title>AIF Dashboard v5</title> 
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/> 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/></script> 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script> 
 
+const IS_ESP = location.hostname ==="192.168.4.1:;
+
+if(IS_ESP){
+    // offline mode tweaks
+}
+    
 <style> 
 /* ========================= */
 /* ===== GLOBAL STYLES ===== */
@@ -1199,7 +1205,17 @@ async function fetchWeatherSafe(){
   }
 }
 
-let forecast = d.list;
+async function fetchWeather(){
+  try{
+    let res = await fetch("https://api.openweathermap.org/...");
+    let d = await res.json();
+
+    let forecast = d.list;
+    ...
+  } catch(e){
+    simulateWeather();
+  }
+}
  
 bestForecastSPI = 0;
 bestTime = null;
@@ -2684,25 +2700,52 @@ function openSetup(){
 
 async function fetchBankData(){
   try {
-    let res = await fetch("/data"); // IMPORTANT → relative path
+
+    let url;
+
+    // If running on ESP (no internet)
+    if(location.hostname === "192.168.4.1"){
+      url = "/data";
+    } 
+    // If running online
+    else {
+      url = "http://192.168.4.1/data";
+    }
+
+    let res = await fetch(url);
     let data = await res.json();
 
     document.getElementById("bankTemp").innerText =
-      data.temp.toFixed(1) + " °C";
+      data.temp?.toFixed(1) + " °C" || "--";
+
+    document.getElementById("bankHumidity").innerText =
+      data.humidity?.toFixed(0) + " %" || "--";
+
+    document.getElementById("bankPressure").innerText =
+      data.pressure?.toFixed(0) + " hPa" || "--";
+
+    document.getElementById("bankAltitude").innerText =
+      data.altitude?.toFixed(0) + " m" || "--";
+
+    document.getElementById("bankVoltage").innerText =
+      data.voltage?.toFixed(2) + " V" || "--";
+
+    document.getElementById("waterTemp").innerText =
+      data.waterTemp?.toFixed(1) + " °C" || "--";
 
     document.getElementById("turbidity").innerText =
-      data.turbidity.toFixed(0) + " NTU";
+      data.turbidity?.toFixed(0) + " NTU" || "--";
 
-    document.getElementById("bankStatus").innerHTML =
-      "<span style='color:#00ffa6'>● Connected</span>";
+    document.getElementById("probeVoltage").innerText =
+      data.probeVoltage?.toFixed(2) + " V" || "--";
+
+    updateBankStatus(true);
 
   } catch(e){
 
-    document.getElementById("bankTemp").innerText = "--";
-    document.getElementById("turbidity").innerText = "--";
+    setBankOffline();
+    updateBankStatus(false);
 
-    document.getElementById("bankStatus").innerHTML =
-      "<span style='color:red'>● Not Connected</span>";
   }
 }
 
