@@ -2995,18 +2995,18 @@ let score = calculateSwimScore(
   spi,
   lastWindSpeed || 0,
   lastCloud || 0,
-  lastPressure || 1015
+  (typeof lastPressure !== "undefined" ? lastPressure : 1015)
 );
 
-let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]");
+let scoutDataSafe = scoutData || { bottom:null, fish:null, color:null };
 
 scouts.push({
   boatLat: boatLat,
   lon: lon,
   depth: depth,
-  bottom: scoutData.bottom,
-  fish: scoutData.fish,
-  color: scoutData.color,
+  bottom: scoutDataSafe.bottom,
+  fish: scoutDataSafe.fish,
+  color: scoutDataSafe.color,
   score: score,
   time: new Date().toISOString()
 });
@@ -3070,12 +3070,22 @@ function estimateBottomTemp(data){
 }
 
 function useGPSLocation(){
-    navigator.geolocation.getCurrentPosition(function(pos){
-        let lat = pos.coords.latitude.toFixed(4);
-        let lon = pos.coords.longitude.toFixed(4);
 
-        document.getElementById("damInput").value = "GPS: " + lat + ", " + lon;
-    });
+    navigator.geolocation.getCurrentPosition(
+        function(pos){
+
+            let lat = pos.coords.latitude.toFixed(4);
+            let lon = pos.coords.longitude.toFixed(4);
+
+            document.getElementById("damInput").value =
+                "GPS: " + lat + ", " + lon;
+
+        },
+        function(err){
+            alert("GPS error: " + err.message);
+        }
+    );
+
 }
 
 function startSystem(){
