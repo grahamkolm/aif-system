@@ -1208,6 +1208,60 @@ function simulateWeather(){
 
   render(fake);
 }
+
+async function fetchBankData(){
+  try {
+
+    let url;
+
+    // ✅ If connected directly to ESP
+    if(location.hostname === "192.168.4.1"){
+      url = "/data";
+    } 
+    // ❗ If NOT on ESP, DON'T try to force call it
+    else {
+      console.log("Not on ESP network → skipping bank fetch");
+      throw new Error("ESP not reachable");
+    }
+
+    let res = await fetch(url);
+    let data = await res.json();
+
+    document.getElementById("bankTemp").innerText =
+    data.temp != null ? data.temp.toFixed(1) + " °C" : "--";
+
+    document.getElementById("bankHumidity").innerText =
+      data.humidity?.toFixed(0) + " %" || "--";
+
+    document.getElementById("bankPressure").innerText =
+      data.pressure?.toFixed(0) + " hPa" || "--";
+
+    document.getElementById("bankAltitude").innerText =
+      data.altitude?.toFixed(0) + " m" || "--";
+
+    document.getElementById("bankVoltage").innerText =
+      data.voltage?.toFixed(2) + " V" || "--";
+
+    document.getElementById("waterTemp").innerText =
+      data.waterTemp?.toFixed(1) + " °C" || "--";
+
+    document.getElementById("turbidity").innerText =
+      data.turbidity?.toFixed(0) + " NTU" || "--";
+
+    document.getElementById("probeVoltage").innerText =
+      data.probeVoltage?.toFixed(2) + " V" || "--";
+
+    updateBankStatus(true);
+
+  } catch(e){
+
+    console.log("ESP OFFLINE or BLOCKED:", e.message);
+
+    setBankOffline();
+    updateBankStatus(false);
+
+  }
+}
     
 async function fetchWeatherSafe(){
   try {
@@ -1961,7 +2015,7 @@ let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 return R * c
 
 }
-  function openDrop(){
+function openDrop(){
 
 navigator.geolocation.getCurrentPosition(function(pos){
 
@@ -2061,7 +2115,7 @@ let map = L.map('map').setView([boatLat, lon], 15);
 
 console.log("MAP INIT OK");
   
-L.tileLayer("s://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors"
 }).addTo(map);
@@ -2170,7 +2224,9 @@ document.addEventListener("click", function(e){
 document.addEventListener("DOMContentLoaded", function(){
 let compassActive = false;
 
-document.getElementById("compassTile").addEventListener("click", enableCompass);
+let compassBtn = document.getElementById("compassTile");
+if(compassBtn){
+  compassBtn.addEventListener("click", enableCompass); }
 
 function enableCompass(){
 
@@ -2691,59 +2747,6 @@ updateTacticalBar("Very high", "Heavy", "Sunrise", "Rising");
 function openSetup(){
   if(!bankInterval){
     bankInterval = setInterval(fetchBankData, 3000);
-  }
-
-async function fetchBankData(){
-  try {
-
-    let url;
-
-    // ✅ If connected directly to ESP
-    if(location.hostname === "192.168.4.1"){
-      url = "/data";
-    } 
-    // ❗ If NOT on ESP, DON'T try to force call it
-    else {
-      console.log("Not on ESP network → skipping bank fetch");
-      throw new Error("ESP not reachable");
-    }
-
-    let res = await fetch(url);
-    let data = await res.json();
-
-    document.getElementById("bankTemp").innerText =
-    data.temp != null ? data.temp.toFixed(1) + " °C" : "--";
-
-    document.getElementById("bankHumidity").innerText =
-      data.humidity?.toFixed(0) + " %" || "--";
-
-    document.getElementById("bankPressure").innerText =
-      data.pressure?.toFixed(0) + " hPa" || "--";
-
-    document.getElementById("bankAltitude").innerText =
-      data.altitude?.toFixed(0) + " m" || "--";
-
-    document.getElementById("bankVoltage").innerText =
-      data.voltage?.toFixed(2) + " V" || "--";
-
-    document.getElementById("waterTemp").innerText =
-      data.waterTemp?.toFixed(1) + " °C" || "--";
-
-    document.getElementById("turbidity").innerText =
-      data.turbidity?.toFixed(0) + " NTU" || "--";
-
-    document.getElementById("probeVoltage").innerText =
-      data.probeVoltage?.toFixed(2) + " V" || "--";
-
-    updateBankStatus(true);
-
-  } catch(e){
-
-    console.log("ESP OFFLINE or BLOCKED:", e.message);
-
-    setBankOffline();
-    updateBankStatus(false);
-
   }
 }
 
