@@ -742,7 +742,7 @@ Close
 <script>  
 const IS_ESP = location.hostname === "192.168.4.1";
 
-const API_URL = "http://192.168.4.1/data";
+const API_URL = "://192.168.4.1/data";
     
 /* ========================= */
 /* ===== NAVIGATION / CORE ===== */
@@ -1186,7 +1186,7 @@ return"stable"
 }
 
 const WEATHER_URL =
-"https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
+"s://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
 
 function simulateWeather(){
 
@@ -2061,7 +2061,7 @@ let map = L.map('map').setView([boatLat, lon], 15);
 
 console.log("MAP INIT OK");
   
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+L.tileLayer("s://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors"
 }).addTo(map);
