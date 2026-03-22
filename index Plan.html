@@ -1032,7 +1032,8 @@ score += 4
 }
 
 /* THERMO STABILITY */
-let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
+let surfaceTemp = (sensorTemp !== null && sensorTemp !== undefined)
+    : estimateSurfaceTemp({
   prevWaterTemp: lastSurfaceTemp || (t - 0.5),
   airTemp: t,
   windSpeed: w || 2,
@@ -1186,7 +1187,7 @@ return"stable"
 }
 
 const WEATHER_URL =
-"s://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
+"https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
 
 function simulateWeather(){
 
@@ -1381,7 +1382,8 @@ function confidence(spi){
   return "poor";
 }
   
-document.getElementById("air").innerText=t.toFixed(1)+"°C"
+let el = document.getElementById("air");
+    if(el) el.innertext = t.toFixed(1) + "°C";
 let airIcon=document.querySelector('[data-lucide="sun"]')
 
 if(airIcon){
