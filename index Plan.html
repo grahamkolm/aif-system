@@ -1184,8 +1184,30 @@ if(diff<-1)return"falling"
 return"stable"
 }
 
-const WEATHER_URL = "https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=YOUR_API_KEY&units=metric";
+const WEATHER_URL =
+"https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
 
+function simulateWeather(){
+
+  console.log("⚠️ Using simulated weather");
+
+  let fake = {
+    main: {
+      temp: 22,
+      pressure: 1018
+    },
+    wind: {
+      speed: 3,
+      deg: 180
+    },
+    clouds: {
+      all: 40
+    }
+  };
+
+  render(fake);
+}
+    
 async function fetchWeatherSafe(){
   try {
 
@@ -2048,41 +2070,29 @@ setTimeout(() => {
 }, 200);
   
 async function updateBoatPosition(){
-console.log("UPDATING BOAT PISITION");
+
   try {
 
-    let res = await fetch("/gps");
+    // only try local network if on local wifi
+    if(location.protocol === "http:"){
 
-    if(!res.ok){
-      throw new Error("Bad response");
-    }
+      let res = await fetch("http://192.168.1.85:5000/gps");
+      let data = await res.json();
 
-    let data = await res.json();
+      if(!boatMarker){
+        boatMarker = L.marker([data.lat, data.lon]).addTo(map);
+      } else {
+        boatMarker.setLatLng([data.lat, data.lon]);
+      }
 
-    // ✅ SAFETY CHECK
-    if(typeof data.lat !== "number" || typeof data.lon !== "number"){
-      console.log("Invalid GPS data", data);
-      return;
-    }
-
-    let boatLat = data.lat;
-    let boatLon = data.lon;
-
-    console.log("GPS OK:", boatLat, boatLon);
-
-    if(!boatMarker){
-      boatMarker = L.marker([boatLat, boatLon])
-        .addTo(map)
-        .bindPopup("🚤 Bait Boat");
     } else {
-      boatMarker.setLatLng([boatLat, boatLon]);
+      console.log("Skipping boat GPS (HTTPS blocking HTTP)");
     }
 
   } catch(e){
-    console.log("No boat signal", e);
+    console.log("Boat offline");
   }
 }
-
 
 // 🔁 run every 3 seconds
 setInterval(updateBoatPosition, 3000);
@@ -2700,16 +2710,17 @@ async function fetchBankData(){
 
     let url;
 
-    // If running on ESP (no internet)
+    // ✅ If connected directly to ESP
     if(location.hostname === "192.168.4.1"){
       url = "/data";
     } 
-    // If running online
+    // ❗ If NOT on ESP, DON'T try to force call it
     else {
-      url = "http://192.168.4.1/data";
+      console.log("Not on ESP network → skipping bank fetch");
+      throw new Error("ESP not reachable");
     }
 
-    let res = await fetch(url);
+    let res = await fetch(url, { timeout: 2000 });
     let data = await res.json();
 
     document.getElementById("bankTemp").innerText =
@@ -2739,6 +2750,8 @@ async function fetchBankData(){
     updateBankStatus(true);
 
   } catch(e){
+
+    console.log("ESP OFFLINE or BLOCKED:", e.message);
 
     setBankOffline();
     updateBankStatus(false);
