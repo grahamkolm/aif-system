@@ -1896,7 +1896,7 @@ let drift = windDriftStrength(windSpeed);
 let entry = predictFeedingEntry(windSpeed, windDir); 
 let patrol = predictPatrolRoute(spi, windSpeed, windDir);
 
-let score = calcuLateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
+let score = calculateSwimScore(spi, windSpeed, lastCloud || 0, lastPressure || 1015);
 
 /* SAVE SCOUT POINT */
 
@@ -3085,7 +3085,6 @@ function startSystem(){
 
   setInterval(fetchBankData, 2000);
   setInterval(fetchWeatherSafe, 600000); }
-
 
 document.addEventListener("DOMContentLoaded", startSystem);
     
