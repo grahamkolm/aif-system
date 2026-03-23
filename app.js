@@ -413,7 +413,10 @@ document.getElementById("timeline").innerHTML = html;
 
 function feeding(spi){
 
-if(spi >= 85) return "Aggressive feeding"; if(spi >= 70) return "Active feeding"; if(spi >= 55) return "Moderate feeding"; if(spi >= 40) return "Slow feeding";
+if(spi >= 85) return "Aggressive feeding"; 
+if(spi >= 70) return "Active feeding"; 
+if(spi >= 55) return "Moderate feeding"; 
+if(spi >= 40) return "Slow feeding";
 
 return "Very low activity";
 }
@@ -427,7 +430,9 @@ return "Spring";
 }
 
 function getMoonPhase(){
-return "Waning"; // placeholder (we upgrade later) }
+return "Waning"; // placeholder (we upgrade later) 
+}
 
 function getPressureTrend(p){
-return "Stable"; // placeholder (we upgrade later) }
+return "Stable"; // placeholder (we upgrade later) 
+}
