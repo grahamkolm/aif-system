@@ -125,22 +125,32 @@ let w = d.wind.speed * 3.6;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
 
-// 2. calcalate water
-document.getElementById("surfaceTemp").innerText = surfaceTemp.toFixed(1) + "°C"; 
-document.getElementById("bottomTemp").innerText = bottomTemp.toFixed(1) + "°C"; 
-document.getElementById("oxygen").innerText = oxygen.toFixed(1) + " mg/L";
+// ✅ CALCULATE WATER FIRST
+let surfaceTemp = estimateSurfaceTemp({
+    prevWaterTemp: lastSurfaceTemp || (t - 0.5),
+    airTemp: t,
+    windSpeed: w || 2,
+    sunFactor: 1 - (c || 0) / 100,
+    hour: new Date().getHours()
+});
 
-// 🔥 CALCULATE SPI FIRST
+let bottomTemp = estimateBottomTemp({
+    surfaceTemp: surfaceTemp,
+    depth: 6,
+    windSpeed: w
+});
+
+let oxygen = estimateOxygen(surfaceTemp, w, c);
+
+lastSurfaceTemp = surfaceTemp;
+
+// ✅ CALCULATE SPI
 let spi = calculateSPI(p, w, c, windDir, t);
 
-// smooth
-if (lastSPI !== null) {
-    spi = Math.round((spi + lastSPI) / 2); }
+if(lastSPI !== null){
+    spi = Math.round((spi + lastSPI) / 2); } lastSPI = spi;
 
-// store last SPI
-lastSPI = spi;
-
-// 🧠 STORE FULL CONDITIONS
+// ✅ STORE CONDITIONS
 lastConditions = {
     airTemp: t,
     pressure: p,
@@ -152,11 +162,17 @@ lastConditions = {
     trend: getPressureTrend(p)
 };
 
-// UI
-updateSPI(spi);
-updateTiles(t,p,w,c);
-updateAI(spi,p,w,c);
+// ✅ UPDATE UI (AFTER EVERYTHING EXISTS) set("air", t.toFixed(1) + "°C"); set("pressure", p + " hPa"); set("wind", w.toFixed(1) + " km/h"); set("cloud", c + "%");
 
+set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); set("bottomTemp", bottomTemp.toFixed(1) + "°C"); set("oxygen", oxygen.toFixed(1) + " mg/L");
+
+set("moon", getMoonPhase());
+set("season", getSeason());
+set("feed", feeding(spi));
+
+// SPI + AI
+updateSPI(spi);
+updateAI(spi,p,w,c);
 }
 
 // ===============================
@@ -244,15 +260,15 @@ set("oxygen", estimateOxygen(t,w,c).toFixed(1));
 function updateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p);
-
 let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c);
 
 document.getElementById("aiAnalysis").innerHTML = `
-SPI: ${spi}%
-Trend: ${trend}
-Window: ${windowText}
+SPI: ${spi}%<br>
+Trend: ${trend}<br>
+Window: ${windowText}<br>
 Duration: ${duration} min
 `;
+}
 
 function set(id,val){
 let el = document.getElementById(id);
@@ -319,8 +335,6 @@ Avg SPI: ${avgSPI}%
 
 renderMap(events);
 renderTimeline(events);
-
-window.reportMap = map;
 
 setTimeout(()=>{
   if(window.reportMap){
