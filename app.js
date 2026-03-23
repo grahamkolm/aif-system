@@ -301,33 +301,19 @@ padding:20px;
 position:fixed;
 top:20px;
 right:20px;
-padding:10px 15px;
-background:#00ffa6;
-border:none;
-border-radius:8px;
-">
-Close
-</button>
+">Close</button>
 
 <h2>AIF SESSION REPORT</h2>
 
-<p>Scout Points: ${scouts.length}</p>
+<p>Scouts: ${scouts.length}</p>
 <p>Drops: ${drops.length}</p>
-<p>Best Score: ${bestScout ? bestScout.score : 0}%</p>
-
-<div style="
-margin-top:15px;
-border-radius:16px;
-overflow:hidden;
-height:250px;
-border:1px solid rgba(0,255,166,0.2);
-">
-<div id="reportMap" style="height:100%; width:100%;"></div>
 
 </div>
 `);
 
 renderReport();
+
+}
 
 // ===============================
 // 📊 REPORT CONTENT
