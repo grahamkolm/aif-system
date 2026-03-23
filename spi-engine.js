@@ -81,18 +81,20 @@ if(t > 28) score -= 6;
 // -----------------
 
 let surfaceTemp = estimateSurfaceTemp({
-    prevWaterTemp: lastSurfaceTemp || (t - 0.5),
-    airTemp: t,
-    windSpeed: w || 2,
-    sunFactor: 1 - (c || 0) / 100,
-    hour: new Date().getHours()
+  prevWaterTemp: lastSurfaceTemp || (t - 0.5),
+  airTemp: t,
+  windSpeed: w || 2,
+  sunFactor: 1 - (c || 0) / 100,
+  hour: new Date().getHours()
 });
 
 let bottomTemp = estimateBottomTemp({
-    surfaceTemp: surfaceTemp,
-    depth: 6,
-    windSpeed: w
+  surfaceTemp: surfaceTemp,
+  depth: 6,
+  windSpeed: w
 });
+
+let oxygen = estimateOxygen(surfaceTemp, w);
 
 lastSurfaceTemp = surfaceTemp;
 
