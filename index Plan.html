@@ -118,9 +118,46 @@
 
 <!-- DOCK -->
 <div class="dock">
-<div class="dock-btn" onclick="startSystem()"><i data-lucide="refresh-cw"></i>Refresh</div>
-<div class="dock-btn" onclick="confirmDrop()"><i data-lucide="target"></i>Drop</div>
-<div class="dock-btn" onclick="openReport()"><i data-lucide="bar-chart-3"></i>Report</div>
+<div class="dock-btn" onclick="startSystem()">
+<i data-lucide="refresh-cw"></i>
+Refresh
+</div>
+
+<div class="dock-btn" onclick="refreshDashboard()"> 
+<i id="refreshIcon" data-lucide="refresh-cw"></i> 
+Refresh 
+</div>
+
+<div class="dock-btn" onclick="openScout()">
+<i data-lucide="crosshair"></i> 
+Scout 
+</div>
+
+<div class="dock-btn" onclick="openDrop()">
+<i data-lucide="target"></i>
+Drop
+</div>
+
+<div class="dock-btn" onclick="openMap()"> 
+<i data-lucide="fish"></i> 
+Map 
+</div>
+
+<div class="dock-btn" onclick="openPlan()"> 
+<i data-lucide="compass"></i> 
+Plan 
+</div>  
+  
+<div class="dock-btn" onclick="openSetup()">
+<i data-lucide="settings"></i>
+Setup
+</div>
+
+<div class="dock-btn" onclick="openReport()">
+<i data-lucide="bar-chart-3"></i>
+Report
+</div>
+
 </div>
 
 </div>
