@@ -54,7 +54,7 @@ async function startSystem(){
 
 async function fetchWeatherSafe(){
     try{
-        let res = await fetch(WEATHER_URL);
+        let res = await fetch(WEATHER_URL); 
         let data = await res.json();
         renderDashboard(data.list[0]);
     }catch{
