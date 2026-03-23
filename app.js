@@ -87,7 +87,10 @@ let spi = calculateSPI(p, w, c, windDir, t);
 
 // smooth
 if(lastSPI !== null){
-    spi = Math.round((spi + lastSPI) / 2); } lastSPI = spi;
+    spi = Math.round((spi + lastSPI) / 2);
+} 
+
+lastSPI = spi;
 
 // 🧠 STORE FULL CONDITIONS (YOUR BIG IDEA) 
     lastConditions = {
