@@ -25,6 +25,7 @@ body{
 .header{
     text-align:center;
     margin-top:18px;
+    padding-top:20px;
 }
 
 .brand{
@@ -67,6 +68,11 @@ body{
 #spiGauge{
     width:260px;
     height:260px;
+}
+
+.spi-number{
+fill:#ffffff !important;
+font-weight:700;
 }
 
 /* MINI CIRCLES */
