@@ -422,3 +422,9 @@ return "Waning"; // placeholder (we upgrade later)
 function getPressureTrend(p){
 return "Stable"; // placeholder (we upgrade later) 
 }
+
+setTimeout(() =>;
+if (window.lucide) {
+    lucide.createIcons();
+}
+}, 100);
