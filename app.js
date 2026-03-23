@@ -267,16 +267,19 @@ let trend = getPressureTrend(p);
 let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c);
 
 document.getElementById("aiAnalysis").innerHTML = `
-SPI: ${spi}%<br>
-Trend: ${trend}<br>
-Window: ${windowText}<br>
+SPI: ${spi}%
+Trend: ${trend}
+Window: ${windowText}
 Duration: ${duration} min
 `;
-}
+}  // ✅ CLOSE updateAI HERE
 
+// ===============================
+// 🛠 GLOBAL SET FUNCTION
+// ===============================
 function set(id,val){
-let el = document.getElementById(id);
-if(el) el.innerText = val;
+    let el = document.getElementById(id);
+    if(el) el.innerText = val;
 }
 
 // ===============================
