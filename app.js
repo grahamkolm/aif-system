@@ -267,30 +267,25 @@ function openReport(){
 
 if(!currentSession) return;
 
-document.body.insertAdjacentHTML("beforeend",`
+document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="...">
 
-<div id="reportScreen" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-color:white;
-z-index:9999;
-padding:20px;
-overflow:auto;
+<button onclick="closeReport()">Close</button>
+
+<h2>AIF SESSION REPORT</h2>
+
+<p>Scout Points: ${scouts.length}</p>
+<p>Drops: ${drops.length}</p>
+<p>Best Score: ${bestScout ? bestScout.score : 0}%</p> <p>Avg SPI: ${avgSPI}%</p>
+
+<!-- ✅ MAP GOES HERE -->
+<div style="
+margin-top:15px;
+border-radius:16px;
+overflow:hidden;
+height:250px;
+border:1px solid rgba(0,255,166,0.2);
 ">
-
-<button onclick="this.parentElement.remove()" style="position:fixed;top:20px;right:20px;">Close</button>
-
-<h2 style="color:#00ffa6;">Session Report</h2>
-
-<div id="reportSummary"></div>
-
-<div id="reportMap" style="height:250px;margin-top:15px;border-radius:12px;"></div>
-
-<div id="timeline"></div>
+  <div id="reportMap" style="height:100%; width:100%;"></div> </div>
 
 </div>
 `);
