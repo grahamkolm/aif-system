@@ -335,6 +335,11 @@ renderReport();
 
 }
 
+function closeReport(){
+    let el = document.getElementById("reportScreen");
+    if(el) el.remove();
+}
+
 // ===============================
 // 📊 REPORT CONTENT
 // ===============================
@@ -357,10 +362,11 @@ Scouts: ${scouts.length}<br>
 Fish: ${catches.length}<br>
 Avg SPI: ${avgSPI}%
 `;
-}
 
-renderMap(events);
 renderTimeline(events);
+renderMap(events);
+
+}
 
 setTimeout(()=>{
   if(window.reportMap){
