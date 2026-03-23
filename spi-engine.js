@@ -332,3 +332,17 @@ if(phase < 0.75) return "Waning";
 return "New";
 
 }
+
+function getMoonPhase(){
+    const phases = ["New", "Waxing", "Full", "Waning"];
+    let day = new Date().getDate();
+    return phases[Math.floor((day % 28) / 7)]; }
+
+function getSeason(){
+    let month = new Date().getMonth() + 1;
+
+    if(month >= 12 || month <= 2) return "Summer";
+    if(month >= 3 && month <= 5) return "Autumn";
+    if(month >= 6 && month <= 8) return "Winter";
+    return "Spring";
+}
