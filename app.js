@@ -89,7 +89,8 @@ let spi = calculateSPI(p, w, c, windDir, t);
 if(lastSPI !== null){
     spi = Math.round((spi + lastSPI) / 2); } lastSPI = spi;
 
-// 🧠 STORE FULL CONDITIONS (YOUR BIG IDEA) lastConditions = {
+// 🧠 STORE FULL CONDITIONS (YOUR BIG IDEA) 
+    lastConditions = {
     airTemp: t,
     pressure: p,
     windSpeed: w,
