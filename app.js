@@ -87,6 +87,16 @@ lastPressure = p;
 lastWindSpeed = w;
 lastCloud = c;
 
+let trend = getPressureTrend(p);
+let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c);
+
+document.getElementById("aiContent").innerHTML = `
+SPI: ${spi.toFixed(1)}%<br>
+Trend: ${trend}<br>
+Window: ${windowText}<br>
+Duration: ${duration} min
+`;
+
 // =========================
 // 🔥 SPI ENGINE CALL
 // =========================
@@ -215,6 +225,10 @@ setInterval(fetchWeatherSafe, 600000); // every 10 min
 
 document.addEventListener("DOMContentLoaded", startSystem);
 
+document.addEventListener("DOMContentLoaded", () => {
+    startSystem();
+    lucide.createIcons(); // 🔥 THIS FIXES ALL ICONS });
+
 // =========================
 // 📊 REPORT SYSTEM (SAFE BLOCK)
 // =========================
@@ -321,14 +335,14 @@ let map = L.map('reportMap').setView(center, 15);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 window.reportMap = map;
-setupTimeout(()=>{
-if(window.reportMap){
-reportMap.invaliddateSize();
-}
+setupTimeout(() => {
+map.invalidateSize();
 },300);
 
 // FIX MAP SIZE BUG
-setTimeout(()=> map.invalidateSize(),200);
+setupTimeout(() => {
+map.invalidateSize();
+},300);
 
 // SCOUTS
 scouts.forEach(s=>{

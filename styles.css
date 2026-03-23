@@ -163,6 +163,22 @@ font-weight:700;
     margin-top:2px;
 }
 
+.tile.active {
+    background: #00ffa6;
+    color: #081018;
+    border: none;
+}
+
+.tile.recommended {
+    border: 1px solid #00ffa6;
+    box-shadow: 0 0 8px rgba(0,255,166,0.4); }
+
+.quick-row button.active {
+    background:#00ffa6;
+    color:#081018;
+}
+
+
 /* ========================= */
 /* ===== AI PANEL ===== */
 /* ========================= */
