@@ -320,6 +320,14 @@ Avg SPI: ${avgSPI}%
 renderMap(events);
 renderTimeline(events);
 
+window.reportMap = map;
+
+setTimeout(()=>{
+  if(window.reportMap){
+    window.reportMap.invalidateSize();
+  }
+},300);
+    
 }
 
 // ===============================
