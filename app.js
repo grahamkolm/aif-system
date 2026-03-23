@@ -343,6 +343,7 @@ Scouts: ${scouts.length}<br>
 Fish: ${catches.length}<br>
 Avg SPI: ${avgSPI}%
 `;
+}
 
 renderMap(events);
 renderTimeline(events);
