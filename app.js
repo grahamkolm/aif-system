@@ -140,7 +140,7 @@ let bottomTemp = estimateBottomTemp({
     windSpeed: w
 });
 
-let oxygen = estimateOxygen(surfaceTemp, w, c);
+let oxygen = estimateOxygen(surfaceTemp, w);
 
 lastSurfaceTemp = surfaceTemp;
 
