@@ -125,6 +125,11 @@ let w = d.wind.speed * 3.6;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
 
+// 2. calcalate water
+document.getElementById("surfaceTemp").innerText = surfaceTemp.toFixed(1) + "°C"; 
+document.getElementById("bottomTemp").innerText = bottomTemp.toFixed(1) + "°C"; 
+document.getElementById("oxygen").innerText = oxygen.toFixed(1) + " mg/L";
+
 // 🔥 CALCULATE SPI FIRST
 let spi = calculateSPI(p, w, c, windDir, t);
 
@@ -239,16 +244,15 @@ set("oxygen", estimateOxygen(t,w,c).toFixed(1));
 function updateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p);
-let window = detectStrikeWindow(spi,trend,w,c);
-let duration = predictStrikeDuration(spi,trend,w,c);
 
-document.getElementById("aiContent").innerHTML =
-`SPI: ${spi}%<br>
-Trend: ${trend}<br>
-Window: ${window}<br>
-Duration: ${duration} min`;
+let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c);
 
-}
+document.getElementById("aiAnalysis").innerHTML = `
+SPI: ${spi}%
+Trend: ${trend}
+Window: ${windowText}
+Duration: ${duration} min
+`;
 
 function set(id,val){
 let el = document.getElementById(id);
