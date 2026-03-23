@@ -6,7 +6,7 @@ RULES:
 ✔ No DOM
 ✔ No fetch
 ✔ No UI
-✔ PURE LOGIC ONLY
+✔ PURE LOGIC ONLY 
 */
 
 // =========================
