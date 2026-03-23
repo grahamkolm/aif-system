@@ -278,8 +278,8 @@ Duration: ${duration} min
 // 🛠 GLOBAL SET FUNCTION
 // ===============================
 function set(id,val){
-    let el = document.getElementById(id);
-    if(el) el.innerText = val;
+let el = document.getElementById(id);
+if(el) el.innerHTML = val;
 }
 
 // ===============================
@@ -311,8 +311,8 @@ right:20px;
 
 <h2>AIF SESSION REPORT</h2>
 
-<p>Scouts: ${scouts.length}</p>
-<p>Drops: ${drops.length}</p>
+<p>Scouts: ${currentSession.events.filter(e=>e.type==="scout").length}</p>
+<p>Drops: ${currentSession.events.filter(e=>e.type==="drop").length}</p>
 
 </div>
 `);
@@ -428,7 +428,7 @@ function getPressureTrend(p){
 return "Stable"; // placeholder (we upgrade later) 
 }
 
-setTimeout(() =>;
+setTimeout(() => {
 if (window.lucide) {
     lucide.createIcons();
 }
