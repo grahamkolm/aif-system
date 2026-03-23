@@ -290,18 +290,13 @@ function openReport(){
 
 if(!currentSession) return;
 
-document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-color:white;
-z-index:9999;
-overflow:auto;
-padding:20px;
-">
+document.body.insertAdjacentHTML("beforeend", ` 
+<div id="reportScreen">
+<div id="reportSummary"></div>
+<div id="timeline"></div>
+<div id="reportMap"></div>
+</div>
+`);
 
 <button onclick="closeReport()" style="
 position:fixed;
