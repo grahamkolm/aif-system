@@ -162,8 +162,11 @@ lastConditions = {
     trend: getPressureTrend(p)
 };
 
-// ✅ UPDATE UI (AFTER EVERYTHING EXISTS) set("air", t.toFixed(1) + "°C"); set("pressure", p + " hPa"); set("wind", w.toFixed(1) + " km/h"); set("cloud", c + "%");
-
+// ✅ UPDATE UI (AFTER EVERYTHING EXISTS) 
+set("air", t.toFixed(1) + "°C"); 
+set("pressure", p + " hPa"); 
+set("wind", w.toFixed(1) + " km/h"); 
+set("cloud", c + "%");
 set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); 
 set("bottomTemp", bottomTemp.toFixed(1) + "°C"); 
 set("oxygen", oxygen.toFixed(1) + " mg/L");
