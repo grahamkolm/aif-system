@@ -86,14 +86,14 @@ let windDir = d.wind.deg;
 let spi = calculateSPI(p, w, c, windDir, t);
 
 // smooth
-if(lastSPI !== null){
-    spi = Math.round((spi + lastSPI) / 2);
-} 
+if (lastSPI !== null) {
+    spi = Math.round((spi + lastSPI) / 2); }
 
+// store last SPI
 lastSPI = spi;
 
-// 🧠 STORE FULL CONDITIONS (YOUR BIG IDEA) 
-    lastConditions = {
+// 🧠 STORE FULL CONDITIONS
+lastConditions = {
     airTemp: t,
     pressure: p,
     windSpeed: w,
