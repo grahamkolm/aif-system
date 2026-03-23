@@ -14,9 +14,6 @@
 
 </head>
 
-<script src="spi-engine.js"></script>
-<script src="app.js"></script>
-
 <body>
 
 <div class="main">
@@ -27,7 +24,7 @@
     <div class="subtitle1">Artificial Intelligence Fishing</div>
     <div class="subtitle2">Drop • Scan • Strike</div> </div>
 
-<!-- SPI GAUGE -->
+<!-- SPI -->
 <div class="instrument">
 <div class="spi-container">
 
@@ -41,130 +38,44 @@
     <div class="mini-label">CONF</div>
 </div>
 
-<svg id="spiGauge" viewBox="0 0 300 300">
-
-<circle cx="150" cy="150" r="110"
-stroke="#2f4f4f"
-stroke-width="10"
-fill="none"
-stroke-dasharray="8 12"/>
-
-<circle id="spiArc"
-cx="150"
-cy="150"
-r="110"
-stroke="#00ffa6"
-stroke-width="14"
-fill="none"
-stroke-linecap="round"
-transform="rotate(-90 150 150)"/>
-
-<text x="150" y="145" text-anchor="middle"
-class="spi-number"
-id="spiValue">--%</text>
-
-<text x="150" y="175"
-text-anchor="middle"
-class="spi-label">SPI</text>
-
-</svg>
+<svg id="spiGauge" viewBox="0 0 300 300"> <circle cx="150" cy="150" r="110" stroke="#2f4f4f" stroke-width="10" fill="none" stroke-dasharray="8 12"/> <circle id="spiArc" cx="150" cy="150" r="110" stroke="#00ffa6" stroke-width="14" fill="none" stroke-linecap="round" transform="rotate(-90 150 150)"/> <text x="150" y="145" text-anchor="middle" class="spi-number" id="spiValue">--%</text> <text x="150" y="175" text-anchor="middle">SPI</text> </svg>
 
 </div>
 </div>
 
-<!-- TACTICAL BAR -->
-<div class="tactical-bar" id="tactical"> Waiting for environmental data...
-</div>
+<div class="tactical-bar" id="tactical">Waiting for environmental data...</div>
 
-<!-- DATA TILES -->
+<!-- TILES -->
 <div class="tile-grid">
 
-<div class="tile">
-    <i data-lucide="sun"></i>
-    <div class="tile-title">Air</div>
-    <div class="tile-value" id="air">--</div> </div>
+<div class="tile"><i data-lucide="sun"></i><div class="tile-title">Air</div><div class="tile-value" id="air">--</div></div> <div class="tile"><i data-lucide="waves"></i><div class="tile-title">Surface</div><div class="tile-value" id="surface">--</div></div> <div class="tile"><i data-lucide="arrow-down"></i><div class="tile-title">Bottom</div><div class="tile-value" id="bottom">--</div></div>
 
-<div class="tile">
-    <i data-lucide="waves"></i>
-    <div class="tile-title">Surface</div>
-    <div class="tile-value" id="surface">--</div> </div>
+<div class="tile"><i data-lucide="gauge"></i><div class="tile-title">Pressure</div><div class="tile-value" id="pressure">--</div></div> <div class="tile"><i data-lucide="wind"></i><div class="tile-title">Wind</div><div class="tile-value" id="wind">--</div></div> <div class="tile"><i data-lucide="cloud"></i><div class="tile-title">Cloud</div><div class="tile-value" id="cloud">--</div></div>
 
-<div class="tile">
-    <i data-lucide="arrow-down"></i>
-    <div class="tile-title">Bottom</div>
-    <div class="tile-value" id="bottom">--</div> </div>
-
-<div class="tile">
-    <i data-lucide="gauge"></i>
-    <div class="tile-title">Pressure</div>
-    <div class="tile-value" id="pressure">--</div> </div>
-
-<div class="tile">
-    <i data-lucide="wind"></i>
-    <div class="tile-title">Wind</div>
-    <div class="tile-value" id="wind">--</div> </div>
-
-<div class="tile">
-    <i data-lucide="cloud"></i>
-    <div class="tile-title">Cloud</div>
-    <div class="tile-value" id="cloud">--</div> </div>
-
-<div class="tile">
-   <i data-lucide="moon"></i>
-   <div class="tile-title">Moon</div>
-   <div class="tile-value" id="moon">--</div> </div>
-
-<div class="tile">
-   <i data-lucide="leaf"></i>
-   <div class="tile-title">Season</div>
-   <div class="tile-value" id="season">--</div> </div>
-
-<div class="tile">
-   <i data-lucide="fish"></i>
-   <div class="tile-title">Feed</div>
-   <div class="tile-value" id="feed">--</div> </div>
-
-<div class="tile">
-   <i data-lucide="droplets"></i>
-   <div class="tile-title">Oxygen</div>
-   <div class="tile-value" id="oxygen">--</div> </div>
+<div class="tile"><i data-lucide="moon"></i><div class="tile-title">Moon</div><div class="tile-value" id="moon">--</div></div> <div class="tile"><i data-lucide="leaf"></i><div class="tile-title">Season</div><div class="tile-value" id="season">--</div></div> <div class="tile"><i data-lucide="fish"></i><div class="tile-title">Feed</div><div class="tile-value" id="feed">--</div></div> <div class="tile"><i data-lucide="droplets"></i><div class="tile-title">Oxygen</div><div class="tile-value" id="oxygen">--</div></div>
 
 </div>
 
-<!-- AI PANEL -->
+<!-- AI -->
 <div class="ai-box">
-    <b>AI Tactical Analysis</b>
-    <div id="aiContent" class="ai-content"></div> </div>
+<b>AI Tactical Analysis</b>
+<div id="aiContent" class="ai-content"></div> </div>
 
 <!-- DOCK -->
 <div class="dock">
-
-<div class="dock-btn" onclick="startSystem()"> <i data-lucide="refresh-cw"></i> Refresh </div>
-
-<div class="dock-btn" onclick="openScout?.()"> <i data-lucide="crosshair"></i> Scout </div>
-
-<div class="dock-btn" onclick="openDrop?.()"> <i data-lucide="target"></i> Drop </div>
-
-<div class="dock-btn" onclick="openMap?.()"> <i data-lucide="map"></i> Map </div>
-
-<div class="dock-btn" onclick="openPlan?.()"> <i data-lucide="compass"></i> Plan </div>
-
-<div class="dock-btn" onclick="openSetup?.()"> <i data-lucide="settings"></i> Setup </div>
-
-<div class="dock-btn" onclick="openReport?.()"> <i data-lucide="bar-chart-3"></i> Report </div>
-
+<div class="dock-btn" onclick="startSystem()"><i data-lucide="refresh-cw"></i>Refresh</div>
+<div class="dock-btn" onclick="confirmDrop()"><i data-lucide="target"></i>Drop</div>
+<div class="dock-btn" onclick="openReport()"><i data-lucide="bar-chart-3"></i>Report</div>
 </div>
 
 </div>
 
-<!-- SCRIPTS -->
+<!-- JS -->
 <script src="spi-engine.js"></script>
 <script src="app.js"></script>
 
 <script>
-if(typeof lucide !== "undefined"){
-    lucide.createIcons();
-}
+lucide.createIcons();
 </script>
 
 </body>

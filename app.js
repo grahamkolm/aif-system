@@ -1,78 +1,78 @@
-// =========================
-// 🚀 AIF APP CONTROLLER
-// =========================
+// ===============================
+// 🌍 GLOBAL STATE
+// ===============================
 
-// =========================
-// GLOBAL STATE
-// =========================
-
+let currentSession = null;
 let lastSPI = null;
-let lastWindSpeed = 0;
-let lastCloud = 0;
-let lastPressure = 0;
+let lastConditions = {};
 
-// =========================
-// WEATHER CONFIG
-// =========================
+// ===============================
+// 🚀 START SYSTEM
+// ===============================
 
-const WEATHER_URL =
-"https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
+document.addEventListener("DOMContentLoaded", () => {
+    initSession();
+    startSystem();
+    if(typeof lucide !== "undefined"){
+        lucide.createIcons();
+    }
+});
 
-// =========================
-// FETCH WEATHER
-// =========================
+// ===============================
+// 🧠 SESSION SYSTEM
+// ===============================
+
+function initSession(){
+
+    let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
+
+    let dam = prompt("Enter Dam Name:");
+    let area = prompt("Enter Area / Peg:");
+
+    currentSession = {
+        id: Date.now(),
+        dam: dam || "Unknown",
+        area: area || "Unknown",
+        date: new Date().toISOString(),
+        events: []
+    };
+
+    sessions.push(currentSession);
+    localStorage.setItem("aif_sessions", JSON.stringify(sessions));
+
+}
+
+// ===============================
+// 🌦 WEATHER SYSTEM
+// ===============================
+
+const WEATHER_URL = "https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
+
+async function startSystem(){
+    fetchWeatherSafe();
+    setInterval(fetchWeatherSafe, 600000); }
 
 async function fetchWeatherSafe(){
-
     try{
         let res = await fetch(WEATHER_URL);
         let data = await res.json();
-        processWeather(data);
-    }catch(e){
-        console.log("Offline → using fallback");
+        renderDashboard(data.list[0]);
+    }catch{
         simulateWeather();
     }
-
 }
-
-// =========================
-// PROCESS WEATHER
-// =========================
-
-function processWeather(data){
-
-    try{
-
-        let current = data.list[0];
-
-        renderDashboard(current);
-
-    }catch(e){
-        console.log("Weather parse error");
-        simulateWeather();
-    }
-
-}
-
-// =========================
-// FALLBACK WEATHER
-// =========================
 
 function simulateWeather(){
-
-    let fake = {
-        main:{ temp:22, pressure:1018 },
-        wind:{ speed:3, deg:180 },
-        clouds:{ all:40 }
-    };
-
-    renderDashboard(fake);
-
+    renderDashboard({
+        main:{temp:22, pressure:1018},
+        wind:{speed:3, deg:180},
+        clouds:{all:40}
+    });
 }
 
-// =========================
-// CORE RENDER
-// =========================
+// ===============================
+// 📊 DASHBOARD
+// ===============================
 
 function renderDashboard(d){
 
@@ -82,189 +82,143 @@ let w = d.wind.speed * 3.6;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
 
-// store
-lastPressure = p;
-lastWindSpeed = w;
-lastCloud = c;
-
-let trend = getPressureTrend(p);
-let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c);
-
-document.getElementById("aiContent").innerHTML = `
-SPI: ${spi.toFixed(1)}%<br>
-Trend: ${trend}<br>
-Window: ${windowText}<br>
-Duration: ${duration} min
-`;
-
-// =========================
-// 🔥 SPI ENGINE CALL
-// =========================
-
+// 🔥 CALCULATE SPI FIRST
 let spi = calculateSPI(p, w, c, windDir, t);
 
-// smoothing
+// smooth
 if(lastSPI !== null){
     spi = Math.round((spi + lastSPI) / 2); } lastSPI = spi;
 
-// =========================
-// UI UPDATE
-// =========================
+// 🧠 STORE FULL CONDITIONS (YOUR BIG IDEA) lastConditions = {
+    airTemp: t,
+    pressure: p,
+    windSpeed: w,
+    windDir: windDir,
+    cloud: c,
+    moon: getMoonPhase(),
+    season: getSeason(),
+    trend: getPressureTrend(p)
+};
 
+// UI
 updateSPI(spi);
-updateTiles(t, p, w, c);
-updateConfidence(spi, p, c);
-updateAI(spi, p, w, c, windDir, t);
+updateTiles(t,p,w,c);
+updateAI(spi,p,w,c);
 
 }
 
-// =========================
-// SPI GAUGE
-// =========================
+// ===============================
+// 🎯 EVENT LOGGER (CORE SYSTEM)
+// ===============================
+
+function logEvent(type, extra = {}){
+
+    if(!currentSession) return;
+
+    navigator.geolocation.getCurrentPosition(pos => {
+
+        let event = {
+            type: type,
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            time: Date.now(),
+            spi: lastSPI || 0,
+            conditions: lastConditions,
+            ...extra
+        };
+
+        currentSession.events.push(event);
+
+        let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
+
+        let index = sessions.findIndex(s => s.id === currentSession.id);
+        if(index !== -1){
+            sessions[index] = currentSession;
+        }
+
+        localStorage.setItem("aif_sessions", JSON.stringify(sessions));
+
+        alert(type.toUpperCase() + " logged");
+
+    });
+}
+
+// ===============================
+// 🎯 DROP / SCOUT / CATCH
+// ===============================
+
+function confirmDrop(){
+    logEvent("drop");
+}
+
+function performScout(){
+    logEvent("scout");
+}
+
+// 🔴 FUTURE READY
+function logCatch(){
+    logEvent("catch", {
+        weight: prompt("Enter fish weight (kg):"),
+        bait: prompt("Bait used:")
+    });
+}
+
+// ===============================
+// 📊 UI UPDATE
+// ===============================
 
 function updateSPI(v){
-
 let arc = document.getElementById("spiArc");
-let r = 110;
-let C = 2 * Math.PI * r;
+if(!arc) return;
 
-arc.style.strokeDasharray = C;
-arc.style.strokeDashoffset = C - (v/100) * C;
+let r=110; let C=2*Math.PI*r;
+arc.style.strokeDasharray=C;
+arc.style.strokeDashoffset=C-(v/100)*C;
 
-document.getElementById("spiValue").textContent = v + "%";
-
+document.getElementById("spiValue").textContent=v+"%";
 }
 
-// =========================
-// TILES
-// =========================
-
-function updateTiles(t, p, w, c){
-
-setText("air", t.toFixed(1) + "°C");
-setText("pressure", p + " hPa");
-setText("wind", w.toFixed(1) + " km/h"); setText("cloud", c + "%");
-
-// water temps from engine
-let surface = estimateSurfaceTemp({
-    prevWaterTemp: t - 0.5,
-    airTemp: t,
-    windSpeed: w,
-    sunFactor: 1 - c/100,
-    hour: new Date().getHours()
-});
-
-let bottom = estimateBottomTemp({
-    surfaceTemp: surface,
-    depth: 6,
-    windSpeed: w
-});
-
-setText("surface", surface.toFixed(1) + "°C"); setText("bottom", bottom.toFixed(1) + "°C");
-
+function updateTiles(t,p,w,c){
+set("air",t.toFixed(1)+"°C");
+set("pressure",p+" hPa");
+set("wind",w.toFixed(1)+" km/h");
+set("cloud",c+"%");
+set("moon", getMoonPhase());
+set("season", getSeason());
+set("feed", feeding(lastSPI || 0));
+set("oxygen", estimateOxygen(t,w,c).toFixed(1));
 }
 
-// =========================
-// CONFIDENCE + ENV
-// =========================
-
-function updateConfidence(spi, p, c){
-
-let env = Math.round((100 - Math.abs(p-1018)*2) + (c*0.2)); env = Math.max(40, Math.min(env,95));
-
-let conf = Math.round((spi + env)/2);
-
-setText("envScore", env + "%");
-setText("confScore", conf + "%");
-
-}
-
-// =========================
-// AI TEXT
-// =========================
-
-function updateAI(spi, p, w, c, windDir, t){
+function updateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p);
-let window = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c);
+let window = detectStrikeWindow(spi,trend,w,c);
+let duration = predictStrikeDuration(spi,trend,w,c);
 
-let text =
+document.getElementById("aiContent").innerHTML =
 `SPI: ${spi}%<br>
 Trend: ${trend}<br>
 Window: ${window}<br>
 Duration: ${duration} min`;
 
-document.getElementById("aiContent").innerHTML = text;
-
 }
 
-// =========================
-// HELPERS
-// =========================
-
-function setText(id, value){
+function set(id,val){
 let el = document.getElementById(id);
-if(el) el.innerText = value;
+if(el) el.innerText = val;
 }
 
-// =========================
-// INIT
-// =========================
+// ===============================
+// 📊 REPORT SYSTEM (SESSION BASED)
+// ===============================
 
-function startSystem(){
-
-fetchWeatherSafe();
-
-setInterval(fetchWeatherSafe, 600000); // every 10 min
-
-}
-
-// =========================
-// START
-// =========================
-
-document.addEventListener("DOMContentLoaded", startSystem);
-
-document.addEventListener("DOMContentLoaded", () => {
-    startSystem();
-    lucide.createIcons(); // 🔥 THIS FIXES ALL ICONS });
-
-// =========================
-// 📊 REPORT SYSTEM (SAFE BLOCK)
-// =========================
-
-// ---------- DATA ----------
-function getSessionData(){
-
-let scouts = JSON.parse(localStorage.getItem("aif_scout") || "[]"); let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
-
-let bestScout = scouts.length
-? scouts.reduce((a,b)=> a.score > b.score ? a : b)
-: null;
-
-let avgSPI = 0;
-let validDrops = drops.filter(d => d.spi);
-
-if(validDrops.length){
-avgSPI = Math.round(
-validDrops.reduce((sum,d)=> sum + Number(d.spi),0) / validDrops.length ); }
-
-return {
-scouts,
-drops,
-bestScout,
-avgSPI
-};
-
-}
-
-// ---------- OPEN REPORT ----------
 function openReport(){
 
-let existing = document.getElementById("reportScreen");
-if(existing) existing.remove();
+if(!currentSession) return;
 
-document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
+document.body.insertAdjacentHTML("beforeend",`
+
+<div id="reportScreen" style="
 position:fixed;
 top:0;
 left:0;
@@ -273,37 +227,19 @@ height:100%;
 background:black;
 color:white;
 z-index:9999;
-overflow:auto;
 padding:20px;
+overflow:auto;
 ">
 
-<button onclick="closeReport()" style="
-position:fixed;
-top:20px;
-right:20px;
-background:#00ffa6;
-color:#081018;
-border:none;
-padding:10px 16px;
-border-radius:8px;
-font-weight:600;
-cursor:pointer;
-">Close</button>
+<button onclick="this.parentElement.remove()" style="position:fixed;top:20px;right:20px;">Close</button>
 
-<h2 style="color:#00ffa6;">AIF SESSION REPORT</h2>
+<h2 style="color:#00ffa6;">Session Report</h2>
 
-<div id="reportSummary" style="margin-top:20px;"></div>
+<div id="reportSummary"></div>
 
-<div id="reportMap" style="
-width:100%;
-height:250px;
-margin-top:15px;
-border-radius:16px;
-border:1px solid rgba(0,255,166,0.2);
-overflow:hidden;
-"></div>
+<div id="reportMap" style="height:250px;margin-top:15px;border-radius:12px;"></div>
 
-<div id="reportMap" style="height:100%; width: 100%;"></div>
+<div id="timeline"></div>
 
 </div>
 `);
@@ -312,102 +248,78 @@ renderReport();
 
 }
 
-// ---------- RENDER ----------
+// ===============================
+// 📊 REPORT CONTENT
+// ===============================
+
 function renderReport(){
 
-let {scouts, drops, bestScout, avgSPI} = getSessionData();
+let events = currentSession.events;
 
-document.getElementById("reportSummary").innerHTML = ` <b>Scout Points:</b> ${scouts.length}<br> <b>Drops:</b> ${drops.length}<br> <b>Best Score:</b> ${bestScout ? bestScout.score : 0}%<br> <b>Avg SPI:</b> ${avgSPI}% `;
+let drops = events.filter(e=>e.type==="drop");
+let scouts = events.filter(e=>e.type==="scout");
+let catches = events.filter(e=>e.type==="catch");
 
-renderReportMap(scouts, drops, bestScout); renderDropList(drops);
+let avgSPI = drops.length ? Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length) : 0;
+
+document.getElementById("reportSummary").innerHTML = `
+Dam: ${currentSession.dam}<br>
+Area: ${currentSession.area}<br>
+Drops: ${drops.length}<br>
+Scouts: ${scouts.length}<br>
+Fish: ${catches.length}<br>
+Avg SPI: ${avgSPI}%
+`;
+
+renderMap(events);
+renderTimeline(events);
 
 }
 
-// ---------- MAP ----------
-function renderReportMap(scouts, drops, bestScout){
+// ===============================
+// 🗺 MAP
+// ===============================
 
-let center = scouts.length
-? [scouts[0].boatLat, scouts[0].lon]
-: [-26, 28];
+function renderMap(events){
 
-let map = L.map('reportMap').setView(center, 15);
+let map = L.map('reportMap').setView([-26,28],13);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-window.reportMap = map;
-setupTimeout(() => {
-map.invalidateSize();
-},300);
+events.forEach(e => {
 
-// FIX MAP SIZE BUG
-setupTimeout(() => {
-map.invalidateSize();
-},300);
+let color = "blue";
 
-// SCOUTS
-scouts.forEach(s=>{
-L.circleMarker([s.boatLat, s.lon]).addTo(map); });
+if(e.type==="scout") color="yellow";
+if(e.type==="drop") color="green";
+if(e.type==="catch") color="red";
 
-// DROPS
-drops.forEach(d=>{
-L.marker([d.boatLat, d.lon]).addTo(map); });
+L.circleMarker([e.lat,e.lon],{
+radius:6,
+color:color,
+fillColor:color,
+fillOpacity:0.8
+}).addTo(map);
 
-// BEST SPOT
-if(bestScout){
-L.marker([bestScout.boatLat, bestScout.lon]).addTo(map) .bindPopup("Best Spot"); }
+});
+
+setTimeout(()=>map.invalidateSize(),300);
 
 }
 
-// ---------- DROPS ----------
-function renderDropList(drops){
+// ===============================
+// 📋 TIMELINE
+// ===============================
 
-let html = "";
+function renderTimeline(events){
 
-drops.forEach((d,i)=>{
+let html = "<h3>Timeline</h3>";
+
+events.forEach(e=>{
 html += `
-<div style="
-background:#111;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-">
-<b>Drop ${i+1}</b><br>
-SPI: ${d.spi || "N/A"}<br>
-Distance: ${d.distance || "N/A"} m
-</div>
-`;
-});
+<div style="margin-top:10px">
+${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}% </div>`; });
 
-document.getElementById("dropList").innerHTML = html;
+document.getElementById("timeline").innerHTML = html;
 
 }
-
-function confirmDrop(){
-
-navigator.geolocation.getCurrentPosition(function(pos){
-
-let boatLat = pos.coords.latitude;
-let boatLon = pos.coords.longitude;
-
-let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
-
-drops.push({
-boatLat: boatLat,
-lon: boatLon,
-time: Date.now(),
-spi: lastSPI || 0   // ✅ THIS IS THE FIX
-});
-
-localStorage.setItem("aif_drops", JSON.stringify(drops));
-
-alert("Drop logged successfully");
-
-});
-}
-
-// ---------- CLOSE ----------
-function closeReport(){
-let el = document.getElementById("reportScreen");
-if(el) el.remove();
-}
-
