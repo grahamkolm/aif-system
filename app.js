@@ -164,8 +164,9 @@ lastConditions = {
 
 // ✅ UPDATE UI (AFTER EVERYTHING EXISTS) set("air", t.toFixed(1) + "°C"); set("pressure", p + " hPa"); set("wind", w.toFixed(1) + " km/h"); set("cloud", c + "%");
 
-set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); set("bottomTemp", bottomTemp.toFixed(1) + "°C"); set("oxygen", oxygen.toFixed(1) + " mg/L");
-
+set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); 
+set("bottomTemp", bottomTemp.toFixed(1) + "°C"); 
+set("oxygen", oxygen.toFixed(1) + " mg/L");
 set("moon", getMoonPhase());
 set("season", getSeason());
 set("feed", feeding(spi));
@@ -391,3 +392,11 @@ ${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e
 document.getElementById("timeline").innerHTML = html;
 
 }
+
+function feeding(spi){
+
+if(spi >= 85) return "Aggressive feeding"; if(spi >= 70) return "Active feeding"; if(spi >= 55) return "Moderate feeding"; if(spi >= 40) return "Slow feeding";
+
+return "Very low activity";
+}
+
