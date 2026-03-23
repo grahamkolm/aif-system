@@ -353,8 +353,6 @@ setTimeout(()=>{
     window.reportMap.invalidateSize();
   }
 },300);
-    
-}
 
 // ===============================
 // 🗺 MAP
