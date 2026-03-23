@@ -327,19 +327,6 @@ border:1px solid rgba(0,255,166,0.2);
 </div>
 `);
 
-<!-- ✅ MAP GOES HERE -->
-<div style="
-margin-top:15px;
-border-radius:16px;
-overflow:hidden;
-height:250px;
-border:1px solid rgba(0,255,166,0.2);
-">
-  <div id="reportMap" style="height:100%; width:100%;"></div> </div>
-
-</div>
-`);
-
 renderReport();
 
 }
