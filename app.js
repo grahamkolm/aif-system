@@ -70,6 +70,49 @@ function simulateWeather(){
     });
 }
 
+// =============================
+// WATER + ENVIRONMENT MODELS
+// =============================
+
+function estimateSurfaceTemp({ prevWaterTemp, airTemp, windSpeed, sunFactor, hour }) {
+
+    let temp = prevWaterTemp;
+
+    // air influence
+    temp += (airTemp - temp) * 0.15;
+
+    // sun heating (day only)
+    if(hour >= 8 && hour <= 17){
+        temp += sunFactor * 0.8;
+    }
+
+    // wind cooling
+    temp -= windSpeed * 0.02;
+
+    return temp;
+}
+
+function estimateBottomTemp({ surfaceTemp, depth, windSpeed }) {
+
+    let gradient = depth * 0.15;
+
+    // wind mixes layers
+    gradient -= windSpeed * 0.05;
+
+    return surfaceTemp - Math.max(gradient, 0.5); }
+
+function estimateOxygen(temp, windSpeed){
+
+    let oxygen = 9;
+
+    // warm water = less oxygen
+    oxygen -= (temp - 15) * 0.2;
+
+    // wind adds oxygen
+    oxygen += windSpeed * 0.1;
+
+    return Math.max(5, Math.min(oxygen, 12)); }
+
 // ===============================
 // 📊 DASHBOARD
 // ===============================
