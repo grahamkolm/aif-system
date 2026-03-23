@@ -264,7 +264,7 @@ set("oxygen", estimateOxygen(t,w,c).toFixed(1));
 function updateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p);
-let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c);
+let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c); 
 
 document.getElementById("aiAnalysis").innerHTML = `
 SPI: ${spi}%
