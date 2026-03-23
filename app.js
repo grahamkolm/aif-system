@@ -290,24 +290,43 @@ function openReport(){
 
 if(!currentSession) return;
 
-document.body.insertAdjacentHTML("beforeend", ` 
-<div id="reportScreen">
-<div id="reportSummary"></div>
-<div id="timeline"></div>
-<div id="reportMap"></div>
-</div>
-`);
+document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#0b0f14;
+color:white;
+z-index:9999;
+overflow:auto;
+padding:20px;
+font-family:sans-serif;
+">
 
 <button onclick="closeReport()" style="
 position:fixed;
 top:20px;
 right:20px;
+background:#00ff9f;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+font-weight:bold;
 ">Close</button>
 
 <h2>AIF SESSION REPORT</h2>
 
-<p>Scouts: ${currentSession.events.filter(e=>e.type==="scout").length}</p>
-<p>Drops: ${currentSession.events.filter(e=>e.type==="drop").length}</p>
+<div id="reportSummary" style="margin-top:20px;"></div>
+
+<div id="timeline" style="margin-top:20px;"></div>
+
+<div id="reportMap" style="
+height:300px;
+margin-top:20px;
+border-radius:12px;
+overflow:hidden;
+"></div>
 
 </div>
 `);
