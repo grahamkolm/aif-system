@@ -167,8 +167,8 @@ envScore = Math.max(0, Math.min(100, envScore));
 
 let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
 
-set("env", envScore + "%");
-set("conf", confScore + "%");
+set("ENV", envScore + "%");
+set("CONF", confScore + "%");
     
 // ✅ UPDATE UI (AFTER EVERYTHING EXISTS) 
 set("air", t.toFixed(1) + "°C"); 
