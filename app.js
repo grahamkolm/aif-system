@@ -306,7 +306,11 @@ background:#111;
 border-radius:8px;
 font-size:13px;
 ">
-${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}% </div> `; });
+
+${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}% 
+</div> 
+`; 
+});
 
 // ✅ CALCULATE SUMMARY
 let avgSPI = drops.length
