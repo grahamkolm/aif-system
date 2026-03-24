@@ -343,7 +343,8 @@ font-weight:600;
 <h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
 <div id="timeline"></div>
 
-<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap" style="height:250px;border-radius:10px;"></div>
+<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> 
+<div id="reportMap" style="height:220px;margin-top:10px;border-radius:12px;overflow:hidden;"></div>
 
 </div>
 `);
@@ -437,7 +438,9 @@ fillOpacity:0.8
 
 });
 
-setTimeout(()=>map.invalidateSize(),300);
+setTimeout(()=> {
+map.invalidateSize();
+},200);
 
 }
 
