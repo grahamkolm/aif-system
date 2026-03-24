@@ -290,12 +290,12 @@ function openReport(){
 
 if(!currentSession) return;
 
-// ✅ GET EVENTS FIRST
-let events = currentSession.events || [];
+let events = currentSession.events;
 
-let drops = events.filter(e => e.type === "drop"); let scouts = events.filter(e => e.type === "scout"); let catches = events.filter(e => e.type === "catch");
+let drops = events.filter(e => e.type === "drop");
 
-// ✅ BUILD HTML FIRST (NO DOM TOUCH YET) let timelineHTML = "";
+// 🧠 STEP 1: BUILD TIMELINE HTML
+let timelineHTML = "";
 
 drops.forEach(d => {
 timelineHTML += `
@@ -306,28 +306,9 @@ background:#111;
 border-radius:8px;
 font-size:13px;
 ">
+${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}% </div> `; });
 
-${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}% 
-</div> 
-`; 
-});
-
-<div id="reportInsights" style="
-margin-top:16px;
-padding:14px;
-border-radius:12px;
-background:rgba(0,255,166,0.06);
-border:1px solid rgba(0,255,166,0.2);
-line-height:22px;
-font-size:14px;
-"></div>
-
-// ✅ CALCULATE SUMMARY
-let avgSPI = drops.length
-? Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length)
-: 0;
-
-// ✅ CREATE SCREEN FIRST
+// 🧠 STEP 2: CREATE REPORT SCREEN FIRST 
 document.body.insertAdjacentHTML("beforeend", ` 
 <div id="reportScreen" style="
 position:fixed;
@@ -357,45 +338,38 @@ font-weight:600;
 
 <h2 style="color:#00ffa6;">AIF SESSION REPORT</h2>
 
-<div style="
-background:#0f141a;
-padding:14px;
-border-radius:12px;
-margin-top:16px;
-line-height:26px;
-">
-<b>Dam:</b> ${currentSession.dam}<br>
-<b>Area:</b> ${currentSession.area}<br>
-
-<hr style="opacity:0.1;margin:10px 0">
-
-<b>Drops:</b> ${drops.length}<br>
-<b>Scouts:</b> ${scouts.length}<br>
-<b>Fish:</b> ${catches.length}<br>
-<b>Avg SPI:</b> ${avgSPI}%
-</div>
+<div id="reportSummary"></div>
 
 <h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
 <div id="timeline"></div>
 
-<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap" style="
-width:100%;
-height:180px;
-border-radius:12px;
-margin-top:10px;
-overflow:hidden;
-"></div>
+<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap" style="height:250px;border-radius:10px;"></div>
 
 </div>
 `);
+
+// 🧠 STEP 3: NOW INSERT TIMELINE INTO DOM document.getElementById("timeline").innerHTML = timelineHTML;
+
+// 🧠 STEP 4: CONTINUE NORMAL FLOW
+renderReport();
+
+}
 
 // ✅ NOW UPDATE DOM (AFTER IT EXISTS)
 document.getElementById("timeline").innerHTML = timelineHTML;
 
 // ✅ RENDER MAP
-renderMap(events);
+let intensity = e.type === "drop" ? 8 : 
+                e.type === "scout" ? 5 : 10;
 
-}
+L.circleMarker([e.lat,e.lon],{
+radius:intensity,
+color:color,
+fillColor:color,
+fillOpacity:0.6
+}).addTo(map);
+
+document.getElementById("reportInsights").innerHTML = generateInsights(drops, scouts, catches);
 
 function closeReport(){
     let el = document.getElementById("reportScreen");
@@ -508,6 +482,28 @@ return "Waning"; // placeholder (we upgrade later)
 
 function getPressureTrend(p){
 return "Stable"; // placeholder (we upgrade later) 
+}
+
+function generateInsights(drops, scouts, catches){
+
+let text = "";
+
+// Drop analysis
+if(drops.length > 0){
+let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length);
+
+if(avgSPI >= 80){
+text += "🔥 High confidence feeding zone detected.<br>"; }else if(avgSPI >= 60){ text += "⚡ Moderate feeding activity observed.<br>"; }else{ text += "⚠️ Low feeding conditions during session.<br>"; } }
+
+// Activity insight
+if(drops.length > scouts.length){
+text += "🎯 Strong commitment to productive spots.<br>"; }else{ text += "🧭 More scouting recommended before drops.<br>"; }
+
+// Catch logic
+if(catches.length > 0){
+text += "🎣 Successful session — pattern confirmation likely.<br>"; }else{ text += "📉 No catches recorded — refine timing or bait.<br>"; }
+
+return text;
 }
 
 setTimeout(() => {
