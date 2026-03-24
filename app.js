@@ -312,6 +312,16 @@ ${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}%
 `; 
 });
 
+<div id="reportInsights" style="
+margin-top:16px;
+padding:14px;
+border-radius:12px;
+background:rgba(0,255,166,0.06);
+border:1px solid rgba(0,255,166,0.2);
+line-height:22px;
+font-size:14px;
+"></div>
+
 // ✅ CALCULATE SUMMARY
 let avgSPI = drops.length
 ? Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length)
