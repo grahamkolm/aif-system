@@ -62,13 +62,6 @@ async function fetchWeatherSafe(){
     }
 }
 
-let envScore = Math.round((100 - c) * 0.4 + (20 - Math.abs(t - 20)) * 3 + (10 - w) * 3); envScore = Math.max(0, Math.min(100, envScore));
-
-let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
-
-set("env", envScore + "%");
-set("conf", confScore + "%");
-
 function simulateWeather(){
     renderDashboard({
         main:{temp:22, pressure:1018},
@@ -157,6 +150,14 @@ let spi = calculateSPI(p, w, c, windDir, t);
 if(lastSPI !== null){
     spi = Math.round((spi + lastSPI) / 2); } lastSPI = spi;
 
+let envScore = Math.round((100 - c) * 0.4 + (20 - Math.abs(t - 20)) * 3 + (10 - w) * 3); 
+envScore = Math.max(0, Math.min(100, envScore));
+
+let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
+
+set("env", envScore + "%");
+set("conf", confScore + "%");
+    
 // ✅ STORE CONDITIONS
 lastConditions = {
     airTemp: t,
