@@ -314,17 +314,6 @@ ${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e
 // BUILD TIMELINE
 let timelineHTML = "";
 
-drops.forEach(d => {
-timelineHTML += `
-<div style="
-padding:10px;
-margin-top:8px;
-background:#111;
-border-radius:8px;
-font-size:13px;
-">
-${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}% </div> `; });
-
 // CREATE SCREEN
 document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
 position:fixed;
