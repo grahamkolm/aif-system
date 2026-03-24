@@ -292,7 +292,24 @@ if(!currentSession) return;
 
 let events = currentSession.events;
 
-let drops = events.filter(e => e.type === "drop");
+let timelineHTML = "";
+
+events.forEach(e => {
+
+let color = e.type === "drop" ? "#00ffa6" :
+            e.type === "scout" ? "#ffd166" :
+            "#ff6b6b";
+
+timelineHTML += `
+<div style="
+padding:10px;
+margin-top:8px;
+background:#111;
+border-radius:8px;
+font-size:13px;
+border-left:3px solid ${color};
+">
+${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}% </div> `; });
 
 // BUILD TIMELINE
 let timelineHTML = "";
@@ -388,9 +405,8 @@ renderMap(events);
 }
 
 setTimeout(()=>{
-  if(window.reportMap){
-    window.reportMap.invalidateSize();
-  }
+window.reportMap.invalidateSize();
+window.reportMap.setView([-26,28],13);
 },300);
 
 // ===============================
