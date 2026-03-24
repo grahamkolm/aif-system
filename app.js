@@ -294,7 +294,7 @@ let events = currentSession.events;
 
 let drops = events.filter(e => e.type === "drop");
 
-// 🧠 STEP 1: BUILD TIMELINE HTML
+// BUILD TIMELINE
 let timelineHTML = "";
 
 drops.forEach(d => {
@@ -308,9 +308,8 @@ font-size:13px;
 ">
 ${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}% </div> `; });
 
-// 🧠 STEP 2: CREATE REPORT SCREEN FIRST 
-document.body.insertAdjacentHTML("beforeend", ` 
-<div id="reportScreen" style="
+// CREATE SCREEN
+document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
 position:fixed;
 top:0;
 left:0;
@@ -343,34 +342,17 @@ font-weight:600;
 <h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
 <div id="timeline"></div>
 
-<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> 
-<div id="reportMap" style="height:220px;margin-top:10px;border-radius:12px;overflow:hidden;"></div>
+<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap" style="height:220px;border-radius:12px;"></div>
 
 </div>
 `);
 
-// 🧠 STEP 3: NOW INSERT TIMELINE INTO DOM document.getElementById("timeline").innerHTML = timelineHTML;
-
-// 🧠 STEP 4: CONTINUE NORMAL FLOW
-renderReport();
-
-}
-
-// ✅ NOW UPDATE DOM (AFTER IT EXISTS)
+// ✅ INSERT TIMELINE (FIXED)
 document.getElementById("timeline").innerHTML = timelineHTML;
 
-// ✅ RENDER MAP
-let intensity = e.type === "drop" ? 8 : 
-                e.type === "scout" ? 5 : 10;
-
-L.circleMarker([e.lat,e.lon],{
-radius:intensity,
-color:color,
-fillColor:color,
-fillOpacity:0.6
-}).addTo(map);
-
-document.getElementById("reportInsights").innerHTML = generateInsights(drops, scouts, catches);
+// CONTINUE
+renderReport();
+}
 
 function closeReport(){
     let el = document.getElementById("reportScreen");
@@ -417,9 +399,14 @@ setTimeout(()=>{
 
 function renderMap(events){
 
-let map = L.map('reportMap').setView([-26,28],13);
+// 🔥 remove old map
+if(window.reportMap){
+    window.reportMap.remove();
+}
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+window.reportMap = L.map('reportMap').setView([-26,28],13);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(window.reportMap);
 
 events.forEach(e => {
 
@@ -434,12 +421,13 @@ radius:6,
 color:color,
 fillColor:color,
 fillOpacity:0.8
-}).addTo(map);
+}).addTo(window.reportMap);
 
 });
 
-setTimeout(()=> {
-map.invalidateSize();
+// 🔥 force correct size
+setTimeout(()=>{
+    window.reportMap.invalidateSize();
 },200);
 
 }
