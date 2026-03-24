@@ -318,7 +318,8 @@ let avgSPI = drops.length
 : 0;
 
 // ✅ CREATE SCREEN FIRST
-document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
+document.body.insertAdjacentHTML("beforeend", ` 
+<div id="reportScreen" style="
 position:fixed;
 top:0;
 left:0;
