@@ -290,46 +290,74 @@ function openReport(){
 
 if(!currentSession) return;
 
-document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
+let timelineHTML = "";
+
+drops.forEach(d => {
+timelineHTML += `
+<div style="
+padding:10px;
+margin-top:8px;
+background:#111;
+border-radius:8px;
+font-size:13px;
+">
+
+${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}%
+
+</div>
+`;
+});
+
+document.getElementById("timeline").innerHTML = timelineHTML;
+
+
+
+<h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
+<div id="timeline"></div>
+
+
+
+document.body.innerHTML += `
+<div id="reportScreen" style="
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:#0b0f14;
+background:#05080d;
 color:white;
-z-index:9999;
+z-index:999;
 overflow:auto;
 padding:20px;
-font-family:sans-serif;
+font-family:Arial;
 ">
 
 <button onclick="closeReport()" style="
 position:fixed;
 top:20px;
 right:20px;
-background:#00ff9f;
+background:#00ffa6;
+color:#081018;
 border:none;
-padding:10px 15px;
+padding:10px 16px;
 border-radius:8px;
-font-weight:bold;
+font-weight:600;
 ">Close</button>
 
-<h2>AIF SESSION REPORT</h2>
+<h2 style="color:#00ffa6;">AIF SESSION REPORT</h2>
 
-<div id="reportSummary" style="margin-top:20px;"></div>
+<!-- SUMMARY -->
+<div id="reportSummary"></div>
 
-<div id="timeline" style="margin-top:20px;"></div>
+<!-- TIMELINE -->
+<h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
+<div id="timeline"></div>
 
-<div id="reportMap" style="
-height:300px;
-margin-top:20px;
-border-radius:12px;
-overflow:hidden;
-"></div>
+<!-- MAP -->
+<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap"></div>
 
 </div>
-`);
+`;
 
 renderReport();
 
