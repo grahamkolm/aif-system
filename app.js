@@ -309,7 +309,10 @@ border-radius:8px;
 font-size:13px;
 border-left:3px solid ${color};
 ">
-${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}% </div> `; });
+${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}% 
+</div> 
+`;
+});
 
 // BUILD TIMELINE
 let timelineHTML = "";
