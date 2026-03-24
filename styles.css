@@ -66,9 +66,16 @@ body{
 }
 
 #spiGauge{
-    width:260px;
-    height:260px;
-}
+margin-top:-25px;
+width:260px;
+height:260px;
+position:relative;
+z-index:2;
+transform: translateY(-8px);
+filter: 
+drop-shadow(0 0 6px rgba(0,255,156,0.06))
+drop-shadow(0 0 18px rgba(0,255,156,0.35))
+drop-shadow(0 0 40px rgba(0,255,156,0.15)); transition:filter 0.5s ease; }
 
 .spi-number{
 fill:#ffffff !important;
