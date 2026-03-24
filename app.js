@@ -290,7 +290,12 @@ function openReport(){
 
 if(!currentSession) return;
 
-let timelineHTML = "";
+// ✅ GET EVENTS FIRST
+let events = currentSession.events || [];
+
+let drops = events.filter(e => e.type === "drop"); let scouts = events.filter(e => e.type === "scout"); let catches = events.filter(e => e.type === "catch");
+
+// ✅ BUILD HTML FIRST (NO DOM TOUCH YET) let timelineHTML = "";
 
 drops.forEach(d => {
 timelineHTML += `
@@ -301,24 +306,15 @@ background:#111;
 border-radius:8px;
 font-size:13px;
 ">
+${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}% </div> `; });
 
-${new Date(d.time).toLocaleTimeString()} • DROP • SPI ${d.spi}%
+// ✅ CALCULATE SUMMARY
+let avgSPI = drops.length
+? Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length)
+: 0;
 
-</div>
-`;
-});
-
-document.getElementById("timeline").innerHTML = timelineHTML;
-
-
-
-<h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
-<div id="timeline"></div>
-
-
-
-document.body.innerHTML += `
-<div id="reportScreen" style="
+// ✅ CREATE SCREEN FIRST
+document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
 position:fixed;
 top:0;
 left:0;
@@ -346,20 +342,43 @@ font-weight:600;
 
 <h2 style="color:#00ffa6;">AIF SESSION REPORT</h2>
 
-<!-- SUMMARY -->
-<div id="reportSummary"></div>
+<div style="
+background:#0f141a;
+padding:14px;
+border-radius:12px;
+margin-top:16px;
+line-height:26px;
+">
+<b>Dam:</b> ${currentSession.dam}<br>
+<b>Area:</b> ${currentSession.area}<br>
 
-<!-- TIMELINE -->
+<hr style="opacity:0.1;margin:10px 0">
+
+<b>Drops:</b> ${drops.length}<br>
+<b>Scouts:</b> ${scouts.length}<br>
+<b>Fish:</b> ${catches.length}<br>
+<b>Avg SPI:</b> ${avgSPI}%
+</div>
+
 <h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
 <div id="timeline"></div>
 
-<!-- MAP -->
-<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap"></div>
+<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap" style="
+width:100%;
+height:180px;
+border-radius:12px;
+margin-top:10px;
+overflow:hidden;
+"></div>
 
 </div>
-`;
+`);
 
-renderReport();
+// ✅ NOW UPDATE DOM (AFTER IT EXISTS)
+document.getElementById("timeline").innerHTML = timelineHTML;
+
+// ✅ RENDER MAP
+renderMap(events);
 
 }
 
