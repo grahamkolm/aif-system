@@ -62,6 +62,13 @@ async function fetchWeatherSafe(){
     }
 }
 
+let envScore = Math.round((100 - c) * 0.4 + (20 - Math.abs(t - 20)) * 3 + (10 - w) * 3); envScore = Math.max(0, Math.min(100, envScore));
+
+let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
+
+set("env", envScore + "%");
+set("conf", confScore + "%");
+
 function simulateWeather(){
     renderDashboard({
         main:{temp:22, pressure:1018},
@@ -291,28 +298,6 @@ function openReport(){
 if(!currentSession) return;
 
 let events = currentSession.events;
-
-let timelineHTML = "";
-
-events.forEach(e => {
-
-let color = e.type === "drop" ? "#00ffa6" :
-            e.type === "scout" ? "#ffd166" :
-            "#ff6b6b";
-
-timelineHTML += `
-<div style="
-padding:10px;
-margin-top:8px;
-background:#111;
-border-radius:8px;
-font-size:13px;
-border-left:3px solid ${color};
-">
-${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}% 
-</div> 
-`;
-});
 
 // BUILD TIMELINE
 let timelineHTML = "";
