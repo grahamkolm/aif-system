@@ -494,7 +494,8 @@ renderTimeline(events);
 renderMap(events);
 }
 
-setTimeout(()=>{
+setTimeout(() => {
+if(window.reportMap) {
 window.reportMap.invalidateSize();
 window.reportMap.setView([-26,28],13);
 },300);
