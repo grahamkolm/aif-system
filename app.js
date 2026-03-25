@@ -43,6 +43,32 @@ function initSession(){
 }
 
 // ===============================
+// 🌦 TACTICAL SYSTEM
+// ===============================
+function updateTactical(spi, envScore, confScore){
+    let message = "";
+
+    if(spi > 80){
+        message = "🔥 High feeding probability • Strike window open";
+    }
+    else if(spi > 60){
+        message = "⚡ Moderate activity • Stay alert";
+    }
+    else{
+        message = "⚠️ Low activity • Consider repositioning";
+    }
+
+    if(envScore > 75){
+        message += " • Strong environmental conditions";
+    }
+
+    if(confScore > 80){
+        message += " • High confidence";
+    }
+
+    document.getElementById("tactical").innerText = message; }
+
+// ===============================
 // 🌦 WEATHER SYSTEM
 // ===============================
 
