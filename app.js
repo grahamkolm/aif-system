@@ -131,21 +131,21 @@ function estimateOxygen(temp, windSpeed){
 
 function renderDashboard(d){
 
-    // =========================
-    // 📥 GET DATA
-    // =========================
-    let t = d.main.temp;
-    let p = d.main.pressure;
-    let w = d.wind.speed;
-    let c = d.clouds.all;
-    let windDir = d.wind.deg;
+// =========================
+// 📥 GET DATA
+// =========================
+let t = d.main.temp;
+let p = d.main.pressure;
+let w = d.wind.speed;
+let c = d.clouds.all;
+let windDir = d.wind.deg;
 
-    // =========================
-    // 🌊 CALCULATE TEMPS
-    // =========================
-    let sunFactor = (100 - c) / 100;
+// =========================
+// 🌊 CALCULATE TEMPS
+// =========================
+let sunFactor = (100 - c) / 100;
 
-   let hour = new Date().getHours();
+let hour = new Date().getHours();
 
 // Sun influence depends on time
 let sunEffect = 0;
@@ -159,24 +159,24 @@ if(hour >= 10 && hour <= 16){
 }
 
 // Wind cooling reduced slightly
-let windCooling = w * 0.15;
+windCooling = w * 0.15;
 
 // FINAL surface temp
 let surfaceTemp = t + sunEffect - windCooling;
 
-    let mixingFactor = Math.min(1, w / 5);
-    let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
+let mixingFactor = Math.min(1, w / 5);
+let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
 
-    let bottomTemp = surfaceTemp - depthDrop;
+let bottomTemp = surfaceTemp - depthDrop;
 
-    // =========================
-    // 🛟 SAFETY (FIXED SCOPE)
-    // =========================
-    if (surfaceTemp === undefined || bottomTemp === undefined) {
-        console.log("Temps fallback triggered");
+// =========================
+// 🛟 SAFETY (FIXED SCOPE)
+// =========================
+if (surfaceTemp === undefined || bottomTemp === undefined) {
+    console.log("Temps fallback triggered");
 
-        surfaceTemp = t;
-        bottomTemp = t - 1.5;
+    surfaceTemp = t;
+    bottomTemp = t - 1.5;
     }
 
     // =========================
