@@ -166,9 +166,6 @@ let bottomTemp = surfaceTemp - depthDrop;
 
 surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
 
-let surfaceDisplay = surfaceTemp.toFixed(1);
-let bottomDisplay = bottomTemp.toFixed(1);
-
 /* =========================
    UPDATE UI
 ========================= */
@@ -182,18 +179,19 @@ let airEl = document.getElementById("air"); if(airEl){
 let surfaceEl = document.getElementById("surface");
 if(surfaceEl){
     surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-    surfaceEl.style.color = getTempColor(surfaceTemp); }
+    surfaceEl.style.color = getTempColor(surfaceTemp); 
+}
 
 // ⬇️ BOTTOM
 let bottomEl = document.getElementById("bottom");
 if(bottomEl){
     bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-    bottomEl.style.color = getTempColor(bottomTemp); }
+    bottomEl.style.color = getTempColor(bottomTemp); 
 }
 
 let oxygen = estimateOxygen(surfaceTemp, w);
 
-let lastSurfaceTemp = nullF;
+let lastSurfaceTemp = null;
     
 // ✅ STORE CONDITIONS
 lastConditions = {
