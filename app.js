@@ -170,6 +170,14 @@ surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, M
    UPDATE UI
 ========================= */
 
+// 🔒 SAFETY CHECK
+if (surfaceTemp === undefined || bottomTemp === undefined) {
+    console.log("Temps missing → recalculating fallback");
+
+    surfaceTemp = t;          // fallback to air
+    bottomTemp = t - 1.5;     // simple drop
+}
+  
 // 🌡 AIR
 let airEl = document.getElementById("air"); if(airEl){
     airEl.innerHTML = t.toFixed(1) + "°C";
