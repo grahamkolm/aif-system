@@ -130,86 +130,47 @@ function estimateOxygen(temp, windSpeed){
 
 function renderDashboard(d){
 
-let t = d.main.temp;
-let p = d.main.pressure;
-let w = d.wind.speed;
-let c = d.clouds.all;
-let windDir = d.wind.deg;
+    // 1. GET DATA
+    let t = d.main.temp;
+    let p = d.main.pressure;
+    let w = d.wind.speed;
+    let c = d.clouds.all;
+    let windDir = d.wind.deg;
 
-console.log("Temps", surfaceTemp, bottomTemp);
+    // 2. CALCULATE
+    let sunFactor = (100 - c) / 100;
+    let windCooling = w * 0.25;
 
-/* =========================
-   🌊 SURFACE TEMP (STRONGER)
-========================= */
+    let surfaceTemp = t + (sunFactor * 2.5) - windCooling;
 
-let sunFactor = (100 - c) / 100;   // 0 → 1
-let windCooling = w * 0.25;        // stronger cooling
+    let mixingFactor = Math.min(1, w / 5);
+    let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
 
-let surfaceTemp =
-    t
-    + (sunFactor * 2.5)           // sun heats up to +2.5°C
-    - windCooling;                // wind cools
+    let bottomTemp = surfaceTemp - depthDrop;
 
-// 🌊 DEPTH-AWARE BOTTOM TEMP
+    // 3. SAFETY
+    if (surfaceTemp === undefined || bottomTemp === undefined) {
+        surfaceTemp = t;
+        bottomTemp = t - 1.5;
+    }
 
-let mixingFactor = Math.min(1, w / 5);
-// 0 = no wind, 1 = strong mixing
+    // 4. LIMITS
+    surfaceTemp = Math.max(5, Math.min(35, surfaceTemp));
+    bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
 
-let depthDrop =
-    0.5 + (1 - mixingFactor) * 1.2;
-// calm = bigger drop (~1.7°C)
-// windy = small drop (~0.5°C)
+    // 5. UI (NOW SAFE ✅)
+    let surfaceEl = document.getElementById("surface");
+    if(surfaceEl){
+        surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
+    }
 
-let bottomTemp = surfaceTemp - depthDrop;
+    let bottomEl = document.getElementById("bottom");
+    if(bottomEl){
+        bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
+    }
 
-/* =========================
-   UPDATE UI
-========================= */
-
-/* =========================
-   SAFETY CHECK
-========================= */
-
-if (surfaceTemp === undefined || bottomTemp === undefined) {
-    console.log("Temps missing → fallback");
-
-    surfaceTemp = t;
-    bottomTemp = t - 1.5;
+    // CONTINUE...
 }
-
-/* =========================
-   LIMITS
-========================= */
-
-surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
-
-/* =========================
-   UPDATE UI (🔥 ALWAYS RUNS)
-========================= */
-
-// 🌡 AIR
-let airEl = document.getElementById("air"); if (airEl) {
-    airEl.innerHTML = t.toFixed(1) + "°C";
-    airEl.style.color = getTempColor(t); }
-
-// 🌊 SURFACE
-let surfaceEl = document.getElementById("surface");
-if (surfaceEl) {
-    surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-    surfaceEl.style.color = getTempColor(surfaceTemp); }
-
-// ⬇️ BOTTOM
-let bottomEl = document.getElementById("bottom");
-if (bottomEl) {
-    bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-    bottomEl.style.color = getTempColor(bottomTemp); }
-
-    
-/* =========================
-   LIMITS + ROUND
-========================= */
-
-surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
 
 // ✅ STORE CONDITIONS
 lastConditions = {
