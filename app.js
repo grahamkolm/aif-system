@@ -130,14 +130,18 @@ function estimateOxygen(temp, windSpeed){
 
 function renderDashboard(d){
 
-    // 1. GET DATA
+    // =========================
+    // 📥 GET DATA
+    // =========================
     let t = d.main.temp;
     let p = d.main.pressure;
     let w = d.wind.speed;
     let c = d.clouds.all;
     let windDir = d.wind.deg;
 
-    // 2. CALCULATE
+    // =========================
+    // 🌊 CALCULATE TEMPS
+    // =========================
     let sunFactor = (100 - c) / 100;
     let windCooling = w * 0.25;
 
@@ -148,74 +152,106 @@ function renderDashboard(d){
 
     let bottomTemp = surfaceTemp - depthDrop;
 
-    // 3. SAFETY
+    // =========================
+    // 🛟 SAFETY (FIXED SCOPE)
+    // =========================
     if (surfaceTemp === undefined || bottomTemp === undefined) {
+        console.log("Temps fallback triggered");
+
         surfaceTemp = t;
         bottomTemp = t - 1.5;
     }
 
-    // 4. LIMITS
+    // =========================
+    // 📏 LIMITS
+    // =========================
     surfaceTemp = Math.max(5, Math.min(35, surfaceTemp));
     bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
 
-    // 5. UI (NOW SAFE ✅)
+    // =========================
+    // 🎨 COLOR FUNCTION
+    // =========================
+    function getTempColor(temp){
+        if(temp >= 18 && temp <= 24) return "#00ffa6";
+        if((temp >= 14 && temp < 18) || (temp > 24 && temp <= 28)) return "#ffaa00";
+        return "#ff4d4d";
+    }
+
+    // =========================
+    // 🖥 UPDATE UI (ALWAYS RUNS NOW ✅)
+    // =========================
+    let airEl = document.getElementById("air");
+    if(airEl){
+        airEl.innerHTML = t.toFixed(1) + "°C";
+        airEl.style.color = getTempColor(t);
+    }
+
     let surfaceEl = document.getElementById("surface");
     if(surfaceEl){
         surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
+        surfaceEl.style.color = getTempColor(surfaceTemp);
     }
 
     let bottomEl = document.getElementById("bottom");
     if(bottomEl){
         bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
+        bottomEl.style.color = getTempColor(bottomTemp);
     }
 
-    // CONTINUE...
-}
+    // =========================
+    // 💨 OXYGEN
+    // =========================
+    let oxygen = estimateOxygen(surfaceTemp, w);
 
-// ✅ STORE CONDITIONS
-lastConditions = {
-    airTemp: t,
-    pressure: p,
-    windSpeed: w,
-    windDir: windDir,
-    cloud: c,
-    moon: getMoonPhase(),
-    season: getSeason(),
-    trend: getPressureTrend(p)
-};
+    // =========================
+    // 📦 STORE CONDITIONS
+    // =========================
+    lastConditions = {
+        airTemp: t,
+        pressure: p,
+        windSpeed: w,
+        windDir: windDir,
+        cloud: c,
+        moon: getMoonPhase(),
+        season: getSeason(),
+        trend: getPressureTrend(p)
+    };
 
-function getTempColor(temp){
-    if(temp >= 18 && temp <= 24) return "#00ffa6"; // green
-    if((temp >= 14 && temp < 18) || (temp > 24 && temp <= 28)) return "#ffaa00"; // orange
-    return "#ff4d4d"; // red
-}
-   
-// ✅ CALCULATE SPI
-let spi = calculateSPI(p, w, c, windDir, t);
+    // =========================
+    // 🎯 CALCULATE SPI
+    // =========================
+    let spi = calculateSPI(p, w, c, windDir, t);
 
-if(lastSPI !== null){
-    spi = Math.round((spi + lastSPI) / 2); } lastSPI = spi;    
-    
-let envScore = Math.round((100 - c) * 0.4 + (20 - Math.abs(t - 20)) * 3 + (10 - w) * 3); 
-envScore = Math.max(0, Math.min(100, envScore));
+    if(lastSPI !== null){
+        spi = Math.round((spi + lastSPI) / 2);
+    }
+    lastSPI = spi;
 
-let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
+    let envScore = Math.round((100 - c) * 0.4 + (20 - Math.abs(t - 20)) * 3 + (10 - w) * 3);
+    envScore = Math.max(0, Math.min(100, envScore));
 
-set("envScore", envScore + "%");
-set("confScore", confScore + "%");
-updateTactical(spi, envScore, confScore);
+    let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
 
-set("pressure", p + " hPa");
-set("wind", w.toFixed(1) + " km/h");
-set("cloud", c + "%");
-set("oxygen", oxygen.toFixed(1) + " mg/L"); 
-set("moon", getMoonPhase()); 
-set("season", getSeason()); 
-set("feed", feeding(spi));
+    // =========================
+    // 🧾 UPDATE TEXT VALUES
+    // =========================
+    set("envScore", envScore + "%");
+    set("confScore", confScore + "%");
+    updateTactical(spi, envScore, confScore);
 
-// SPI + AI
-updateSPI(spi);
-updateAI(spi,p,w,c);
+    set("pressure", p + " hPa");
+    set("wind", w.toFixed(1) + " km/h");
+    set("cloud", c + "%");
+    set("oxygen", oxygen.toFixed(1) + " mg/L");
+    set("moon", getMoonPhase());
+    set("season", getSeason());
+    set("feed", feeding(spi));
+
+    // =========================
+    // 📊 VISUALS
+    // =========================
+    updateSPI(spi);
+    updateAI(spi,p,w,c);
 }
 
 // ===============================
