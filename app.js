@@ -159,7 +159,7 @@ let depthDrop =
 // windy = small drop (~0.5°C)
 
 let bottomTemp = surfaceTemp - depthDrop;
-}
+
 /* =========================
    LIMITS + ROUND
 ========================= */
@@ -239,6 +239,7 @@ set("feed", feeding(spi));
 // SPI + AI
 updateSPI(spi);
 updateAI(spi,p,w,c);
+}
 
 // ===============================
 // 🌦 TACTICAL SYSTEM
