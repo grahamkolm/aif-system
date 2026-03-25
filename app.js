@@ -137,14 +137,17 @@ let surfaceTemp =
     + (sunFactor * 2.5)           // sun heats up to +2.5°C
     - windCooling;                // wind cools
 
-/* =========================
-   🌊 BOTTOM TEMP (REAL DROP)
-========================= */
+// 🌊 DEPTH-AWARE BOTTOM TEMP
 
-let bottomTemp =
-    surfaceTemp
-    - 2.5                         // proper depth drop
-    + (w * 0.1);                  // wind mixing
+let mixingFactor = Math.min(1, w / 5);
+// 0 = no wind, 1 = strong mixing
+
+let depthDrop =
+    0.5 + (1 - mixingFactor) * 1.2;
+// calm = bigger drop (~1.7°C)
+// windy = small drop (~0.5°C)
+
+let bottomTemp = surfaceTemp - depthDrop;
 
 /* =========================
    LIMITS + ROUND
