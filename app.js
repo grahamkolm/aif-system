@@ -198,8 +198,6 @@ if(bottomEl){
 }
 
 let oxygen = estimateOxygen(surfaceTemp, w);
-
-let lastSurfaceTemp = null;
     
 // ✅ STORE CONDITIONS
 lastConditions = {
@@ -247,6 +245,8 @@ updateSPI(spi);
 updateAI(spi,p,w,c);
 }
 
+surfaceTemp = Number(surfaceTemp);
+bottomTemp = Number(bottomTemp);
 // ===============================
 // 🌦 TACTICAL SYSTEM
 // ===============================
@@ -373,6 +373,8 @@ function logCatch(){
         bait: prompt("Bait used:")
     });
 }
+
+console.log("Temps", surfaceTemp, bottomTemp);
 
 // ===============================
 // 📊 UI UPDATE
@@ -504,9 +506,9 @@ renderMap(events);
 }
 
 setTimeout(() => {
-if(window.reportMap) {
-window.reportMap.invalidateSize();
-window.reportMap.setView([-26,28],13);
+    if(window.reportMap && typeof window.reportMap.invalidateSize == "function") {
+    window.reportMap.invalidateSize();
+    window.reportMap.setView([-26,28],13);
 }
 },300);
 
