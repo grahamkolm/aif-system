@@ -169,6 +169,7 @@ let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
 
 set("envScore", envScore + "%");
 set("confScore", confScore + "%");
+updateTactical(spi, envScore, confScore);
     
 // ✅ UPDATE UI (AFTER EVERYTHING EXISTS) 
 set("air", t.toFixed(1) + "°C"); 
