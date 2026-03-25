@@ -615,6 +615,7 @@ if (drops.length > 0) {
 }
 
 return text;
+}
 
 setTimeout(() => {
 if (window.lucide) {
