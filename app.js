@@ -108,7 +108,8 @@ function estimateBottomTemp({ surfaceTemp, depth, windSpeed }) {
     // wind mixes layers
     gradient -= windSpeed * 0.05;
 
-    return surfaceTemp - Math.max(gradient, 0.5); }
+    return surfaceTemp - Math.max(gradient, 0.5); 
+}
 
 function estimateOxygen(temp, windSpeed){
 
@@ -120,7 +121,8 @@ function estimateOxygen(temp, windSpeed){
     // wind adds oxygen
     oxygen += windSpeed * 0.1;
 
-    return Math.max(5, Math.min(oxygen, 12)); }
+    return Math.max(5, Math.min(oxygen, 12)); 
+}
 
 // ===============================
 // 📊 DASHBOARD
@@ -157,7 +159,7 @@ let depthDrop =
 // windy = small drop (~0.5°C)
 
 let bottomTemp = surfaceTemp - depthDrop;
-
+}
 /* =========================
    LIMITS + ROUND
 ========================= */
