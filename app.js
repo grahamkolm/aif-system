@@ -192,28 +192,53 @@ updateAI(spi,p,w,c);
 // 🌦 TACTICAL SYSTEM
 // ===============================
 function updateTactical(spi, envScore, confScore){
-    let message = "";
 
-    if(spi > 80){
-        message = "🔥 High feeding probability • Strike window open";
-    }
-    else if(spi > 60){
-        message = "⚡ Moderate activity • Stay alert";
-    }
-    else{
-        message = "⚠️ Low activity • Consider repositioning";
+    let lines = [];
+
+    // 🎯 SPI CORE
+    if(spi > 85){
+        lines.push("🔥 Peak feeding window active");
+    } else if(spi > 70){
+        lines.push("⚡ Good feeding conditions");
+    } else {
+        lines.push("⚠️ Low feeding activity");
     }
 
+    // 🌡️ ENVIRONMENT
     if(envScore > 75){
-        message += " • Strong environmental conditions";
+        lines.push("🌿 Environment stable and supportive");
+    } else if(envScore < 50){
+        lines.push("🌧️ Environmental pressure affecting fish");
     }
 
+    // 🎯 CONFIDENCE
     if(confScore > 80){
-        message += " • High confidence";
+        lines.push("🎯 High confidence in prediction");
+    } else if(confScore < 60){
+        lines.push("❗ Low confidence — conditions unstable");
     }
 
-    document.getElementById("tactical").innerText = message; }
-    
+    // 🌬️ WIND (if you have w + windDir available)
+    if(typeof w !== "undefined"){
+        if(w < 5){
+            lines.push("🌬️ Light wind — slower movement zones");
+        } else if(w > 15){
+            lines.push("🌊 Strong wind — target windblown banks");
+        }
+    }
+
+    // 🌡️ TEMP LOGIC
+    if(typeof t !== "undefined"){
+        if(t >= 18 && t <= 24){
+            lines.push("🌡️ Optimal temperature range for feeding");
+        } else {
+            lines.push("🌡️ Suboptimal temperature — adjust depth");
+        }
+    }
+
+    // 🧠 FINAL OUTPUT
+    document.getElementById("tactical").innerHTML = lines.join(" • "); }
+
 // ===============================
 // 🎯 EVENT LOGGER (CORE SYSTEM)
 // ===============================
