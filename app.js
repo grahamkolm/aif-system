@@ -5,6 +5,7 @@
 let currentSession = null; 
 let lastSPI = null;
 let lastConditions = {};
+let lastPressure = null;
 
 // ===============================
 // 🚀 START SYSTEM
@@ -244,10 +245,34 @@ let surfaceTemp = t + sunEffect - windCooling;
     }
     lastSPI = spi;
 
-    let envScore = Math.round((100 - c) * 0.4 + (20 - Math.abs(t - 20)) * 3 + (10 - w) * 3);
-    envScore = Math.max(0, Math.min(100, envScore));
+let trend = getPressureTrend(p);
 
-    let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
+if(trend === "Falling") spi += 10;
+if(trend === "Rising") spi -= 5;
+
+if(w > 8 && w < 20) spi += 5;
+if(w < 2) spi -= 5;
+
+spi = Math.max(0, Math.min(100, spi));
+    
+let envScore = 0;
+
+if(t >= 18 && t <= 24) envScore += 30;
+else if(t >= 15 && t <= 28) envScore += 20;
+else envScore += 10;
+
+if(c >= 20 && c <= 60) envScore += 25;
+else if(c < 20) envScore += 15;
+else envScore += 10;
+
+if(w >= 5 && w <= 15) envScore += 25;
+else if(w < 5) envScore += 15;
+else envScore += 10;
+
+let oxygenFactor = (w * 0.5) - (t - 20);
+envScore += Math.max(0, Math.min(20, oxygenFactor + 10));
+
+envScore = Math.round(Math.min(100, envScore));
 
     // =========================
     // 🧾 UPDATE TEXT VALUES
@@ -295,10 +320,21 @@ function updateTactical(spi, envScore, confScore){
     }
 
     // 🎯 CONFIDENCE
-    if(confScore > 80){
-        lines.push("🎯 High confidence in prediction");
-    } else if(confScore < 60){
-        lines.push("❗ Low confidence — conditions unstable");
+let stability = 0;
+
+if(trend === "Stable") stability += 20;
+if(trend === "Falling") stability += 15;
+if(trend === "Rising") stability += 10;
+
+if(w > 3 && w < 15) stability += 20;
+
+if(t >= 18 && t <= 24) stability += 20;
+
+let agreement = 100 - Math.abs(envScore - spi);
+
+let confScore = Math.round((stability * 0.5) + (agreement * 0.5));
+confScore = Math.min(100, confScore);
+
     }
 
     // 🌬️ WIND (if you have w + windDir available)
@@ -613,7 +649,17 @@ return "Waning"; // placeholder (we upgrade later)
 }
 
 function getPressureTrend(p){
-return "Stable"; // placeholder (we upgrade later) 
+    if(lastPressure === null){
+        lastPressure = p;
+        return "Stable";
+    }
+
+    let diff = p - lastPressure;
+    lastPressure = p;
+
+    if(diff > 1) return "Rising";
+    if(diff < -1) return "Falling";
+    return "Stable";
 }
 
 function generateInsights(drops, scouts, catches){
