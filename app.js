@@ -240,8 +240,7 @@ set("feed", feeding(spi));
 
 // SPI + AI
 updateSPI(spi);
-updateAI(spi,p,w,c);
-}
+updateAI(spi,p,w,c);}
 
 // ===============================
 // 🌦 TACTICAL SYSTEM
