@@ -139,7 +139,8 @@ let p = d.main.pressure;
 let w = d.wind.speed;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
-
+let confscore;
+    
 // =========================
 // 🌊 CALCULATE TEMPS
 // =========================
@@ -331,7 +332,7 @@ if(t >= 18 && t <= 24) stability += 20;
 
 let agreement = 100 - Math.abs(envScore - spi);
 
-let confScore = Math.round((stability * 0.5) + (agreement * 0.5));
+confScore = Math.round((stability * 0.5) + (agreement * 0.5));
 confScore = Math.min(100, confScore);
 
     }
