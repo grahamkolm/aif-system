@@ -119,32 +119,46 @@ function estimateOxygen(temp, windSpeed){
 
 function renderDashboard(d){
 
-let t = d.main.temp;
-let p = d.main.pressure;
-let w = d.wind.speed * 3.6;
-let c = d.clouds.all;
+let t = data.main.temp;
+let p = data.main.pressure;
+let w = data.wind.speed;
+let c = data.clouds.all;
 let windDir = d.wind.deg;
 
-// 🌡️ SURFACE TEMP (SMART)
+/* =========================
+   🌊 SURFACE TEMP (STRONGER)
+========================= */
+
+let sunFactor = (100 - c) / 100;   // 0 → 1
+let windCooling = w * 0.25;        // stronger cooling
+
 let surfaceTemp =
     t
-    + ( (100 - c) * 0.02 )     // more sun = warmer
-    - ( w * 0.15 );            // wind cools surface
+    + (sunFactor * 2.5)           // sun heats up to +2.5°C
+    - windCooling;                // wind cools
 
-// 🌊 BOTTOM TEMP (SMART)
+/* =========================
+   🌊 BOTTOM TEMP (REAL DROP)
+========================= */
+
 let bottomTemp =
     surfaceTemp
-    - 1.5                      // natural drop
-    + (w * 0.05);              // wind mixes = warmer bottom
+    - 2.5                         // proper depth drop
+    + (w * 0.1);                  // wind mixing
 
-// LIMIT REALISTIC RANGE
-surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp, bottomTemp));
+/* =========================
+   LIMITS + ROUND
+========================= */
 
-// ROUND
+surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
+
 surfaceTemp = surfaceTemp.toFixed(1);
 bottomTemp = bottomTemp.toFixed(1);
 
-// SET UI
+/* =========================
+   UPDATE UI
+========================= */
+
 set("surface", surfaceTemp + "°C");
 set("bottom", bottomTemp + "°C");
 
