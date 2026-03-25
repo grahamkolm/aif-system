@@ -50,7 +50,8 @@ const WEATHER_URL = "https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&
 
 async function startSystem(){
     fetchWeatherSafe();
-    setInterval(fetchWeatherSafe, 600000); }
+    setInterval(fetchWeatherSafe, 600000); 
+}
 
 function fetchWeatherSafe() {
 
@@ -170,12 +171,19 @@ let bottomDisplay = bottomTemp.toFixed(1);
    UPDATE UI
 ========================= */
 
-set("surface", surfaceDisplay + "°C");
-set("bottom", bottomDisplay + "°C");
+let surfaceEl = document.getElementById("surface");
+if(surfaceEl){
+    surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
+    surfaceEl.style.color = getTempColor(surfaceTemp); }
+
+let bottomEl = document.getElementById("bottom");
+if(bottomEl){
+    bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
+    bottomEl.style.color = getTempColor(bottomTemp); }
 
 let oxygen = estimateOxygen(surfaceTemp, w);
 
-lastSurfaceTemp = surfaceTemp;
+let lastSurfaceTemp = nullF;
     
 // ✅ STORE CONDITIONS
 lastConditions = {
@@ -189,6 +197,12 @@ lastConditions = {
     trend: getPressureTrend(p)
 };
 
+function getTempColor(temp){
+    if(temp >= 18 && temp <= 24) return "#00ffa6"; // green
+    if((temp >= 14 && temp < 18) || (temp > 24 && temp <= 28)) return "#ffaa00"; // orange
+    return "#ff4d4d"; // red
+}
+   
 // ✅ CALCULATE SPI
 let spi = calculateSPI(p, w, c, windDir, t);
 
@@ -209,8 +223,8 @@ set("air", t.toFixed(1) + "°C");
 set("pressure", p + " hPa"); 
 set("wind", w.toFixed(1) + " km/h"); 
 set("cloud", c + "%");
-set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); 
-set("bottomTemp", bottomTemp.toFixed(1) + "°C"); 
+set("surface", surfaceTemp.toFixed(1) + "°C"); 
+set("bottom", bottomTemp.toFixed(1) + "°C"); 
 set("oxygen", oxygen.toFixed(1) + " mg/L");
 set("moon", getMoonPhase());
 set("season", getSeason());
@@ -362,17 +376,6 @@ arc.style.strokeDashoffset=C-(v/100)*C;
 document.getElementById("spiValue").textContent=v+"%";
 }
 
-function updateTiles(t,p,w,c){
-set("air",t.toFixed(1)+"°C");
-set("pressure",p+" hPa");
-set("wind",w.toFixed(1)+" km/h");
-set("cloud",c+"%");
-set("moon", getMoonPhase());
-set("season", getSeason());
-set("feed", feeding(lastSPI || 0));
-set("oxygen", estimateOxygen(t,w,c).toFixed(1));
-}
-
 function updateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p);
@@ -472,7 +475,9 @@ let catches = events.filter(e=>e.type==="catch");
 
 let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length);
 
-document.getElementById("reportSummary").innerHTML = `
+document.getElementById("reportSummary").innerHTML += "<br><br>" +
+    generateInsights(drops, scouts, catches);
+
 Dam: ${currentSession.dam}<br>
 Area: ${currentSession.area}<br>
 Drops: ${drops.length}<br>
