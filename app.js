@@ -136,6 +136,8 @@ let w = d.wind.speed;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
 
+console.log("Temps", surfaceTemp, bottomTemp);
+
 /* =========================
    🌊 SURFACE TEMP (STRONGER)
 ========================= */
@@ -164,35 +166,44 @@ let bottomTemp = surfaceTemp - depthDrop;
    UPDATE UI
 ========================= */
 
-// 🔒 SAFETY CHECK
-if (surfaceTemp === undefined || bottomTemp === undefined) {
-    console.log("Temps missing → recalculating fallback");
+/* =========================
+   SAFETY CHECK
+========================= */
 
-    surfaceTemp = t;          // fallback to air
-    bottomTemp = t - 1.5;     // simple drop
-  
+if (surfaceTemp === undefined || bottomTemp === undefined) {
+    console.log("Temps missing → fallback");
+
+    surfaceTemp = t;
+    bottomTemp = t - 1.5;
+}
+
+/* =========================
+   LIMITS
+========================= */
+
+surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
+
+/* =========================
+   UPDATE UI (🔥 ALWAYS RUNS)
+========================= */
+
 // 🌡 AIR
-let airEl = document.getElementById("air"); if(airEl){
+let airEl = document.getElementById("air"); if (airEl) {
     airEl.innerHTML = t.toFixed(1) + "°C";
     airEl.style.color = getTempColor(t); }
 
 // 🌊 SURFACE
 let surfaceEl = document.getElementById("surface");
-if(surfaceEl){
+if (surfaceEl) {
     surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-    surfaceEl.style.color = getTempColor(surfaceTemp); 
-}
+    surfaceEl.style.color = getTempColor(surfaceTemp); }
 
 // ⬇️ BOTTOM
 let bottomEl = document.getElementById("bottom");
-if(bottomEl){
+if (bottomEl) {
     bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-    bottomEl.style.color = getTempColor(bottomTemp); 
-}
+    bottomEl.style.color = getTempColor(bottomTemp); }
 
-let oxygen = estimateOxygen(surfaceTemp, w);
-
-}
     
 /* =========================
    LIMITS + ROUND
@@ -246,8 +257,6 @@ updateSPI(spi);
 updateAI(spi,p,w,c);
 }
 
-surfaceTemp = Number(surfaceTemp);
-bottomTemp = Number(bottomTemp);
 // ===============================
 // 🌦 TACTICAL SYSTEM
 // ===============================
@@ -374,8 +383,6 @@ function logCatch(){
         bait: prompt("Bait used:")
     });
 }
-
-console.log("Temps", surfaceTemp, bottomTemp);
 
 // ===============================
 // 📊 UI UPDATE
