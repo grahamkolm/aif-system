@@ -478,7 +478,7 @@ let drops = events.filter(e=>e.type==="drop");
 let scouts = events.filter(e=>e.type==="scout");
 let catches = events.filter(e=>e.type==="catch");
 
-let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length);
+let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length); 
 
 document.getElementById("reportSummary").innerHTML += ` <br><br> ${generateInsights(drops, scouts, catches)}
 
