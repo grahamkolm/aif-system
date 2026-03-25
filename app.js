@@ -582,11 +582,16 @@ if(drops.length > 0){
 let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length);
 
 if(avgSPI >= 80){
-text += "🔥 High confidence feeding zone detected.<br>"; }else if(avgSPI >= 60){ text += "⚡ Moderate feeding activity observed.<br>"; }else{ text += "⚠️ Low feeding conditions during session.<br>"; } }
+text += "🔥 High confidence feeding zone detected.<br>"; }
+else if(avgSPI >= 60){ text += "⚡ Moderate feeding activity observed.<br>"; }
+else{ text += "⚠️ Low feeding conditions during session.<br>"; } 
+}
 
 // Activity insight
 if(drops.length > scouts.length){
-text += "🎯 Strong commitment to productive spots.<br>"; }else{ text += "🧭 More scouting recommended before drops.<br>"; }
+text += "🎯 Strong commitment to productive spots.<br>"; }
+else{ text += "🧭 More scouting recommended before drops.<br>"; 
+}
 
 // Catch logic
 if(catches.length > 0){
