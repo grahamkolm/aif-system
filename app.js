@@ -171,15 +171,23 @@ let bottomDisplay = bottomTemp.toFixed(1);
    UPDATE UI
 ========================= */
 
+// 🌡 AIR
+let airEl = document.getElementById("air"); if(airEl){
+    airEl.innerHTML = t.toFixed(1) + "°C";
+    airEl.style.color = getTempColor(t); }
+
+// 🌊 SURFACE
 let surfaceEl = document.getElementById("surface");
 if(surfaceEl){
     surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
     surfaceEl.style.color = getTempColor(surfaceTemp); }
 
+// ⬇️ BOTTOM
 let bottomEl = document.getElementById("bottom");
 if(bottomEl){
     bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
     bottomEl.style.color = getTempColor(bottomTemp); }
+}
 
 let oxygen = estimateOxygen(surfaceTemp, w);
 
