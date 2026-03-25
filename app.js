@@ -343,7 +343,8 @@ function refreshData() {
     // STOP SPIN AFTER DONE
     setTimeout(() => {
         icon.classList.remove("refresh-spin");
-    }, 1200); // adjust timing if needed }
+    }, 1200); // adjust timing if needed 
+}
 
 // ===============================
 // 🎯 DROP / SCOUT / CATCH
