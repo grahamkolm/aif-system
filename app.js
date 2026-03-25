@@ -145,7 +145,24 @@ function renderDashboard(d){
     let sunFactor = (100 - c) / 100;
     let windCooling = w * 0.25;
 
-    let surfaceTemp = t + (sunFactor * 2.5) - windCooling;
+   let hour = new Date().getHours();
+
+// Sun influence depends on time
+let sunEffect = 0;
+
+if(hour >= 10 && hour <= 16){
+    sunEffect = sunFactor * 1.2;   // peak heating
+} else if(hour >= 7 && hour < 10){
+    sunEffect = sunFactor * 0.6;   // warming up
+} else {
+    sunEffect = 0.2;               // minimal effect
+}
+
+// Wind cooling reduced slightly
+let windCooling = w * 0.15;
+
+// FINAL surface temp
+let surfaceTemp = t + sunEffect - windCooling;
 
     let mixingFactor = Math.min(1, w / 5);
     let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
