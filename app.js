@@ -480,8 +480,9 @@ let catches = events.filter(e=>e.type==="catch");
 
 let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length); 
 
-document.getElementById("reportSummary").innerHTML += ` <br><br> ${generateInsights(drops, scouts, catches)}
-
+document.getElementById("reportSummary").innerHTML += ` 
+<br><br>
+${generateInsights(drops, scouts, catches)}
 Dam: ${currentSession.dam}<br>
 Area: ${currentSession.area}<br>
 Drops: ${drops.length}<br>
