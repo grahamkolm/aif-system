@@ -97,8 +97,8 @@ font-weight:700;
     position: absolute;
     top: 65%;                 /* 👈 moves them DOWN */
     transform: translateY(-50%);
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     border: 2px solid rgba(0,255,166,0.6);
     display: flex;
@@ -110,12 +110,12 @@ font-weight:700;
 
 /* LEFT circle */
 .env-circle {
-    left: -70px;
+    left: -40px;
 }
 
 /* RIGHT circle */
 .conf-circle {
-    right: -70px;
+    right: -40px;
 }
 
 /* TEXT inside circles */
