@@ -2,7 +2,7 @@
 // 🌍 GLOBAL STATE
 // ===============================
 
-let currentSession = null;
+let currentSession = null; 
 let lastSPI = null;
 let lastConditions = {};
 
