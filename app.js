@@ -52,14 +52,22 @@ async function startSystem(){
     fetchWeatherSafe();
     setInterval(fetchWeatherSafe, 600000); }
 
-async function fetchWeatherSafe(){
-    try{
-        let res = await fetch(WEATHER_URL); 
-        let data = await res.json();
-        renderDashboard(data.list[0]);
-    }catch{
-        simulateWeather();
-    }
+function fetchWeatherSafe() {
+
+    const icon = document.getElementById("refreshIcon");
+
+    fetch(WEATHER_URL)
+        .then(res => res.json())
+        .then(data => {
+            renderDashboard(data.list[0]);
+
+            // STOP SPIN HERE (REAL FINISH)
+            icon.classList.remove("refresh-spin");
+        })
+        .catch(() => {
+            simulateWeather();
+            icon.classList.remove("refresh-spin");
+        });
 }
 
 function simulateWeather(){
