@@ -84,39 +84,50 @@ font-weight:700;
 
 /* MINI CIRCLES */
 
+.spi-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+/* ENV + CONF circles */
 .env-circle,
-.conf-circle{
-    position:absolute;
-    top:40%;
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
-    background:rgba(15,20,28,0.9);
-    border:2px solid rgba(0,255,156,0.4);
-    box-shadow:0 0 10px rgba(0,255,156,0.25); }
+.conf-circle {
+    position: absolute;
+    top: 65%;                 /* 👈 moves them DOWN */
+    transform: translateY(-50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,255,166,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,20,15,0.6);
+    box-shadow: 0 0 20px rgba(0,255,166,0.2); }
 
-.env-circle{
-    left:-40px;
+/* LEFT circle */
+.env-circle {
+    left: -70px;
 }
 
-.conf-circle{
-    right:-40px;
+/* RIGHT circle */
+.conf-circle {
+    right: -70px;
 }
 
-.mini-value{
-    font-size:20px;
-    font-weight:600;
-    color:#00ffa6;
+/* TEXT inside circles */
+.mini-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ffa6;
 }
 
-.mini-label{
-    font-size:11px;
-    color:#9aa4ad;
+.mini-label {
+    font-size: 11px;
+    color: #aaa;
 }
 
 /* ========================= */
