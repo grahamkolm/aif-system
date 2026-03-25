@@ -225,22 +225,19 @@ let confScore = Math.round((spi * 0.7) + (envScore * 0.3));
 set("envScore", envScore + "%");
 set("confScore", confScore + "%");
 updateTactical(spi, envScore, confScore);
-    
-// ✅ UPDATE UI (AFTER EVERYTHING EXISTS) 
-set("air", t.toFixed(1) + "°C"); 
-set("pressure", p + " hPa"); 
-set("wind", w.toFixed(1) + " km/h"); 
+
+set("pressure", p + " hPa");
+set("wind", w.toFixed(1) + " km/h");
 set("cloud", c + "%");
-set("surface", surfaceTemp.toFixed(1) + "°C"); 
-set("bottom", bottomTemp.toFixed(1) + "°C"); 
-set("oxygen", oxygen.toFixed(1) + " mg/L");
-set("moon", getMoonPhase());
-set("season", getSeason());
+set("oxygen", oxygen.toFixed(1) + " mg/L"); 
+set("moon", getMoonPhase()); 
+set("season", getSeason()); 
 set("feed", feeding(spi));
 
 // SPI + AI
 updateSPI(spi);
-updateAI(spi,p,w,c);}
+updateAI(spi,p,w,c);
+}
 
 // ===============================
 // 🌦 TACTICAL SYSTEM
