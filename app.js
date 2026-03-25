@@ -161,12 +161,6 @@ let depthDrop =
 let bottomTemp = surfaceTemp - depthDrop;
 
 /* =========================
-   LIMITS + ROUND
-========================= */
-
-surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
-
-/* =========================
    UPDATE UI
 ========================= */
 
@@ -176,7 +170,6 @@ if (surfaceTemp === undefined || bottomTemp === undefined) {
 
     surfaceTemp = t;          // fallback to air
     bottomTemp = t - 1.5;     // simple drop
-}
   
 // 🌡 AIR
 let airEl = document.getElementById("air"); if(airEl){
@@ -198,7 +191,15 @@ if(bottomEl){
 }
 
 let oxygen = estimateOxygen(surfaceTemp, w);
+
+}
     
+/* =========================
+   LIMITS + ROUND
+========================= */
+
+surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
+
 // ✅ STORE CONDITIONS
 lastConditions = {
     airTemp: t,
