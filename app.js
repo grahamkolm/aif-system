@@ -470,7 +470,7 @@ let drops = events.filter(e=>e.type==="drop");
 let scouts = events.filter(e=>e.type==="scout");
 let catches = events.filter(e=>e.type==="catch");
 
-let avgSPI = drops.length ? Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length) : 0;
+let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length);
 
 document.getElementById("reportSummary").innerHTML = `
 Dam: ${currentSession.dam}<br>
@@ -578,27 +578,35 @@ function generateInsights(drops, scouts, catches){
 let text = "";
 
 // Drop analysis
-if(drops.length > 0){
-let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length);
+if (drops.length > 0) {
 
-if(avgSPI >= 80){
-text += "🔥 High confidence feeding zone detected.<br>"; }
-else if(avgSPI >= 60){ text += "⚡ Moderate feeding activity observed.<br>"; }
-else{ text += "⚠️ Low feeding conditions during session.<br>"; } 
+    let avgSPI = Math.round(drops.reduce((s, d) => s + d.spi, 0) / drops.length);
+
+    if (avgSPI >= 80) {
+        text += "🔥 High confidence feeding zone detected.<br>";
+    } else if (avgSPI >= 60) {
+        text += "⚡ Moderate feeding activity observed.<br>";
+    } else {
+        text += "⚠️ Low feeding activity.<br>";
+    }
+
+    // Activity insight
+    if (drops.length > scouts.length) {
+        text += "🎯 Strong commitment to productive spots.<br>";
+    } else {
+        text += "🧭 More scouting recommended before drops.<br>";
+    }
+
+    // Catch logic
+    if (catches.length > 0) {
+        text += "🎣 Successful session – pattern confirmation likely.<br>";
+    } else {
+        text += "📉 No catches recorded – refine timing or location.<br>";
+    }
+
 }
-
-// Activity insight
-if(drops.length > scouts.length){
-text += "🎯 Strong commitment to productive spots.<br>"; }
-else{ text += "🧭 More scouting recommended before drops.<br>"; 
-}
-
-// Catch logic
-if(catches.length > 0){
-text += "🎣 Successful session — pattern confirmation likely.<br>"; }else{ text += "📉 No catches recorded — refine timing or bait.<br>"; }
 
 return text;
-}
 
 setTimeout(() => {
 if (window.lucide) {
