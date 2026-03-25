@@ -119,10 +119,10 @@ function estimateOxygen(temp, windSpeed){
 
 function renderDashboard(d){
 
-let t = data.main.temp;
-let p = data.main.pressure;
-let w = data.wind.speed;
-let c = data.clouds.all;
+let t = d.main.temp;
+let p = d.main.pressure;
+let w = d.wind.speed;
+let c = d.clouds.all;
 let windDir = d.wind.deg;
 
 /* =========================
