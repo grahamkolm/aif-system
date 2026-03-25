@@ -152,15 +152,15 @@ let bottomTemp =
 
 surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
 
-surfaceTemp = surfaceTemp.toFixed(1);
-bottomTemp = bottomTemp.toFixed(1);
+let surfaceDisplay = surfaceTemp.toFixed(1);
+let bottomDisplay = bottomTemp.toFixed(1);
 
 /* =========================
    UPDATE UI
 ========================= */
 
-set("surface", surfaceTemp + "°C");
-set("bottom", bottomTemp + "°C");
+set("surface", surfaceDisplay + "°C");
+set("bottom", bottomDisplay + "°C");
 
 let oxygen = estimateOxygen(surfaceTemp, w);
 
