@@ -301,6 +301,25 @@ function logEvent(type, extra = {}){
 }
 
 // ===============================
+// 🎯 REFRESH
+// ===============================
+
+function refreshData() {
+
+    const icon = document.getElementById("refreshIcon");
+
+    // START SPIN
+    icon.classList.add("refresh-spin");
+
+    // CALL YOUR WEATHER / UPDATE FUNCTION
+    fetchWeatherSafe();
+
+    // STOP SPIN AFTER DONE
+    setTimeout(() => {
+        icon.classList.remove("refresh-spin");
+    }, 1200); // adjust timing if needed }
+
+// ===============================
 // 🎯 DROP / SCOUT / CATCH
 // ===============================
 
