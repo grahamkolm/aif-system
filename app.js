@@ -144,7 +144,6 @@ function renderDashboard(d){
     // 🌊 CALCULATE TEMPS
     // =========================
     let sunFactor = (100 - c) / 100;
-    let windCooling = w * 0.25;
 
    let hour = new Date().getHours();
 
