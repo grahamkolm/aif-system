@@ -125,20 +125,28 @@ let w = d.wind.speed * 3.6;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
 
-// ✅ CALCULATE WATER FIRST
-let surfaceTemp = estimateSurfaceTemp({
-    prevWaterTemp: lastSurfaceTemp || (t - 0.5),
-    airTemp: t,
-    windSpeed: w || 2,
-    sunFactor: 1 - (c || 0) / 100,
-    hour: new Date().getHours()
-});
+// 🌡️ SURFACE TEMP (SMART)
+let surfaceTemp =
+    t
+    + ( (100 - c) * 0.02 )     // more sun = warmer
+    - ( w * 0.15 );            // wind cools surface
 
-let bottomTemp = estimateBottomTemp({
-    surfaceTemp: surfaceTemp,
-    depth: 6,
-    windSpeed: w
-});
+// 🌊 BOTTOM TEMP (SMART)
+let bottomTemp =
+    surfaceTemp
+    - 1.5                      // natural drop
+    + (w * 0.05);              // wind mixes = warmer bottom
+
+// LIMIT REALISTIC RANGE
+surfaceTemp = Math.max(5, Math.min(35, surfaceTemp)); bottomTemp = Math.max(4, Math.min(surfaceTemp, bottomTemp));
+
+// ROUND
+surfaceTemp = surfaceTemp.toFixed(1);
+bottomTemp = bottomTemp.toFixed(1);
+
+// SET UI
+set("surface", surfaceTemp + "°C");
+set("bottom", bottomTemp + "°C");
 
 let oxygen = estimateOxygen(surfaceTemp, w);
 
