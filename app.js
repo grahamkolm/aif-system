@@ -289,6 +289,27 @@ let agreement = 100 - Math.abs(envScore - spi);
 confScore = Math.round((stability * 0.5) + (agreement * 0.5));
 confScore = Math.min(100, confScore);
 
+// =========================
+// 🧾 UPDATE TEXT VALUES
+// =========================
+set("envScore", envScore + "%");
+set("confScore", confScore + "%");
+updateTactical(spi, envScore, confScore);
+set("pressure", p + " hPa");
+set("wind", w.toFixed(1) + " km/h");
+set("cloud", c + "%");
+set("oxygen", oxygen.toFixed(1) + " mg/L");
+set("moon", getMoonPhase());
+set("season", getSeason());
+set("feed", feeding(spi));
+
+// =========================
+// 📊 VISUALS
+// =========================
+updateSPI(spi);
+updateAI(spi,p,w,c);
+}
+
 // ===============================
 // 🌦 TACTICAL SYSTEM
 // ===============================
@@ -331,27 +352,6 @@ function updateTactical(spi, envScore, confScore, w, t){
         }
     }
     
-// =========================
-// 🧾 UPDATE TEXT VALUES
-// =========================
-set("envScore", envScore + "%");
-set("confScore", confScore + "%");
-updateTactical(spi, envScore, confScore);
-set("pressure", p + " hPa");
-set("wind", w.toFixed(1) + " km/h");
-set("cloud", c + "%");
-set("oxygen", oxygen.toFixed(1) + " mg/L");
-set("moon", getMoonPhase());
-set("season", getSeason());
-set("feed", feeding(spi));
-
-// =========================
-// 📊 VISUALS
-// =========================
-updateSPI(spi);
-updateAI(spi,p,w,c);
-}
-
     // 🧠 FINAL OUTPUT
     document.getElementById("tactical").innerHTML = lines.join(" • "); }
 
@@ -364,8 +364,8 @@ updateAI(spi,p,w,c);
         }
     }
 
-    // 🧠 FINAL OUTPUT
-    document.getElementById("tactical").innerHTML = lines.join(" • "); 
+// 🧠 FINAL OUTPUT
+document.getElementById("tactical").innerHTML = lines.join(" • "); 
 }
 
 // ===============================
