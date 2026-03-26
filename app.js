@@ -253,8 +253,6 @@ if(w > 8 && w < 20) spi += 5;
 if(w < 2) spi -= 5;
 
 spi = Math.max(0, Math.min(100, spi));
-
-updateBackground(spi);
     
 let envScore = 0;
 
@@ -310,6 +308,8 @@ set("feed", feeding(spi));
 // =========================
 updateSPI(spi);
 updateAI(spi,p,w,c);
+updateBackground(spi);
+    
 }
 
 // ===============================
