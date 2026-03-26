@@ -351,20 +351,7 @@ function updateTactical(spi, envScore, confScore, w, t){
     // 🧠 FINAL OUTPUT
     document.getElementById("tactical").innerHTML = lines.join(" • "); }
 
-    // 🌡️ TEMP LOGIC
-    if(typeof t !== "undefined"){
-        if(t >= 18 && t <= 24){
-            lines.push("🌡️ Optimal temperature range for feeding");
-        } else {
-            lines.push("🌡️ Suboptimal temperature — adjust depth");
-        }
-    }
-
-// 🧠 FINAL OUTPUT
-document.getElementById("tactical").innerHTML = lines.join(" • "); 
-}
-
-// ===============================
+ // ===============================
 // 🎯 EVENT LOGGER (CORE SYSTEM)
 // ===============================
 
