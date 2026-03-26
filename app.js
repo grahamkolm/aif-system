@@ -294,7 +294,7 @@ confScore = Math.min(100, confScore);
 // =========================
 set("envScore", envScore + "%");
 set("confScore", confScore + "%");
-updateTactical(spi, envScore, confScore);
+updateTactical(spi, envScore, confScore, w, t);
 set("pressure", p + " hPa");
 set("wind", w.toFixed(1) + " km/h");
 set("cloud", c + "%");
@@ -327,7 +327,7 @@ function updateTactical(spi, envScore, confScore, w, t){
         lines.push("⚠️ Low feeding activity");
     }
 
-    // 🌡️ ENVIRONMENT
+    // 🌿 ENVIRONMENT
     if(envScore > 75){
         lines.push("🌿 Environment stable and supportive");
     } else if(envScore < 50){
@@ -335,23 +335,19 @@ function updateTactical(spi, envScore, confScore, w, t){
     }
 
     // 🌬️ WIND
-    if(typeof w !== "undefined"){
-        if(w < 5){
-            lines.push("🌬️ Light wind — slower movement zones");
-        } else if(w > 15){
-            lines.push("🌊 Strong wind — target windblown banks");
-        }
+    if(w < 5){
+        lines.push("🌬️ Light wind — slower movement zones");
+    } else if(w > 15){
+        lines.push("🌊 Strong wind — target windblown banks");
     }
 
     // 🌡️ TEMP
-    if(typeof t !== "undefined"){
-        if(t >= 18 && t <= 24){
-            lines.push("🌡️ Optimal temperature range for feeding");
-        } else {
-            lines.push("🌡️ Suboptimal temperature — adjust depth");
-        }
+    if(t >= 18 && t <= 24){
+        lines.push("🌡️ Optimal temperature range for feeding");
+    } else {
+        lines.push("🌡️ Suboptimal temperature — adjust depth");
     }
-    
+
     // 🧠 FINAL OUTPUT
     document.getElementById("tactical").innerHTML = lines.join(" • "); }
 
