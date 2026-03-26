@@ -139,7 +139,6 @@ let p = d.main.pressure;
 let w = d.wind.speed;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
-updateBackground(spi);
     
 // =========================
 // 🌊 CALCULATE TEMPS
@@ -254,6 +253,8 @@ if(w > 8 && w < 20) spi += 5;
 if(w < 2) spi -= 5;
 
 spi = Math.max(0, Math.min(100, spi));
+
+updateBackground(spi);
     
 let envScore = 0;
 
@@ -287,7 +288,7 @@ if(t >= 18 && t <= 24) stability += 20;
 
 let agreement = 100 - Math.abs(envScore - spi);
 
-confScore = Math.round((stability * 0.5) + (agreement * 0.5));
+let confScore = Math.round((stability * 0.5) + (agreement * 0.5));
 confScore = Math.min(100, confScore);
 
 // =========================
@@ -400,7 +401,10 @@ function logEvent(type, extra = {}){
 function refreshData() {
 
     const icon = document.getElementById("refreshIcon");
-
+    if(icon){
+        icon.classList.remove("refresh-spin");
+    }
+    
     // START SPIN
     icon.classList.add("refresh-spin");
 
