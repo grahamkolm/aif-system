@@ -139,7 +139,6 @@ let p = d.main.pressure;
 let w = d.wind.speed;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
-let confScore;
     
 // =========================
 // 🌊 CALCULATE TEMPS
@@ -160,7 +159,7 @@ if(hour >= 10 && hour <= 16){
 }
 
 // Wind cooling reduced slightly
-windCooling = w * 0.15;
+let windCooling = w * 0.15;
 
 // FINAL surface temp
 let surfaceTemp = t + sunEffect - windCooling;
@@ -289,8 +288,6 @@ let agreement = 100 - Math.abs(envScore - spi);
 
 confScore = Math.round((stability * 0.5) + (agreement * 0.5));
 confScore = Math.min(100, confScore);
-
-}
     
 // =========================
 // 🧾 UPDATE TEXT VALUES
@@ -312,6 +309,7 @@ set("feed", feeding(spi));
 // =========================
 updateSPI(spi);
 updateAI(spi,p,w,c);
+}
 
 // ===============================
 // 🌦 TACTICAL SYSTEM
