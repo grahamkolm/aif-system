@@ -365,7 +365,8 @@ updateAI(spi,p,w,c);
     }
 
     // 🧠 FINAL OUTPUT
-    document.getElementById("tactical").innerHTML = lines.join(" • "); }
+    document.getElementById("tactical").innerHTML = lines.join(" • "); 
+}
 
 // ===============================
 // 🎯 EVENT LOGGER (CORE SYSTEM)
