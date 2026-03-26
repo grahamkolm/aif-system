@@ -160,12 +160,12 @@ font-weight:700;
 
 /* LEFT */
 .env-circle {
-    left: -30px;
+    left: calc(50% - 160px);
 }
 
 /* RIGHT */
 .conf-circle {
-    right: -30px;
+    right: calc(50% - 160px);
 }
 
 /* TEXT inside circles */
