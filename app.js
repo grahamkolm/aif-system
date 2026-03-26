@@ -139,7 +139,7 @@ let p = d.main.pressure;
 let w = d.wind.speed;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
-let confscore;
+let confScore;
     
 // =========================
 // 🌊 CALCULATE TEMPS
@@ -274,6 +274,25 @@ envScore += Math.max(0, Math.min(20, oxygenFactor + 10));
 
 envScore = Math.round(Math.min(100, envScore));
 
+// 🎯 CONFIDENCE
+let stability = 0;
+
+if(trend === "Stable") stability += 20;
+if(trend === "Falling") stability += 15;
+if(trend === "Rising") stability += 10;
+
+if(w > 3 && w < 15) stability += 20;
+
+if(t >= 18 && t <= 24) stability += 20;
+
+let agreement = 100 - Math.abs(envScore - spi);
+
+confScore = Math.round((stability * 0.5) + (agreement * 0.5));
+confScore = Math.min(100, confScore);
+
+    }
+
+    
     // =========================
     // 🧾 UPDATE TEXT VALUES
     // =========================
@@ -317,24 +336,6 @@ function updateTactical(spi, envScore, confScore){
         lines.push("🌿 Environment stable and supportive");
     } else if(envScore < 50){
         lines.push("🌧️ Environmental pressure affecting fish");
-    }
-
-    // 🎯 CONFIDENCE
-let stability = 0;
-
-if(trend === "Stable") stability += 20;
-if(trend === "Falling") stability += 15;
-if(trend === "Rising") stability += 10;
-
-if(w > 3 && w < 15) stability += 20;
-
-if(t >= 18 && t <= 24) stability += 20;
-
-let agreement = 100 - Math.abs(envScore - spi);
-
-confScore = Math.round((stability * 0.5) + (agreement * 0.5));
-confScore = Math.min(100, confScore);
-
     }
 
     // 🌬️ WIND (if you have w + windDir available)
