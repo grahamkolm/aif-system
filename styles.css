@@ -132,38 +132,40 @@ font-weight:700;
 
 /* MINI CIRCLES */
 
-.spi-container {
+..spi-container {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 260px;
+    height: 260px;
     margin: 0 auto;
 }
 
-/* ENV + CONF circles */
+/* circles */
 .env-circle,
 .conf-circle {
     position: absolute;
-    top: 60%;                 /* 👈 moves them DOWN */
+    top: 50%;
     transform: translateY(-50%);
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    border: 2px solid rgba(0,255,166,0.6);
+    border: 2px solid rgba(0,255,166,0.5);
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(0,20,15,0.6);
-    box-shadow: 0 0 20px rgba(0,255,166,0.2); }
 
-/* LEFT circle */
+    background: rgba(0,20,15,0.6);
+    box-shadow: 0 0 12px rgba(0,255,166,0.15); }
+
+/* LEFT */
 .env-circle {
-    left: -40px;
+    left: -30px;
 }
 
-/* RIGHT circle */
+/* RIGHT */
 .conf-circle {
-    right: -40px;
+    right: -30px;
 }
 
 /* TEXT inside circles */
