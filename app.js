@@ -197,23 +197,23 @@ if (surfaceTemp === undefined || bottomTemp === undefined) {
     // =========================
     // 🖥 UPDATE UI (ALWAYS RUNS NOW ✅)
     // =========================
-    let airEl = document.getElementById("air");
-    if(airEl){
-        airEl.innerHTML = t.toFixed(1) + "°C";
-        airEl.style.color = getTempColor(t);
-    }
+    //let airEl = document.getElementById("air");
+    //if(airEl){
+    //    airEl.innerHTML = t.toFixed(1) + "°C";
+    //    airEl.style.color = getTempColor(t);
+    //}
 
-    let surfaceEl = document.getElementById("surface");
-    if(surfaceEl){
-        surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-        surfaceEl.style.color = getTempColor(surfaceTemp);
-    }
+    //let surfaceEl = document.getElementById("surface");
+    //if(surfaceEl){
+    //    surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
+    //    surfaceEl.style.color = getTempColor(surfaceTemp);
+    //}
 
-let bottomEl = document.getElementById("bottom");
-if(bottomEl){
-    bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-    bottomEl.style.color = getTempColor(bottomTemp);
-}
+//let bottomEl = document.getElementById("bottom");
+//if(bottomEl){
+//    bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
+//    bottomEl.style.color = getTempColor(bottomTemp);
+//}
 
 // =========================
 // 💨 OXYGEN
