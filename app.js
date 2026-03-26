@@ -288,6 +288,48 @@ let agreement = 100 - Math.abs(envScore - spi);
 
 confScore = Math.round((stability * 0.5) + (agreement * 0.5));
 confScore = Math.min(100, confScore);
+
+// ===============================
+// 🌦 TACTICAL SYSTEM
+// ===============================
+
+function updateTactical(spi, envScore, confScore, w, t){
+
+    let lines = [];
+
+    // 🎯 SPI CORE
+    if(spi > 85){
+        lines.push("🔥 Peak feeding window active");
+    } else if(spi > 70){
+        lines.push("⚡ Good feeding conditions");
+    } else {
+        lines.push("⚠️ Low feeding activity");
+    }
+
+    // 🌡️ ENVIRONMENT
+    if(envScore > 75){
+        lines.push("🌿 Environment stable and supportive");
+    } else if(envScore < 50){
+        lines.push("🌧️ Environmental pressure affecting fish");
+    }
+
+    // 🌬️ WIND
+    if(typeof w !== "undefined"){
+        if(w < 5){
+            lines.push("🌬️ Light wind — slower movement zones");
+        } else if(w > 15){
+            lines.push("🌊 Strong wind — target windblown banks");
+        }
+    }
+
+    // 🌡️ TEMP
+    if(typeof t !== "undefined"){
+        if(t >= 18 && t <= 24){
+            lines.push("🌡️ Optimal temperature range for feeding");
+        } else {
+            lines.push("🌡️ Suboptimal temperature — adjust depth");
+        }
+    }
     
 // =========================
 // 🧾 UPDATE TEXT VALUES
@@ -310,38 +352,8 @@ updateSPI(spi);
 updateAI(spi,p,w,c);
 }
 
-// ===============================
-// 🌦 TACTICAL SYSTEM
-// ===============================
-
-function updateTactical(spi, envScore, confScore){
-
-    let lines = [];
-
-    // 🎯 SPI CORE
-    if(spi > 85){
-        lines.push("🔥 Peak feeding window active");
-    } else if(spi > 70){
-        lines.push("⚡ Good feeding conditions");
-    } else {
-        lines.push("⚠️ Low feeding activity");
-    }
-
-    // 🌡️ ENVIRONMENT
-    if(envScore > 75){
-        lines.push("🌿 Environment stable and supportive");
-    } else if(envScore < 50){
-        lines.push("🌧️ Environmental pressure affecting fish");
-    }
-
-    // 🌬️ WIND (if you have w + windDir available)
-    if(typeof w !== "undefined"){
-        if(w < 5){
-            lines.push("🌬️ Light wind — slower movement zones");
-        } else if(w > 15){
-            lines.push("🌊 Strong wind — target windblown banks");
-        }
-    }
+    // 🧠 FINAL OUTPUT
+    document.getElementById("tactical").innerHTML = lines.join(" • "); }
 
     // 🌡️ TEMP LOGIC
     if(typeof t !== "undefined"){
