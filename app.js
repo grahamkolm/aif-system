@@ -139,6 +139,7 @@ let p = d.main.pressure;
 let w = d.wind.speed;
 let c = d.clouds.all;
 let windDir = d.wind.deg;
+updateBackground(spi);
     
 // =========================
 // 🌊 CALCULATE TEMPS
@@ -694,6 +695,18 @@ if (drops.length > 0) {
 }
 
 return text;
+}
+
+function updateBackground(spi){
+  document.body.classList.remove("low","medium","high");
+
+  if(spi > 80){
+    document.body.classList.add("high");
+  } else if(spi > 60){
+    document.body.classList.add("medium");
+  } else {
+    document.body.classList.add("low");
+  }
 }
 
 setTimeout(() => {
