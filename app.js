@@ -334,6 +334,11 @@ function updateTactical(spi, envScore, confScore, w, t){
         lines.push("🌧️ Environmental pressure affecting fish");
     }
 
+    if(confScore > 80){
+    lines.push("🧠 High confidence pattern detected"); } else if(confScore < 50){
+    lines.push("⚠️ Low confidence — conditions unstable"); 
+    } 
+    
     // 🌬️ WIND
     if(w < 5){
         lines.push("🌬️ Light wind — slower movement zones");
