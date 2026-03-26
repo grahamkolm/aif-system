@@ -209,40 +209,40 @@ if (surfaceTemp === undefined || bottomTemp === undefined) {
         surfaceEl.style.color = getTempColor(surfaceTemp);
     }
 
-    let bottomEl = document.getElementById("bottom");
-    if(bottomEl){
-        bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-        bottomEl.style.color = getTempColor(bottomTemp);
-    }
+let bottomEl = document.getElementById("bottom");
+if(bottomEl){
+    bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
+    bottomEl.style.color = getTempColor(bottomTemp);
+}
 
-    // =========================
-    // 💨 OXYGEN
-    // =========================
-    let oxygen = estimateOxygen(surfaceTemp, w);
+// =========================
+// 💨 OXYGEN
+// =========================
+let oxygen = estimateOxygen(surfaceTemp, w);
 
-    // =========================
-    // 📦 STORE CONDITIONS
-    // =========================
-    lastConditions = {
-        airTemp: t,
-        pressure: p,
-        windSpeed: w,
-        windDir: windDir,
-        cloud: c,
-        moon: getMoonPhase(),
-        season: getSeason(),
-        trend: getPressureTrend(p)
-    };
+// =========================
+// 📦 STORE CONDITIONS
+// =========================
+lastConditions = {
+    airTemp: t,
+    pressure: p,
+    windSpeed: w,
+    windDir: windDir,
+    cloud: c,
+    moon: getMoonPhase(),
+    season: getSeason(),
+    trend: getPressureTrend(p)
+};
 
-    // =========================
-    // 🎯 CALCULATE SPI
-    // =========================
-    let spi = calculateSPI(p, w, c, windDir, t);
+// =========================
+// 🎯 CALCULATE SPI
+// =========================
+let spi = calculateSPI(p, w, c, windDir, t);
 
-    if(lastSPI !== null){
-        spi = Math.round((spi + lastSPI) / 2);
-    }
-    lastSPI = spi;
+if(lastSPI !== null){
+    spi = Math.round((spi + lastSPI) / 2);
+}
+lastSPI = spi;
 
 let trend = getPressureTrend(p);
 
@@ -295,7 +295,6 @@ confScore = Math.min(100, confScore);
 set("envScore", envScore + "%");
 set("confScore", confScore + "%");
 updateTactical(spi, envScore, confScore);
-
 set("pressure", p + " hPa");
 set("wind", w.toFixed(1) + " km/h");
 set("cloud", c + "%");
@@ -314,6 +313,7 @@ updateAI(spi,p,w,c);
 // ===============================
 // 🌦 TACTICAL SYSTEM
 // ===============================
+
 function updateTactical(spi, envScore, confScore){
 
     let lines = [];
