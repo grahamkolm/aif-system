@@ -33,7 +33,7 @@ body::before {
   );
   background-size: 60px 60px;
   animation: rippleMove 25s linear infinite;
-  opacity: 0.4;
+  opacity: 0.1;
   pointer-events: none;
 }
 
@@ -51,6 +51,19 @@ body::after {
     radial-gradient(circle at 70% 60%, rgba(0,255,166,0.05), transparent 40%);
   animation: aiPulse 6s ease-in-out infinite;
   pointer-events: none;
+}
+
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    display:flex;
+    justify-content:center;
+
+    background:
+        linear-gradient(rgba(5,8,13,0.85), rgba(5,8,13,0.95)),
+        url("underwater.jpg") center/cover no-repeat;
+
+    color: white;
 }
 
 @keyframes aiPulse {
