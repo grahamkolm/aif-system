@@ -405,7 +405,12 @@ transform:scale(1.05);
     height: 100vh;
     overflow-y: auto;
     padding: 20px;
-    padding-bottom: 160px;
+    padding-bottom: 120px;
+    box-sizing:border-box;
+}
+
+#scanArea {
+    margin-bottom: 100px;
 }
 
 /* ========================= */
