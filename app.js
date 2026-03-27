@@ -64,17 +64,25 @@ function fetchWeatherSafe() {
     fetch(WEATHER_URL)
         .then(res => res.json())
         .then(data => {
+
             renderDashboard(data.list[0]);
 
             // STOP SPIN HERE (REAL FINISH)
-if(icon){
-    icon.classList.remove("refresh-spin");
-}
-            
-.catch(() => {
-    simulateWeather();
-    icon.classList.remove("refresh-spin");
-    });
+            if(icon){
+                icon.classList.remove("refresh-spin");
+            }
+
+        }) // ✅ THIS WAS MISSING
+
+        .catch(() => {
+
+            simulateWeather();
+
+            if(icon){
+                icon.classList.remove("refresh-spin"); // ✅ ALSO FIXED TYPO
+            }
+
+        });
 }
 
 function simulateWeather(){
