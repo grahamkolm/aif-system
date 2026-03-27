@@ -433,7 +433,7 @@ function logEvent(type, extra = {}){
 
         localStorage.setItem("aif_sessions", JSON.stringify(sessions));
 
-        alert(type.toUpperCase() + " logged");
+        console.log(type + " logged");
 
     });
 }
@@ -736,9 +736,17 @@ function showConnectionStatus(){
     // 🔌 simulate connections (later replace with real ESP / sensors)
     let probe = false;
     let turbidity = false;
-    let depth = false;
+    let depth = true;
+
+    const anyConnected = probe || turbidity || depth;
 
 box.innerHTML = `
+const btn = document.getElementById("startScanBtn");
+if(btn && !anyConnected){
+btn.disabled = true;
+btn.style.opacity = 0.5;
+}
+
 <b>Device Status</b><br><br>
 
 Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
@@ -757,7 +765,7 @@ margin-bottom:10px;
 Recheck Devices
 </button>
 
-<button onclick="startScan()" style="
+<button onclick="startScan()" id:"startScanBtn" style="
 width:100%;
 padding:14px;
 background:#00ffa6;
