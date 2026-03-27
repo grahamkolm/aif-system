@@ -87,6 +87,10 @@ font-weight:700;
     margin: 0 auto;
 }
 
+.gauge-container {
+    position: relative;
+}
+
 /* circles */
 .env-circle,
 .conf-circle {
