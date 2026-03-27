@@ -610,9 +610,7 @@ function startScan(){
 
     const resultBox = document.getElementById("scanArea");
 
-    if(resultBox){
-        resultBox.innerHTML = "🔄 Connecting to probe...";
-    }
+    resultBox.innerHTML = "🔄 Connecting to probe...";
 
     setTimeout(() => {
         resultBox.innerHTML = "📡 Validating sensor...";
@@ -630,13 +628,12 @@ function startScan(){
         generateScoutResults();
     }, 4800);
 
-    // AUTO SCROLL
+    // scroll early so user sees it
     setTimeout(() => {
-        if(resultBox){
-            resultBox.scrollIntoView({ behavior: "smooth" });
-        }
+        resultBox.scrollIntoView({ behavior: "smooth" });
     }, 600);
 }
+
     // ✅ 👇 ADD AUTO-SCROLL HERE (NOT inside others)
     setTimeout(() => {
         const el = document.getElementById("scanArea");
@@ -703,6 +700,10 @@ Apply & Close
     lastConditions.scoutScore = score;
 }
 
+setTimeout(() => {
+    resultBox.scrollIntoView({ behavior: "smooth"});
+}, 300);
+    
 function saveScoutData(score){
 
 let entry = {
