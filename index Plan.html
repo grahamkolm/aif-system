@@ -2,21 +2,17 @@
 <html>
 <head>
 
-<link rel="apple-touch-icon" href="icon.png"> <link rel="icon" type="image/png" href="icon.png"> 
-<meta name="apple-mobile-web-app-capable" content="yes"> 
-<meta name="theme-color" content="#05080d">
-   
-<meta name="viewport" content="width=device-width, initial-scale=1"> <title>AIF Dashboard</title>
+<link rel="apple-touch-icon" href="icon.png"> <link rel="icon" type="image/png" href="icon.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes"> <meta name="theme-color" content="#05080d"> <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>AIF Dashboard</title>
 
 <!-- LIBS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
-<meta name="theme-color" content="#05080d"> 
-<meta name="apple-mobile-web-app-capable" content="yes"> 
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-   
 <!-- CSS -->
 <link rel="stylesheet" href="styles.css">
 
@@ -34,38 +30,54 @@
 
 <!-- SPI -->
 <div class="instrument">
-
   <div class="spi-container">
 
-  <svg id="spiGauge" viewBox="0 0 300 300">
+    <svg id="spiGauge" viewBox="0 0 300 300">
 
-<circle cx="150" cy="150" r="110"
-stroke="#2f4f4f"
-stroke-width="10"
-fill="none"
-stroke-dasharray="8 12"/>
+      <circle cx="150" cy="150" r="110"
+        stroke="#2f4f4f"
+        stroke-width="10"
+        fill="none"
+        stroke-dasharray="8 12"/>
 
-<circle id="spiArc"
-cx="150"
-cy="150"
-r="110"
-stroke="#00ffa6"
-stroke-width="14"
-fill="none"
-stroke-linecap="round"
-transform="rotate(-90 150 150)"/>
+      <circle id="spiArc"
+        cx="150"
+        cy="150"
+        r="110"
+        stroke="#00ffa6"
+        stroke-width="14"
+        fill="none"
+        stroke-linecap="round"
+        transform="rotate(-90 150 150)"/>
 
-<text x="150" y="145"
-text-anchor="middle"
-class="spi-number"
-id="spiValue">--%</text>
+      <text x="150" y="145"
+        text-anchor="middle"
+        class="spi-number"
+        id="spiValue">--%</text>
 
-<text x="150" y="175"
-text-anchor="middle">SPI</text>
+      <text x="150" y="175"
+        text-anchor="middle">SPI</text>
 
-</svg>
+    </svg>
 
-<div class="tactical-bar" id="tactical">Waiting for environmental data...</div>
+    <!-- ✅ MINI CIRCLES -->
+    <div class="env-circle">
+      <div class="mini-value" id="envScore">--%</div>
+      <div class="mini-label">ENV</div>
+    </div>
+
+    <div class="conf-circle">
+      <div class="mini-value" id="confScore">--%</div>
+      <div class="mini-label">CONF</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TACTICAL -->
+<div class="tactical-bar" id="tactical">
+  Waiting for environmental data...
+</div>
 
 <!-- TILES -->
 <div class="tile-grid">
@@ -73,99 +85,72 @@ text-anchor="middle">SPI</text>
 <div class="tile">
 <i data-lucide="sun"></i>
 <div class="tile-title">Air</div>
-<div class="tile-value" id="air">--</div>
-</div> 
-    
+<div class="tile-value" id="air">--</div> </div>
+
 <div class="tile">
 <i data-lucide="waves"></i>
 <div class="tile-title">Surface</div>
-<div class="tile-value" id="surface">--</div>
-</div>
-    
+<div class="tile-value" id="surface">--</div> </div>
+
 <div class="tile">
 <i data-lucide="arrow-down"></i>
 <div class="tile-title">Bottom</div>
-<div class="tile-value" id="bottom">--</div>
-</div>
+<div class="tile-value" id="bottom">--</div> </div>
 
 <div class="tile">
 <i data-lucide="gauge"></i>
 <div class="tile-title">Pressure</div>
-<div class="tile-value" id="pressure">--</div>
-</div> 
-    
+<div class="tile-value" id="pressure">--</div> </div>
+
 <div class="tile">
 <i data-lucide="wind"></i>
 <div class="tile-title">Wind</div>
-<div class="tile-value" id="wind">--</div>
-</div> 
-    
+<div class="tile-value" id="wind">--</div> </div>
+
 <div class="tile">
 <i data-lucide="cloud"></i>
 <div class="tile-title">Cloud</div>
-<div class="tile-value" id="cloud">--</div>
-</div>
+<div class="tile-value" id="cloud">--</div> </div>
 
 <div class="tile">
 <i data-lucide="moon"></i>
 <div class="tile-title">Moon</div>
-<div class="tile-value" id="moon">--</div>
-</div> 
-    
+<div class="tile-value" id="moon">--</div> </div>
+
 <div class="tile">
 <i data-lucide="leaf"></i>
 <div class="tile-title">Season</div>
-<div class="tile-value" id="season">--</div>
-</div> 
-    
+<div class="tile-value" id="season">--</div> </div>
+
 <div class="tile">
 <i data-lucide="fish"></i>
 <div class="tile-title">Feed</div>
-<div class="tile-value" id="feed">--</div>
-</div> 
-    
+<div class="tile-value" id="feed">--</div> </div>
+
 <div class="tile">
 <i data-lucide="droplets"></i>
 <div class="tile-title">Oxygen</div>
-<div class="tile-value" id="oxygen">--</div>
-</div>
+<div class="tile-value" id="oxygen">--</div> </div>
 
 </div>
 
 <!-- AI -->
-<div class="ai-box" onclick="openAIDetail()">
-<b>AI Tactical Analysis</b>
-<div id="aiAnalysis" class="ai-content"></div> 
-</div>
+<div class="ai-box" onclick="openAIDetail()"> <b>AI Tactical Analysis</b> <div id="aiAnalysis" class="ai-content"></div> </div>
+
+</div> <!-- END MAIN -->
 
 <!-- DOCK -->
-
 <div class="dock">
 
-    <div class="nav-item" onclick="refreshData()">
-        <i data-lucide="refresh-cw" id="refreshIcon"></i>
-        <span>Refresh</span>
-    </div>
+<div class="nav-item" onclick="refreshData()"> <i data-lucide="refresh-cw" id="refreshIcon"></i> <span>Refresh</span> </div>
 
-    <div class="dock-btn" onclick="openScout()">
-       <i data-lucide="crosshair"></i>
-       Scout
-    </div>
+<div class="dock-btn" onclick="openScout()"> <i data-lucide="crosshair"></i> Scout </div>
 
-    <div class="dock-btn" onclick="confirmDrop()">
-        <i data-lucide="target"></i>
-        Drop
-    </div>
+<div class="dock-btn" onclick="confirmDrop()"> <i data-lucide="target"></i> Drop </div>
 
-    <div class="dock-btn" onclick="openMap()">
-        <i data-lucide="map"></i>
-        Map
-    </div>
+<div class="dock-btn" onclick="openMap()"> <i data-lucide="map"></i> Map </div>
 
-    <div class="dock-btn" onclick="openReport()">
-        <i data-lucide="bar-chart-3"></i>
-        Report
-    </div>
+<div class="dock-btn" onclick="openReport()"> <i data-lucide="bar-chart-3"></i> Report </div>
 
 </div>
 
