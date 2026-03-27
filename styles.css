@@ -236,9 +236,10 @@ transform:scale(1.05);
     background: rgba(0, 20, 30, 0.6);
     border: 1px solid rgba(0,255,166,0.2);
     color: white;
-    padding: 10px 14px;
-    border-radius: 12px;
+    padding: 10px;
+    border-radius: 10px;
     transition: 0.25s ease;
+    font-size: 13px;
 }
 
 /* ✅ ACTIVE STYLE (recommended) */
