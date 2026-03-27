@@ -451,15 +451,6 @@ function refreshData() {
     fetchWeatherSafe();
 }
   
-    // CALL YOUR WEATHER / UPDATE FUNCTION
-    fetchWeatherSafe();
-
-    // STOP SPIN AFTER DONE
-    setTimeout(() => {
-        icon.classList.remove("refresh-spin");
-    }, 1200); // adjust timing if needed 
-}
-
 // ===============================
 // 🎯 DROP / SCOUT / CATCH
 // ===============================
