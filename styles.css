@@ -107,14 +107,14 @@ font-weight:700;
 
 /* LEFT */
 .env-circle {
-    left: 40px;
-    top: 180px;
+    left: -40px;
+    top: 160px;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: 40px;
-    top: 180px;
+    right: -40px;
+    top: 160px;
 }
 
 /* TEXT inside circles */
