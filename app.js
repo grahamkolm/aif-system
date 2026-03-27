@@ -631,7 +631,7 @@ function generateScoutResults(){
     let thermo = score > 60 ? "present" : "unlikely";
 
     // 📺 OUTPUT
-    const resultBox = document.getElementById("results");
+    const resultBox = document.getElementById("scanArea");
 
     if(resultBox){
         resultBox.innerHTML = `
