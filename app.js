@@ -634,14 +634,6 @@ function startScan(){
     }, 600);
 }
 
-    // ✅ 👇 ADD AUTO-SCROLL HERE (NOT inside others)
-    setTimeout(() => {
-        const el = document.getElementById("scanArea");
-        if(el){
-            el.scrollIntoView({ behavior: "smooth" });
-        }
-    }, 500);
-
 // STOP SCAN → triggers results
 function stopScan(){
     generateScoutResults();
