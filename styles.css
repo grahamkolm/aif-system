@@ -65,12 +65,12 @@ body {
 }
 
 #spiGauge{
-    margin-top:-25px;
+    top: 0;
+    left: 0;
     width:260px;
     height:260px;
-    position:relative;
-    z-index:2;
-    transform: translateY(-8px);
+    position:absolute;
+    transform: none;
 }
 
 .spi-number{
@@ -87,37 +87,35 @@ font-weight:700;
     margin: 0 auto;
 }
 
-.gauge-container {
-    position: relative;
-}
-
 /* circles */
 .env-circle,
 .conf-circle {
-    position: absolute !important;
-    transform: none !important;
-    left: auto !important;
-    right: auto !important;
-    top: 30%;
+    position: absolute;
     width: 80px;
     height: 80px;
     border-radius: 50%;
     border: 2px solid rgba(0,255,166,0.5);
-
     background: rgba(15,20,28,0.9);
-    box-shadow: 0 0 12px rgba(0,255,166,0.25); }
+    box-shadow: 0 0 12px rgba(0,255,166,0.25);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 
 /* LEFT */
 .env-circle {
-    left: -20px !important;
-    top: 100px !important;
+    left: 20px;
+    top: 170px;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: -20px !important;
-    top: 100px !important;
-    }
+    right: 20px;
+    top: 170px;
+}
 
 /* TEXT inside circles */
 .mini-value {
