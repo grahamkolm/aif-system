@@ -232,6 +232,23 @@ color:#081018;
 transform:scale(1.05);
 }
 
+.scout-option {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  margin: 5px;
+  display: inline-block;
+}
+
+.scout-option.active {
+  border: 1px solid #00ffa6;
+  background: rgba(0,255,166,0.1);
+}
+
+.scout-group {
+  margin-bottom: 16px;
+}
+
 /* ===============================
    ICON BASE
 =============================== */
