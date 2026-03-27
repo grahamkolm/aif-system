@@ -91,7 +91,7 @@ font-weight:700;
 .env-circle,
 .conf-circle {
     position: absolute;
-    top: 65%;
+    top: 50%;
     transform: translateY(-50%);
     width: 80px;
     height: 80px;
@@ -108,12 +108,12 @@ font-weight:700;
 
 /* LEFT */
 .env-circle {
-    left: 10px;
+    left: -20px;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: 10px;
+    right: -20px;
 }
 
 /* TEXT inside circles */
