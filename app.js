@@ -768,6 +768,7 @@ font-weight:bold;
 Start Scan
 </button>
 `;
+}
 
 function applyScoutAndClose(score){
 
