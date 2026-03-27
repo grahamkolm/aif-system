@@ -92,7 +92,6 @@ font-weight:700;
 .conf-circle {
     position: absolute;
     top: 40%;
-    transform: translateY(-50%);
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -108,17 +107,13 @@ font-weight:700;
 
 /* LEFT */
 .env-circle {
-    position: absolute;
     left: -40px;
-    transform: translateY(-50%);
 }
 
 /* RIGHT */
 .conf-circle {
-    position: absolute;
     right: -40px;
-    transform: translateY(-50%);
-}
+    }
 
 /* TEXT inside circles */
 .mini-value {
