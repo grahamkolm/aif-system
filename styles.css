@@ -260,6 +260,16 @@ transform:scale(1.05);
     gap: 10px;
 }
 
+#scoutStartBtn {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    padding: 14px;
+    background: #00ffa6;
+    border: none;
+    font-weight: bold;
+}
+
 /* ===============================
    ICON BASE
 =============================== */
