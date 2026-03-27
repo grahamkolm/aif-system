@@ -524,6 +524,7 @@ overflow:auto;
   <div class="scout-option" onclick="toggleScout('rolling', this)">🐟 Rolling Fish</div>
   <div class="scout-option" onclick="toggleScout('none', this)">🚫 No Activity</div>
 </div>
+</div>
 
 <div class="scout-group">
   <h3>Water Clarity</h3>
@@ -531,11 +532,13 @@ overflow:auto;
   <div class="scout-option" onclick="toggleScout('stained', this)">🌤 Slightly Stained</div>
   <div class="scout-option" onclick="toggleScout('murky', this)">🌫 Murky</div>
 </div>
+</div>
 
 <div class="scout-group">
   <h3>Life Signs</h3>
   <div class="scout-option" onclick="toggleScout('birds', this)">🕊 Birds Active</div>
   <div class="scout-option" onclick="toggleScout('noBirds', this)">❌ No Birds</div>
+</div>
 </div>
 
 <div class="scout-group">
@@ -544,11 +547,13 @@ overflow:auto;
   <div class="scout-option" onclick="toggleScout('drop', this)">📉 Drop-off</div>
   <div class="scout-option" onclick="toggleScout('flat', this)">🏞 Flat</div>
 </div>
+</div>
 
 <div class="scout-group">
   <h3>Wind Effect</h3>
   <div class="scout-option" onclick="toggleScout('windBank', this)">🌬 Windblown Bank</div>
   <div class="scout-option" onclick="toggleScout('calm', this)">🪶 Calm Water</div>
+</div>
 </div>
 
 </div>
