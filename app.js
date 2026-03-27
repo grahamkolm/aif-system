@@ -16,7 +16,6 @@ let selected = {};
 // ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
-    initSession();
     startSystem();
     if(typeof lucide !== "undefined"){
         lucide.createIcons();
@@ -464,7 +463,23 @@ setTimeout(() => {
 // 🎯 DROP / SCOUT / CATCH
 // ===============================
 
+function ensureSession(){
+
+    if(currentSession) return;
+
+    let dam = prompt("Enter Dam Name:");
+    let area = prompt("Enter Area / Peg:");
+
+    currentSession = {
+        id: Date.now(),
+        dam: dam || "Unknown",
+        area: area || "Unknown",
+        date: new Date().toISOString(),
+        events: []
+    };
+
 function confirmDrop(){
+    ensureSession();
     logEvent("drop");
 }
 
@@ -481,6 +496,8 @@ function logCatch(){
 }
 
 function openScout(){
+    ensureSession();
+    logEvent ("drop");
 
 document.body.insertAdjacentHTML("beforeend", `
 <div id="scoutScreen" style="
