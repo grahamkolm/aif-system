@@ -91,7 +91,7 @@ font-weight:700;
 .env-circle,
 .conf-circle {
     position: absolute;
-    top: 50%;
+    top: 40%;
     transform: translateY(-50%);
     width: 80px;
     height: 80px;
@@ -110,7 +110,7 @@ font-weight:700;
 .env-circle {
     position: absolute;
     left: 30%;
-    top: 50%;
+    top: 60%;
     transform: translateY(-50%);
 }
 
@@ -118,7 +118,7 @@ font-weight:700;
 .conf-circle {
     position: absolute;
     right: 30%;
-    top: 50%;
+    top: 60%;
     transform: translateY(-50%);
 }
 
