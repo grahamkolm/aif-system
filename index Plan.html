@@ -37,28 +37,33 @@
 
   <div class="spi-container">
 
-    <svg id="spiGauge">...</svg>
+  <svg id="spiGauge" viewBox="0 0 300 300">
 
-    <div class="env-circle">
-      <div class="mini-value">64%</div>
-      <div class="mini-label">ENV</div>
-    </div>
+<circle cx="150" cy="150" r="110"
+stroke="#2f4f4f"
+stroke-width="10"
+fill="none"
+stroke-dasharray="8 12"/>
 
-    <div class="conf-circle">
-      <div class="mini-value">56%</div>
-      <div class="mini-label">CONF</div>
-    </div>
+<circle id="spiArc"
+cx="150"
+cy="150"
+r="110"
+stroke="#00ffa6"
+stroke-width="14"
+fill="none"
+stroke-linecap="round"
+transform="rotate(-90 150 150)"/>
 
-  </div>
+<text x="150" y="145"
+text-anchor="middle"
+class="spi-number"
+id="spiValue">--%</text>
 
-</div>
+<text x="150" y="175"
+text-anchor="middle">SPI</text>
 
-<svg id="spiGauge" viewBox="0 0 300 300"> 
-<circle cx="150" cy="150" r="110" stroke="#2f4f4f" stroke-width="10" fill="none" stroke-dasharray="8 12"/> 
-<circle id="spiArc" cx="150" cy="150" r="110" stroke="#00ffa6" stroke-width="14" fill="none" stroke-linecap="round" transform="rotate(-90 150 150)"/> <text x="150" y="145" text-anchor="middle" class="spi-number" id="spiValue">--%</text> <text x="150" y="175" text-anchor="middle">SPI</text> </svg>
-
-</div>
-</div>
+</svg>
 
 <div class="tactical-bar" id="tactical">Waiting for environmental data...</div>
 
