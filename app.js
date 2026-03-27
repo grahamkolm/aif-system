@@ -339,6 +339,10 @@ function updateTactical(spi, envScore, confScore, w, t){
 
     let lines = [];
 
+if(spi > 75){
+    lines.unshift("🔥 PRIORITY: Stay on current spot — feeding window active"); } else if(spi < 50){
+    lines.unshift("⚠️ PRIORITY: Relocate or change depth"); }
+    
 if(lastConditions.scout){
 
   if(lastConditions.scout.bubbles){
