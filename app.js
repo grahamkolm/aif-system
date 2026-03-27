@@ -660,7 +660,8 @@ Exit
 }
 
 function retryScan(){
-    startScan(); // 🔁 just re-run everything }
+    startScan(); // 🔁 just re-run everything 
+}
 
 function runScanFlow(){
 
@@ -733,16 +734,28 @@ function showConnectionStatus(){
     const box = document.getElementById("scanArea");
 
     // 🔌 simulate connections (later replace with real ESP / sensors)
-    let probe = Math.random() > 0.2;
-    let turbidity = Math.random() > 0.3;
-    let depth = Math.random() > 0.5;
+    let probe = false;
+    let turbidity = false;
+    let depth = false;
 
-    box.innerHTML = `
+box.innerHTML = `
 <b>Device Status</b><br><br>
 
 Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
 Turbidity: ${turbidity ? "✅ Connected" : "❌ Not Connected"}<br>
 Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
+
+<button onclick="showConnectionStatus()" style="
+width:100%;
+padding:14px;
+background:#ffaa00;
+border:none;
+border-radius:10px;
+font-weight:bold;
+margin-bottom:10px;
+">
+Recheck Devices
+</button>
 
 <button onclick="startScan()" style="
 width:100%;
@@ -755,7 +768,6 @@ font-weight:bold;
 Start Scan
 </button>
 `;
-}
 
 function applyScoutAndClose(score){
 
@@ -1046,7 +1058,6 @@ function renderTimeline(events){
     document.getElementById("timeline").innerHTML = html; 
 }
 
-
 function feeding(spi){
 
 if(spi >= 85) return "Aggressive feeding"; 
@@ -1073,7 +1084,7 @@ function getPressureTrend(p){
     if(lastPressure === null){
         lastPressure = p;
         return "Stable";
-    }
+}
 
     let diff = p - lastPressure;
     lastPressure = p;
