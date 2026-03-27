@@ -544,9 +544,15 @@ Start Scan
 `);
 }
 
-function toggleScout(key, el){
-  selected[key] = !selected[key];
-  el.classList.toggle("active");
+function toggleScout(type, el){
+
+    selected[type] = !selected[type];
+
+    if(selected[type]){
+        el.classList.add("active");
+    } else {
+        el.classList.remove("active");
+    }
 }
 
 // ===============================
