@@ -647,69 +647,21 @@ function stopScan(){
 // ===============================
 // 📊 SCOUT RESULTS ENGINE
 // ===============================
-function generateScoutResults(){
+function applyScoutAndClose(score){
 
-    let score = 50;
-
-    if(scoutInputs.bubbles) score += 15;
-    if(scoutInputs.rolling) score += 20;
-    if(scoutInputs.birds) score += 10;
-    if(scoutInputs.windBank) score += 10;
-    if(scoutInputs.murky) score -= 10;
-    if(scoutInputs.noBirds) score -= 5;
-
-    score = Math.max(0, Math.min(100, score));
-
-    let surface = lastConditions.airTemp || 22;
-    let bottom = surface - 2;
-
-    let thermo = score > 60 ? "present" : "unlikely";
-
-    const box = document.getElementById("scanArea");
-
-    box.innerHTML = `
-Surface: ${surface.toFixed(1)}°C<br>
-Bottom: ${bottom.toFixed(1)}°C<br>
-Thermocline: ${thermo}<br><br>
-
-Fishing Score: ${score}%<br><br>
-
-<button onclick="applyScoutAndClose(${score})" style="
-width:100%;
-padding:14px;
-background:#00ffa6;
-border:none;
-border-radius:10px;
-font-weight:bold;
-">
-Apply & Close
-</button>
-`;
-
-    // 🔗 SAVE INTO SYSTEM
+    lastConditions.scout = scoutInputs;
     lastConditions.scoutScore = score;
 
-    saveScoutData(score);
-}
+    document.getElementById("scoutScreen").remove();
 
-        // ✅ SAVE FOR AI SYSTEM
-        lastConditions.scoutScore = score;
-
-        // ✅ OPTIONAL: SAVE HISTORY
-        saveScoutData(score);
-
-        // ✅ SCROLL INTO VIEW
-        setTimeout(() => {
-            resultBox.scrollIntoView({ behavior: "smooth"});
-        }, 300);
-    }
+    fetchWeatherSafe();
 }
 
 function saveScoutData(score){
 
     let entry = {
         time: Date.now(),
-        inputs: selected,
+        inputs: scoutInputs,
         probe: probeData,
         score: score,
         conditions: lastConditions,
@@ -717,7 +669,6 @@ function saveScoutData(score){
     };
 
     scoutHistory.push(entry);
-
     localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory)); }
 
 function saveScout() {
