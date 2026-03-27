@@ -241,8 +241,15 @@ transform:scale(1.05);
 }
 
 .scout-option.active {
-  border: 1px solid #00ffa6;
-  background: rgba(0,255,166,0.1);
+    background: #00ffa6;
+    color: #081018;
+    border: none;
+
+    box-shadow: 
+        0 0 12px rgba(0,255,166,0.6),
+        0 0 25px rgba(0,255,166,0.3);
+
+    transform: scale(1.05);
 }
 
 .scout-group {
