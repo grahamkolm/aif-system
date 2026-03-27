@@ -581,7 +581,7 @@ function toggleScout(type, el){
     selected[type] = !selected[type];
 
     if(selected[type]){
-        el.classList.add("active");
+        el.classList.add("active"); 
     } else {
         el.classList.remove("active");
     }
