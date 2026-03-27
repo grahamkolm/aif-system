@@ -457,8 +457,19 @@ function refreshData() {
 
 function ensureSession(){
 
-    if(currentSession) return;
+    if(currentSession){
+        return; // ✅ already exists → do nothing
+    }
 
+    // try load from storage first
+    let saved = localStorage.getItem("aif_current_session");
+
+    if(saved){
+        currentSession = JSON.parse(saved);
+        return;
+    }
+
+    // only ask ONCE
     let dam = prompt("Enter Dam Name:");
     let area = prompt("Enter Area / Peg:");
 
@@ -469,7 +480,8 @@ function ensureSession(){
         date: new Date().toISOString(),
         events: []
     };
-}
+
+    localStorage.setItem("aif_current_session", JSON.stringify(currentSession)); }
 
 function confirmDrop(){
     ensureSession();
