@@ -647,7 +647,6 @@ function generateScoutResults(){
 
     let score = 50;
 
-    // 🎯 SCORING FROM USER INPUT
     if(selected.bubbles) score += 15;
     if(selected.rolling) score += 20;
     if(selected.birds) score += 10;
@@ -657,14 +656,11 @@ function generateScoutResults(){
 
     score = Math.max(0, Math.min(100, score));
 
-    // 🌡️ USE REAL DATA FROM WEATHER SYSTEM
     let surface = lastConditions.airTemp || 22;
     let bottom = surface - 2;
 
-    // 🧠 THERMOCLINE LOGIC
     let thermo = score > 60 ? "present" : "unlikely";
 
-    // 📺 OUTPUT
     const resultBox = document.getElementById("scanArea");
 
     if(resultBox){
@@ -687,6 +683,14 @@ font-weight:bold;
 Apply & Close
 </button>
 `;
+
+        lastConditions.scoutScore = score;
+
+        setTimeout(() => {
+            resultBox.scrollIntoView({ behavior: "smooth"});
+        }, 300);
+    }
+}
 
     // 🔗 SAVE FOR AI SYSTEM (VERY IMPORTANT)
     lastConditions.scoutScore = score;
