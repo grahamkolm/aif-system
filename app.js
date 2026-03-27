@@ -603,20 +603,26 @@ function startScan(){
     }
 
     setTimeout(() => {
-        if(resultBox){
-            resultBox.innerHTML = "🌊 Scanning water column...";
-        }
-    }, 1000);
+        resultBox.innerHTML = "📡 Validating sensor...";
+    }, 1200);
 
     setTimeout(() => {
-        if(resultBox){
-            resultBox.innerHTML = "📡 Analyzing layers...";
-        }
-    }, 2000);
+        resultBox.innerHTML = "🌊 Scanning water column...";
+    }, 2400);
 
     setTimeout(() => {
-        stopScan();
-    }, 3000);
+        resultBox.innerHTML = "🧠 Processing data...";
+    }, 3600);
+
+    setTimeout(() => {
+        generateScoutResults();
+    }, 4800);
+
+    // AUTO SCROLL
+    setTimeout(() => {
+        resultBox.scrollIntoView({ behavior: "smooth" });
+    }, 600);
+}
 
     // ✅ 👇 ADD AUTO-SCROLL HERE (NOT inside others)
     setTimeout(() => {
