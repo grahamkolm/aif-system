@@ -364,8 +364,10 @@ transform:scale(1.05);
 /* Prevent overflow bug */
 .leaflet-container{
     width:100% !important;
-    height:100% !important;
+    height:100vh !important;
     border-radius:12px;
+    padding-bottom:120px;
+    overflow-y:auto;
 }
 
 /* ========================= */
