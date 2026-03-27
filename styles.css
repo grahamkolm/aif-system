@@ -218,6 +218,20 @@ font-weight:700;
     transition: all 0.2s ease;
 }
 
+.scoutTile{
+padding:12px;
+background:#111;
+border-radius:10px;
+border:1px solid #222;
+cursor:pointer;
+}
+
+.scoutTile.active{
+background:#00ffa6;
+color:#081018;
+transform:scale(1.05);
+}
+
 /* ===============================
    ICON BASE
 =============================== */
