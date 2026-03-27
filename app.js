@@ -1034,16 +1034,18 @@ setTimeout(()=>{
 
 function renderTimeline(events){
 
-let html = "<h3>Timeline</h3>";
+    let html = "<h3>Timeline</h3>";
 
-events.forEach(e=>{
-html += `
-<div style="margin-top:10px">
-${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}% </div>`; });
+    events.forEach(e => {
+        html += `
+        <div style="margin-top:10px">
+        ${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}%
+        </div>`;
+    });
 
-document.getElementById("timeline").innerHTML = html;
-
+    document.getElementById("timeline").innerHTML = html; 
 }
+
 
 function feeding(spi){
 
