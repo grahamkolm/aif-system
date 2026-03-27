@@ -10,6 +10,7 @@ let probeData = null;
 let scoutInputs = {};
 let scoutHistory = [];
 let selected = {};
+let scoutStep = "input";
 
 // ===============================
 // 🚀 START SYSTEM
@@ -570,7 +571,9 @@ overflow:auto;
 
 </div>
 
-<button onclick="startScan()" style="
+<button onclick="saveScout()" style="
+position:sticky;
+bottom:20px;
 margin-top:25px;
 width:100%;
 padding:14px;
@@ -578,8 +581,9 @@ background:#00ffa6;
 border:none;
 border-radius:10px;
 font-weight:bold;
+z-index:10;
 ">
-Start Scan
+Save & Continue
 </button>
 
 <div id="scanArea" style="margin-top:20px;"></div>
@@ -608,29 +612,30 @@ function toggleScout(type, el){
 // START SCAN (animation flow)
 function startScan(){
 
-    const resultBox = document.getElementById("scanArea");
+    scoutStep = "scan";
 
-    resultBox.innerHTML = "🔄 Connecting to probe...";
+    const box = document.getElementById("scanArea");
+
+    box.innerHTML = "🔄 Connecting to probe...";
 
     setTimeout(() => {
-        resultBox.innerHTML = "📡 Validating sensor...";
+        box.innerHTML = "📡 Sensors active...";
     }, 1200);
 
     setTimeout(() => {
-        resultBox.innerHTML = "🌊 Scanning water column...";
+        box.innerHTML = "🌊 Scanning water column...";
     }, 2400);
 
     setTimeout(() => {
-        resultBox.innerHTML = "🧠 Processing data...";
+        box.innerHTML = "🧠 Processing data...";
     }, 3600);
 
     setTimeout(() => {
         generateScoutResults();
     }, 4800);
 
-    // scroll early so user sees it
     setTimeout(() => {
-        resultBox.scrollIntoView({ behavior: "smooth" });
+        box.scrollIntoView({ behavior: "smooth" });
     }, 600);
 }
 
@@ -646,34 +651,30 @@ function generateScoutResults(){
 
     let score = 50;
 
-    // 🎯 SCORING
-    if(selected.bubbles) score += 15;
-    if(selected.rolling) score += 20;
-    if(selected.birds) score += 10;
-    if(selected.windBank) score += 10;
-    if(selected.murky) score -= 10;
-    if(selected.noBirds) score -= 5;
+    if(scoutInputs.bubbles) score += 15;
+    if(scoutInputs.rolling) score += 20;
+    if(scoutInputs.birds) score += 10;
+    if(scoutInputs.windBank) score += 10;
+    if(scoutInputs.murky) score -= 10;
+    if(scoutInputs.noBirds) score -= 5;
 
     score = Math.max(0, Math.min(100, score));
 
-    // 🌡️ DATA
     let surface = lastConditions.airTemp || 22;
     let bottom = surface - 2;
 
     let thermo = score > 60 ? "present" : "unlikely";
 
-    const resultBox = document.getElementById("scanArea");
+    const box = document.getElementById("scanArea");
 
-    if(resultBox){
-        resultBox.innerHTML = `
+    box.innerHTML = `
 Surface: ${surface.toFixed(1)}°C<br>
 Bottom: ${bottom.toFixed(1)}°C<br>
 Thermocline: ${thermo}<br><br>
 
 Fishing Score: ${score}%<br><br>
 
-<button onclick="closeScout()" style="
-margin-top:20px;
+<button onclick="applyScoutAndClose(${score})" style="
 width:100%;
 padding:14px;
 background:#00ffa6;
@@ -684,6 +685,12 @@ font-weight:bold;
 Apply & Close
 </button>
 `;
+
+    // 🔗 SAVE INTO SYSTEM
+    lastConditions.scoutScore = score;
+
+    saveScoutData(score);
+}
 
         // ✅ SAVE FOR AI SYSTEM
         lastConditions.scoutScore = score;
@@ -712,6 +719,51 @@ function saveScoutData(score){
     scoutHistory.push(entry);
 
     localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory)); }
+
+function saveScout() {
+    scoutInputs = { ...selected};
+    scoutStep = "connect";
+    showConnectionStatus();
+}
+
+function showConnectionStatus(){
+
+    const box = document.getElementById("scanArea");
+
+    // 🔌 simulate connections (later replace with real ESP / sensors)
+    let probe = Math.random() > 0.2;
+    let turbidity = Math.random() > 0.3;
+    let depth = Math.random() > 0.5;
+
+    box.innerHTML = `
+<b>Device Status</b><br><br>
+
+Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
+Turbidity: ${turbidity ? "✅ Connected" : "❌ Not Connected"}<br>
+Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
+
+<button onclick="startScan()" style="
+width:100%;
+padding:14px;
+background:#00ffa6;
+border:none;
+border-radius:10px;
+font-weight:bold;
+">
+Start Scan
+</button>
+`;
+}
+
+function applyScoutAndClose(score){
+
+    lastConditions.scout = scoutInputs;
+    lastConditions.scoutScore = score;
+
+    document.getElementById("scoutScreen").remove();
+
+    fetchWeatherSafe();
+}
 
 //=====================================
 //STEP 8 — RESULTS UI
