@@ -34,19 +34,28 @@
 
 <!-- SPI -->
 <div class="instrument">
-<div class="spi-container">
 
-<div class="env-circle">
-    <div class="mini-value" id="envScore">--</div>
-    <div class="mini-label">ENV</div>
+  <div class="spi-container">
+
+    <svg id="spiGauge">...</svg>
+
+    <div class="env-circle">
+      <div class="mini-value">64%</div>
+      <div class="mini-label">ENV</div>
+    </div>
+
+    <div class="conf-circle">
+      <div class="mini-value">56%</div>
+      <div class="mini-label">CONF</div>
+    </div>
+
+  </div>
+
 </div>
 
-<div class="conf-circle">
-    <div class="mini-value" id="confScore">--</div>
-    <div class="mini-label">CONF</div>
-</div>
-
-<svg id="spiGauge" viewBox="0 0 300 300"> <circle cx="150" cy="150" r="110" stroke="#2f4f4f" stroke-width="10" fill="none" stroke-dasharray="8 12"/> <circle id="spiArc" cx="150" cy="150" r="110" stroke="#00ffa6" stroke-width="14" fill="none" stroke-linecap="round" transform="rotate(-90 150 150)"/> <text x="150" y="145" text-anchor="middle" class="spi-number" id="spiValue">--%</text> <text x="150" y="175" text-anchor="middle">SPI</text> </svg>
+<svg id="spiGauge" viewBox="0 0 300 300"> 
+<circle cx="150" cy="150" r="110" stroke="#2f4f4f" stroke-width="10" fill="none" stroke-dasharray="8 12"/> 
+<circle id="spiArc" cx="150" cy="150" r="110" stroke="#00ffa6" stroke-width="14" fill="none" stroke-linecap="round" transform="rotate(-90 150 150)"/> <text x="150" y="145" text-anchor="middle" class="spi-number" id="spiValue">--%</text> <text x="150" y="175" text-anchor="middle">SPI</text> </svg>
 
 </div>
 </div>
