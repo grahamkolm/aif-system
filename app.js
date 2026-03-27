@@ -737,14 +737,13 @@ function showConnectionStatus(){
 
     const box = document.getElementById("scanArea");
 
-    // 🔌 simulate connections (later replace with real ESP / sensors)
+    // 🔌 SENSOR STATES
     let probe = false;
     let turbidity = false;
-    let depth = true;
+    let depth = true; // ← for testing
 
-    const anyConnected = probe || turbidity || depth;
-
-box.innerHTML = `
+    // ✅ BUILD UI
+    box.innerHTML = `
 <b>Device Status</b><br><br>
 
 Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
@@ -755,35 +754,15 @@ Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
 
 <button onclick="startScan()" id="startScanBtn">Start Scan</button> `;
 
-<b>Device Status</b><br><br>
+    // ✅ ADD THIS HERE (VERY IMPORTANT POSITION)
+    const anyConnected = probe || turbidity || depth;
 
-Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
-Turbidity: ${turbidity ? "✅ Connected" : "❌ Not Connected"}<br>
-Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
+    const btn = document.getElementById("startScanBtn");
 
-<button onclick="showConnectionStatus()" style="
-width:100%;
-padding:14px;
-background:#ffaa00;
-border:none;
-border-radius:10px;
-font-weight:bold;
-margin-bottom:10px;
-">
-Recheck Devices
-</button>
-
-<button onclick="startScan()" id:"startScanBtn" style="
-width:100%;
-padding:14px;
-background:#00ffa6;
-border:none;
-border-radius:10px;
-font-weight:bold;
-">
-Start Scan
-</button>
-`;
+    if(btn && !anyConnected){
+        btn.disabled = true;
+        btn.style.opacity = 0.5;
+    }
 }
 
 function applyScoutAndClose(score){
