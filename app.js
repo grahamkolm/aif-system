@@ -9,6 +9,7 @@ let lastPressure = null;
 let probeData = null;
 let scoutInputs = {};
 let scoutHistory = [];
+let selected = {};
 
 // ===============================
 // 🚀 START SYSTEM
@@ -433,11 +434,20 @@ function logEvent(type, extra = {}){
 
 function refreshData() {
 
-    const icon = document.getElementById("refreshIcon");
+const icon = document.getElementById("refreshIcon");
+
+if(icon){
+    icon.classList.add("refresh-spin");
+}
+
+fetchWeatherSafe();
+
+setTimeout(() => {
     if(icon){
         icon.classList.remove("refresh-spin");
     }
-    
+}, 1200);
+  
     // START SPIN
     icon.classList.add("refresh-spin");
 
@@ -564,7 +574,7 @@ function toggleScout(type, el){
 // START SCAN (animation flow)
 function startScan(){
 
-    const resultBox = document.getElementById("results");
+    const resultBox = document.getElementById("scanArea");
 
     if(resultBox){
         resultBox.innerHTML = "🔄 Connecting to probe...";
