@@ -6,6 +6,9 @@ let currentSession = null;
 let lastSPI = null;
 let lastConditions = {};
 let lastPressure = null;
+let probeData = null;
+let scoutInputs = {};
+let scoutHistory = [];
 
 // ===============================
 // 🚀 START SYSTEM
@@ -355,6 +358,11 @@ function updateTactical(spi, envScore, confScore, w, t){
         lines.push("🌡️ Suboptimal temperature — adjust depth");
     }
 
+    if(probeData){
+    surfaceTemp = probeData.surface;
+    bottomTemp = probeData.bottom;
+    }
+
     // 🧠 FINAL OUTPUT
     document.getElementById("tactical").innerHTML = lines.join(" • "); }
 
@@ -436,6 +444,158 @@ function logCatch(){
         bait: prompt("Bait used:")
     });
 }
+
+function openScout(){
+
+document.body.insertAdjacentHTML("beforeend", `
+<div id="scoutScreen" style="
+position:fixed;
+top:0; left:0;
+width:100%; height:100%;
+background:#05080d;
+color:white;
+z-index:999;
+padding:20px;
+font-family:Arial;
+overflow:auto;
+">
+
+<h2 style="color:#00ffa6;">Scout Mode</h2>
+
+<p style="opacity:0.7;">Quickly log activity & scan water</p>
+
+<div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;">
+
+<div class="scoutTile" onclick="toggleScout(this,'bubbles')">🫧 Bubbles</div>
+<div class="scoutTile" onclick="toggleScout(this,'rolling')">🐟 Rolling Fish</div>
+<div class="scoutTile" onclick="toggleScout(this,'birds')">🕊 Birds</div>
+
+<div class="scoutTile" onclick="toggleScout(this,'clear')">💧 Clear</div>
+<div class="scoutTile" onclick="toggleScout(this,'murky')">🌫 Murky</div>
+
+<div class="scoutTile" onclick="toggleScout(this,'structure')">🌿 Structure</div>
+<div class="scoutTile" onclick="toggleScout(this,'windbank')">🌬 Wind Bank</div>
+
+</div>
+
+<button onclick="startScan()" style="
+margin-top:25px;
+width:100%;
+padding:14px;
+background:#00ffa6;
+border:none;
+border-radius:10px;
+font-weight:bold;
+">
+Start Scan
+</button>
+
+<div id="scanArea" style="margin-top:20px;"></div>
+
+</div>
+`);
+}
+
+function toggleScout(el, type){
+    el.classList.toggle("active");
+    scoutInputs[type] = !scoutInputs[type];
+}
+
+function startScan(){
+
+document.getElementById("scanArea").innerHTML = `
+<p id="scanStatus">Connecting to probe...</p>
+<button onclick="stopScan()" style="
+margin-top:10px;
+padding:10px;
+width:100%;
+background:#ff4d4d;
+border:none;
+border-radius:8px;
+">Stop Scan</button>
+`;
+
+setTimeout(()=>{
+    document.getElementById("scanStatus").innerText = "Scanning water...";
+},1500);
+}
+
+function stopScan(){
+
+let surface = 22 + Math.random()*2;
+let bottom = surface - (1 + Math.random());
+
+let score = 0;
+
+if(scoutInputs.bubbles) score += 20;
+if(scoutInputs.rolling) score += 25;
+if(scoutInputs.birds) score += 10;
+if(scoutInputs.windbank) score += 15;
+if(scoutInputs.structure) score += 10;
+if(scoutInputs.clear) score += 5;
+if(scoutInputs.murky) score -= 5;
+
+probeData = {
+    surface: surface,
+    bottom: bottom,
+    thermo: (surface - bottom > 1.5) ? "Thermocline present" : "Mixed water"
+};
+
+saveScoutData(score);
+
+showResults(score);
+}
+
+function saveScoutData(score){
+
+let entry = {
+    time: Date.now(),
+    inputs: scoutInputs,
+    probe: probeData,
+    score: score,
+    conditions: lastConditions,
+    spi: lastSPI
+};
+
+scoutHistory.push(entry);
+localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory));
+}
+
+//=====================================
+//STEP 8 — RESULTS UI
+//=====================================
+function showResults(score){
+
+document.getElementById("scanArea").innerHTML = `
+<h3 style="color:#00ffa6;">Results</h3>
+
+Surface: ${probeData.surface.toFixed(1)}°C<br>
+Bottom: ${probeData.bottom.toFixed(1)}°C<br>
+${probeData.thermo}<br><br>
+
+Fishing Score: ${score}%<br>
+
+<button onclick="closeScout()" style="
+margin-top:20px;
+width:100%;
+padding:12px;
+background:#00ffa6;
+border:none;
+border-radius:10px;
+">
+Apply & Close
+</button>
+`;
+}
+
+//=====================================
+//STEP 9 — CLOSE + APPLY
+//=====================================
+function closeScout(){
+document.getElementById("scoutScreen").remove();
+fetchWeatherSafe();
+}
+
 
 // ===============================
 // 📊 UI UPDATE
