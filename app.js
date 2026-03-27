@@ -466,15 +466,38 @@ overflow:auto;
 
 <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;">
 
-<div class="scoutTile" onclick="toggleScout(this,'bubbles')">🫧 Bubbles</div>
-<div class="scoutTile" onclick="toggleScout(this,'rolling')">🐟 Rolling Fish</div>
-<div class="scoutTile" onclick="toggleScout(this,'birds')">🕊 Birds</div>
+<div class="scout-group">
+  <h3>Fish Activity</h3>
+  <div class="scout-option" onclick="toggleScout('bubbles', this)">🫧 Bubbles</div>
+  <div class="scout-option" onclick="toggleScout('rolling', this)">🐟 Rolling Fish</div>
+  <div class="scout-option" onclick="toggleScout('none', this)">🚫 No Activity</div>
+</div>
 
-<div class="scoutTile" onclick="toggleScout(this,'clear')">💧 Clear</div>
-<div class="scoutTile" onclick="toggleScout(this,'murky')">🌫 Murky</div>
+<div class="scout-group">
+  <h3>Water Clarity</h3>
+  <div class="scout-option" onclick="toggleScout('clear', this)">💧 Clear</div>
+  <div class="scout-option" onclick="toggleScout('stained', this)">🌤 Slightly Stained</div>
+  <div class="scout-option" onclick="toggleScout('murky', this)">🌫 Murky</div>
+</div>
 
-<div class="scoutTile" onclick="toggleScout(this,'structure')">🌿 Structure</div>
-<div class="scoutTile" onclick="toggleScout(this,'windbank')">🌬 Wind Bank</div>
+<div class="scout-group">
+  <h3>Life Signs</h3>
+  <div class="scout-option" onclick="toggleScout('birds', this)">🕊 Birds Active</div>
+  <div class="scout-option" onclick="toggleScout('noBirds', this)">❌ No Birds</div>
+</div>
+
+<div class="scout-group">
+  <h3>Structure</h3>
+  <div class="scout-option" onclick="toggleScout('weed', this)">🌿 Weed</div>
+  <div class="scout-option" onclick="toggleScout('drop', this)">📉 Drop-off</div>
+  <div class="scout-option" onclick="toggleScout('flat', this)">🏞 Flat</div>
+</div>
+
+<div class="scout-group">
+  <h3>Wind Effect</h3>
+  <div class="scout-option" onclick="toggleScout('windBank', this)">🌬 Windblown Bank</div>
+  <div class="scout-option" onclick="toggleScout('calm', this)">🪶 Calm Water</div>
+</div>
 
 </div>
 
