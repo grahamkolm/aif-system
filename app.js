@@ -745,11 +745,15 @@ function showConnectionStatus(){
     const anyConnected = probe || turbidity || depth;
 
 box.innerHTML = `
-const btn = document.getElementById("startScanBtn");
-if(btn && !anyConnected){
-btn.disabled = true;
-btn.style.opacity = 0.5;
-}
+<b>Device Status</b><br><br>
+
+Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
+Turbidity: ${turbidity ? "✅ Connected" : "❌ Not Connected"}<br>
+Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
+
+<button onclick="showConnectionStatus()">Recheck Devices</button>
+
+<button onclick="startScan()" id="startScanBtn">Start Scan</button> `;
 
 <b>Device Status</b><br><br>
 
