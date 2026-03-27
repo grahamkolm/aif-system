@@ -612,38 +612,89 @@ function toggleScout(type, el){
 // START SCAN (animation flow)
 function startScan(){
 
-    scoutStep = "scan";
+    const resultBox = document.getElementById("scanArea");
 
-    const box = document.getElementById("scanArea");
-
-    box.innerHTML = "🔄 Connecting to probe...";
+    resultBox.innerHTML = "🔄 Checking sensors...";
 
     setTimeout(() => {
-        box.innerHTML = "📡 Sensors active...";
-    }, 1200);
 
-    setTimeout(() => {
-        box.innerHTML = "🌊 Scanning water column...";
-    }, 2400);
+        const sensors = checkSensors();
 
-    setTimeout(() => {
-        box.innerHTML = "🧠 Processing data...";
-    }, 3600);
+        if(!sensors.temp && !sensors.turbidity && !sensors.depth){
 
-    setTimeout(() => {
-        generateScoutResults();
-    }, 4800);
+            resultBox.innerHTML = `
+❌ No sensors detected<br><br>
 
-    setTimeout(() => {
-        box.scrollIntoView({ behavior: "smooth" });
-    }, 600);
+<button onclick="retryScan()" style="
+width:100%;
+padding:14px;
+margin-top:10px;
+background:#ffaa00;
+border:none;
+border-radius:10px;
+font-weight:bold;
+">
+Retry
+</button>
+
+<button onclick="closeScout()" style="
+width:100%;
+padding:14px;
+margin-top:10px;
+background:#444;
+border:none;
+border-radius:10px;
+color:white;
+">
+Exit
+</button>
+            `;
+
+            return; // 🚨 STOP HERE
+        }
+
+        // ✅ sensors found → continue
+        runScanFlow();
+
+    }, 1000);
 }
 
-// STOP SCAN → triggers results
-function stopScan(){
-    generateScoutResults();
+function retryScan(){
+    startScan(); // 🔁 just re-run everything }
+
+function runScanFlow(){
+
+    const resultBox = document.getElementById("scanArea");
+
+    resultBox.innerHTML = "📡 Sensors connected...";
+
+    setTimeout(() => {
+        resultBox.innerHTML = "🌊 Scanning water...";
+    }, 1000);
+
+    setTimeout(() => {
+        resultBox.innerHTML = "🧠 Processing data...";
+    }, 2000);
+
+    setTimeout(() => {
+        generateScoutResults(); // ✅ always ends flow
+    }, 3000);
 }
 
+function checkSensors(){
+
+    // 🔌 YOU CONTROL THIS LATER WITH REAL HARDWARE
+    let tempSensor = false;
+    let turbiditySensor = false;
+    let depthSensor = false;
+
+    return {
+        temp: tempSensor,
+        turbidity: turbiditySensor,
+        depth: depthSensor
+    };
+}
+    
 // ===============================
 // 📊 SCOUT RESULTS ENGINE
 // ===============================
