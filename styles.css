@@ -250,7 +250,13 @@ transform:scale(1.05);
 }
 
 .scout-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.scout-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
 }
 
 /* ===============================
