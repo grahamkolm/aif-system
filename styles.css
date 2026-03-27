@@ -12,11 +12,12 @@ body {
     justify-content: center;
 
     background:
-        linear-gradient(rgba(5,8,13,0.85), rgba(5,8,13,0.95)),
+        linear-gradient(rgba(5,8,13,0.7), rgba(5,8,13,0.4), regba(5,8,13,0.1)),
         url("lake-atmosphere.jpg") center/cover no-repeat;
+        transparent: 100%
 
     color: white;
-}
+};
 
 .main{
     width:100%;
@@ -24,6 +25,7 @@ body {
     min-height: 100vh;
     padding: 0 12px;
     padding-bottom:120px;
+    background: transparent;
 }
 
 /* ========================= */
