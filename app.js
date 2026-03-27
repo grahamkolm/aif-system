@@ -67,12 +67,14 @@ function fetchWeatherSafe() {
             renderDashboard(data.list[0]);
 
             // STOP SPIN HERE (REAL FINISH)
-            icon.classList.remove("refresh-spin");
-        })
-        .catch(() => {
-            simulateWeather();
-            icon.classList.remove("refresh-spin");
-        });
+if(icon){
+    icon.classList.remove("refresh-spin");
+}
+            
+.catch(() => {
+    simulateWeather();
+    icon.classList.remove("refresh-spin");
+    });
 }
 
 function simulateWeather(){
@@ -441,9 +443,6 @@ function refreshData() {
     fetchWeatherSafe();
 }
   
-    // START SPIN
-    icon.classList.add("refresh-spin");
-
     // CALL YOUR WEATHER / UPDATE FUNCTION
     fetchWeatherSafe();
 
@@ -471,6 +470,7 @@ function ensureSession(){
         date: new Date().toISOString(),
         events: []
     };
+}
 
 function confirmDrop(){
     ensureSession();
@@ -491,7 +491,7 @@ function logCatch(){
 
 function openScout(){
     ensureSession();
-    logEvent ("drop");
+    logEvent ("scout");
 
 document.body.insertAdjacentHTML("beforeend", `
 <div id="scoutScreen" style="
@@ -512,42 +512,49 @@ overflow:auto;
 
 <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;">
 
+<div style="margin-top:20px;display:flex;flex-direction:column;gap:15px;">
+
 <div class="scout-group">
   <h3>Fish Activity</h3>
-  <div class="scout-option" onclick="toggleScout('bubbles', this)">🫧 Bubbles</div>
-  <div class="scout-option" onclick="toggleScout('rolling', this)">🐟 Rolling Fish</div>
-  <div class="scout-option" onclick="toggleScout('none', this)">🚫 No Activity</div>
-</div>
+  <div class="scout-grid">
+    <div class="scout-option" onclick="toggleScout('bubbles', this)">🫧 Bubbles</div>
+    <div class="scout-option" onclick="toggleScout('rolling', this)">🐟 Rolling Fish</div>
+    <div class="scout-option" onclick="toggleScout('none', this)">🚫 No Activity</div>
+  </div>
 </div>
 
 <div class="scout-group">
   <h3>Water Clarity</h3>
-  <div class="scout-option" onclick="toggleScout('clear', this)">💧 Clear</div>
-  <div class="scout-option" onclick="toggleScout('stained', this)">🌤 Slightly Stained</div>
-  <div class="scout-option" onclick="toggleScout('murky', this)">🌫 Murky</div>
-</div>
+  <div class="scout-grid">
+    <div class="scout-option" onclick="toggleScout('clear', this)">💧 Clear</div>
+    <div class="scout-option" onclick="toggleScout('stained', this)">🌤 Slightly Stained</div>
+    <div class="scout-option" onclick="toggleScout('murky', this)">🌫 Murky</div>
+  </div>
 </div>
 
 <div class="scout-group">
   <h3>Life Signs</h3>
-  <div class="scout-option" onclick="toggleScout('birds', this)">🕊 Birds Active</div>
-  <div class="scout-option" onclick="toggleScout('noBirds', this)">❌ No Birds</div>
-</div>
+  <div class="scout-grid">
+    <div class="scout-option" onclick="toggleScout('birds', this)">🕊 Birds Active</div>
+    <div class="scout-option" onclick="toggleScout('noBirds', this)">❌ No Birds</div>
+  </div>
 </div>
 
 <div class="scout-group">
   <h3>Structure</h3>
-  <div class="scout-option" onclick="toggleScout('weed', this)">🌿 Weed</div>
-  <div class="scout-option" onclick="toggleScout('drop', this)">📉 Drop-off</div>
-  <div class="scout-option" onclick="toggleScout('flat', this)">🏞 Flat</div>
-</div>
+  <div class="scout-grid">
+    <div class="scout-option" onclick="toggleScout('weed', this)">🌿 Weed</div>
+    <div class="scout-option" onclick="toggleScout('drop', this)">📉 Drop-off</div>
+    <div class="scout-option" onclick="toggleScout('flat', this)">🏞 Flat</div>
+  </div>
 </div>
 
 <div class="scout-group">
   <h3>Wind Effect</h3>
-  <div class="scout-option" onclick="toggleScout('windBank', this)">🌬 Windblown Bank</div>
-  <div class="scout-option" onclick="toggleScout('calm', this)">🪶 Calm Water</div>
-</div>
+  <div class="scout-grid">
+    <div class="scout-option" onclick="toggleScout('windBank', this)">🌬 Windblown Bank</div>
+    <div class="scout-option" onclick="toggleScout('calm', this)">🪶 Calm Water</div>
+  </div>
 </div>
 
 </div>
@@ -639,8 +646,6 @@ function generateScoutResults(){
     if(selected.rolling) score += 20;
     if(selected.birds) score += 10;
     if(selected.windBank) score += 10;
-    if(selected.structure) score += 10;
-
     if(selected.murky) score -= 10;
     if(selected.noBirds) score -= 5;
 
