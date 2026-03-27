@@ -646,6 +646,7 @@ function generateScoutResults(){
 
     let score = 50;
 
+    // 🎯 SCORING
     if(selected.bubbles) score += 15;
     if(selected.rolling) score += 20;
     if(selected.birds) score += 10;
@@ -655,6 +656,7 @@ function generateScoutResults(){
 
     score = Math.max(0, Math.min(100, score));
 
+    // 🌡️ DATA
     let surface = lastConditions.airTemp || 22;
     let bottom = surface - 2;
 
@@ -683,8 +685,13 @@ Apply & Close
 </button>
 `;
 
+        // ✅ SAVE FOR AI SYSTEM
         lastConditions.scoutScore = score;
 
+        // ✅ OPTIONAL: SAVE HISTORY
+        saveScoutData(score);
+
+        // ✅ SCROLL INTO VIEW
         setTimeout(() => {
             resultBox.scrollIntoView({ behavior: "smooth"});
         }, 300);
@@ -693,18 +700,18 @@ Apply & Close
 
 function saveScoutData(score){
 
-let entry = {
-    time: Date.now(),
-    inputs: scoutInputs,
-    probe: probeData,
-    score: score,
-    conditions: lastConditions,
-    spi: lastSPI
-};
+    let entry = {
+        time: Date.now(),
+        inputs: selected,
+        probe: probeData,
+        score: score,
+        conditions: lastConditions,
+        spi: lastSPI
+    };
 
-scoutHistory.push(entry);
-localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory));
-}
+    scoutHistory.push(entry);
+
+    localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory)); }
 
 //=====================================
 //STEP 8 — RESULTS UI
