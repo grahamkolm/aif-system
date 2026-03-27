@@ -315,6 +315,11 @@ updateBackground(spi);
     
 }
 
+function applyScout(){
+  lastConditions.scout = selected;
+  document.getElementById("scoutScreen").classList.add("hidden");
+}
+
 // ===============================
 // 🌦 TACTICAL SYSTEM
 // ===============================
@@ -323,6 +328,26 @@ function updateTactical(spi, envScore, confScore, w, t){
 
     let lines = [];
 
+if(lastConditions.scout){
+
+  if(lastConditions.scout.bubbles){
+    lines.push("🎯 Fish actively feeding in area");
+  }
+
+  if(lastConditions.scout.rolling){
+    lines.push("🐟 Fish showing — strong indication of presence");
+  }
+
+  if(lastConditions.scout.murky){
+    lines.push("🌫 Low visibility — fish relying on scent");
+  }
+
+  if(lastConditions.scout.windBank){
+    lines.push("🌬 Wind pushing food — target this bank");
+  }
+
+}
+    
     // 🎯 SPI CORE
     if(spi > 85){
         lines.push("🔥 Peak feeding window active");
@@ -519,54 +544,90 @@ Start Scan
 `);
 }
 
-function toggleScout(el, type){
-    el.classList.toggle("active");
-    scoutInputs[type] = !scoutInputs[type];
+function toggleScout(key, el){
+  selected[key] = !selected[key];
+  el.classList.toggle("active");
 }
 
+// ===============================
+// 🔍 SCOUT SCAN FLOW (FINAL CLEAN)
+// ===============================
+
+// store selections (make sure this exists once in your file) let selected = {};
+
+// START SCAN (animation flow)
 function startScan(){
 
-document.getElementById("scanArea").innerHTML = `
-<p id="scanStatus">Connecting to probe...</p>
-<button onclick="stopScan()" style="
-margin-top:10px;
-padding:10px;
-width:100%;
-background:#ff4d4d;
-border:none;
-border-radius:8px;
-">Stop Scan</button>
-`;
+    const resultBox = document.getElementById("results");
 
-setTimeout(()=>{
-    document.getElementById("scanStatus").innerText = "Scanning water...";
-},1500);
+    if(resultBox){
+        resultBox.innerHTML = "🔄 Connecting to probe...";
+    }
+
+    setTimeout(() => {
+        if(resultBox){
+            resultBox.innerHTML = "🌊 Scanning water column...";
+        }
+    }, 1000);
+
+    setTimeout(() => {
+        if(resultBox){
+            resultBox.innerHTML = "📡 Analyzing layers...";
+        }
+    }, 2000);
+
+    setTimeout(() => {
+        stopScan();
+    }, 3000);
 }
 
+
+// STOP SCAN → triggers results
 function stopScan(){
+    generateScoutResults();
+}
 
-let surface = 22 + Math.random()*2;
-let bottom = surface - (1 + Math.random());
 
-let score = 0;
+// ===============================
+// 📊 SCOUT RESULTS ENGINE
+// ===============================
+function generateScoutResults(){
 
-if(scoutInputs.bubbles) score += 20;
-if(scoutInputs.rolling) score += 25;
-if(scoutInputs.birds) score += 10;
-if(scoutInputs.windbank) score += 15;
-if(scoutInputs.structure) score += 10;
-if(scoutInputs.clear) score += 5;
-if(scoutInputs.murky) score -= 5;
+    let score = 50;
 
-probeData = {
-    surface: surface,
-    bottom: bottom,
-    thermo: (surface - bottom > 1.5) ? "Thermocline present" : "Mixed water"
-};
+    // 🎯 SCORING FROM USER INPUT
+    if(selected.bubbles) score += 15;
+    if(selected.rolling) score += 20;
+    if(selected.birds) score += 10;
+    if(selected.windBank) score += 10;
+    if(selected.structure) score += 10;
 
-saveScoutData(score);
+    if(selected.murky) score -= 10;
+    if(selected.noBirds) score -= 5;
 
-showResults(score);
+    score = Math.max(0, Math.min(100, score));
+
+    // 🌡️ USE REAL DATA FROM WEATHER SYSTEM
+    let surface = lastConditions.airTemp || 22;
+    let bottom = surface - 2;
+
+    // 🧠 THERMOCLINE LOGIC
+    let thermo = score > 60 ? "present" : "unlikely";
+
+    // 📺 OUTPUT
+    const resultBox = document.getElementById("results");
+
+    if(resultBox){
+        resultBox.innerHTML = `
+        Surface: ${surface.toFixed(1)}°C<br>
+        Bottom: ${bottom.toFixed(1)}°C<br>
+        Thermocline: ${thermo}<br><br>
+        Fishing Score: ${score}%
+        `;
+    }
+
+    // 🔗 SAVE FOR AI SYSTEM (VERY IMPORTANT)
+    lastConditions.scoutScore = score;
 }
 
 function saveScoutData(score){
@@ -583,6 +644,8 @@ let entry = {
 scoutHistory.push(entry);
 localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory));
 }
+
+
 
 //=====================================
 //STEP 8 — RESULTS UI
