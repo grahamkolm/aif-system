@@ -680,12 +680,24 @@ function generateScoutResults(){
 
     if(resultBox){
         resultBox.innerHTML = `
-        Surface: ${surface.toFixed(1)}°C<br>
-        Bottom: ${bottom.toFixed(1)}°C<br>
-        Thermocline: ${thermo}<br><br>
-        Fishing Score: ${score}%
-        `;
-    }
+Surface: ${surface.toFixed(1)}°C<br>
+Bottom: ${bottom.toFixed(1)}°C<br>
+Thermocline: ${thermo}<br><br>
+
+Fishing Score: ${score}%<br><br>
+
+<button onclick="closeScout()" style="
+margin-top:20px;
+width:100%;
+padding:14px;
+background:#00ffa6;
+border:none;
+border-radius:10px;
+font-weight:bold;
+">
+Apply & Close
+</button>
+`;
 
     // 🔗 SAVE FOR AI SYSTEM (VERY IMPORTANT)
     lastConditions.scoutScore = score;
