@@ -109,16 +109,14 @@ font-weight:700;
 /* LEFT */
 .env-circle {
     position: absolute;
-    left: 30%;
-    top: 60%;
+    left: -40px;
     transform: translateY(-50%);
 }
 
 /* RIGHT */
 .conf-circle {
     position: absolute;
-    right: 30%;
-    top: 60%;
+    right: -40px;
     transform: translateY(-50%);
 }
 
