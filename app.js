@@ -689,7 +689,8 @@ Apply & Close
             resultBox.scrollIntoView({ behavior: "smooth"});
         }, 300);
     }
-   
+}
+
 function saveScoutData(score){
 
 let entry = {
