@@ -691,14 +691,7 @@ Apply & Close
         }, 300);
     }
 }
-
-    // 🔗 SAVE FOR AI SYSTEM (VERY IMPORTANT)
-    lastConditions.scoutScore = score;
-
-setTimeout(() => {
-    resultBox.scrollIntoView({ behavior: "smooth"});
-}, 300);
-    
+   
 function saveScoutData(score){
 
 let entry = {
