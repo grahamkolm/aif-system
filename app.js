@@ -432,20 +432,14 @@ function logEvent(type, extra = {}){
 // ===============================
 
 function refreshData() {
+    const icon = document.getElementById("refreshIcon");
 
-const icon = document.getElementById("refreshIcon");
-
-if(icon){
-    icon.classList.add("refresh-spin");
-}
-
-fetchWeatherSafe();
-
-setTimeout(() => {
-    if(icon){
-        icon.classList.remove("refresh-spin");
+    if (icon) {
+        icon.classList.add("refresh-spin");
     }
-}, 1200);
+
+    fetchWeatherSafe();
+}
   
     // START SPIN
     icon.classList.add("refresh-spin");
