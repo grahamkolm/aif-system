@@ -639,7 +639,6 @@ function stopScan(){
     generateScoutResults();
 }
 
-
 // ===============================
 // 📊 SCOUT RESULTS ENGINE
 // ===============================
@@ -690,7 +689,6 @@ Apply & Close
             resultBox.scrollIntoView({ behavior: "smooth"});
         }, 300);
     }
-}
    
 function saveScoutData(score){
 
@@ -706,8 +704,6 @@ let entry = {
 scoutHistory.push(entry);
 localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory));
 }
-
-
 
 //=====================================
 //STEP 8 — RESULTS UI
