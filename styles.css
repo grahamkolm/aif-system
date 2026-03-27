@@ -103,10 +103,6 @@ font-weight:700;
     height: 80px;
     border-radius: 50%;
     border: 2px solid rgba(0,255,166,0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
     background: rgba(15,20,28,0.9);
     box-shadow: 0 0 12px rgba(0,255,166,0.25); }
