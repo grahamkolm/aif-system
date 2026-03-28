@@ -540,11 +540,6 @@ function ensureSession(){
 
     localStorage.setItem("aif_current_session", JSON.stringify(currentSession)); }
 
-function confirmDrop(){
-    ensureSession();
-    logEvent("drop");
-}
-
 function performScout(){
     logEvent("scout");
 }
@@ -1214,20 +1209,29 @@ if (window.lucide) {
 }, 100);
 
 window.confirmDrop = function () {
-    console.log("Drop clicked");
+
+    ensureSession();
 
     if (!map) {
         alert("Open map first");
         return;
     }
 
-    navigator.geolocation.getCurrentPosition(pos => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
 
-        L.marker([lat, lon]).addTo(map);
+            L.marker([lat, lon]).addTo(map);
+            logEvent("drop", { lat, lon });
 
-        console.log("Dropped at:", lat, lon);
-    });
+            console.log("Dropped at:", lat, lon);
+        },
+        err => {
+            alert("GPS failed: " + err.message);
+            console.log("GPS error:", err);
+        }
+    );
 };
+
 
