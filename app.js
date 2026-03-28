@@ -1343,8 +1343,7 @@ function initCompass(){
 
 function openPlan(){
 
-document.body.insertAdjacentHTML("beforeend", `
-<div id="planScreen" style="
+document.body.insertAdjacentHTML("beforeend", ` <div id="planScreen" style='
 position:fixed;
 top:0; left:0;
 width:100%; height:100%;
@@ -1353,9 +1352,9 @@ color:white;
 z-index:999;
 padding:20px;
 overflow:auto;
-">
+'>
 
-<button onclick="applyPlan()" style="
+<button onclick="applyPlan()" style='
 position:fixed;
 top:20px;
 right:20px;
@@ -1364,33 +1363,23 @@ border:none;
 padding:10px 14px;
 border-radius:10px;
 font-weight:bold;
-">Apply</button>
+'>Apply</button>
 
 <h2 style="color:#00ffa6;">AIF™ 60-Min Tactical Plan</h2>
 
 <h3>0–5 Minutes • Arrival Scan</h3>
 <div class="scout-grid">
-<div class="scout-option" onclick="togglePlan('windBank',this)">🌬 Wind Bank</div>
-<div class="scout-option" onclick="togglePlan('activity',this)">🐟 Activity</div>
-<div class="scout-option" onclick="togglePlan('noActivity',this)">🚫 No Activity</div>
-</div>
+<div class="scout-option" onclick="togglePlan('windBank',this)">🌬 Wind Bank</div> <div class="scout-option" onclick="togglePlan('activity',this)">🐟 Activity</div> <div class="scout-option" onclick="togglePlan('noActivity',this)">🚫 No Activity</div> </div>
 
-<h3>20–40 Minutes • Tactical Decision</h3>
-<div class="scout-grid">
-<div class="scout-option" onclick="togglePlan('boilie',this)">🎯 Boilie</div>
-<div class="scout-option" onclick="togglePlan('popup',this)">⚪ Pop-up</div>
-</div>
+<h3>20–40 Minutes • Tactical Decision</h3> <div class="scout-grid"> <div class="scout-option" onclick="togglePlan('boilie',this)">🎯 Boilie</div> <div class="scout-option" onclick="togglePlan('popup',this)">⚪ Pop-up</div> </div>
 
 <h3>40–60 Minutes • Execution</h3>
 <div class="scout-grid">
-<div class="scout-option" onclick="togglePlan('stay',this)">🎯 Stay</div>
-<div class="scout-option" onclick="togglePlan('move',this)">🚶 Move</div>
-</div>
+<div class="scout-option" onclick="togglePlan('stay',this)">🎯 Stay</div> <div class="scout-option" onclick="togglePlan('move',this)">🚶 Move</div> </div>
 
 </div>
 `);
 }
-
 
 function togglePlan(type, el){
 
@@ -1402,7 +1391,6 @@ function togglePlan(type, el){
         el.classList.remove("active");
     }
 }
-
 
 function calculatePlanScore(){
 
