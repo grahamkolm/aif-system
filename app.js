@@ -11,6 +11,11 @@ let scoutInputs = {};
 let scoutHistory = [];
 let selected = {};
 let scoutStep = "input";
+let planSelections = {};
+let planScore = 0;
+let userLocation = null;
+let compassHeading = null;
+
 
 // ===============================
 // 🚀 START SYSTEM
@@ -20,6 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     startSystem();
     if(typeof lucide !== "undefined"){
         lucide.createIcons();
+        initGPS();
+        initCompass();
     }
 });
 
@@ -1042,30 +1049,25 @@ let map;
 
 window.openMap = function () {
 
-    console.log("Map clicked");
-
     const mapScreen = document.getElementById("mapScreen");
-
-    if (!mapScreen) {
-        console.error("mapScreen missing");
-        return;
-    }
-
     mapScreen.style.display = "block";
 
-    // ✅ FIX HERE
-    if (!map) {
+    if (!window.mapInitialized) {
         map = L.map('map').setView([-26, 28], 13);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        window.mapInitialized = true;
     }
 
     setTimeout(() => {
-        map.invalidateSize();
+        if (map) map.invalidateSize();
     }, 300);
 };
+
+function closeMap(){
+    document.getElementById("mapScreen").style.display = "none";
+}
 
 function renderMap(events){
 
@@ -1236,4 +1238,255 @@ window.confirmDrop = function () {
     );
 };
 
+//====================
+// GPS (REAL LOCATION)
+//====================
+
+function initGPS(){
+    if(!navigator.geolocation) return;
+
+    navigator.geolocation.watchPosition(pos => {
+        userLocation = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude
+        };
+
+        if(map){
+            map.setView([userLocation.lat, userLocation.lon], 15);
+        }
+
+    }, err => {
+        console.log("GPS error", err);
+    }, {
+        enableHighAccuracy: true
+    });
+}
+
+//====================
+// COMPASS
+//====================
+
+
+function initCompass(){
+
+    window.addEventListener("deviceorientationabsolute", (e) => {
+
+        if(e.alpha !== null){
+            compassHeading = Math.round(e.alpha);
+
+            let el = document.getElementById("compassValue");
+            if(el){
+                el.innerText = compassHeading + "°";
+            }
+        }
+
+    }, true);
+}
+
+//====================
+// PLAN SYSTEM
+//====================
+
+function openPlan(){
+
+document.body.insertAdjacentHTML("beforeend", `
+<div id="planScreen" style="
+position:fixed;
+top:0; left:0;
+width:100%; height:100%;
+background:#05080d;
+color:white;
+z-index:999;
+padding:20px;
+overflow:auto;
+">
+
+<button onclick="applyPlan()" style="
+position:fixed;
+top:20px;
+right:20px;
+background:#00ffa6;
+border:none;
+padding:10px 14px;
+border-radius:10px;
+font-weight:bold;
+">Apply</button>
+
+<h2 style="color:#00ffa6;">AIF™ 60-Min Tactical Plan</h2>
+
+<h3>0–5 Minutes • Arrival Scan</h3>
+<div class="scout-grid">
+<div class="scout-option" onclick="togglePlan('windBank',this)">🌬 Wind Bank</div>
+<div class="scout-option" onclick="togglePlan('activity',this)">🐟 Activity</div>
+<div class="scout-option" onclick="togglePlan('noActivity',this)">🚫 No Activity</div>
+</div>
+
+<h3>20–40 Minutes • Tactical Decision</h3>
+<div class="scout-grid">
+<div class="scout-option" onclick="togglePlan('boilie',this)">🎯 Boilie</div>
+<div class="scout-option" onclick="togglePlan('popup',this)">⚪ Pop-up</div>
+</div>
+
+<h3>40–60 Minutes • Execution</h3>
+<div class="scout-grid">
+<div class="scout-option" onclick="togglePlan('stay',this)">🎯 Stay</div>
+<div class="scout-option" onclick="togglePlan('move',this)">🚶 Move</div>
+</div>
+
+</div>
+`);
+}
+
+
+function togglePlan(type, el){
+
+    planSelections[type] = !planSelections[type];
+
+    if(planSelections[type]){
+        el.classList.add("active");
+    } else {
+        el.classList.remove("active");
+    }
+}
+
+
+function calculatePlanScore(){
+
+    let score = 50;
+
+    if(planSelections.windBank) score += 10;
+    if(planSelections.activity) score += 15;
+    if(planSelections.noActivity) score -= 10;
+
+    if(planSelections.boilie) score += 8;
+    if(planSelections.popup) score += 5;
+
+    if(planSelections.stay) score += 5;
+    if(planSelections.move) score -= 5;
+
+    return Math.max(0, Math.min(100, score));
+}
+
+
+function applyPlan(){
+
+    planScore = calculatePlanScore();
+
+    lastConditions.plan = planSelections;
+    lastConditions.planScore = planScore;
+
+    let currentConf = parseInt(document.getElementById("confScore").innerText) || 50;
+
+    let newConf = Math.round((currentConf + planScore) / 2);
+
+    set("confScore", newConf + "%");
+
+    updateTactical(lastSPI, parseInt(document.getElementById("envScore").innerText), newConf, lastConditions.windSpeed, lastConditions.airTemp);
+
+    document.getElementById("planScreen").remove();
+}
+
+//====================
+// BACKGROUND CALC
+//====================
+
+const canvas = document.getElementById("aifCanvas");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+let SPI = 70;
+
+let bubbles = [];
+function spawnBubble(){
+  bubbles.push({
+    x: canvas.width*0.4 + Math.random()*canvas.width*0.2,
+    y: canvas.height*0.9,
+    size: Math.random()*3+1,
+    speed: Math.random()*1.2+0.5,
+    drift: Math.random()-0.5,
+    alpha: 0.15 + Math.random()*0.15
+  });
+}
+
+let ripples = [];
+function ripple(){
+  ripples.push({
+    r:0,
+    alpha:0.25,
+    x:canvas.width/2,
+    y:canvas.height*0.7
+  });
+}
+setInterval(ripple, 3000);
+
+let angle = 0;
+
+function drawThermocline(){
+  let y = canvas.height * 0.45;
+
+  let gradient = ctx.createLinearGradient(0, y-20, 0, y+20);
+  gradient.addColorStop(0, "rgba(255,200,0,0)");
+  gradient.addColorStop(0.5, "rgba(255,200,0,0.25)");
+  gradient.addColorStop(1, "rgba(255,200,0,0)");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, y-20, canvas.width, 40);
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  drawThermocline();
+
+  if(Math.random() < SPI/100 * 0.15){
+    spawnBubble();
+  }
+
+  bubbles.forEach((b,i)=>{
+    b.y -= b.speed;
+    b.x += b.drift;
+
+    ctx.fillStyle = `rgba(200,255,230,${b.alpha})`;
+    ctx.beginPath();
+    ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
+    ctx.fill();
+
+    if(b.y < 0) bubbles.splice(i,1);
+  });
+
+  angle += 0.02;
+  ctx.save();
+  ctx.translate(canvas.width/2, canvas.height/2);
+
+  ctx.strokeStyle = "rgba(0,255,163,0.05)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0,0,200,angle,angle+0.5);
+  ctx.stroke();
+
+  ctx.restore();
+
+  ripples.forEach((r,i)=>{
+    r.r += 2;
+    r.alpha *= 0.96;
+
+    ctx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
+    ctx.stroke();
+
+    if(r.alpha < 0.01) ripples.splice(i,1);
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
 
