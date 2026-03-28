@@ -261,6 +261,13 @@ if(bottomEl){
 // 🌊 WATER COLUMN UPDATE
 // =========================
 
+drawWaterProfile(surfaceTemp, bottomTemp);
+
+set("wcAir", t.toFixed(1)+"°");
+set("wcSurface", surfaceTemp.toFixed(1)+"°");
+set("wcBottom", bottomTemp.toFixed(1)+"°");
+set("wcDepth", "3.2");
+    
 set("wcAir", t.toFixed(1) + "°");
 set("wcSurface", surfaceTemp.toFixed(1) + "°"); set("wcBottom", bottomTemp.toFixed(1) + "°");
 
@@ -1558,4 +1565,53 @@ function drawWaterProfile(surface, bottom){
     ctx.stroke();
 }
 
+function drawWaterProfile(surface, bottom){
+  const canvas = document.getElementById("waterGraph");
+  if(!canvas) return;
 
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  let gradient = ctx.createLinearGradient(0,0,canvas.width,0);
+  gradient.addColorStop(0,"#00ffa6");
+  gradient.addColorStop(1,"rgba(0,255,166,0.2)");
+
+  ctx.beginPath();
+  ctx.moveTo(10, 20);
+
+  ctx.bezierCurveTo(
+    canvas.width*0.3, canvas.height/2,
+    canvas.width*0.7, canvas.height/2,
+    canvas.width-10, canvas.height-20
+  );
+
+  ctx.strokeStyle = gradient;
+  ctx.lineWidth = 3;
+  ctx.shadowBlur = 15;
+  ctx.shadowColor = "#00ffa6";
+  ctx.stroke();
+}
+
+function updateStrategy(spi){
+  let text = "Moderate";
+  let note = "Stable pattern";
+
+  if(spi > 80){
+    text = "Aggressive";
+    note = "Peak feeding window";
+  } else if(spi < 50){
+    text = "Slow";
+    note = "Low activity";
+  }
+
+  set("feed", text);
+  set("strategyNote", note);
+}
+
+CALL inside renderDashboard:
+
+updateStrategy(spi);
