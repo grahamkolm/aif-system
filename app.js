@@ -24,10 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("load", () => {
-    const splash = document.getElementById("splash");
-
     setTimeout(() => {
-        splash.style.display = "none";
+        const splash = document.getElementById("splash");
+        if (splash) splash.remove(); // ✅ FULLY REMOVE
     }, 2000);
 });
 
