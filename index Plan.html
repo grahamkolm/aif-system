@@ -21,6 +21,9 @@
 
 <body>
 
+<img id="bg" src="background.jpg" />
+<canvas id="aifCanvas"></canvas>
+    
 <div id="splash">
     <h1>AIF™</h1>
     <p id="bootText">
@@ -158,13 +161,13 @@
 
 <div class="dock-btn" onclick="openMap()"> <i data-lucide="map"></i> <span>Map</span></div>
 
-<div class="dock-btn" onclick="openPlan()"> <i data-lucide="plan"></i> <span>Plan</span></div>    
+<div class="dock-btn" onclick="openPlan()"> <i data-lucide="clipboard-list"></i> <span>Plan</span></div>    
 
 <div class="dock-btn" onclick="openReport()"> <i data-lucide="bar-chart-3"></i> Report </div>
 
 </div>
 
-<div id="mapScreen" class="hidden">
+<div id="mapScreen">
     <div class="map-header">
         <span>Map</span>
         <button onclick="closeMap()">X</button>
