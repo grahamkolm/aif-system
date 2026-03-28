@@ -1567,7 +1567,7 @@ function updateStrategy(spi){
   if(spi > 80){
     text = "Aggressive";
     note = "Peak feeding window";
-  } else if(spi < 50){
+  } else if(spi >= 50){
     text = "Slow";
     note = "Low activity";
   }
