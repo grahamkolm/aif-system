@@ -73,7 +73,6 @@ setTimeout(() => {
     }
 }, 2000);
 
-
 let dots = 0;
 setInterval(() => {
     const el = document.getElementById("dots");
