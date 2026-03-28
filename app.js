@@ -1030,15 +1030,34 @@ function openMap() {
     }, 100);
 }
 
-let map;
+let map; // global
 
-function initMap() {
-    map = L.map('map').setView([-25.3, 27.5], 13);
+window.openMap = function () {
+    console.log("Map clicked");
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-}
+    const main = document.getElementById("mainScreen");
+    const mapScreen = document.getElementById("mapScreen");
+
+    if (main) main.classList.add("hidden");
+    if (mapScreen) mapScreen.classList.remove("hidden");
+
+    // create map ONLY once
+    if (!map) {
+        map = L.map('map').setView([-25.3, 27.5], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+    }
+
+    // SAFE call
+    setTimeout(() => {
+        if (map && map.invalidateSize) {
+            map.invalidateSize();
+        }
+    }, 200);
+};
+
 
 function renderMap(events){
 
@@ -1183,36 +1202,10 @@ if (window.lucide) {
 }
 }, 100);
 
-console.log("APP JS LOADED");
-
-// ===== MAP =====
-window.openMap = function () {
-    console.log("Map clicked");
-
-    const main = document.getElementById("mainScreen");
-    const mapScreen = document.getElementById("mapScreen");
-
-    if (main) main.classList.add("hidden");
-    if (mapScreen) mapScreen.classList.remove("hidden");
-
-    if (!window.map) {
-        window.map = L.map('map').setView([-25.3, 27.5], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(window.map);
-    }
-
-    setTimeout(() => {
-        window.map.invalidateSize();
-    }, 200);
-};
-
-// ===== DROP =====
 window.confirmDrop = function () {
     console.log("Drop clicked");
 
-    if (!window.map) {
+    if (!map) {
         alert("Open map first");
         return;
     }
@@ -1221,12 +1214,10 @@ window.confirmDrop = function () {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        L.marker([lat, lon]).addTo(window.map);
+        L.marker([lat, lon]).addTo(map);
 
         console.log("Dropped at:", lat, lon);
-    }, err => {
-        console.log("GPS error:", err);
-        alert("Enable GPS/location");
     });
 };
+
 
