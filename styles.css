@@ -53,6 +53,13 @@ body {
     }
 }
 
+#bootText {
+    color: #aaa;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
 .header{
     text-align:center;
     margin-top:18px;
