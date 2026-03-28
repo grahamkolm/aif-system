@@ -27,7 +27,7 @@ function startSystem(){
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=YOURKEY&units=metric`;
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric`;
 
         fetch(url)
             .then(res => res.json())
