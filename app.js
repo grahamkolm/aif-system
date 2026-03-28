@@ -1216,4 +1216,3 @@ window.confirmDrop = function () {
     });
 };
 
-
