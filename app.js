@@ -22,7 +22,9 @@ let compassHeading = null;
 // ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(fetchWeatherSafe, 500);
+    setTimeout(() => {
+        fetchWeatherSafe();
+    }, 2000);
 });
 
 function fetchWeatherSafe() {
