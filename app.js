@@ -394,6 +394,10 @@ set("moon", getMoonPhase());
 set("season", getSeason());
 set("feed", feeding(spi));
 
+CALL inside renderDashboard:
+
+updateStrategy(spi);
+    
 // =========================
 // 📊 VISUALS
 // =========================
@@ -1611,7 +1615,3 @@ function updateStrategy(spi){
   set("feed", text);
   set("strategyNote", note);
 }
-
-CALL inside renderDashboard:
-
-updateStrategy(spi);
