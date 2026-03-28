@@ -80,39 +80,41 @@ function initSession(){
 // 🌦 WEATHER SYSTEM
 // ===============================
 
-const WEATHER_URL = "https://api.openweathermap.org/data/2.5/forecast?lat=-26.1&lon=28.0&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric";
-
-async function startSystem(){
-    fetchWeatherSafe();
-    setInterval(fetchWeatherSafe, 600000); 
-}
-
-function fetchWeatherSafe() {
+function fetchWeatherSafe(){
 
     const icon = document.getElementById("refreshIcon");
 
-    fetch(WEATHER_URL)
-        .then(res => res.json())
-        .then(data => {
+    navigator.geolocation.getCurrentPosition(pos => {
 
-            renderDashboard(data.list[0]);
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
 
-            // STOP SPIN HERE (REAL FINISH)
-            if(icon){
-                icon.classList.remove("refresh-spin");
-            }
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric`;
 
-        }) // ✅ THIS WAS MISSING
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
 
-        .catch(() => {
+                renderDashboard(data.list[0]);
 
-            simulateWeather();
+                if(icon){
+                    icon.classList.remove("refresh-spin");
+                }
 
-            if(icon){
-                icon.classList.remove("refresh-spin"); // ✅ ALSO FIXED TYPO
-            }
+            })
+            .catch(() => {
 
-        });
+                simulateWeather();
+
+                if(icon){
+                    icon.classList.remove("refresh-spin");
+                }
+
+            });
+
+    }, () => {
+        simulateWeather();
+    });
 }
 
 function simulateWeather(){
