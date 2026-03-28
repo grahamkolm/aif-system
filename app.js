@@ -32,8 +32,11 @@ window.addEventListener("load", () => {
 
 let dots = 0;
 setInterval(() => {
+    const el = document.getElementById("dots");
+    if (!el) return; // ✅ prevents crash
+
     dots = (dots + 1) % 4;
-    document.getElementById("dots").innerText = ".".repeat(dots);
+    el.innerText = ".".repeat(dots);
 }, 400);
 
 // ===============================
@@ -300,6 +303,17 @@ envScore += Math.max(0, Math.min(20, oxygenFactor + 10));
 
 envScore = Math.round(Math.min(100, envScore));
 
+function calculateSPI(p, w, c, windDir, t){
+    let score = 50;
+
+    if(p > 1015) score += 10;
+    if(w > 5) score += 10;
+    if(c > 30) score += 10;
+    if(t >= 18 && t <= 24) score += 20;
+
+    return Math.min(100, score);
+}
+   
 // 🎯 CONFIDENCE
 let stability = 0;
 
@@ -795,16 +809,6 @@ Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
         btn.disabled = true;
         btn.style.opacity = 0.5;
     }
-}
-
-function applyScoutAndClose(score){
-
-    lastConditions.scout = scoutInputs;
-    lastConditions.scoutScore = score;
-
-    document.getElementById("scoutScreen").remove();
-
-    fetchWeatherSafe();
 }
 
 //=====================================
