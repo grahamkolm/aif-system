@@ -1493,6 +1493,7 @@ function drawThermocline(){
 }
 
 function animate(){
+
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   drawThermocline();
@@ -1512,6 +1513,9 @@ function animate(){
 
     if(b.y < 0) bubbles.splice(i,1);
   });
+
+  requestAnimationFrame(animate);
+}
 
   angle += 0.02;
   ctx.save();
