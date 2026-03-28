@@ -21,7 +21,13 @@ let compassHeading = null;
 // START SYSTEM
 // ===============================
 
-function startSystem(){
+function fetchWeatherSafe() {
+    const icon = document.getElementById("refreshIcon");
+
+    if (icon) {
+        icon.classList.add("refresh-spin");
+    }
+
     navigator.geolocation.getCurrentPosition(pos => {
 
         const lat = pos.coords.latitude;
@@ -32,27 +38,36 @@ function startSystem(){
         fetch(url)
             .then(res => res.json())
             .then(data => {
-                renderDashboard(data.list[0]);
+                console.log("DATA:", data);
+
+                if (data && data.list && data.list.length > 0) {
+                    renderDashboard(data.list[0]);
+                } else {
+                    console.log("Invalid data structure");
+                    simulateWeather();
+                }
+            })
+            .catch(err => {
+                console.log("FETCH ERROR:", err);
+                simulateWeather();
+            })
+            .finally(() => {
+                // 🔥 THIS FIXES YOUR PROBLEM
+                if (icon) {
+                    icon.classList.remove("refresh-spin");
+                }
             });
 
-    }, () => {
+    }, err => {
+        console.log("GPS ERROR:", err);
         simulateWeather();
+
+        if (icon) {
+            icon.classList.remove("refresh-spin");
+        }
     });
 }
 
-// ===============================
-// INIT
-// ===============================
-
-document.addEventListener("DOMContentLoaded", () => {
-    startSystem();
-
-    if(typeof lucide !== "undefined"){
-        lucide.createIcons();
-        initGPS();
-        initCompass();
-    }
-});
 
 setTimeout(() => {
     const splash = document.getElementById("splash");
