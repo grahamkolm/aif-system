@@ -45,7 +45,7 @@ body {
     padding: 0 12px;
     padding-bottom:120px;
     background: transparent;
-    z-index: 3;
+    z-index: 1;
     position:relative;
 }
 
@@ -487,12 +487,16 @@ transform:scale(1.05);
     left:50%;
     transform:translateX(-50%);
     width:100%;
+    transform: translateX(-50%);
     max-width:420px;
+    width: 100%;
     background:black;
     display:flex;
     justify-content:space-around;
     padding:10px 0;
-    border-top:1px solid rgba(255,255,255,0.1); }
+    z-index: 9999;
+    border-top:1px solid rgba(255,255,255,0.1); 
+}
 
 .dock-btn{
     text-align:center;
