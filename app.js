@@ -1492,57 +1492,45 @@ function drawThermocline(){
 
 function animate(){
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(!ctx || !canvas) return; // safety
 
-  drawThermocline();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 🎯 Spawn bubbles based on SPI
-  if(Math.random() < SPI/100 * 0.15){
-    spawnBubble();
-  }
+    drawThermocline();
 
-  // 🫧 Bubbles
-  bubbles.forEach((b,i)=>{
-    b.y -= b.speed;
-    b.x += b.drift;
+    // 🎯 Spawn bubbles based on SPI
+    if(Math.random() < SPI / 100 * 0.15){
+        spawnBubble();
+    }
 
-    ctx.fillStyle = `rgba(200,255,230,${b.alpha})`;
-    ctx.beginPath();
-    ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
-    ctx.fill();
+    // 🫧 Bubbles
+    bubbles.forEach((b,i)=>{
+        b.y -= b.speed;
+        b.x += b.drift;
 
-    if(b.y < 0) bubbles.splice(i,1);
-  });
+        ctx.fillStyle = `rgba(200,255,230,${b.alpha})`;
+        ctx.beginPath();
+        ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
+        ctx.fill();
 
-  // 🌊 Rotating sonar ring
-  angle += 0.02;
+        if(b.y < 0) bubbles.splice(i,1);
+    });
 
-  ctx.save();
-  ctx.translate(canvas.width/2, canvas.height/2);
+    // 💧 Ripples
+    ripples.forEach((r,i)=>{
+        r.r += 2;
+        r.alpha *= 0.96;
 
-  ctx.strokeStyle = "rgba(0,255,163,0.05)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(0,0,200,angle,angle+0.5);
-  ctx.stroke();
+        ctx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
+        ctx.stroke();
 
-  ctx.restore();
+        if(r.alpha < 0.01) ripples.splice(i,1);
+    });
 
-  // 💧 Ripples
-  ripples.forEach((r,i)=>{
-    r.r += 2;
-    r.alpha *= 0.96;
-
-    ctx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
-    ctx.stroke();
-
-    if(r.alpha < 0.01) ripples.splice(i,1);
-  });
-
-  requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 }
 
 function drawWaterProfile(surface, bottom){
