@@ -41,9 +41,6 @@ body {
     justify-content: center;
     align-items: center;
     color: #00ffa6;
-
-    animation: fadeOut 1s ease forwards;
-    animation-delay: 2s;
 }
 
 @keyframes fadeOut {
