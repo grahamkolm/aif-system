@@ -394,8 +394,6 @@ set("moon", getMoonPhase());
 set("season", getSeason());
 set("feed", feeding(spi));
 
-CALL inside renderDashboard:
-
 updateStrategy(spi);
     
 // =========================
