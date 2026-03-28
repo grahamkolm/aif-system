@@ -258,6 +258,37 @@ if(bottomEl){
 }
 
 // =========================
+// 🌊 WATER COLUMN UPDATE
+// =========================
+
+set("wcAir", t.toFixed(1) + "°");
+set("wcSurface", surfaceTemp.toFixed(1) + "°"); set("wcBottom", bottomTemp.toFixed(1) + "°");
+
+// Depth (probe OR default)
+let depth = probeData?.depth || 3.5;
+set("wcDepth", depth.toFixed(1) + "m");
+
+// Clarity (scout OR default)
+let clarity = lastConditions?.scout?.murky ? "Murky"
+             : lastConditions?.scout?.clear ? "Clear"
+             : "Normal";
+
+set("wcClarity", clarity);
+
+// 🎯 Fish Zone Logic
+function detectFishZone(surface, bottom){
+    let diff = surface - bottom;
+
+    if(diff > 3) return "🎯 Mid-depth zone";
+    if(surface > 22) return "🔥 Shallow feeding";
+    if(surface < 16) return "⬇ Bottom holding";
+
+    return "🎯 Mixed zone";
+}
+
+set("wcInsight", detectFishZone(surfaceTemp, bottomTemp));
+    
+// =========================
 // 💨 OXYGEN
 // =========================
 let oxygen = estimateOxygen(surfaceTemp, w);
