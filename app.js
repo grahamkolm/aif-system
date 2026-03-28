@@ -1545,8 +1545,6 @@ function animate(){
   requestAnimationFrame(animate);
 }
 
-animate();
-
 function drawWaterProfile(surface, bottom){
 
     const canvas = document.getElementById("waterGraph");
