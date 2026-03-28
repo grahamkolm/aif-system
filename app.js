@@ -21,6 +21,10 @@ let compassHeading = null;
 // START SYSTEM
 // ===============================
 
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(fetchWeatherSafe, 500);
+});
+
 function fetchWeatherSafe() {
     const icon = document.getElementById("refreshIcon");
 
