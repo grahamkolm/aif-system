@@ -24,9 +24,7 @@ let compassHeading = null;
 function fetchWeatherSafe() {
     const icon = document.getElementById("refreshIcon");
 
-    if (icon) {
-        icon.classList.add("refresh-spin");
-    }
+    if (icon) icon.classList.add("refresh-spin");
 
     navigator.geolocation.getCurrentPosition(pos => {
 
@@ -38,36 +36,22 @@ function fetchWeatherSafe() {
         fetch(url)
             .then(res => res.json())
             .then(data => {
-                console.log("DATA:", data);
-
-                if (data && data.list && data.list.length > 0) {
-                    renderDashboard(data.list[0]);
-                } else {
-                    console.log("Invalid data structure");
-                    simulateWeather();
-                }
+                renderDashboard(data.list[0]);
             })
             .catch(err => {
                 console.log("FETCH ERROR:", err);
                 simulateWeather();
             })
             .finally(() => {
-                // 🔥 THIS FIXES YOUR PROBLEM
-                if (icon) {
-                    icon.classList.remove("refresh-spin");
-                }
+                if (icon) icon.classList.remove("refresh-spin");
             });
 
     }, err => {
         console.log("GPS ERROR:", err);
         simulateWeather();
-
-        if (icon) {
-            icon.classList.remove("refresh-spin");
-        }
+        if (icon) icon.classList.remove("refresh-spin");
     });
 }
-
 
 setTimeout(() => {
     const splash = document.getElementById("splash");
