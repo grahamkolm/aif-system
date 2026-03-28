@@ -405,7 +405,8 @@ transform:scale(1.05);
 
 #map {
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 50px);
+    margin-top: 50px;
 }
 
 #mapScreen{
