@@ -1000,6 +1000,26 @@ setTimeout(() => {
 // ===============================
 // 🗺 MAP
 // ===============================
+function openMap() {
+    console.log("Map button clicked");
+
+    document.getElementById("mainscreen").classlist.add("hidden");
+    document.getElementById("mapscreen").classlist.add("hidden");
+
+    setTimeout(() => {
+        initMap();
+    }, 100);
+}
+
+let map;
+
+function initMap() {
+    map = L.map('map').setView([-25.3, 27.5], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+}
 
 function renderMap(events){
 
