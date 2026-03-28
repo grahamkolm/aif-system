@@ -31,6 +31,12 @@ window.addEventListener("load", () => {
     }, 2000);
 });
 
+let dots = 0;
+setInterval(() => {
+    dots = (dots + 1) % 4;
+    document.getElementById("dots").innerText = ".".repeat(dots);
+}, 400);
+
 // ===============================
 // 🧠 SESSION SYSTEM
 // ===============================
