@@ -425,24 +425,22 @@ transform:scale(1.05);
     cursor: pointer;
 }
 
-#map {
-    width: 100%;
-    height: calc(100vh - 50px);
-    margin-top: 50px;
-}
-
 #mapScreen{
     position: fixed;
     top: 0;
     left: 0;
     width:100%;
     height: 100vh;
-    margin-top: 50px
     background: black;
     z-index: 9999;
     border-radius:12px;
     overflow:hidden;
     display: none;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
 }
 
 /* Prevent overflow bug */
