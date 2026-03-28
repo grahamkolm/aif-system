@@ -1041,27 +1041,29 @@ setTimeout(() => {
 let map;
 
 window.openMap = function () {
+
     console.log("Map clicked");
 
     const mapScreen = document.getElementById("mapScreen");
+
+    if (!mapScreen) {
+        console.error("mapScreen missing");
+        return;
+    }
+
     mapScreen.style.display = "block";
 
-    // INIT MAP ONCE
+    // ✅ FIX HERE
     if (!map) {
         map = L.map('map').setView([-26, 28], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
         }).addTo(map);
-
-        window.mapInitialized = true;
     }
 
-    // FIX SIZE AFTER OPEN
     setTimeout(() => {
-        if (map) {
-            map.invalidateSize();
-        }
+        map.invalidateSize();
     }, 300);
 };
 
