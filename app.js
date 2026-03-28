@@ -1047,7 +1047,7 @@ window.openMap = function () {
     mapScreen.style.display = "block";
 
     // INIT MAP ONCE
-    if (!window.mapInitialized) {
+    if (!map) {
         map = L.map('map').setView([-26, 28], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
