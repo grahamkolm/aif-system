@@ -497,7 +497,8 @@ if(lastConditions.scout){
     }
 
     // 🧠 FINAL OUTPUT
-    document.getElementById("tactical").innerHTML = lines.join(" • "); }
+    document.getElementById("tactical").innerHTML = lines.join(" • "); 
+}
 
  // ===============================
 // 🎯 EVENT LOGGER (CORE SYSTEM)
