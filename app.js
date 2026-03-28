@@ -1020,39 +1020,36 @@ setTimeout(() => {
 // 🗺 MAP
 // ===============================
 function openMap() {
-    console.log("Map button clicked");
-
-    document.getElementById("mainscreen").classlist.add("hidden");
-    document.getElementById("mapscreen").classlist.add("hidden");
-
-    setTimeout(() => {
-        initMap();
-    }, 100);
-}
-
-let map = null;
-
-window.openMap = function () {
+   window.openMap = function () {
     console.log("Map clicked");
 
     const mapScreen = document.getElementById("mapScreen");
 
-    mapScreen.classList.remove("hidden");
     mapScreen.style.display = "block";
 
+    // INIT MAP ONLY ONCE
+    if (!window.mapInitialized) {
+        initMap();
+        window.mapInitialized = true;
+    }
+
+    // FIX SIZE AFTER SHOWING
     setTimeout(() => {
-        if (window.map) {
-            window.map.invalidateSize();
+        if (map) {
+            map.invalidateSize();
         }
     }, 300);
 };
 
-window.closeMap = function () {
-    const mapScreen = document.getElementById("mapScreen");
+let map;
 
-    mapScreen.classList.add("hidden");
-    mapScreen.style.display = "none";
-};
+function initMap() {
+    map = L.map('map').setView([-25.0, 28.0], 13); // your area
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+}
 
 function renderMap(events){
 
