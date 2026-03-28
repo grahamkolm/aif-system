@@ -13,7 +13,7 @@ body {
 
     background:
         linear-gradient(rgba(5,8,13,0.7), rgba(5,8,13,0.4), rgba(5,8,13,0.1)),
-        url("lake-atmosphere.jpg") center/cover no-repeat;
+        url("background.jpg") center/cover no-repeat;
 
     color: white;
 }
