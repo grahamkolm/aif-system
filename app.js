@@ -460,6 +460,25 @@ function refreshData() {
 // 🎯 DROP / SCOUT / CATCH
 // ===============================
 
+function dropPoint() {
+    if (!map) {
+        console.log("Map not ready");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        console.log("Dropped at:", lat, lon);
+
+        L.marker([lat, lon]).addTo(map);
+
+    }, err => {
+        console.log("GPS error:", err);
+    });
+}
+
 function ensureSession(){
 
     if(currentSession){
