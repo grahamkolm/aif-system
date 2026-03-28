@@ -1444,16 +1444,13 @@ function applyPlan(){
 // BACKGROUND CALC
 //====================
 
-const canvas = document.getElementById("aifCanvas");
-const ctx = canvas.getContext("2d");
-
 function resize(){
+  if(!canvas) return;
+
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-resize();
-window.addEventListener("resize", resize);
-
+    
 let SPI = 70;
 
 let bubbles = [];
