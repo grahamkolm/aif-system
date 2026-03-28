@@ -92,57 +92,81 @@
 </div>
 
 <!-- TILES -->
-<div class="tile-grid">
+<!-- ===============================
+🧠 WATER INTELLIGENCE
+=============================== -->
+<div class="card water-card">
 
-  <!-- WATER TILE -->
-  <div class="tile water-tile" onclick="openWaterDetail()">
-    <div class="tile-title">Water Intelligence</div>
+  <div class="card-title">Water Intelligence</div>
 
-    <div class="wc-visual">
-      <canvas id="waterGraph"></canvas>
+  <div class="water-temps">
+    <div id="wcAir" class="temp-small">--°</div>
+    <div id="wcSurface" class="temp-main">--°</div>
+    <div id="wcBottom" class="temp-small">--°</div>
+  </div>
 
-      <div class="wc-overlay">
-        <div id="wcAir">--°</div>
-        <div id="wcSurface">--°</div>
-        <div id="wcBottom">--°</div>
-      </div>
+  <canvas id="waterGraph"></canvas>
+
+  <div class="water-meta">
+    <span id="wcDepth">--</span>
+    <span id="wcClarity">--</span>
+  </div>
+
+  <div id="wcInsight" class="water-insight"></div>
+
+</div>
+
+<!-- ===============================
+🌦 CONDITIONS
+=============================== -->
+<div class="card">
+
+  <div class="card-title">Conditions</div>
+
+  <div class="cond-grid">
+    <div>
+      <label>Pressure</label>
+      <b id="pressure">--</b>
     </div>
 
-    <div class="wc-meta">
-      Depth: <span id="wcDepth">--m</span> • 
-      <span id="wcThermo">Normal</span>
+    <div>
+      <label>Wind</label>
+      <b id="wind">--</b>
+    </div>
+
+    <div>
+      <label>Cloud</label>
+      <b id="cloud">--</b>
+    </div>
+
+    <div>
+      <label>Oxygen</label>
+      <b id="oxygen">--</b>
+    </div>
+
+    <div>
+      <label>Season</label>
+      <b id="season">--</b>
+    </div>
+
+    <div>
+      <label>Moon</label>
+      <b id="moon">--</b>
     </div>
   </div>
 
-  <!-- CONDITIONS TILE -->
-  <div class="tile conditions-tile">
-    <div class="tile-title">Conditions</div>
+</div>
 
-    <div class="cond-row">
-      <div>Pressure</div>
-      <div id="pressure">--</div>
-    </div>
+<!-- ===============================
+🎯 STRATEGY
+=============================== -->
+<div class="card strategy-card">
 
-    <div class="cond-row">
-      <div>Wind</div>
-      <div id="wind">--</div>
-    </div>
+  <div class="card-title">Strategy</div>
 
-    <div class="cond-row">
-      <div>Cloud</div>
-      <div id="cloud">--</div>
-    </div>
-  </div>
-
-  <!-- STRATEGY TILE -->
-  <div class="tile strategy-tile">
-    <div class="tile-title">Strategy</div>
-
-    <div class="moon" id="moonIcon"></div>
-
-    <div class="strategy-main" id="feed">--</div>
-    <div class="strategy-sub" id="strategyNote">Waiting for data</div>
-  </div>
+  <div id="strategyText" class="strategy-main">--</div>
+  <div id="strategyNote" class="strategy-note">--</div>
+  <div id="strategyAction" class="strategy-action">--</div>
 
 </div>
 
