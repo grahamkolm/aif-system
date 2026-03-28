@@ -1059,6 +1059,13 @@ window.openMap = function () {
     }, 300);
 };
 
+window.closeMap = function () {
+    const mapScreen = document.getElementById("mapScreen");
+
+    mapScreen.classList.add("hidden");
+    mapScreen.style.display = "none";
+};
+
 function renderMap(events){
 
 // 🔥 remove old map
