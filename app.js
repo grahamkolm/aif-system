@@ -457,7 +457,7 @@ function refreshData() {
 }
   
 // ===============================
-// 🎯 DROP / SCOUT / CATCH
+// 🎯 DROP / SCOUT / ESP / CATCH
 // ===============================
 
 function dropPoint() {
@@ -1182,3 +1182,51 @@ if (window.lucide) {
     lucide.createIcons();
 }
 }, 100);
+
+console.log("APP JS LOADED");
+
+// ===== MAP =====
+window.openMap = function () {
+    console.log("Map clicked");
+
+    const main = document.getElementById("mainScreen");
+    const mapScreen = document.getElementById("mapScreen");
+
+    if (main) main.classList.add("hidden");
+    if (mapScreen) mapScreen.classList.remove("hidden");
+
+    if (!window.map) {
+        window.map = L.map('map').setView([-25.3, 27.5], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(window.map);
+    }
+
+    setTimeout(() => {
+        window.map.invalidateSize();
+    }, 200);
+};
+
+// ===== DROP =====
+window.confirmDrop = function () {
+    console.log("Drop clicked");
+
+    if (!window.map) {
+        alert("Open map first");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(pos => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        L.marker([lat, lon]).addTo(window.map);
+
+        console.log("Dropped at:", lat, lon);
+    }, err => {
+        console.log("GPS error:", err);
+        alert("Enable GPS/location");
+    });
+};
+
