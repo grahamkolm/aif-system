@@ -880,8 +880,8 @@ function showResults(score){
 document.getElementById("scanArea").innerHTML = `
 <h3 style="color:#00ffa6;">Results</h3>
 
-Surface: ${probeData?.surface?.toFixed(1)} || "--"}°C
-Bottom: ${probeData?.bottom?.toFixed(1)} || "--"}°C
+Surface: ${probeData?.surface ? probeData.surface.toFixed(1) : "--"}°C
+Bottom: ${probeData?.bottom ? probeData.bottom.toFixed(1) : "--"}°C
 ${probeData.thermo}<br><br>
 
 Fishing Score: ${score}%<br>
@@ -1498,10 +1498,12 @@ function animate(){
 
   drawThermocline();
 
+  // 🎯 Spawn bubbles based on SPI
   if(Math.random() < SPI/100 * 0.15){
     spawnBubble();
   }
 
+  // 🫧 Bubbles
   bubbles.forEach((b,i)=>{
     b.y -= b.speed;
     b.x += b.drift;
@@ -1514,10 +1516,9 @@ function animate(){
     if(b.y < 0) bubbles.splice(i,1);
   });
 
-  requestAnimationFrame(animate);
-}
-
+  // 🌊 Rotating sonar ring
   angle += 0.02;
+
   ctx.save();
   ctx.translate(canvas.width/2, canvas.height/2);
 
@@ -1529,6 +1530,7 @@ function animate(){
 
   ctx.restore();
 
+  // 💧 Ripples
   ripples.forEach((r,i)=>{
     r.r += 2;
     r.alpha *= 0.96;
