@@ -30,6 +30,28 @@ body {
 /* ========================= */
 /* ===== HEADER ===== */
 /* ========================= */
+#splash {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: black;
+    z-index: 99999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #00ffa6;
+
+    animation: fadeOut 1s ease forwards;
+    animation-delay: 2s;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
 
 .header{
     text-align:center;
