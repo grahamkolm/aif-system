@@ -18,11 +18,35 @@ let compassHeading = null;
 
 
 // ===============================
-// 🚀 START SYSTEM
+// START SYSTEM
+// ===============================
+
+function startSystem(){
+    navigator.geolocation.getCurrentPosition(pos => {
+
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=YOURKEY&units=metric`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                renderDashboard(data.list[0]);
+            });
+
+    }, () => {
+        simulateWeather();
+    });
+}
+
+// ===============================
+// INIT
 // ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
     startSystem();
+
     if(typeof lucide !== "undefined"){
         lucide.createIcons();
         initGPS();
@@ -79,43 +103,6 @@ function initSession(){
 // ===============================
 // 🌦 WEATHER SYSTEM
 // ===============================
-
-function fetchWeatherSafe(){
-
-    const icon = document.getElementById("refreshIcon");
-
-    navigator.geolocation.getCurrentPosition(pos => {
-
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-
-        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric`;
-
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-
-                renderDashboard(data.list[0]);
-
-                if(icon){
-                    icon.classList.remove("refresh-spin");
-                }
-
-            })
-            .catch(() => {
-
-                simulateWeather();
-
-                if(icon){
-                    icon.classList.remove("refresh-spin");
-                }
-
-            });
-
-    }, () => {
-        simulateWeather();
-    });
-}
 
 function simulateWeather(){
     renderDashboard({
