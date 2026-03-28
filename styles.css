@@ -256,6 +256,24 @@ font-weight:700;
     margin-bottom: 6px;
 }
 
+#waterGraph{
+    width:100%;
+    height:80px;
+}
+
+.water-column.large{
+    position:relative;
+    overflow:hidden;
+}
+
+.water-column.large::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at center, rgba(0,255,166,0.15), transparent 70%);
+    pointer-events:none;
+}
+
 .wc-bar{
     display:flex;
     flex-direction:column;
