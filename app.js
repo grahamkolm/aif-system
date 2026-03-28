@@ -1030,27 +1030,31 @@ function openMap() {
     }, 100);
 }
 
-let map; // global
+let map = null;
 
 window.openMap = function () {
     console.log("Map clicked");
 
     const mapScreen = document.getElementById("mapScreen");
-
     mapScreen.classList.remove("hidden");
     mapScreen.style.display = "block";
 
     setTimeout(() => {
 
-        if (!window.map) {
-            window.map = L.map('map').setView([-25.3, 27.5], 13);
+        // 🔥 FORCE recreate map properly
+        if (!map || typeof map.invalidateSize !== "function") {
+
+            console.log("Creating NEW Leaflet map");
+
+            map = L.map('map');
+            map.setView([-25.3, 27.5], 13);
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-            }).addTo(window.map);
+            }).addTo(map);
         }
 
-        window.map.invalidateSize();
+        map.invalidateSize();
 
     }, 300);
 };
