@@ -29,6 +29,10 @@ body {
     display: none;
 }
 
+.mapScreen.active {
+    display: block;
+}
+
 #map {
     width: 100%;
     height: 100%;
