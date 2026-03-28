@@ -94,20 +94,40 @@
 <!-- TILES -->
 <div class="tile-grid">
 
-<div class="tile">
-<i data-lucide="sun"></i>
-<div class="tile-title">Air</div>
-<div class="tile-value" id="air">--</div> </div>
+<div class="tile water-column">
 
-<div class="tile">
-<i data-lucide="waves"></i>
-<div class="tile-title">Surface</div>
-<div class="tile-value" id="surface">--</div> </div>
+  <div class="wc-title">🌊 Water</div>
 
-<div class="tile">
-<i data-lucide="arrow-down"></i>
-<div class="tile-title">Bottom</div>
-<div class="tile-value" id="bottom">--</div> </div>
+  <div class="wc-bar">
+
+    <div class="wc-layer air">
+      <span id="wcAir">--°</span>
+    </div>
+
+    <div class="wc-line"></div>
+
+    <div class="wc-layer surface">
+      <span id="wcSurface">--°</span>
+    </div>
+
+    <div class="wc-line thermo" id="thermoLine"></div>
+
+    <div class="wc-layer bottom">
+      <span id="wcBottom">--°</span>
+    </div>
+
+  </div>
+
+  <div class="wc-meta">
+    <span id="wcDepth">-- m</span> • 
+    <span id="wcClarity">--</span>
+  </div>
+
+  <div class="wc-insight" id="wcInsight">
+    --
+  </div>
+
+</div>
 
 <div class="tile">
 <i data-lucide="gauge"></i>
