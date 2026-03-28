@@ -45,6 +45,7 @@ body {
     padding: 0 12px;
     padding-bottom:120px;
     background: transparent;
+    pointer-events: auto;
     z-index: 1;
     position:relative;
 }
@@ -493,6 +494,7 @@ transform:scale(1.05);
     background:black;
     display:flex;
     justify-content:space-around;
+    pointer-events: auto;
     padding:10px 0;
     z-index: 9999;
     border-top:1px solid rgba(255,255,255,0.1); 
