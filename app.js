@@ -34,8 +34,16 @@ function fetchWeatherSafe() {
         const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric`;
 
         fetch(url)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error("Bad response");
+                return res.json();
+            })
             .then(data => {
+
+                if (!data || !data.list || !data.list[0]) {
+                    throw new Error("Invalid weather data");
+                }
+
                 renderDashboard(data.list[0]);
             })
             .catch(err => {
