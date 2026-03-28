@@ -686,3 +686,71 @@ button{
     to { transform: rotate(360deg);}
 }
 
+.tile-grid{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.water-tile{
+  padding:16px;
+}
+
+.wc-visual{
+  height:140px;
+  position:relative;
+}
+
+#waterGraph{
+  width:100%;
+  height:100%;
+}
+
+.wc-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:6px 10px;
+  font-size:12px;
+  color:#b6ffe4;
+}
+
+#wcSurface{
+  font-size:16px;
+  font-weight:600;
+  color:#00ffa6;
+}
+
+.cond-row{
+  display:flex;
+  justify-content:space-between;
+  margin:8px 0;
+  font-size:14px;
+}
+
+.strategy-tile{
+  text-align:center;
+  padding:16px;
+}
+
+.moon{
+  width:50px;
+  height:50px;
+  margin:10px auto;
+  border-radius:50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #888);
+  box-shadow: 0 0 12px rgba(255,255,255,0.3);
+}
+
+.strategy-main{
+  font-size:18px;
+  font-weight:bold;
+  color:#00ffa6;
+}
+
+.strategy-sub{
+  font-size:13px;
+  opacity:0.7;
+}
