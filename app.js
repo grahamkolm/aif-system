@@ -1037,23 +1037,23 @@ window.openMap = function () {
 
     const mapScreen = document.getElementById("mapScreen");
 
-    // FORCE visible
     mapScreen.classList.remove("hidden");
     mapScreen.style.display = "block";
 
-    if (!window.map) {
-        window.map = L.map('map').setView([-25.3, 27.5], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(window.map);
-    }
-
     setTimeout(() => {
+
+        if (!window.map) {
+            window.map = L.map('map').setView([-25.3, 27.5], 13);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(window.map);
+        }
+
         window.map.invalidateSize();
+
     }, 300);
 };
-
 
 function renderMap(events){
 
