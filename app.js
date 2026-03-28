@@ -394,33 +394,6 @@ set("moon", getMoonPhase());
 set("season", getSeason());
 }
 
-function updateStrategy(spi){
-
-  let text = "🟡 Moderate";
-  let note = "Stable pattern";
-  let action = "→ Stay observant";
-
-  if(spi > 80){
-    text = "🔥 Aggressive";
-    note = "Peak feeding window";
-    action = "→ Feed aggressively & hold position";
-  } 
-  else if(spi > 65){
-    text = "⚡ Active";
-    note = "Good feeding conditions";
-    action = "→ Stay on current spot";
-  }
-  else if(spi < 50){
-    text = "🔻 Slow";
-    note = "Low activity";
-    action = "→ Move or change depth";
-  }
-
-  set("strategyText", text);
-  set("strategyNote", note);
-  set("strategyAction", action);
-}
-
 function applyScout(){
   lastConditions.scout = selected;
   document.getElementById("scoutScreen").classList.add("hidden");
