@@ -1520,3 +1520,42 @@ function animate(){
 
 animate();
 
+function drawWaterProfile(surface, bottom){
+
+    const canvas = document.getElementById("waterGraph");
+    if(!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const mid = (surface + bottom) / 2;
+
+    const points = [
+        {x: 10, y: 10},                         // air
+        {x: canvas.width/2, y: canvas.height/2}, // mid
+        {x: canvas.width - 10, y: canvas.height - 10} // bottom
+    ];
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+
+    ctx.quadraticCurveTo(
+        points[1].x,
+        points[1].y,
+        points[2].x,
+        points[2].y
+    );
+
+    ctx.strokeStyle = "#00ffa6";
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#00ffa6";
+
+    ctx.stroke();
+}
+
+
