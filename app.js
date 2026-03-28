@@ -1027,37 +1027,33 @@ setTimeout(() => {
 // ===============================
 // 🗺 MAP
 // ===============================
-function openMap() {
-   window.openMap = function () {
+
+let map;
+
+window.openMap = function () {
     console.log("Map clicked");
 
     const mapScreen = document.getElementById("mapScreen");
-
     mapScreen.style.display = "block";
 
-    // INIT MAP ONLY ONCE
+    // INIT MAP ONCE
     if (!window.mapInitialized) {
-        initMap();
+        map = L.map('map').setView([-26, 28], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
         window.mapInitialized = true;
     }
 
-    // FIX SIZE AFTER SHOWING
+    // FIX SIZE AFTER OPEN
     setTimeout(() => {
         if (map) {
             map.invalidateSize();
         }
     }, 300);
 };
-
-let map;
-
-function initMap() {
-    map = L.map('map').setView([-25.0, 28.0], 13); // your area
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-}
 
 function renderMap(events){
 
