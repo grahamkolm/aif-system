@@ -11,9 +11,7 @@ body {
     display: flex;
     justify-content: center;
 
-    background:
-        linear-gradient(rgba(5,8,13,0.7), rgba(5,8,13,0.4), rgba(5,8,13,0.1)),
-        url("background.jpg") center/cover no-repeat;
+    background:#05080d;
 
     color: white;
 }
