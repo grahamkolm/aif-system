@@ -23,12 +23,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-window.addEventListener("load", () => {
-    setTimeout(() => {
-        const splash = document.getElementById("splash");
-        if (splash) splash.remove(); // ✅ FULLY REMOVE
-    }, 2000);
-});
+setTimeout(() => {
+    const splash = document.getElementById("splash");
+    if (splash) {
+        splash.style.opacity = "0";
+        splash.style.transition = "opacity 0.6s ease";
+
+        setTimeout(() => {
+            splash.remove();
+        }, 600);
+    }
+}, 2000);
+
 
 let dots = 0;
 setInterval(() => {
