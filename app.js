@@ -61,11 +61,11 @@ function fetchWeatherSafe() {
                 return res.json();
             })
             .then(data => {
-                if (!data || !data.list || !data.list[0]) {
+                if (!data || !data.main) {
                     throw new Error("Invalid weather data");
                 }
 
-                renderDashboard(data.list[0]);
+                renderDashboard(data);
             })
             .catch(err => {
                 console.log("FETCH ERROR:", err);
