@@ -1536,19 +1536,25 @@ function animate(){
 }
 
 function updateStrategy(spi){
-  let text = "Moderate";
-  let note = "Stable pattern";
+    let text = "";
+    let detail = "";
 
-  if(spi > 80){
-    text = "Aggressive";
-    note = "Peak feeding window";
-  } else if(spi >= 50){
-    text = "Slow";
-    note = "Low activity";
-  }
+    if(spi > 80){
+        text = "🔥 Aggressive Feeding";
+        detail = "Stay on spot. Increase baiting.";
+    } else if(spi >= 60){
+        text = "⚡ Active Window";
+        detail = "Good conditions. Stay alert.";
+    } else if(spi >= 40){
+        text = "⚠ Slow Activity";
+        detail = "Reduce bait. Try different depth.";
+    } else {
+        text = "❌ Low Activity";
+        detail = "Move or change location.";
+    }
 
-  set("feed", text);
-  set("strategyNote", note);
+    set("feed", text);
+    set("strategyNote", detail);
 }
 
 function drawWaterProfile(surface, bottom){
