@@ -906,14 +906,18 @@ fetchWeatherSafe();
 // ===============================
 
 function updateSPI(v){
-let arc = document.getElementById("spiArc");
-if(!arc) return;
+    let arc = document.getElementById("spiArc");
+    if(!arc) return;
 
-let r=110; let C=2*Math.PI*r;
-arc.style.strokeDasharray=C;
-arc.style.strokeDashoffset=C-(v/100)*C;
+    let r = 110;
+    let C = 2 * Math.PI * r;
 
-document.getElementById("spiValue").textContent=v+"%";
+    // ✅ THIS IS THE FIX
+    arc.setAttribute("stroke-dasharray", C);
+    arc.setAttribute("stroke-dashoffset", C - (v/100) * C);
+
+    let val = document.getElementById("spiValue");
+    if(val) val.textContent = v + "%";
 }
 
 function updateAI(spi,p,w,c){
