@@ -278,36 +278,84 @@ if(bottomEl){
 // 🌊 WATER COLUMN UPDATE
 // =========================
 
-drawWaterProfile(surfaceTemp, bottomTemp);
+function drawWaterProfile(surface, bottom){
 
-set("wcAir", t.toFixed(1)+"°");
-set("wcSurface", surfaceTemp.toFixed(1)+"°");
-set("wcBottom", bottomTemp.toFixed(1)+"°");
-set("wcDepth", "3.2");
-    
-// Depth (probe OR default)
-let depth = probeData?.depth || 3.5;
-set("wcDepth", depth.toFixed(1) + "m");
+    const canvas = document.getElementById("waterGraph");
+    if(!canvas) return;
 
-// Clarity (scout OR default)
-let clarity = lastConditions?.scout?.murky ? "Murky"
-             : lastConditions?.scout?.clear ? "Clear"
-             : "Normal";
+    const ctx = canvas.getContext("2d");
 
-set("wcClarity", clarity);
+    // Resize canvas properly
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
 
-// 🎯 Fish Zone Logic
-function detectFishZone(surface, bottom){
-    let diff = surface - bottom;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    if(diff > 3) return "🎯 Mid-depth zone";
-    if(surface > 22) return "🔥 Shallow feeding";
-    if(surface < 16) return "⬇ Bottom holding";
+    // =========================
+    // 🌊 WATER BACKGROUND
+    // =========================
+    let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
 
-    return "🎯 Mixed zone";
-}
+    gradient.addColorStop(0, "rgba(0,255,166,0.05)");
+    gradient.addColorStop(1, "rgba(0,0,0,0.7)");
 
-set("wcInsight", detectFishZone(surfaceTemp, bottomTemp));
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // =========================
+    // 🌡 THERMOCLINE (DEPTH LAYER)
+    // =========================
+    let thermoY = canvas.height * 0.5;
+
+    ctx.strokeStyle = "rgba(255,200,0,0.4)";
+    ctx.setLineDash([6,6]);
+    ctx.lineWidth = 1.5;
+
+    ctx.beginPath();
+    ctx.moveTo(0, thermoY);
+    ctx.lineTo(canvas.width, thermoY);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    // =========================
+    // 📉 PROFILE LINE (DATA)
+    // =========================
+    const startY = 20;                        // surface
+    const endY = canvas.height - 20;          // bottom
+
+    ctx.beginPath();
+    ctx.moveTo(10, startY);
+    ctx.lineTo(canvas.width - 10, endY);
+
+    // Glow effect
+    ctx.strokeStyle = "#00ffa6";
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#00ffa6";
+
+    ctx.stroke();
+
+    // Reset shadow so text is clean
+    ctx.shadowBlur = 0;
+
+    // =========================
+    // 🏷 LABELS
+    // =========================
+    ctx.fillStyle = "#aaa";
+    ctx.font = "12px Arial";
+
+    ctx.fillText("Surface", 10, 15);
+    ctx.fillText("Bottom", 10, canvas.height - 5);
+
+    // =========================
+    // 🌡 TEMP VALUES (OPTIONAL BUT POWERFUL)
+    // =========================
+    ctx.fillStyle = "#00ffa6";
+    ctx.font = "bold 13px Arial";
+
+    ctx.fillText(surface.toFixed(1) + "°C", canvas.width - 60, startY);
+    ctx.fillText(bottom.toFixed(1) + "°C", canvas.width - 60, endY); }
     
 // =========================
 // 💨 OXYGEN
