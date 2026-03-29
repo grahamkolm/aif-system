@@ -912,9 +912,18 @@ function updateSPI(v){
     let r = 110;
     let C = 2 * Math.PI * r;
 
-    // ✅ THIS IS THE FIX
     arc.setAttribute("stroke-dasharray", C);
     arc.setAttribute("stroke-dashoffset", C - (v/100) * C);
+
+    // 🎯 Smooth animation
+    arc.style.transition = "stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1)";
+
+    // 🎨 Dynamic color (premium feel)
+    let color = "#00ffa6";
+    if(v < 50) color = "#ff4d4d";
+    else if(v < 70) color = "#ffaa00";
+
+    arc.style.stroke = color;
 
     let val = document.getElementById("spiValue");
     if(val) val.textContent = v + "%";
