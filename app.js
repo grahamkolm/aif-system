@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx = canvas?.getContext("2d");
 
     resize();
-    animate();   // ✅ correct spelling
+    animate(); 
 
-    setInterval(ripple, 3000); // ✅ move here safely
+    setInterval(ripple, 3000); 
 
     setTimeout(() => {
         fetchWeatherSafe();
@@ -90,7 +90,7 @@ function fetchWeatherSafe() {
 let dots = 0;
 setInterval(() => {
     const el = document.getElementById("dots");
-    if (!el) return; // ✅ prevents crash
+    if (!el) return; 
 
     dots = (dots + 1) % 4;
     el.innerText = ".".repeat(dots);
@@ -781,7 +781,7 @@ Exit
 </button>
             `;
 
-            return; // 🚨 STOP HERE
+            return; 
         }
 
         // ✅ sensors found → continue
@@ -1528,7 +1528,7 @@ function spawnBubble(){
 let ripples = [];
 function ripple(){
 
-    if(!canvas || !ctx) return;   // ✅ HARD GUARD
+    if(!canvas || !ctx) return;
 
     ripples.push({
         r:0,
