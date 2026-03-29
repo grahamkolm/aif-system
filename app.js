@@ -217,6 +217,7 @@ if(hour >= 10 && hour <= 16){
     sunEffect = 0.2;               // minimal effect
 }
 
+   
 // Wind cooling reduced slightly
 let windCooling = w * 0.15;
 
@@ -227,6 +228,7 @@ let mixingFactor = Math.min(1, w / 5);
 let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
 
 let bottomTemp = surfaceTemp - depthDrop;
+drawWaterProfile(surfaceTEmp, bottomTemp);
 
 function drawWaterProfile(surface, bottom){
 
@@ -296,12 +298,6 @@ function drawWaterProfile(surface, bottom){
     ctx.fillText("Surface", 10, 15);
     ctx.fillText("Bottom", 10, canvas.height - 5);
 
-    ctx.fillStyle = "#00ffa6";
-    ctx.font = "bold 13px Arial";
-
-    ctx.fillText(surface.toFixed(1)+"°C", canvas.width - 60, startY);
-    ctx.fillText(bottom.toFixed(1)+"°C", canvas.width - 60, endY); }
-    
 // =========================
 // 🛟 SAFETY (FIXED SCOPE)
 // =========================
