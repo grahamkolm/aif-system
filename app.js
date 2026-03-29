@@ -66,6 +66,17 @@ function fetchWeatherSafe() {
                     throw new Error("Invalid weather data");
                 }
 
+let temp = data.main.temp;
+let pressure = data.main.pressure;
+let wind = data.wind?.speed || 0;
+let cloud = data.clouds?.all || 0;
+
+// 🔥 UPDATE UI
+set("envScore", Math.round((pressure / 1050) * 100)); // or your logic 
+set("pressure", pressure + " hPa"); 
+set("wind", wind.toFixed(1) + " km/h"); 
+set("cloud", cloud + "%");
+                
                 renderDashboard(data);
             })
             .catch(err => {
