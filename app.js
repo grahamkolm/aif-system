@@ -195,7 +195,7 @@ set("statusText", " Live environmental data");
 // =========================
 // 📥 GET DATA
 // =========================
-let t = d.main.temp;
+let t = d?.main?.temp ?? 20;
 let p = d.main.pressure;
 let w = d.wind.speed;
 let c = d.clouds.all;
@@ -516,13 +516,12 @@ function updateTactical(spi, envScore, confScore, w, t){
     // =========================
     // 🧠 FINAL OUTPUT (SAFE)
     // =========================
-    let tacticalEl = document.getElementById("tactical");
+let tacticalEl = document.getElementById("tactical");
 
-    if(tacticalEl){
-        tacticalEl.innerHTML = lines.join("<br>");
-    } else {
-        console.warn("⚠️ Tactical element not found");
-    }
+if(tacticalEl){
+    tacticalEl.innerHTML = lines.length 
+        lines.length ? lines.join("<br>") : "No data available" 
+        : "⚠️ No tactical data available"; 
 }
 
  // ===============================
@@ -966,15 +965,19 @@ function updateSPI(v){
 function updateAI(spi,p,w,c){
 
 let trend = getPressureTrend(p);
-let windowText = detectStrikeWindow(spi, trend, w, c); let duration = predictStrikeDuration(spi, trend, w, c); 
 
-document.getElementById("aiAnalysis").innerHTML = `
-SPI: ${spi}%
-Trend: ${trend}
-Window: ${windowText}
-Duration: ${duration} min
+let insight = "";
+
+if(spi > 75){
+    insight = "Fish are actively feeding. Stay on your line and increase baiting slightly."; } else if(spi > 55){
+    insight = "Fish are present but cautious. Try changing hookbait or depth."; } else{
+    insight = "Low activity. Consider relocating or reducing feed."; }
+
+document.getElementById("aiAnalysis").innerHTML = ` <b>${feeding(spi)}</b><br>
+Trend: ${trend}<br><br>
+${insight}
 `;
-}  // ✅ CLOSE updateAI HERE
+}
 
 function openAIDetail(){
 
@@ -1002,7 +1005,7 @@ Cloud: ${lastConditions.cloud}%<br><br>
 Trend: ${getPressureTrend(lastConditions.pressure)}<br><br>
 
 <b>AI Insight</b><br>
-${document.getElementById("tactical").innerText}
+${(document.getElementById("tactical") || {}).innerText || "No tactical data"}
 
 </div>
 
@@ -1237,6 +1240,30 @@ if(month >= 12 || month <= 2) return "Summer";
 if(month >= 3 && month <= 5) return "Autumn"; 
 if(month >= 6 && month <= 8) return "Winter"; 
 return "Spring"; 
+}
+
+function getStatusMessage(spi, trend, w, t){
+
+    if(spi > 80){
+        return "🔥 FEEDING NOW — Stay on spot";
+    }
+
+    if(spi > 65){
+        if(trend === "Falling"){
+            return "🔥 Pressure drop — feeding building";
+        }
+        return "⚡ Active window — be ready";
+    }
+
+    if(spi > 50){
+        return "🟡 Fish present — trigger needed";
+    }
+
+    if(spi > 35){
+        return "⚠️ Slow — adjust depth or bait";
+    }
+
+    return "❌ Dead water — move spots";
 }
 
 function getMoonPhase(){
@@ -1585,8 +1612,7 @@ function updateStrategy(spi){
         detail = "Move or change location.";
     }
 
-    set("feed", text);
-    set("strategyNote", detail);
+set("feed", text + " • " + detail);
 }
 
 function drawWaterProfile(surface, bottom){
