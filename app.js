@@ -230,8 +230,6 @@ let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
 let bottomTemp = surfaceTemp - depthDrop;
 drawWaterProfile(surfaceTemp, bottomTemp);
 
-
-
 // =========================
 // 🛟 SAFETY (FIXED SCOPE)
 // =========================
@@ -479,9 +477,8 @@ if(lastConditions.scout){
         lines.push("🌡️ Suboptimal temperature — adjust depth");
     }
 
-    if(probeData){
-    surfaceTemp = probeData.surface;
-    bottomTemp = probeData.bottom;
+let surfaceTempLocal = probeData?.surface;
+let bottomTempLocal = probeData?.bottom;
     }
 
     // 🧠 FINAL OUTPUT
