@@ -1612,6 +1612,6 @@ function drawWaterProfile(surface, bottom){
 
     ctx.fillText("Surface", 10, 15);
     ctx.fillText("Bottom", 10, canvas.height - 5);
-
+}
 
 
