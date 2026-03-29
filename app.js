@@ -100,8 +100,6 @@ set("cloud", cloud + "%");
                 if (icon) icon.classList.remove("refresh-spin");
             });
 
-} 
-
 let dots = 0;
 setInterval(() => {
     const el = document.getElementById("dots");
