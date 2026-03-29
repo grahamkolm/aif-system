@@ -54,7 +54,7 @@ function fetchWeatherSafe() {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=YOUR_KEY&units=metric`;
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=YOUR_KEY&units=metric`;
 
         fetch(url)
             .then(res => {
