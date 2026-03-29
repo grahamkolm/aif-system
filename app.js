@@ -265,22 +265,22 @@ if (surfaceTemp === undefined || bottomTemp === undefined) {
     // =========================
     // 🖥 UPDATE UI (ALWAYS RUNS NOW ✅)
     // =========================
-    let airEl = document.getElementById("air");
+    let airEl = document.getElementById("wcAir");
     if(airEl){
         airEl.innerHTML = t.toFixed(1) + "°C";
         airEl.style.color = getTempColor(t);
     }
 
-    let surfaceEl = document.getElementById("surfaceTemp");
+    let surfaceEl = document.getElementById("wcSurface");
     if(surfaceEl){
         surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-        surfaceEl.style.color = getTempColor(surfaceTemp);
+        surfaceEl.style.color = getTempColor(wcSurface);
     }
 
-let bottomEl = document.getElementById("bottomTemp");
+let bottomEl = document.getElementById("wcBottom");
 if(bottomEl){
     bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-    bottomEl.style.color = getTempColor(bottomTemp);
+    bottomEl.style.color = getTempColor(wcBottom);
 }
  
 // =========================
