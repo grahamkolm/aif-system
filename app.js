@@ -427,7 +427,7 @@ function applyScout(){
 
 function updateTactical(spi, envScore, confScore, w, t){
 
-    let lines = [];
+let lines = [];
 
 if(spi > 75){
     lines.unshift("🔥 PRIORITY: Stay on current spot — feeding window active"); } else if(spi < 50){
@@ -480,21 +480,6 @@ if(lastConditions.scout){
     } else if(w > 15){
         lines.push("🌊 Strong wind — target windblown banks");
     }
-
-    // 🌡️ TEMP
-    if(t >= 18 && t <= 24){
-        lines.push("🌡️ Optimal temperature range for feeding");
-    } else {
-        lines.push("🌡️ Suboptimal temperature — adjust depth");
-    }
-
-let surfaceTempLocal = probeData?.surface;
-let bottomTempLocal = probeData?.bottom;
-    }
-
-    // 🧠 FINAL OUTPUT
-    document.getElementById("tactical").innerHTML = lines.join(" • "); 
-}
 
  // ===============================
 // 🎯 EVENT LOGGER (CORE SYSTEM)
