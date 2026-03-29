@@ -91,7 +91,7 @@ set("wind", wind.toFixed(1) + " km/h");
 set("cloud", cloud + "%");
                 
                 renderDashboard(data);
-            })
+            });
             .catch(err => {
                 console.log("FETCH ERROR:", err);
                 simulateWeather();
