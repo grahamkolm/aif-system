@@ -483,7 +483,6 @@ set("cloud", c + "%");
 set("oxygen", oxygen.toFixed(1) + " mg/L");
 set("moon", getMoonPhase());
 set("season", getSeason());
-}
 
 function animateValue(id, value){
     let el = document.getElementById(id);
