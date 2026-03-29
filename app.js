@@ -177,6 +177,15 @@ function estimateOxygen(temp, windSpeed){
     return Math.max(5, Math.min(oxygen, 12)); 
 }
 
+function removeSplash(){
+    const splash = document.getElementById("splash");
+    if (!splash) return;
+
+    splash.style.opacity = "0";
+    splash.style.transition = "opacity 0.5s ease";
+
+    setTimeout(() => splash.remove(), 500); }
+
 // ===============================
 // 📊 DASHBOARD
 // ===============================
@@ -389,6 +398,8 @@ set("moon", getMoonPhase());
 set("season", getSeason());
 set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); 
 set("bottomTemp", bottomTemp.toFixed(1) + "°C");
+
+removeSplash();
 }
 
 function animateValue(id, value){
