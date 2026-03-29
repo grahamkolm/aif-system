@@ -973,9 +973,12 @@ if(spi > 75){
     insight = "Fish are present but cautious. Try changing hookbait or depth."; } else{
     insight = "Low activity. Consider relocating or reducing feed."; }
 
-document.getElementById("aiAnalysis").innerHTML = ` <b>${feeding(spi)}</b><br>
-Trend: ${trend}<br><br>
-${insight}
+let aiEl = document.getElementById("aiAnalysis");
+    if(aiEl){
+        aiEl.innerHTML = `
+        <b>${feeding(spi)}</b><br>
+        Trend: ${trend}<br><br>
+        ${insight}
 `;
 }
 
