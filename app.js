@@ -90,15 +90,17 @@ set("pressure", pressure + " hPa");
 set("wind", wind.toFixed(1) + " km/h"); 
 set("cloud", cloud + "%");
                 
-                renderDashboard(data);
-            });
-            .catch(err => {
-                console.log("FETCH ERROR:", err);
-                simulateWeather();
-            })
-            .finally(() => {
-                if (icon) icon.classList.remove("refresh-spin");
-            });
+renderDashboard(data);
+})  // ← NO semicolon here
+
+.catch(err => {
+    console.log("FETCH ERROR:", err);
+    simulateWeather();
+})
+
+.finally(() => {
+    if (icon) icon.classList.remove("refresh-spin");
+});
 
 let dots = 0;
 setInterval(() => {
