@@ -481,6 +481,8 @@ if(lastConditions.scout){
         lines.push("🌊 Strong wind — target windblown banks");
     }
 
+    document.getElementById("tactical").innerHTML = lines.join("<br>");
+
  // ===============================
 // 🎯 EVENT LOGGER (CORE SYSTEM)
 // ===============================
