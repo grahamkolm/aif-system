@@ -233,7 +233,8 @@ let surfaceTemp = t + sunEffect - windCooling;
 let mixingFactor = Math.min(1, w / 5);
 let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
 
-let bottomTemp = surfaceTemp - depthDrop;
+let bottomTemp = surfaceTemp - depthDrop; 
+
 drawWaterProfile(surfaceTemp, bottomTemp);
 
 // =========================
