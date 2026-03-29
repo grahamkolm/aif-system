@@ -211,13 +211,13 @@ font-size: 32px;
 
 /* LEFT */
 .env-circle {
-    left: -10px;
+    left: -40px;
     top: 30px;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: -10px;
+    right: -40px;
     top: 30px;
 }
 
