@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function fetchWeatherSafe() {
+    console.log("FETCH START");
     const icon = document.getElementById("refreshIcon");
 
     if (icon) icon.classList.add("refresh-spin");
@@ -59,7 +60,7 @@ function fetchWeatherSafe() {
                 return res.json();
             })
             .then(data => {
-
+                console.log("WEATHER DATA", data);
                 if (!data || !data.list || !data.list[0]) {
                     throw new Error("Invalid weather data");
                 }
