@@ -161,14 +161,14 @@ function estimateSurfaceTemp({ prevWaterTemp, airTemp, windSpeed, sunFactor, hou
     return temp;
 }
 
-function estimateBottomTemp({ surfaceTemp, depth, windSpeed }) {
+function estimateBottomTemp({ surfaceTempValue, depth, windSpeed }) {
 
     let gradient = depth * 0.15;
 
     // wind mixes layers
     gradient -= windSpeed * 0.05;
 
-    return surfaceTemp - Math.max(gradient, 0.5); 
+    return surfaceTempValue - Math.max(gradient, 0.5); 
 }
 
 function estimateOxygen(temp, windSpeed){
