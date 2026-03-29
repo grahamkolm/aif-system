@@ -985,51 +985,51 @@ let aiEl = document.getElementById("aiAnalysis");
 }
 
 function openAIDetail(){
-    console.log("SAFE MODE");
-}
 
-document.body.insertAdjacentHTML("beforeend", ` <div id="aiDetail" style="
-position:fixed;
-top:0; left:0;
-width:100%; height:100%;
-background:#05080d;
-color:white;
-z-index:999;
-padding:20px;
-overflow:auto;
-">
+    document.body.insertAdjacentHTML("beforeend", `
+    <div id="aiDetail" style="
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:#05080d;
+    color:white;
+    z-index:999;
+    padding:20px;
+    overflow:auto;
+    ">
 
-<h2 style="color:#00ffa6;">AI Breakdown</h2>
+    <h2 style="color:#00ffa6;">AI Breakdown</h2>
 
-<div style="margin-top:15px;line-height:1.6">
+    <div style="margin-top:15px;line-height:1.6">
 
-<b>Environment</b><br>
-Temp: ${lastConditions.airTemp?.toFixed(1)}°C<br>
-Wind: ${lastConditions.windSpeed} km/h<br>
-Cloud: ${lastConditions.cloud}%<br><br>
+    <b>Environment</b><br>
+    Temp: ${lastConditions.airTemp?.toFixed(1)}°C<br>
+    Wind: ${lastConditions.windSpeed} km/h<br>
+    Cloud: ${lastConditions.cloud}%<br><br>
 
-<b>Pressure</b><br>
-Trend: ${getPressureTrend(lastConditions.pressure)}<br><br>
+    <b>Pressure</b><br>
+    Trend: ${getPressureTrend(lastConditions.pressure)}<br><br>
 
-<b>AI Insight</b><br>
-${document.getElementById("tactical")?.innerText || "No tactical data"}
+    <b>AI Insight</b><br>
+    ${document.getElementById("tactical")?.innerText || "No tactical data"}
 
-</div>
+    </div>
 
-<button onclick="closeAIDetail()" style="
-margin-top:20px;
-width:100%;
-padding:14px;
-background:#00ffa6;
-border:none;
-border-radius:10px;
-font-weight:bold;
-">
-Close
-</button>
+    <button onclick="closeAIDetail()" style="
+    margin-top:20px;
+    width:100%;
+    padding:14px;
+    background:#00ffa6;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    ">
+    Close
+    </button>
 
-</div>
-`);
+    </div>
+    `);
+
 }
 
 function closeAIDetail(){
