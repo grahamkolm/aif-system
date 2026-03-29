@@ -280,19 +280,21 @@ if(bottomEl){
 
 function drawWaterProfile(surface, bottom){
 
+    // ❌ STOP if no data
+    if(surface === undefined || bottom === undefined) return;
+
     const canvas = document.getElementById("waterGraph");
     if(!canvas) return;
 
     const ctx = canvas.getContext("2d");
 
-    // Resize canvas properly
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
     // =========================
-    // 🌊 WATER BACKGROUND
+    // 🌊 BACKGROUND
     // =========================
     let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
 
@@ -303,13 +305,43 @@ function drawWaterProfile(surface, bottom){
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // =========================
-    // 🌡 THERMOCLINE (DEPTH LAYER)
+    // 📊 REAL CURVE (IMPORTANT FIX)
     // =========================
-    let thermoY = canvas.height * 0.5;
+    let diff = surface - bottom;
+
+    let midOffset = diff * 10; // exaggerate curve visually
+
+    let startY = 20;
+    let endY = canvas.height - 20;
+    let midY = canvas.height / 2 - midOffset;
+
+    ctx.beginPath();
+    ctx.moveTo(10, startY);
+
+    ctx.quadraticCurveTo(
+        canvas.width / 2,
+        midY,
+        canvas.width - 10,
+        endY
+    );
+
+    // Glow
+    ctx.strokeStyle = "#00ffa6";
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#00ffa6";
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    // =========================
+    // 🌡 THERMOCLINE (dynamic)
+    // =========================
+    let thermoY = canvas.height / 2 - (diff * 5);
 
     ctx.strokeStyle = "rgba(255,200,0,0.4)";
     ctx.setLineDash([6,6]);
-    ctx.lineWidth = 1.5;
 
     ctx.beginPath();
     ctx.moveTo(0, thermoY);
@@ -319,34 +351,19 @@ function drawWaterProfile(surface, bottom){
     ctx.setLineDash([]);
 
     // =========================
-    // 📉 PROFILE LINE (DATA)
-    // =========================
-    const startY = 20;                        // surface
-    const endY = canvas.height - 20;          // bottom
-
-    ctx.beginPath();
-    ctx.moveTo(10, startY);
-    ctx.lineTo(canvas.width - 10, endY);
-
-    // Glow effect
-    ctx.strokeStyle = "#00ffa6";
-    ctx.lineWidth = 3;
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#00ffa6";
-
-    ctx.stroke();
-
-    // Reset shadow so text is clean
-    ctx.shadowBlur = 0;
-
-    // =========================
-    // 🏷 LABELS
+    // LABELS
     // =========================
     ctx.fillStyle = "#aaa";
     ctx.font = "12px Arial";
 
     ctx.fillText("Surface", 10, 15);
     ctx.fillText("Bottom", 10, canvas.height - 5);
+
+    ctx.fillStyle = "#00ffa6";
+    ctx.font = "bold 13px Arial";
+
+    ctx.fillText(surface.toFixed(1)+"°C", canvas.width - 60, startY);
+    ctx.fillText(bottom.toFixed(1)+"°C", canvas.width - 60, endY); }
 
     // =========================
     // 🌡 TEMP VALUES (OPTIONAL BUT POWERFUL)
