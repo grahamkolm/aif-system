@@ -61,8 +61,8 @@ function fetchWeatherSafe() {
                 return res.json();
             })
             .then(data => {
-                console.log("WEATHER RAW", data);
                 if (!data || !data.main) {
+                    console.log("BAD DATA", data);
                     throw new Error("Invalid weather data");
                 }
 
