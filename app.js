@@ -91,7 +91,7 @@ set("wind", wind.toFixed(1) + " km/h");
 set("cloud", cloud + "%");
                 
 renderDashboard(data);
-})  // ← NO semicolon here
+});  // ← NO semicolon here
 
 .catch(err => {
     console.log("FETCH ERROR:", err);
