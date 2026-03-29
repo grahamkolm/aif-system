@@ -580,7 +580,8 @@ function ensureSession(){
         events: []
     };
 
-    localStorage.setItem("aif_current_session", JSON.stringify(currentSession)); }
+    localStorage.setItem("aif_current_session", JSON.stringify(currentSession)); 
+}
 
 function performScout(){
     logEvent("scout");
@@ -1612,5 +1613,4 @@ function drawWaterProfile(surface, bottom){
     ctx.fillText("Surface", 10, 15);
     ctx.fillText("Bottom", 10, canvas.height - 5);
 }
-
 
