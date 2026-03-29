@@ -17,16 +17,29 @@ let planScore = 0;
 let userLocation = null;
 let compassHeading = null;
 
-
 // ===============================
 // START SYSTEM
 // ===============================
 
+let canvas;
+let ctx;
+
 document.addEventListener("DOMContentLoaded", () => {
+
+    canvas = document.getElementById("aifCanvas");
+    ctx = canvas?.getContext("2d");
+
+    resize();
+    animate();   // ✅ correct spelling
+
+    setInterval(ripple, 3000); // ✅ move here safely
+
     setTimeout(() => {
         fetchWeatherSafe();
     }, 2000);
+
 });
+
 
 function fetchWeatherSafe() {
     const icon = document.getElementById("refreshIcon");
@@ -1433,14 +1446,15 @@ function spawnBubble(){
 
 let ripples = [];
 function ripple(){
-  ripples.push({
+  if(!canvas) return;
+    
+    ripples.push({
     r:0,
     alpha:0.25,
     x:canvas.width/2,
     y:canvas.height*0.7
   });
 }
-setInterval(ripple, 3000);
 
 let angle = 0;
 
