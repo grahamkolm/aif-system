@@ -422,41 +422,52 @@ function applyScout(){
 }
 
 // ===============================
-// 🌦 TACTICAL SYSTEM
+// 🌦 TACTICAL SYSTEM (FIXED)
 // ===============================
 
 function updateTactical(spi, envScore, confScore, w, t){
-if(!probeData){
-    probeData = { surface: null, bottom: null };
-}
-    
-let lines = [];
 
-if(spi > 75){
-    lines.unshift("🔥 PRIORITY: Stay on current spot — feeding window active"); } else if(spi < 50){
-    lines.unshift("⚠️ PRIORITY: Relocate or change depth"); }
-    
-if(lastConditions.scout){
+    // 🛟 Safety: ensure probeData exists
+    if(!probeData){
+        probeData = { surface: null, bottom: null };
+    }
 
-  if(lastConditions.scout.bubbles){
-    lines.push("🎯 Fish actively feeding in area");
-  }
+    let lines = [];
 
-  if(lastConditions.scout.rolling){
-    lines.push("🐟 Fish showing — strong indication of presence");
-  }
+    // =========================
+    // 🔥 PRIORITY
+    // =========================
+    if(spi > 75){
+        lines.push("🔥 PRIORITY: Stay on current spot — feeding window active");
+    } else if(spi < 50){
+        lines.push("⚠️ PRIORITY: Relocate or change depth");
+    }
 
-  if(lastConditions.scout.murky){
-    lines.push("🌫 Low visibility — fish relying on scent");
-  }
+    // =========================
+    // 👁 SCOUT INPUT
+    // =========================
+    if(lastConditions.scout){
 
-  if(lastConditions.scout.windBank){
-    lines.push("🌬 Wind pushing food — target this bank");
-  }
+        if(lastConditions.scout.bubbles){
+            lines.push("🎯 Fish actively feeding in area");
+        }
 
-}
-    
+        if(lastConditions.scout.rolling){
+            lines.push("🐟 Fish showing — strong indication of presence");
+        }
+
+        if(lastConditions.scout.murky){
+            lines.push("🌫 Low visibility — fish relying on scent");
+        }
+
+        if(lastConditions.scout.windBank){
+            lines.push("🌬 Wind pushing food — target this bank");
+        }
+    }
+
+    // =========================
     // 🎯 SPI CORE
+    // =========================
     if(spi > 85){
         lines.push("🔥 Peak feeding window active");
     } else if(spi > 70){
@@ -465,26 +476,52 @@ if(lastConditions.scout){
         lines.push("⚠️ Low feeding activity");
     }
 
+    // =========================
     // 🌿 ENVIRONMENT
+    // =========================
     if(envScore > 75){
         lines.push("🌿 Environment stable and supportive");
     } else if(envScore < 50){
         lines.push("🌧️ Environmental pressure affecting fish");
     }
 
+    // =========================
+    // 🧠 CONFIDENCE
+    // =========================
     if(confScore > 80){
-    lines.push("🧠 High confidence pattern detected"); } else if(confScore < 50){
-    lines.push("⚠️ Low confidence — conditions unstable"); 
-    } 
-    
+        lines.push("🧠 High confidence pattern detected");
+    } else if(confScore < 50){
+        lines.push("⚠️ Low confidence — conditions unstable");
+    }
+
+    // =========================
     // 🌬️ WIND
+    // =========================
     if(w < 5){
         lines.push("🌬️ Light wind — slower movement zones");
     } else if(w > 15){
         lines.push("🌊 Strong wind — target windblown banks");
     }
 
-    document.getElementById("tactical").innerHTML = lines.join("<br>");
+    // =========================
+    // 🌡️ TEMP
+    // =========================
+    if(t >= 18 && t <= 24){
+        lines.push("🌡️ Optimal temperature range for feeding");
+    } else {
+        lines.push("🌡️ Suboptimal temperature — adjust depth");
+    }
+
+    // =========================
+    // 🧠 FINAL OUTPUT (SAFE)
+    // =========================
+    let tacticalEl = document.getElementById("tactical");
+
+    if(tacticalEl){
+        tacticalEl.innerHTML = lines.join("<br>");
+    } else {
+        console.warn("⚠️ Tactical element not found");
+    }
 }
 
  // ===============================
