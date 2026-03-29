@@ -987,6 +987,7 @@ let aiEl = document.getElementById("aiAnalysis");
         ${insight}
 `;
 }
+}
 
 function openAIDetail(){
 
@@ -1538,14 +1539,15 @@ function spawnBubble(){
 
 let ripples = [];
 function ripple(){
-  if(!canvas) return;
-    
+
+    if(!canvas || !ctx) return;   // ✅ HARD GUARD
+
     ripples.push({
-    r:0,
-    alpha:0.25,
-    x:canvas.width/2,
-    y:canvas.height*0.7
-  });
+        r:0,
+        alpha:0.25,
+        x:canvas.width/2,
+        y:canvas.height*0.7
+    });
 }
 
 let angle = 0;
