@@ -165,14 +165,13 @@ font-size: 32px;
     width: 260px;
     height: 260px;
     border-radius: 50%;
-    Background: radial-gradient (
+    background: radial-gradient(
         rgba(0,255,163,0.25),
         rgba(0,255,163,0.1),
         transparent
         );
     filter: blur(25px);
     z-index: -1;
-}
     margin: 0 auto;
 }
 
