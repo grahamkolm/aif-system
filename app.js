@@ -60,22 +60,29 @@ function fetchWeatherSafe() {
                 if (!res.ok) throw new Error("Bad response");
                 return res.json();
             })
-            .then(data => {
-                if (!data || !data.main) {
-                    console.log("BAD DATA", data);
-                    throw new Error("Invalid weather data");
-                }
+.then(data => {
 
-let temp = data.main.temp;
-let pressure = data.main.pressure || 0;
-let wind = (data.wind && data.wind.speed) ? data.wind.speed : 0; 
-let cloud = (data.clouds && data.clouds.all) ? data.clouds.all : 0;
+    if (!data || !data.main) {
+        console.log("BAD DATA", data);
+        throw new Error("Invalid weather data");
+    }
 
-console.log("VALUES:", pressure, wind, cloud);
+    let temp = data.main.temp;
+    let pressure = data.main.pressure || 0;
+    let wind = (data.wind && data.wind.speed) ? data.wind.speed : 0;
+    let cloud = (data.clouds && data.clouds.all) ? data.clouds.all : 0;
 
-set("pressure", pressure + " hPa");
-set("wind", wind.toFixed(1) + " km/h");
-set("cloud", cloud + "%");
+    console.log("VALUES:", pressure, wind, cloud);
+
+    // 🔥 THIS MUST BE HERE
+    set("pressure", pressure + " hPa");
+    set("wind", wind.toFixed(1) + " km/h");
+    set("cloud", cloud + "%");
+
+    // THEN dashboard
+    renderDashboard(data);
+
+})
 
 // 🔥 UPDATE UI
 set("envScore", Math.round((pressure / 1050) * 100)); // or your logic 
