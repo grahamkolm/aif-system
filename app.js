@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function fetchWeatherSafe() {
+function fetchWeatherSafe() { 
 
     console.log("FETCH START");
     const icon = document.getElementById("refreshIcon");
