@@ -83,17 +83,21 @@ function fetchWeatherSafe() {
     });
 }
 
-setTimeout(() => {
-    const splash = document.getElementById("splash");
-    if (splash) {
-        splash.style.opacity = "0";
-        splash.style.transition = "opacity 0.6s ease";
+document.addEventListener("DOMContentLoaded", () => {
 
-        setTimeout(() => {
-            splash.remove();
-        }, 600);
-    }
-}, 2000);
+    canvas = document.getElementById("aifCanvas");
+    ctx = canvas?.getContext("2d");
+
+    resize();
+    animate();
+
+    setInterval(ripple, 3000);   ❌ THIS LINE TRIGGERS IT
+
+    setTimeout(() => {
+        fetchWeatherSafe();
+    }, 2000);
+
+});
 
 let dots = 0;
 setInterval(() => {
