@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function fetchWeatherSafe() {
+
     console.log("FETCH START");
     const icon = document.getElementById("refreshIcon");
 
@@ -53,7 +54,7 @@ function fetchWeatherSafe() {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric`;
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=YOUR_KEY&units=metric`;
 
         fetch(url)
             .then(res => {
@@ -61,7 +62,6 @@ function fetchWeatherSafe() {
                 return res.json();
             })
             .then(data => {
-                console.log("WEATHER DATA", data);
                 if (!data || !data.list || !data.list[0]) {
                     throw new Error("Invalid weather data");
                 }
@@ -77,27 +77,15 @@ function fetchWeatherSafe() {
             });
 
     }, err => {
+
         console.log("GPS ERROR:", err);
         simulateWeather();
+
         if (icon) icon.classList.remove("refresh-spin");
-    });
-}
 
-document.addEventListener("DOMContentLoaded", () => {
+    }); // ✅ THIS LINE IS CRITICAL
 
-    canvas = document.getElementById("aifCanvas");
-    ctx = canvas?.getContext("2d");
-
-    resize();
-    animate();
-
-    setInterval(ripple, 3000);   ❌ THIS LINE TRIGGERS IT
-
-    setTimeout(() => {
-        fetchWeatherSafe();
-    }, 2000);
-
-});
+} // ✅ THIS LINE IS CRITICAL
 
 let dots = 0;
 setInterval(() => {
