@@ -985,6 +985,8 @@ let aiEl = document.getElementById("aiAnalysis");
 }
 
 function openAIDetail(){
+    console.log("SAFE MODE");
+}
 
 document.body.insertAdjacentHTML("beforeend", ` <div id="aiDetail" style="
 position:fixed;
