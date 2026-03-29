@@ -147,7 +147,8 @@ body {
 
 .spi-number{
 fill:#ffffff !important;
-font-weight:700;
+font-weight:bold;
+font-size: 32px;
 }
 
 /* MINI CIRCLES */
@@ -198,7 +199,7 @@ font-weight:700;
     border-radius: 50%;
     border: 1px solid rgba(0,255,166,0.2);
     background: rgba(0,0,0,0.4);
-    box-shadow: 0 0 15px rgba(0,255,166,0.2);
+    box-shadow: 0 0 25px rgba(0,255,166,0.2);
     backdrop-filter: blur(10px);
 
     display: flex;
