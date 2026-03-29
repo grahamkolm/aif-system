@@ -190,6 +190,8 @@ function estimateOxygen(temp, windSpeed){
 
 function renderDashboard(d){
 
+set("statusText", " Live environmental data");
+
 // =========================
 // 📥 GET DATA
 // =========================
