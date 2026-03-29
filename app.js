@@ -413,6 +413,25 @@ set("moon", getMoonPhase());
 set("season", getSeason());
 }
 
+function animateValue(id, value){
+    let el = document.getElementById(id);
+    if(!el) return;
+
+    el.style.transition = "all 0.6s ease";
+    el.innerText = value;
+}
+
+function colorMini(id, value){
+    let el = document.getElementById(id);
+    if(!el) return;
+
+    let color = "#00ffa6";
+    if(value < 50) color = "#ff4d4d";
+    else if(value < 70) color = "#ffaa00";
+
+    el.style.color = color;
+}
+
 function applyScout(){
   lastConditions.scout = selected;
   document.getElementById("scoutScreen").classList.add("hidden");
@@ -1583,23 +1602,5 @@ function updateStrategy(spi){
   set("strategyNote", note);
 }
 
-function animateValue(id, value){
-    let el = document.getElementById(id);
-    if(!el) return;
-
-    el.style.transition = "all 0.6s ease";
-    el.innerText = value;
-}
-
-function colorMini(id, value){
-    let el = document.getElementById(id);
-    if(!el) return;
-
-    let color = "#00ffa6";
-    if(value < 50) color = "#ff4d4d";
-    else if(value < 70) color = "#ffaa00";
-
-    el.style.color = color;
-}
 
 
