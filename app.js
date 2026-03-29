@@ -217,11 +217,11 @@ if(hour >= 10 && hour <= 16){
     sunEffect = 0.2;               // minimal effect
 }
 
-console.log("TEMP CHECK", surfaceTemp, bottomTemp);
+console.log("TEMP CHECK", wcSurface, wcBottom);
 
 console.log("ELEMENTS:",
-        document.getElementById("surface"),
-        document.getElementById("bottom")
+        document.getElementById("wcSurface"),
+        document.getElementById("wcBottom")
 );
     
 // Wind cooling reduced slightly
@@ -274,13 +274,13 @@ if (surfaceTemp === undefined || bottomTemp === undefined) {
     let surfaceEl = document.getElementById("wcSurface");
     if(surfaceEl){
         surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-        surfaceEl.style.color = getTempColor(wcSurface);
+        surfaceEl.style.color = getTempColor(surfaceTemp);
     }
 
 let bottomEl = document.getElementById("wcBottom");
 if(bottomEl){
     bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-    bottomEl.style.color = getTempColor(wcBottom);
+    bottomEl.style.color = getTempColor(bottomTemp);
 }
  
 // =========================
