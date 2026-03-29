@@ -523,6 +523,7 @@ if(tacticalEl){
         ? lines.join("<br>") 
         : "⚠️ No tactical data available"; 
 }
+}
 
  // ===============================
 // 🎯 EVENT LOGGER (CORE SYSTEM)
