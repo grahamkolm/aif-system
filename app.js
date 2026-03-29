@@ -100,16 +100,7 @@ set("cloud", cloud + "%");
                 if (icon) icon.classList.remove("refresh-spin");
             });
 
-    }, err => {
-
-        console.log("GPS ERROR:", err);
-        simulateWeather();
-
-        if (icon) icon.classList.remove("refresh-spin");
-
-    }); // ✅ THIS LINE IS CRITICAL
-
-} // ✅ THIS LINE IS CRITICAL
+} 
 
 let dots = 0;
 setInterval(() => {
