@@ -519,7 +519,7 @@ function updateTactical(spi, envScore, confScore, w, t){
 let tacticalEl = document.getElementById("tactical");
 
 if(tacticalEl){
-    tacticalEl.innerHTML = lines.length
+    tacticalEl.innerHTML = lines.length > 0
         ? lines.join("<br>") 
         : "⚠️ No tactical data available"; 
 }
