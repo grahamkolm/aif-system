@@ -346,8 +346,8 @@ if(w > 8 && w < 20) spi += 5;
 if(w < 2) spi -= 5;
 
 spi = Math.max(0, Math.min(100, spi));
-
-updateSPI: (spi);
+console.log("SPI VALUE", spi);
+updateSPI(spi);
 updateStrategy(spi);
     
 let envScore = 0;
