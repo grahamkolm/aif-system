@@ -396,6 +396,7 @@ set("moon", getMoonPhase());
 set("season", getSeason());
 set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); 
 set("bottomTemp", bottomTemp.toFixed(1) + "°C");
+}
 
 function animateValue(id, value){
     let el = document.getElementById(id);
