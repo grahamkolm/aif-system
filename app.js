@@ -350,6 +350,13 @@ spi = Math.max(0, Math.min(100, spi));
 console.log("SPI VALUE", spi);
 updateSPI(spi);
 updateStrategy(spi);
+
+let color = getSPIColor(spi);
+
+let arc = document.getElementById("spiArc");
+if(arc){
+    arc.style.stroke = color;
+    arc.style.filter = "drop-shadow(0 0 10px " + color + ")"; }
     
 let envScore = 0;
 
@@ -1210,6 +1217,12 @@ if(spi >= 55) return "Moderate feeding";
 if(spi >= 40) return "Slow feeding";
 
 return "Very low activity";
+}
+
+function getSPIColor(v){
+    if(v >= 70) return "#00ffa6";   // green
+    if(v >= 50) return "#ffaa00";   // orange
+    return "#ff4d4d";               // red
 }
 
 function getSeason(){
