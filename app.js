@@ -228,6 +228,80 @@ let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
 
 let bottomTemp = surfaceTemp - depthDrop;
 
+function drawWaterProfile(surface, bottom){
+
+    if(surface === undefined || bottom === undefined) return;
+
+    const canvas = document.getElementById("waterGraph");
+    if(!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // 🌊 Background
+    let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "rgba(0,255,166,0.08)");
+    gradient.addColorStop(1, "rgba(0,0,0,0.8)");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 📊 Curve
+    let diff = surface - bottom;
+    let midOffset = diff * 10;
+
+    let startY = 20;
+    let endY = canvas.height - 20;
+    let midY = canvas.height / 2 - midOffset;
+
+    ctx.beginPath();
+    ctx.moveTo(10, startY);
+
+    ctx.quadraticCurveTo(
+        canvas.width / 2,
+        midY,
+        canvas.width - 10,
+        endY
+    );
+
+    ctx.strokeStyle = "#00ffa6";
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#00ffa6";
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    // 🌡 Thermocline
+    let thermoY = canvas.height / 2 - (diff * 5);
+
+    ctx.strokeStyle = "rgba(255,200,0,0.4)";
+    ctx.setLineDash([6,6]);
+
+    ctx.beginPath();
+    ctx.moveTo(0, thermoY);
+    ctx.lineTo(canvas.width, thermoY);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    // Labels
+    ctx.fillStyle = "#aaa";
+    ctx.font = "12px Arial";
+
+    ctx.fillText("Surface", 10, 15);
+    ctx.fillText("Bottom", 10, canvas.height - 5);
+
+    ctx.fillStyle = "#00ffa6";
+    ctx.font = "bold 13px Arial";
+
+    ctx.fillText(surface.toFixed(1)+"°C", canvas.width - 60, startY);
+    ctx.fillText(bottom.toFixed(1)+"°C", canvas.width - 60, endY); }
+    
 // =========================
 // 🛟 SAFETY (FIXED SCOPE)
 // =========================
@@ -1554,79 +1628,7 @@ function updateStrategy(spi){
   set("strategyNote", note);
 }
 
-function drawWaterProfile(surface, bottom){
 
-    if(surface === undefined || bottom === undefined) return;
-
-    const canvas = document.getElementById("waterGraph");
-    if(!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    // 🌊 Background
-    let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, "rgba(0,255,166,0.08)");
-    gradient.addColorStop(1, "rgba(0,0,0,0.8)");
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // 📊 Curve
-    let diff = surface - bottom;
-    let midOffset = diff * 10;
-
-    let startY = 20;
-    let endY = canvas.height - 20;
-    let midY = canvas.height / 2 - midOffset;
-
-    ctx.beginPath();
-    ctx.moveTo(10, startY);
-
-    ctx.quadraticCurveTo(
-        canvas.width / 2,
-        midY,
-        canvas.width - 10,
-        endY
-    );
-
-    ctx.strokeStyle = "#00ffa6";
-    ctx.lineWidth = 3;
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#00ffa6";
-    ctx.stroke();
-
-    ctx.shadowBlur = 0;
-
-    // 🌡 Thermocline
-    let thermoY = canvas.height / 2 - (diff * 5);
-
-    ctx.strokeStyle = "rgba(255,200,0,0.4)";
-    ctx.setLineDash([6,6]);
-
-    ctx.beginPath();
-    ctx.moveTo(0, thermoY);
-    ctx.lineTo(canvas.width, thermoY);
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-
-    // Labels
-    ctx.fillStyle = "#aaa";
-    ctx.font = "12px Arial";
-
-    ctx.fillText("Surface", 10, 15);
-    ctx.fillText("Bottom", 10, canvas.height - 5);
-
-    ctx.fillStyle = "#00ffa6";
-    ctx.font = "bold 13px Arial";
-
-    ctx.fillText(surface.toFixed(1)+"°C", canvas.width - 60, startY);
-    ctx.fillText(bottom.toFixed(1)+"°C", canvas.width - 60, endY); }
 
 
 
