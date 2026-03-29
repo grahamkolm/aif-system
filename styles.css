@@ -185,16 +185,21 @@ font-weight:700;
     box-shadow: 0 0 20px rgba(0,255,163,0.6);
 }
 
+#spiArc {
+    filter: drop-shadow(0 0 8px rgba(0,255,166,0.6));
+}
+
 /* circles */
 .env-circle,
 .conf-circle {
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    border: 2px solid rgba(0,255,166,0.5);
-    background: rgba(15,20,28,0.9);
-    box-shadow: 0 0 12px rgba(0,255,166,0.25);
+    border: 1px solid rgba(0,255,166,0.2);
+    background: rgba(0,0,0,0.4);
+    box-shadow: 0 0 15px rgba(0,255,166,0.2);
+    backdrop-filter: blur(10px);
 
     display: flex;
     flex-direction: column;
@@ -205,14 +210,14 @@ font-weight:700;
 
 /* LEFT */
 .env-circle {
-    left: -40px;
-    top: 160px;
+    left: -10px;
+    top: 30px;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: -40px;
-    top: 160px;
+    right: -10px;
+    top: 30px;
 }
 
 /* TEXT inside circles */
