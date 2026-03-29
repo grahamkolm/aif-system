@@ -1,7 +1,7 @@
 // ===============================
 // 🌍 GLOBAL STATE
 // ===============================
-console.log("APP VERSION 1");
+console.log("APP VERSION 500");
 
 let currentSession = null; 
 let lastSPI = null;
