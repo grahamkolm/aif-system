@@ -371,8 +371,6 @@ let agreement = 100 - Math.abs(envScore - spi);
 let confScore = Math.round((stability * 0.5) + (agreement * 0.5));
 confScore = Math.min(100, confScore);
 
-}
-
 // =========================
 // 🧾 UPDATE TEXT VALUES
 // =========================
