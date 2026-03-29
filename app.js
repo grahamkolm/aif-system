@@ -1010,7 +1010,7 @@ Cloud: ${lastConditions.cloud}%<br><br>
 Trend: ${getPressureTrend(lastConditions.pressure)}<br><br>
 
 <b>AI Insight</b><br>
-${(document.getElementById("tactical") || {}).innerText || "No tactical data"}
+${document.getElementById("tactical")?.innerText || "No tactical data"}
 
 </div>
 
