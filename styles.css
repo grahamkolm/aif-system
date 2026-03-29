@@ -198,7 +198,7 @@ font-size: 32px;
     height: 90px;
     border-radius: 50%;
     border: 1px solid rgba(0,255,166,0.2);
-    background: rgba(0,0,0,0.4);
+    background: transparent;
     box-shadow: 0 0 25px rgba(0,255,166,0.2);
     backdrop-filter: blur(10px);
 
@@ -212,13 +212,13 @@ font-size: 32px;
 /* LEFT */
 .env-circle {
     left: -40px;
-    top: 30px;
+    top: 160px;
 }
 
 /* RIGHT */
 .conf-circle {
     right: -40px;
-    top: 30px;
+    top: 160px;
 }
 
 /* TEXT inside circles */
