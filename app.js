@@ -219,7 +219,7 @@ if(hour >= 10 && hour <= 16){
     sunEffect = 0.2;               // minimal effect
 }
 
-console.log("TEMP CHECK", wcSurface, wcBottom);
+console.log("TEMP CHECK", surfaceTemp, bottomTemp);
 
 console.log("ELEMENTS:",
         document.getElementById("wcSurface"),
@@ -426,7 +426,10 @@ function applyScout(){
 // ===============================
 
 function updateTactical(spi, envScore, confScore, w, t){
-
+if(!probeData){
+    probeData = { surface: null, bottom: null };
+}
+    
 let lines = [];
 
 if(spi > 75){
