@@ -333,7 +333,7 @@ if(w < 2) spi -= 5;
 
 spi = Math.max(0, Math.min(100, spi));
 
-bubbleIntensity = spi / 100;
+bubbleIntensity = (lastSPI || 50) / 100;
 
 console.log("SPI VALUE", spi);
 updateSPI(spi);
@@ -1590,8 +1590,10 @@ function animate(){
         particle.y -= particle.speed;
         particle.x += particle.drift;
 
-        let r = Math.max(0, 255 - (spi * 2));
-        let g = Math.min(255, spi * 2);
+        let currentSPI = lastSPI || 50;
+        
+        let r = Math.max(0, 255 - (currentSPI * 2));
+        let g = Math.min(255, currentSPI * 2);
         let blue = 150;
 
         ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
