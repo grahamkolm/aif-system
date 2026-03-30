@@ -251,11 +251,12 @@ if (surfaceTemp === undefined || bottomTemp === undefined) {
 
     let insight = "";
 
-if (wcSurface > wcBottom) {
+if (surfaceTemp > bottomTemp) {
   insight = "Cooling depth detected • Fish holding lower"; } else {
   insight = "Stable column • Fish active across layers"; }
 
-document.getElementById("wcInsight").innerText = insight;
+let insightEl = document.getElementById("wcInsight");
+if (insightEl) insightEl.innerText = insight;
 
     // =========================
     // 📏 LIMITS
