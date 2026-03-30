@@ -805,6 +805,9 @@ button{
   width: 100%;
   height: 70px;
   margin: 10px 0;
+  border-radius: 10px;
+    box-shadow:
+        inset 0 0 20px rgba(0,255,166,0.1), 0 0 10px rgba(0,255,166,0.1);
 }
 
 .water-temps {
@@ -857,12 +860,29 @@ button{
     opacity: 0.6:
 }
 
+.meta-item {
+  text-align: center;
+  flex: 1;
+}
+
+.meta-item small {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.meta-item span {
+  display: block;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
 .water-insight {
-  margin-top: 4px;
+  margin-top: 10px;
   text-align: center;
   color: #00ffa6;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 12px;
+  opacity: 0.9;
 }
 
 /* CONDITIONS */
