@@ -25,7 +25,7 @@ let hotspots = [];
 
 let canvas;
 let ctx;
-
+throw new Error("TEST BREAK");
 document.addEventListener("DOMContentLoaded", () => {
 
     canvas = document.getElementById("aifCanvas");
@@ -51,7 +51,7 @@ function createSplashRipple() {
    alpha: 0.6
  });
 }
-throw new Error("TEST BREAK");
+
 // ===============================
 // ⏳ SPLASH EXIT + APP START
 // ===============================
