@@ -1798,4 +1798,3 @@ bar.innerText = message;
 });
 
 console.log("END REACHED");
-});
