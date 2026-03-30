@@ -1588,9 +1588,9 @@ function animate(){
     }
 
     // 🫧 Bubbles
-    bubbles.forEach((bubble,i)=>{
-        bubble.y -= bubble.speed;
-        bubble.x += bubble.drift;
+    bubbles.forEach((particle,i)=>{
+        particle.y -= particle.speed;
+        particle.x += particle.drift;
 
         let r = Math.max(0,255 - (spi * 2));
         let g = Math.min(255, spi * 2);
@@ -1599,7 +1599,7 @@ function animate(){
         ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
 
         ctx.beginPath();
-        ctx.arc(bubble.x,bubble.y,bubble.size,0,Math.PI*2);
+        ctx.arc(particle.x,particle.y,particle.size,0,Math.PI*2);
         ctx.fill();
 
         if(bubble.y < 0) bubbles.splice(i,1);
