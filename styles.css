@@ -281,7 +281,7 @@ font-size: 32px;
 
 #waterGraph{
     width:100%;
-    height:80px;
+    height:120px;
 }
 
 .water-column.large{
@@ -726,7 +726,7 @@ button{
 
 #waterGraph{
   width:100%; 
-  height:100%;
+  height:120px;
 }
 
 .wc-overlay{
@@ -798,8 +798,6 @@ button{
 .water-card {
   display: flex;
   flex-direction: column;
-  max-height: 320px;
-  overflow: hidden;
   gap: 10px;
 }
 
@@ -860,7 +858,7 @@ button{
 }
 
 .water-meta small {
-    opacity: 0.6:
+    opacity: 0.6;
 }
 
 .meta-item {
