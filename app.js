@@ -1805,3 +1805,5 @@ function drawWaterProfile(surface, bottom){
     ctx.fillText("Bottom", 10, canvas.height - 5);
 }
 console.log("END REACHED");
+}):
+    
