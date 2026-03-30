@@ -1588,9 +1588,9 @@ function animate(){
     }
 
     // 🫧 Bubbles
-    bubbles.forEach((b,i)=>{
-        b.y -= b.speed;
-        b.x += b.drift;
+    bubbles.forEach((bubble,i)=>{
+        bubble.y -= bubble.speed;
+        bubble.x += bubble.drift;
 
         let r = Math.max(0,255 - (spi * 2));
         let g = Math.min(255, spi * 2);
@@ -1599,10 +1599,10 @@ function animate(){
         ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
 
         ctx.beginPath();
-        ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
+        ctx.arc(bubble.x,bubble.y,bubble.size,0,Math.PI*2);
         ctx.fill();
 
-        if(b.y < 0) bubbles.splice(i,1);
+        if(bubble.y < 0) bubbles.splice(i,1);
     });
 
     // 💧 Ripples
