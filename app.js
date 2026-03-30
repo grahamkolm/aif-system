@@ -1575,34 +1575,35 @@ function drawThermocline(){
 
 function animate(){
 
-    if(!ctx || !canvas) return; // safety
+    if(!ctx || !canvas) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawThermocline();
 
-    // 🎯 Spawn bubbles based on SPI
-    if(Math.random() < bubbleIntensity * 0.25){
-        spawnBubble();
-    }
+    // FORCE bubbles for test
+    spawnBubble();
 
-    // 🫧 Bubbles
-    bubbles.forEach((particle,i)=>{
+    bubbles.forEach((particle, i) => {
+
         particle.y -= particle.speed;
         particle.x += particle.drift;
 
-        let r = Math.max(0,255 - (spi * 2));
+        let r = Math.max(0, 255 - (spi * 2));
         let g = Math.min(255, spi * 2);
         let blue = 150;
 
         ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
 
         ctx.beginPath();
-        ctx.arc(particle.x,particle.y,particle.size,0,Math.PI*2);
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fill();
 
-        if(particle.y < 0) particle.splice(i,1);
+        if(particle.y < 0) bubbles.splice(i, 1);
     });
+
+    requestAnimationFrame(animate);
+}
 
     // 💧 Ripples
     ripples.forEach((r,i)=>{
