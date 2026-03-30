@@ -963,7 +963,7 @@ document.getElementById("scoutScreen").remove();
 fetchWeatherSafe();
 }
 
-
+throw new Error("TEST BREAK");
 // ===============================
 // 📊 UI UPDATE
 // ===============================
