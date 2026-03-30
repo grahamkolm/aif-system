@@ -1,3 +1,4 @@
+try {
 // ===============================
 // 🌍 GLOBAL STATE
 // ===============================
@@ -1799,3 +1800,7 @@ bar.innerText = message;
 }
 
 console.log("END REACHED");
+
+} catch(e) {
+  console.error("BROKEN HERE:", e);
+}
