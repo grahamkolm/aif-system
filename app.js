@@ -1778,9 +1778,12 @@ function drawWaterProfile(surface, bottom){
 let message = "";
 
 if (pressure > 1015 && wind < 5) {
-    message = "Stable pressure • Calm wind • High feeding activity"; } else if (pressure < 1005) {
-    message = "Low pressure • Fish less active • Slow approach"; } else {
-    message = "Changing conditions • Moderate activity • Stay adaptive"; }
+    message = "Stable pressure • Calm wind • High feeding activity"; 
+} else if (pressure < 1005) {
+    message = "Low pressure • Fish less active • Slow approach"; 
+} else {
+    message = "Changing conditions • Moderate activity • Stay adaptive"; 
+}
 
 bar.innerText = message;
 
@@ -1789,7 +1792,7 @@ bar.innerText = message;
     .catch(err => {
         console.log("FETCH ERROR:", err);
         simulateWeather();
-    })
+    });
     .finally(() => {
         //if (icon) icon.classList.remove("refresh-spin");
     });
