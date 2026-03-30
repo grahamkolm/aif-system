@@ -1527,18 +1527,23 @@ function resize(){
   canvas.height = window.innerHeight;
 }
     
-let SPI = 70;
+let spi = 70;
+let bubbleIntensity = spi / 100;
 
 let bubbles = [];
+
 function spawnBubble(){
-  bubbles.push({
+    bubbles.push({
     x: canvas.width*0.4 + Math.random()*canvas.width*0.2,
     y: canvas.height*0.9,
     size: Math.random()*3+1,
-    speed: Math.random()*1.2+0.5,
+    speed: Math.random() * (1 + bubbleIntensity * 3) + 0.5,
     drift: Math.random()-0.5,
     alpha: 0.15 + Math.random()*0.15
   });
+}
+if (Math.random() < bubbleIntensity * 0.4)
+    spawnBubble();
 }
 
 let ripples = [];
@@ -1586,7 +1591,12 @@ function animate(){
         b.y -= b.speed;
         b.x += b.drift;
 
-        ctx.fillStyle = `rgba(200,255,230,${b.alpha})`;
+        let r = Math.max(0,255 - (spi * 2));
+        let g = Math.min(255, spi * 2);
+        let b = 150;
+
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.3)`;
+
         ctx.beginPath();
         ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
         ctx.fill();
