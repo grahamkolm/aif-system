@@ -43,50 +43,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function fetchWeatherSafe() {
 
-    console.log("FETCH START");
-    const icon = document.getElementById("refreshIcon");
+    fetch(url)
+    .then(res => {
+        if (!res.ok) throw new Error("Bad response");
+        return res.json();
+    })
+    .then(data => {
 
-    if (icon) icon.classList.add("refresh-spin");
+        if (!data || !data.main) {
+            console.log("BAD DATA", data);
+            throw new Error("Invalid weather data");
+        }
 
-    navigator.geolocation.getCurrentPosition(pos => {
+        let pressure = data.main.pressure;
+        let wind = data.wind?.speed || 0;
+        let cloud = data.clouds?.all || 0;
 
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
+        set("envScore", Math.round((pressure / 1050) * 100));
+        set("pressure", pressure + " hPa");
+        set("wind", wind.toFixed(1) + " km/h");
+        set("cloud", cloud + "%");
 
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=63ba514dc7c2242cb10cd2632d2569ad&units=metric`;
+        renderDashboard(data);
+    })
+    .catch(err => {
+        console.log("FETCH ERROR:", err);
+        simulateWeather();
+    })
+    .finally(() => {
+        if (icon) icon.classList.remove("refresh-spin");
+    });
 
-        fetch(url)
-.then(res => {
-    if (!res.ok) throw new Error("Bad response");
-    return res.json();
-})
-.then(data => {
-
-    if (!data || !data.main) {
-        console.log("BAD DATA", data);
-        throw new Error("Invalid weather data");
-    }
-
-    let temp = data.main.temp;
-    let pressure = data.main.pressure;
-    let wind = data.wind?.speed || 0;
-    let cloud = data.clouds?.all || 0;
-
-    // UPDATE UI
-    set("envScore", Math.round((pressure / 1050) * 100));
-    set("pressure", pressure + " hPa");
-    set("wind", wind.toFixed(1) + " km/h");
-    set("cloud", cloud + "%");
-
-    renderDashboard(data);
-})
-.catch(err => {
-    console.log("FETCH ERROR:", err);
-    simulateWeather();
-})
-.finally(() => {
-    if (icon) icon.classList.remove("refresh-spin");
-});
+}
 
 let dots = 0;
 setInterval(() => {
