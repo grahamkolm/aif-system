@@ -798,6 +798,7 @@ button{
 .water-card {
   display: flex;
   flex-direction: column;
+  min-height: 260px;
   gap: 10px;
 }
 
