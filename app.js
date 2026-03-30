@@ -81,6 +81,8 @@ setTimeout(() => {
 
     setTimeout(fetchWeatherSafe, 2000);
 
+  });
+      
  function fetchWeatherSafe() {
 
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
@@ -1788,5 +1790,4 @@ function drawWaterProfile(surface, bottom){
     ctx.fillText("Bottom", 10, canvas.height - 5);
 }
 console.log("END REACHED");
-});
     
