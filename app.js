@@ -1793,11 +1793,10 @@ bar.innerText = message;
     .catch(err => {
         console.log("FETCH ERROR:", err);
         simulateWeather();
-    });
+    })
     .finally(() => {
         //if (icon) icon.classList.remove("refresh-spin");
     });
-}
 
 console.log("END REACHED");
 
