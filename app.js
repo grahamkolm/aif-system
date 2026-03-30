@@ -82,61 +82,16 @@ setTimeout(() => {
     setTimeout(fetchWeatherSafe, 2000);
   
   }, 1000);
-  
-});
-      
- function fetchWeatherSafe() {
 
-    const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
-
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=-30.140153&lon=27.004008&appid=${API_KEY}&units=metric`;
-
-    fetch(url)
-    .then(res => {
-        if (!res.ok) throw new Error("Bad response");
-        return res.json();
-    })
-    .then(data => {
-        let pressure = data.main.pressure;
-        let wind = data.wind?.speed || 0;
-        let cloud = data.clouds?.all || 0;
-
-        set("envScore", Math.round((pressure / 1050) * 100));
-        set("pressure", pressure + " hPa");
-        set("wind", wind.toFixed(1) + " km/h");
-        set("cloud", cloud + "%");
-
-        const bar = document.getElementById("tacticalBar");
-
-let message = "";
-
-if (pressure > 1015 && wind < 5) {
-  message = "Stable pressure • Calm wind • High feeding activity"; } else if (pressure < 1005) {
-  message = "Low pressure • Fish less active • Slow approach recommended"; } else {
-  message = "Changing conditions • Moderate activity • Stay adaptive"; }
-
-bar.innerText = message;
-
-        renderDashboard(data);
-    })
-    .catch(err => {
-        console.log("FETCH ERROR:", err);
-        simulateWeather();
-    })
-    .finally(() => {
-        //if (icon) icon.classList.remove("refresh-spin");
-    });
-}
-
-let dots = 0;
-setInterval(() => {
+    let dots = 0;
+    setInterval(() => {
     const el = document.getElementById("dots");
     if (!el) return; 
 
     dots = (dots + 1) % 4;
     el.innerText = ".".repeat(dots);
 }, 400);
-
+      
 // ===============================
 // 🧠 SESSION SYSTEM
 // ===============================
@@ -1792,3 +1747,46 @@ function drawWaterProfile(surface, bottom){
     ctx.fillText("Bottom", 10, canvas.height - 5);
 }
 console.log("END REACHED");
+
+                           function fetchWeatherSafe() {
+
+    const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=-30.140153&lon=27.004008&appid=${API_KEY}&units=metric`;
+
+    fetch(url)
+    .then(res => {
+        if (!res.ok) throw new Error("Bad response");
+        return res.json();
+    })
+    .then(data => {
+        let pressure = data.main.pressure;
+        let wind = data.wind?.speed || 0;
+        let cloud = data.clouds?.all || 0;
+
+        set("envScore", Math.round((pressure / 1050) * 100));
+        set("pressure", pressure + " hPa");
+        set("wind", wind.toFixed(1) + " km/h");
+        set("cloud", cloud + "%");
+
+        const bar = document.getElementById("tacticalBar");
+
+let message = "";
+
+if (pressure > 1015 && wind < 5) {
+  message = "Stable pressure • Calm wind • High feeding activity"; } else if (pressure < 1005) {
+  message = "Low pressure • Fish less active • Slow approach recommended"; } else {
+  message = "Changing conditions • Moderate activity • Stay adaptive"; }
+
+bar.innerText = message;
+
+        renderDashboard(data);
+    })
+    .catch(err => {
+        console.log("FETCH ERROR:", err);
+        simulateWeather();
+    })
+    .finally(() => {
+        //if (icon) icon.classList.remove("refresh-spin");
+    });
+}
