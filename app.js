@@ -55,63 +55,6 @@ function createSplashRipple() {
 }
 
 // ===============================
-// 🌊 SPLASH RIPPLE ENGINE + CONTROL
-// ===============================
-
-const splashCanvas = document.getElementById("splashCanvas");
-
-let splashActive = true;
-
-if (splashCanvas) {
-
-  const sctx = splashCanvas.getContext("2d");
-  let ripples = [];
-
-  function resizeSplash() {
-    splashCanvas.width = window.innerWidth;
-    splashCanvas.height = window.innerHeight;
-  }
-
-  window.addEventListener("resize", resizeSplash);
-  resizeSplash();
-
-  function createSplashRipple() {
-    ripples.push({
-      x: splashCanvas.width / 2,
-      y: splashCanvas.height / 2 + 50,
-      r: 0,
-      alpha: 0.6
-    });
-  }
-
-  function animateSplash() {
-    if (!splashActive) return;
-
-    sctx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
-
-    ripples.forEach((r, i) => {
-      r.r += 2;
-      r.alpha *= 0.97;
-
-      sctx.strokeStyle = `rgba(0,255,180,${r.alpha})`;
-      sctx.lineWidth = 2;
-
-      sctx.beginPath();
-      sctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-      sctx.stroke();
-
-      if (r.alpha < 0.02) ripples.splice(i, 1);
-    });
-
-    requestAnimationFrame(animateSplash);
-  }
-
-  setInterval(createSplashRipple, 1200);
-  animateSplash();
-}
-
-
-// ===============================
 // ⏳ SPLASH EXIT + APP START
 // ===============================
 
