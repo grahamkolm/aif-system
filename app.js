@@ -1547,6 +1547,8 @@ function spawnBubble(){
 
     }
 
+}
+
 let ripples = [];
 function ripple(){
 
@@ -1583,7 +1585,7 @@ function animate(){
     drawThermocline();
 
     // 🎯 Spawn bubbles based on SPI
-    if(Math.random() < SPI / 100 * 0.15){
+    if(Math.random() < spi / 100 * 0.15){
         spawnBubble();
     }
 
@@ -1602,7 +1604,7 @@ function animate(){
         ctx.arc(particle.x,particle.y,particle.size,0,Math.PI*2);
         ctx.fill();
 
-        if(bubble.y < 0) bubbles.splice(i,1);
+        if(particle.y < 0) particle.splice(i,1);
     });
 
     // 💧 Ripples
