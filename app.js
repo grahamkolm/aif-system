@@ -61,14 +61,6 @@ function createSplashRipple() {
 setTimeout(() => {
 
   const splash = document.getElementById("splash");
-
-  if (splash) {
-    splash.style.opacity = "0";
-    splash.style.transition = "1s";
-
-    setTimeout(() => {
-
-  const splash = document.getElementById("splash");
   if (!splash) return;
 
   splash.style.opacity = "0";
@@ -78,10 +70,7 @@ setTimeout(() => {
 
     splash.remove();
 
-    // ===============================
-    // 🚀 START YOUR APP HERE
-    // ===============================
-
+    // 🚀 START APP HERE
     document.getElementById("aifCanvas").style.opacity = "1";
 
     resize();
