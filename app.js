@@ -16,6 +16,7 @@ let planSelections = {};
 let planScore = 0;
 let userLocation = null;
 let compassHeading = null;
+let bubbleIntensity = 0.7;
 
 // ===============================
 // START SYSTEM
@@ -330,6 +331,9 @@ if(w > 8 && w < 20) spi += 5;
 if(w < 2) spi -= 5;
 
 spi = Math.max(0, Math.min(100, spi));
+
+bubbleIntensity = spi / 100;
+
 console.log("SPI VALUE", spi);
 updateSPI(spi);
 updateStrategy(spi);
@@ -1527,25 +1531,18 @@ function resize(){
   canvas.height = window.innerHeight;
 }
     
-let spi = 70;
-let bubbleIntensity = spi / 100;
-
 let bubbles = [];
 
 function spawnBubble(){
 
-    if (Math.random() < bubbleIntensity * 0.4) {
-
-        bubbles.push({
-            x: canvas.width * 0.4 + Math.random() * canvas.width * 0.2,
-            y: canvas.height * 0.9,
-            size: Math.random() * 3 + 1,
-            speed: Math.random() * 1.2 + 0.5,
-            drift: Math.random() - 0.5,
-            alpha: 0.15 + Math.random() * 0.35
-        });
-
-    }
+    bubbles.push({
+        x: canvas.width * 0.4 + Math.random() * canvas.width * 0.2,
+        y: canvas.height * 0.9,
+        size: Math.random() * 3 + 1,
+        speed: Math.random() * 1.2 + 0.5,
+        drift: Math.random() - 0.5,
+        alpha: 0.15 + Math.random() * 0.35
+    });
 
 }
 
@@ -1585,7 +1582,7 @@ function animate(){
     drawThermocline();
 
     // 🎯 Spawn bubbles based on SPI
-    if(Math.random() < spi / 100 * 0.15){
+    if(Math.random() < bubbleIntensity * 0.25){
         spawnBubble();
     }
 
