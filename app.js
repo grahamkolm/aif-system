@@ -1605,7 +1605,7 @@ function animate(){
     requestAnimationFrame(animate);
 }
 
-    // 💧 Ripples
+    // 💧 Ripples (MOVE INSIDE HERE)
     ripples.forEach((r,i)=>{
         r.r += 2;
         r.alpha *= 0.96;
@@ -1619,10 +1619,7 @@ function animate(){
         if(r.alpha < 0.01) ripples.splice(i,1);
     });
 
-    requestAnimationFrame(animate);
-}
-
-function updateStrategy(spi){
+ function updateStrategy(spi){
     let text = "";
     let detail = "";
 
