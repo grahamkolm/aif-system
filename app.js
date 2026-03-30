@@ -117,7 +117,7 @@ function initSession(){
     localStorage.setItem("aif_sessions", JSON.stringify(sessions));
 
 }
-
+throw new Error("TEST BREAK");
 // ===============================
 // 🌦 WEATHER SYSTEM
 // ===============================
@@ -963,7 +963,6 @@ document.getElementById("scoutScreen").remove();
 fetchWeatherSafe();
 }
 
-throw new Error("TEST BREAK");
 // ===============================
 // 📊 UI UPDATE
 // ===============================
