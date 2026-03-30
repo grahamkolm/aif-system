@@ -1533,17 +1533,20 @@ let bubbleIntensity = spi / 100;
 let bubbles = [];
 
 function spawnBubble(){
-    bubbles.push({
-    x: canvas.width*0.4 + Math.random()*canvas.width*0.2,
-    y: canvas.height*0.9,
-    size: Math.random()*3+1,
-    speed: Math.random() * (1 + bubbleIntensity * 3) + 0.5,
-    drift: Math.random()-0.5,
-    alpha: 0.15 + Math.random()*0.15
-  });
-}
-if (Math.random() < bubbleIntensity * 0.4)
-    spawnBubble();
+
+    if (Math.random() < bubbleIntensity * 0.4) {
+
+        bubbles.push({
+            x: canvas.width * 0.4 + Math.random() * canvas.width * 0.2,
+            y: canvas.height * 0.9,
+            size: Math.random() * 3 + 1,
+            speed: Math.random() * 1.2 + 0.5,
+            drift: Math.random() - 0.5,
+            alpha: 0.15 + Math.random() * 0.35
+        });
+
+    }
+
 }
 
 let ripples = [];
