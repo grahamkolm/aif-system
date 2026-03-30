@@ -1594,9 +1594,9 @@ function animate(){
 
         let r = Math.max(0,255 - (spi * 2));
         let g = Math.min(255, spi * 2);
-        let b = 150;
+        let blue = 150;
 
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.3)`;
+        ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
 
         ctx.beginPath();
         ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
