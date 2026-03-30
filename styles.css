@@ -811,10 +811,29 @@ button{
   text-align: center;
 }
 
+.temp-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 10px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.temp-row.main {
+  font-size: 16px;
+  opacity: 1;
+}
+
+.temp-label {
+  letter-spacing: 1px;
+  font-size: 11px;
+  color: #7fffb2;
+}
+
 .temp-main {
-  font-size: 28px;
+  font-size: 22px;
   color: #00ffa6;
-  margin: 6px 0;
+  font-weight: bold;
 }
 
 .temp-small {
