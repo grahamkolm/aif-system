@@ -69,7 +69,7 @@ function fetchWeatherSafe() {
         simulateWeather();
     })
     .finally(() => {
-        if (icon) icon.classList.remove("refresh-spin");
+        //if (icon) icon.classList.remove("refresh-spin");
     });
 }
 
