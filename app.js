@@ -34,8 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const splashCanvas = document.getElementById("splashCanvas");
 const sctx = splashCanvas.getContext("2d");
 
-let ripples = [];
-
 function resizeSplash() {
  splashCanvas.width = window.innerWidth;
  splashCanvas.height = window.innerHeight;
