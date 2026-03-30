@@ -62,6 +62,17 @@ function fetchWeatherSafe() {
         set("wind", wind.toFixed(1) + " km/h");
         set("cloud", cloud + "%");
 
+        const bar = document.getElementById("tacticalBar");
+
+let message = "";
+
+if (pressure > 1015 && wind < 5) {
+  message = "Stable pressure • Calm wind • High feeding activity"; } else if (pressure < 1005) {
+  message = "Low pressure • Fish less active • Slow approach recommended"; } else {
+  message = "Changing conditions • Moderate activity • Stay adaptive"; }
+
+bar.innerText = message;
+
         renderDashboard(data);
     })
     .catch(err => {
