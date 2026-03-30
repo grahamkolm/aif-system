@@ -1585,9 +1585,20 @@ function animate(){
     drawThermocline();
 
     // FORCE bubbles
-    if(Math.random() < (lastSPI || 50) / 120){
+let intensity = (lastSPI || 50) / 100;
+
+// Normal spawn
+if(Math.random() < intensity / 2){
+    spawnBubble();
+}
+
+// 🔥 Burst trigger (only when SPI high) 
+    if(intensity > 0.7 && Math.random() < 0.05){
+    for(let i = 0; i < 10; i++){
         spawnBubble();
     }
+}
+
 
     let currentSPI = lastSPI || 50;
 
