@@ -17,6 +17,7 @@ let planScore = 0;
 let userLocation = null;
 let compassHeading = null;
 let bubbleIntensity = 0.7;
+let hotspots = [];
 
 // ===============================
 // START SYSTEM
@@ -32,6 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resize();
     animate(); 
+    generateHotspots();
+    setInterval(generateHotspots, 10000);
 
     setInterval(ripple, 3000); 
 
@@ -160,6 +163,21 @@ function estimateBottomTemp({ surfaceTempValue, depth, windSpeed }) {
     gradient -= windSpeed * 0.05;
 
     return surfaceTempValue - Math.max(gradient, 0.5); 
+}
+
+function generateHotspots(){
+
+    hotspots = [];
+
+    let count = Math.floor(Math.random() * 2) + 1; // 1–2 zones
+
+    for(let i = 0; i < count; i++){
+        hotspots.push({
+            x: canvas.width * (0.2 + Math.random() * 0.6),
+            y: canvas.height * (0.6 + Math.random() * 0.3),
+            radius: 80 + Math.random() * 120
+        });
+    }
 }
 
 function estimateOxygen(temp, windSpeed){
@@ -1536,17 +1554,24 @@ let bubbles = [];
 
 function spawnBubble(){
 
-            let base = (lastSPI || 50) /100;
-    
+    let hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
+
+    let angle = Math.random() * Math.PI * 2;
+    let radius = Math.random() * hotspot.radius;
+
+    let x = hotspot.x + Math.cos(angle) * radius;
+    let y = hotspot.y;
+
+    let base = (lastSPI || 50) / 100;
+
     bubbles.push({
-        x: canvas.width * 0.4 + Math.random() * canvas.width * 0.2,
-        y: canvas.height * 0.9,
-        size: Math.random() * ( + base *4) + 1,
-        speed: Math.random() * (1 + base * 1.5) + 0.3,
+        x: x,
+        y: y,
+        size: Math.random() * (1 + base * 4) + 1,
+        speed: Math.random() * 1.2 + 0.5,
         drift: Math.random() - 0.5,
         alpha: 0.15 + Math.random() * 0.35
     });
-
 }
 
 let ripples = [];
