@@ -833,7 +833,30 @@ button{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   text-align: center;
-  gap: 10px;
+  gap: 16px;
+}
+
+.cond-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cond-item .icon {
+  font-size: 18px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.cond-item label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.cond-item b {
+  font-size: 16px;
+  margin-top: 2px;
 }
 
 .cond-grid label {
