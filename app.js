@@ -81,11 +81,7 @@ setTimeout(() => {
 
     setTimeout(fetchWeatherSafe, 2000);
 
-  }, 1000);
-
-}, 3500);
-
-function fetchWeatherSafe() {
+ function fetchWeatherSafe() {
 
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
 
