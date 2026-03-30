@@ -125,31 +125,35 @@ setTimeout(() => {
 
     setTimeout(() => {
 
-      splashActive = false; // 🛑 stop ripple engine
-      splash.remove();
+  const splash = document.getElementById("splash");
+  if (!splash) return;
 
-        document.getElementById("aifCanvas").style.opacity = "1";
-        
-      // ===============================
-      // 🚀 START YOUR APP HERE
-      // ===============================
+  splash.style.opacity = "0";
+  splash.style.transition = "1s ease";
 
-      resize();
-      animate();
+  setTimeout(() => {
 
-      generateHotspots();
-      setInterval(generateHotspots, 10000);
+    splash.remove();
 
-      setInterval(ripple, 3000);
+    // ===============================
+    // 🚀 START YOUR APP HERE
+    // ===============================
 
-      setTimeout(() => {
-        fetchWeatherSafe();
-      }, 2000);
+    document.getElementById("aifCanvas").style.opacity = "1";
 
-    }, 1000);
-  }
+    resize();
+    animate();
 
-}, 4000);
+    generateHotspots();
+    setInterval(generateHotspots, 10000);
+
+    setInterval(ripple, 3000);
+
+    setTimeout(fetchWeatherSafe, 2000);
+
+  }, 1000);
+
+}, 3500);
 
 function fetchWeatherSafe() {
 
