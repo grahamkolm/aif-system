@@ -1748,9 +1748,8 @@ function drawWaterProfile(surface, bottom){
     ctx.fillText("Surface", 10, 15);
     ctx.fillText("Bottom", 10, canvas.height - 5);
 }
-console.log("END REACHED");
 
-                           function fetchWeatherSafe() {
+    function fetchWeatherSafe() {
 
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
 
@@ -1772,13 +1771,16 @@ console.log("END REACHED");
         set("cloud", cloud + "%");
 
         const bar = document.getElementById("tacticalBar");
-
+        if (bar) {
+            bar.innerText = message;
+        }
+        
 let message = "";
 
 if (pressure > 1015 && wind < 5) {
-  message = "Stable pressure • Calm wind • High feeding activity"; } else if (pressure < 1005) {
-  message = "Low pressure • Fish less active • Slow approach recommended"; } else {
-  message = "Changing conditions • Moderate activity • Stay adaptive"; }
+    message = "Stable pressure • Calm wind • High feeding activity"; } else if (pressure < 1005) {
+    message = "Low pressure • Fish less active • Slow approach"; } else {
+    message = "Changing conditions • Moderate activity • Stay adaptive"; }
 
 bar.innerText = message;
 
@@ -1792,3 +1794,5 @@ bar.innerText = message;
         //if (icon) icon.classList.remove("refresh-spin");
     });
 }
+
+console.log("END REACHED");
