@@ -1796,5 +1796,3 @@ bar.innerText = message;
     .finally(() => {
         //if (icon) icon.classList.remove("refresh-spin");
 });
-
-console.log("END REACHED");
