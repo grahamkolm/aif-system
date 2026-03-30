@@ -51,7 +51,7 @@ function createSplashRipple() {
    alpha: 0.6
  });
 }
-
+throw new Error("TEST BREAK");
 // ===============================
 // ⏳ SPLASH EXIT + APP START
 // ===============================
@@ -117,7 +117,7 @@ function initSession(){
     localStorage.setItem("aif_sessions", JSON.stringify(sessions));
 
 }
-throw new Error("TEST BREAK");
+
 // ===============================
 // 🌦 WEATHER SYSTEM
 // ===============================
