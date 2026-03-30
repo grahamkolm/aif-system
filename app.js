@@ -1,4 +1,3 @@
-try {
 // ===============================
 // 🌍 GLOBAL STATE
 // ===============================
@@ -1796,11 +1795,7 @@ bar.innerText = message;
     })
     .finally(() => {
         //if (icon) icon.classList.remove("refresh-spin");
-    });
-
-} catch(e) {
-  console.error("BROKEN HERE:", e);
-}
+});
 
 console.log("END REACHED");
 });
