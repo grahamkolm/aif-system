@@ -1622,17 +1622,17 @@ function animate(){
         if(r.alpha < 0.01) ripples.splice(i,1);
     });
 
- function updateStrategy(spi){
+ function updateStrategy(lastSPI){
     let text = "";
     let detail = "";
 
-    if(spi > 80){
+    if(lastSPI > 80){
         text = "🔥 Aggressive Feeding";
         detail = "Stay on spot. Increase baiting.";
-    } else if(spi >= 60){
+    } else if(lastSPI >= 60){
         text = "⚡ Active Window";
         detail = "Good conditions. Stay alert.";
-    } else if(spi >= 40){
+    } else if(lastSPI >= 40){
         text = "⚠ Slow Activity";
         detail = "Reduce bait. Try different depth.";
     } else {
