@@ -1,7 +1,7 @@
 {
   "name": "AIF",
   "short_name": "AIF",
-  "start_url": ".",
+  "start_url": "/aif-system/index%20Plan.html"
   "display": "standalone",
   "background_color": "#05080d",
   "theme_color": "#05080d",
