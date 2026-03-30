@@ -54,15 +54,21 @@ body {
 /* ===== HEADER ===== */
 /* ========================= */
 #splash {
- position: fixed;
- inset: 0;
- z-index: 9999;
- background: url('aif-logo.jpg') center/cover no-repeat;
- background: #000;
- display: flex;
- align-items: center;
- justify-content: center;
- overflow: hidden;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  background-image: url('aif-logo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  background-color: #000; /* fallback only */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 #splash .overlay {
