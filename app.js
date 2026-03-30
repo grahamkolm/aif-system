@@ -1585,7 +1585,7 @@ function animate(){
     drawThermocline();
 
     // FORCE bubbles
-    if(Math.random() < (lastSPI || 50) / 120{
+    if(Math.random() < (lastSPI || 50) / 120){
         spawnBubble();
     }
 
