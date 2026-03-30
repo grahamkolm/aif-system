@@ -1582,16 +1582,16 @@ function animate(){
 
     drawThermocline();
 
-    // FORCE bubbles for test
+    // FORCE bubbles
     spawnBubble();
+
+    let currentSPI = lastSPI || 50;
 
     bubbles.forEach((particle, i) => {
 
         particle.y -= particle.speed;
         particle.x += particle.drift;
 
-        let currentSPI = lastSPI || 50;
-        
         let r = Math.max(0, 255 - (currentSPI * 2));
         let g = Math.min(255, currentSPI * 2);
         let blue = 150;
@@ -1605,10 +1605,7 @@ function animate(){
         if(particle.y < 0) bubbles.splice(i, 1);
     });
 
-    requestAnimationFrame(animate);
-}
-
-    // 💧 Ripples (MOVE INSIDE HERE)
+    // ✅ MOVE RIPPLE CODE HERE
     ripples.forEach((r,i)=>{
         r.r += 2;
         r.alpha *= 0.96;
@@ -1622,7 +1619,10 @@ function animate(){
         if(r.alpha < 0.01) ripples.splice(i,1);
     });
 
- function updateStrategy(lastSPI){
+    requestAnimationFrame(animate);
+}
+
+ function updateStrategy(spi){
     let text = "";
     let detail = "";
 
