@@ -1547,8 +1547,6 @@ function spawnBubble(){
 
     }
 
-}
-
 let ripples = [];
 function ripple(){
 
