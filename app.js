@@ -80,8 +80,10 @@ setTimeout(() => {
     setInterval(ripple, 3000);
 
     setTimeout(fetchWeatherSafe, 2000);
-
-  });
+  
+  }, 1000);
+  
+});
       
  function fetchWeatherSafe() {
 
