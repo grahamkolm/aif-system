@@ -100,10 +100,21 @@
   <div class="card-title">Water Intelligence</div>
 
   <div class="water-temps">
-    <div id="wcAir" class="temp-small">--°</div>
-    <div id="wcSurface" class="temp-main">--°</div>
-    <div id="wcBottom" class="temp-small">--°</div>
+  <div class="temp-row">
+    <span class="temp-label">AIR</span>
+    <span id="wcAir" class="temp-small">--°</span>
   </div>
+
+  <div class="temp-row main">
+    <span class="temp-label">SURFACE</span>
+    <span id="wcSurface" class="temp-main">--°</span>
+  </div>
+
+  <div class="temp-row">
+    <span class="temp-label">BOTTOM</span>
+    <span id="wcBottom" class="temp-small">--°</span>
+  </div>
+</div>
 
   <canvas id="waterGraph"></canvas>
 
