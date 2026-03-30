@@ -82,6 +82,7 @@ setTimeout(() => {
     setTimeout(fetchWeatherSafe, 2000);
   
   }, 1000);
+});
 
     let dots = 0;
     setInterval(() => {
