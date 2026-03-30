@@ -43,18 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function fetchWeatherSafe() {
 
+    const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=-30.140153&lon=27.004008&appid=${API_KEY}&units=metric`;
+
     fetch(url)
     .then(res => {
         if (!res.ok) throw new Error("Bad response");
         return res.json();
     })
     .then(data => {
-
-        if (!data || !data.main) {
-            console.log("BAD DATA", data);
-            throw new Error("Invalid weather data");
-        }
-
         let pressure = data.main.pressure;
         let wind = data.wind?.speed || 0;
         let cloud = data.clouds?.all || 0;
@@ -73,7 +71,6 @@ function fetchWeatherSafe() {
     .finally(() => {
         if (icon) icon.classList.remove("refresh-spin");
     });
-
 }
 
 let dots = 0;
