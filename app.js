@@ -128,6 +128,8 @@ setTimeout(() => {
       splashActive = false; // 🛑 stop ripple engine
       splash.remove();
 
+        document.getElementById("aifCanvas").style.opacity = "1";
+        
       // ===============================
       // 🚀 START YOUR APP HERE
       // ===============================
