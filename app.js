@@ -1798,8 +1798,9 @@ bar.innerText = message;
         //if (icon) icon.classList.remove("refresh-spin");
     });
 
-console.log("END REACHED");
-
 } catch(e) {
   console.error("BROKEN HERE:", e);
 }
+
+console.log("END REACHED");
+});
