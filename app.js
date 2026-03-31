@@ -3,7 +3,7 @@
 // ===============================
 console.log("APP VERSION 500");
 
-let currentSession = null; 
+let currentSession = null;
 let lastSPI = null;
 let lastConditions = {};
 let lastPressure = null;
@@ -28,651 +28,676 @@ let ctx;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    canvas = document.getElementById("aifCanvas");
-    ctx = canvas?.getContext("2d");
+			canvas = document.getElementById("aifCanvas");
+			ctx = canvas?.getContext("2d");
 
-    const splashCanvas = document.getElementById("splashCanvas");
-const sctx = splashCanvas.getContext("2d");
+			const splashCanvas = document.getElementById("splashCanvas");
+			const sctx = splashCanvas.getContext("2d");
 
-function resizeSplash() {
- splashCanvas.width = window.innerWidth;
- splashCanvas.height = window.innerHeight;
-}
+			function resizeSplash() {
+				splashCanvas.width = window.innerWidth;
+				splashCanvas.height = window.innerHeight;
+			}
 
-window.addEventListener("resize", resizeSplash);
-resizeSplash();
+			window.addEventListener("resize", resizeSplash);
+			resizeSplash();
 
-// 💧 CREATE RIPPLE (center drop)
-function createSplashRipple() {
- ripples.push({
-   x: splashCanvas.width / 2,
-   y: splashCanvas.height / 2 + 50,
-   r: 0,
-   alpha: 0.6
- });
-}
+			// 💧 CREATE RIPPLE (center drop)
+			function createSplashRipple() {
+				ripples.push({
+					x: splashCanvas.width / 2,
+					y: splashCanvas.height / 2 + 50,
+					r: 0,
+					alpha: 0.6
+				});
+			}
 
-// ===============================
-// ⏳ SPLASH EXIT + APP START
-// ===============================
+			// ===============================
+			// ⏳ SPLASH EXIT + APP START
+			// ===============================
 
-setTimeout(() => {
+			setTimeout(() => {
 
-  const splash = document.getElementById("splash");
-  if (!splash) return;
+				const splash = document.getElementById("splash");
+				if (!splash) return;
 
-  splash.style.opacity = "0";
-  splash.style.transition = "1s ease";
+				splash.style.opacity = "0";
+				splash.style.transition = "1s ease";
 
-  setTimeout(() => {
+				setTimeout(() => {
 
-    splash.remove();
+					splash.remove();
 
-    // 🚀 START APP HERE
-    document.getElementById("aifCanvas").style.opacity = "1";
+					// 🚀 START APP HERE
+					document.getElementById("aifCanvas").style.opacity = "1";
 
-    resize();
-    animate();
+					resize();
+					animate();
 
-    generateHotspots();
-    setInterval(generateHotspots, 10000);
+					generateHotspots();
+					setInterval(generateHotspots, 10000);
 
-    setInterval(ripple, 3000);
+					setInterval(ripple, 3000);
 
-    setTimeout(fetchWeatherSafe, 2000);
-  
-  }, 1000);
+					setTimeout(fetchWeatherSafe, 2000);
 
-}, 1000);
+				}, 1000);
 
-    let dots = 0;
-    setInterval(() => {
-    const el = document.getElementById("dots");
-    if (!el) return; 
+			}, 1000);
 
-    dots = (dots + 1) % 4;
-    el.innerText = ".".repeat(dots);
-}, 400);
-      
-// ===============================
-// 🧠 SESSION SYSTEM
-// ===============================
+			let dots = 0;
+			setInterval(() => {
+				const el = document.getElementById("dots");
+				if (!el) return;
 
-function initSession(){
+				dots = (dots + 1) % 4;
+				el.innerText = ".".repeat(dots);
+			}, 400);
 
-    let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
+			// ===============================
+			// 🧠 SESSION SYSTEM
+			// ===============================
 
-    let dam = prompt("Enter Dam Name:");
-    let area = prompt("Enter Area / Peg:");
+			function initSession() {
 
-    currentSession = {
-        id: Date.now(),
-        dam: dam || "Unknown",
-        area: area || "Unknown",
-        date: new Date().toISOString(),
-        events: []
-    };
+				let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
 
-    sessions.push(currentSession);
-    localStorage.setItem("aif_sessions", JSON.stringify(sessions));
+				let dam = prompt("Enter Dam Name:");
+				let area = prompt("Enter Area / Peg:");
 
-}
+				currentSession = {
+					id: Date.now(),
+					dam: dam || "Unknown",
+					area: area || "Unknown",
+					date: new Date().toISOString(),
+					events: []
+				};
 
-// ===============================
-// 🌦 WEATHER SYSTEM
-// ===============================
+				sessions.push(currentSession);
+				localStorage.setItem("aif_sessions", JSON.stringify(sessions));
 
-function simulateWeather(){
-    renderDashboard({
-        main:{temp:22, pressure:1018},
-        wind:{speed:3, deg:180},
-        clouds:{all:40}
-    });
-}
+			}
 
-// =============================
-// WATER + ENVIRONMENT MODELS
-// =============================
+			// ===============================
+			// 🌦 WEATHER SYSTEM
+			// ===============================
 
-function estimateSurfaceTemp({ prevWaterTemp, airTemp, windSpeed, sunFactor, hour }) {
+			function simulateWeather() {
+				renderDashboard({
+					main: {
+						temp: 22,
+						pressure: 1018
+					},
+					wind: {
+						speed: 3,
+						deg: 180
+					},
+					clouds: {
+						all: 40
+					}
+				});
+			}
 
-    let temp = prevWaterTemp;
+			// =============================
+			// WATER + ENVIRONMENT MODELS
+			// =============================
 
-    // air influence
-    temp += (airTemp - temp) * 0.15;
+			function estimateSurfaceTemp({
+				prevWaterTemp,
+				airTemp,
+				windSpeed,
+				sunFactor,
+				hour
+			}) {
 
-    // sun heating (day only)
-    if(hour >= 8 && hour <= 17){
-        temp += sunFactor * 0.8;
-    }
+				let temp = prevWaterTemp;
 
-    // wind cooling
-    temp -= windSpeed * 0.02;
+				// air influence
+				temp += (airTemp - temp) * 0.15;
 
-    return temp;
-}
+				// sun heating (day only)
+				if (hour >= 8 && hour <= 17) {
+					temp += sunFactor * 0.8;
+				}
 
-function estimateBottomTemp({ surfaceTempValue, depth, windSpeed }) {
+				// wind cooling
+				temp -= windSpeed * 0.02;
 
-    let gradient = depth * 0.15;
+				return temp;
+			}
 
-    // wind mixes layers
-    gradient -= windSpeed * 0.05;
+			function estimateBottomTemp({
+				surfaceTempValue,
+				depth,
+				windSpeed
+			}) {
 
-    return surfaceTempValue - Math.max(gradient, 0.5); 
-}
+				let gradient = depth * 0.15;
 
-function generateHotspots(){
+				// wind mixes layers
+				gradient -= windSpeed * 0.05;
 
-    hotspots = [];
+				return surfaceTempValue - Math.max(gradient, 0.5);
+			}
 
-    let count = Math.floor(Math.random() * 2) + 1; // 1–2 zones
+			function generateHotspots() {
 
-    for(let i = 0; i < count; i++){
-        hotspots.push({
-            x: canvas.width * (0.2 + Math.random() * 0.6),
-            y: canvas.height * (0.6 + Math.random() * 0.3),
-            radius: 80 + Math.random() * 120
-        });
-    }
-}
+				hotspots = [];
 
-function estimateOxygen(temp, windSpeed){
+				let count = Math.floor(Math.random() * 2) + 1; // 1–2 zones
 
-    let oxygen = 9;
+				for (let i = 0; i < count; i++) {
+					hotspots.push({
+						x: canvas.width * (0.2 + Math.random() * 0.6),
+						y: canvas.height * (0.6 + Math.random() * 0.3),
+						radius: 80 + Math.random() * 120
+					});
+				}
+			}
 
-    // warm water = less oxygen
-    oxygen -= (temp - 15) * 0.2;
+			function estimateOxygen(temp, windSpeed) {
 
-    // wind adds oxygen
-    oxygen += windSpeed * 0.1;
+				let oxygen = 9;
 
-    return Math.max(5, Math.min(oxygen, 12)); 
-}
+				// warm water = less oxygen
+				oxygen -= (temp - 15) * 0.2;
 
-function removeSplash(){
-    const splash = document.getElementById("splash");
-    if (!splash) return;
+				// wind adds oxygen
+				oxygen += windSpeed * 0.1;
 
-    splash.style.opacity = "0";
-    splash.style.transition = "opacity 0.5s ease";
+				return Math.max(5, Math.min(oxygen, 12));
+			}
 
-    setTimeout(() => splash.remove(), 500); }
+			function removeSplash() {
+				const splash = document.getElementById("splash");
+				if (!splash) return;
 
-// ===============================
-// 📊 DASHBOARD
-// ===============================
+				splash.style.opacity = "0";
+				splash.style.transition = "opacity 0.5s ease";
+
+				setTimeout(() => splash.remove(), 500);
+			}
+
+			// ===============================
+			// 📊 DASHBOARD
+			// ===============================
+
+			function renderDashboard(d) {
+
+				set("statusText", " Live environmental data");
+
+				// =========================
+				// 📥 GET DATA
+				// =========================
+				let t = d?.main?.temp ?? 20;
+				let p = d.main.pressure;
+				let w = d.wind.speed;
+				let c = d.clouds.all;
+				let windDir = d.wind.deg;
+
+				// =========================
+				// 🌊 CALCULATE TEMPS
+				// =========================
+				let sunFactor = (100 - c) / 100;
+
+				let hour = new Date().getHours();
+
+				// Sun influence depends on time
+				let sunEffect = 0;
+
+				if (hour >= 10 && hour <= 16) {
+					sunEffect = sunFactor * 1.2; // peak heating
+				} else if (hour >= 7 && hour < 10) {
+					sunEffect = sunFactor * 0.6; // warming up
+				} else {
+					sunEffect = 0.2; // minimal effect
+				}
+
+				console.log("ELEMENTS:",
+					document.getElementById("wcSurface"),
+					document.getElementById("wcBottom")
+				);
+
+				// Wind cooling reduced slightly
+				let windCooling = w * 0.15;
+
+				// FINAL surface temp
+				let surfaceTemp = t + sunEffect - windCooling;
+
+				let mixingFactor = Math.min(1, w / 5);
+				let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
+
+				let bottomTemp = surfaceTemp - depthDrop;
+
+				console.log("TEMP CHECK", surfaceTemp, bottomTemp);
+
+				drawWaterProfile(surfaceTemp, bottomTemp);
+
+				// =========================
+				// 🛟 SAFETY (FIXED SCOPE)
+				// =========================
+				if (surfaceTemp === undefined || bottomTemp === undefined) {
+					console.log("Temps fallback triggered");
+
+					surfaceTemp = t;
+					bottomTemp = t - 1.5;
+				}
+
+				let insight = "";
+
+				if (surfaceTemp > bottomTemp) {
+					insight = "Cooling depth detected • Fish holding lower";
+				} else {
+					insight = "Stable column • Fish active across layers";
+				}
+
+				let insightEl = document.getElementById("wcInsight");
+				if (insightEl) insightEl.innerText = insight;
+
+				// =========================
+				// 📏 LIMITS
+				// =========================
+				surfaceTemp = Math.max(5, Math.min(35, surfaceTemp));
+				bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
+
+				// =========================
+				// 🎨 COLOR FUNCTION
+				// =========================
+				function getTempColor(temp) {
+					if (temp >= 18 && temp <= 24) return "#00ffa6";
+					if ((temp >= 14 && temp < 18) || (temp > 24 && temp <= 28)) return "#ffaa00";
+					return "#ff4d4d";
+				}
+
+				// =========================
+				// 🖥 UPDATE UI (ALWAYS RUNS NOW ✅)
+				// =========================
+				let airEl = document.getElementById("wcAir");
+				if (airEl) {
+					airEl.innerHTML = t.toFixed(1) + "°C";
+					airEl.style.color = getTempColor(t);
+				}
+
+				let surfaceEl = document.getElementById("wcSurface");
+				if (surfaceEl) {
+					surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
+					surfaceEl.style.color = getTempColor(surfaceTemp);
+				}
+
+				let bottomEl = document.getElementById("wcBottom");
+				if (bottomEl) {
+					bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
+					bottomEl.style.color = getTempColor(bottomTemp);
+				}
 
-function renderDashboard(d){
-
-set("statusText", " Live environmental data");
-
-// =========================
-// 📥 GET DATA
-// =========================
-let t = d?.main?.temp ?? 20;
-let p = d.main.pressure;
-let w = d.wind.speed;
-let c = d.clouds.all;
-let windDir = d.wind.deg;
-    
-// =========================
-// 🌊 CALCULATE TEMPS
-// =========================
-let sunFactor = (100 - c) / 100;
-
-let hour = new Date().getHours();
-
-// Sun influence depends on time
-let sunEffect = 0;
-
-if(hour >= 10 && hour <= 16){
-    sunEffect = sunFactor * 1.2;   // peak heating
-} else if(hour >= 7 && hour < 10){
-    sunEffect = sunFactor * 0.6;   // warming up
-} else {
-    sunEffect = 0.2;               // minimal effect
-}
-
-console.log("ELEMENTS:",
-        document.getElementById("wcSurface"),
-        document.getElementById("wcBottom")
-);
-    
-// Wind cooling reduced slightly
-let windCooling = w * 0.15;
-
-// FINAL surface temp
-let surfaceTemp = t + sunEffect - windCooling;
-
-let mixingFactor = Math.min(1, w / 5);
-let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
-
-let bottomTemp = surfaceTemp - depthDrop; 
-
-console.log("TEMP CHECK", surfaceTemp, bottomTemp);
-
-drawWaterProfile(surfaceTemp, bottomTemp);
-
-// =========================
-// 🛟 SAFETY (FIXED SCOPE)
-// =========================
-if (surfaceTemp === undefined || bottomTemp === undefined) {
-    console.log("Temps fallback triggered");
-
-    surfaceTemp = t;
-    bottomTemp = t - 1.5;
-    }
-
-    let insight = "";
-
-if (surfaceTemp > bottomTemp) {
-  insight = "Cooling depth detected • Fish holding lower"; } else {
-  insight = "Stable column • Fish active across layers"; }
-
-let insightEl = document.getElementById("wcInsight");
-if (insightEl) insightEl.innerText = insight;
-
-    // =========================
-    // 📏 LIMITS
-    // =========================
-    surfaceTemp = Math.max(5, Math.min(35, surfaceTemp));
-    bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
-
-    // =========================
-    // 🎨 COLOR FUNCTION
-    // =========================
-    function getTempColor(temp){
-        if(temp >= 18 && temp <= 24) return "#00ffa6";
-        if((temp >= 14 && temp < 18) || (temp > 24 && temp <= 28)) return "#ffaa00";
-        return "#ff4d4d";
-    }
-
-    // =========================
-    // 🖥 UPDATE UI (ALWAYS RUNS NOW ✅)
-    // =========================
-    let airEl = document.getElementById("wcAir");
-    if(airEl){
-        airEl.innerHTML = t.toFixed(1) + "°C";
-        airEl.style.color = getTempColor(t);
-    }
-
-    let surfaceEl = document.getElementById("wcSurface");
-    if(surfaceEl){
-        surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-        surfaceEl.style.color = getTempColor(surfaceTemp);
-    }
-
-let bottomEl = document.getElementById("wcBottom");
-if(bottomEl){
-    bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-    bottomEl.style.color = getTempColor(bottomTemp);
-}
- 
-// =========================
-// 💨 OXYGEN
-// =========================
-let oxygen = estimateOxygen(surfaceTemp, w);
-
-// =========================
-// 📦 STORE CONDITIONS
-// =========================
-lastConditions = {
-    airTemp: t,
-    pressure: p,
-    windSpeed: w,
-    windDir: windDir,
-    cloud: c,
-    moon: getMoonPhase(),
-    season: getSeason(),
-    trend: getPressureTrend(p)
-};
-
-// =========================
-// 🎯 CALCULATE SPI
-// =========================
-let spi = calculateSPI(p, w, c, windDir, t);
-
-if(lastSPI !== null){
-    spi = Math.round((spi + lastSPI) / 2);
-}
-lastSPI = spi;
-
-let trend = getPressureTrend(p);
-
-if(trend === "Falling") spi += 10;
-if(trend === "Rising") spi -= 5;
-
-if(w > 8 && w < 20) spi += 5;
-if(w < 2) spi -= 5;
-
-spi = Math.max(0, Math.min(100, spi));
-
-bubbleIntensity = (lastSPI || 50) / 100;
-
-console.log("SPI VALUE", spi);
-updateSPI(spi);
-updateStrategy(spi);
-
-let color = getSPIColor(spi);
-
-let arc = document.getElementById("spiArc");
-if(arc){
-    arc.style.stroke = color;
-    arc.style.filter = "drop-shadow(0 0 10px " + color + ")"; }
-    
-let envScore = 0;
-
-if(t >= 18 && t <= 24) envScore += 30;
-else if(t >= 15 && t <= 28) envScore += 20;
-else envScore += 10;
-
-if(c >= 20 && c <= 60) envScore += 25;
-else if(c < 20) envScore += 15;
-else envScore += 10;
-
-if(w >= 5 && w <= 15) envScore += 25;
-else if(w < 5) envScore += 15;
-else envScore += 10;
-
-let oxygenFactor = (w * 0.5) - (t - 20);
-envScore += Math.max(0, Math.min(20, oxygenFactor + 10));
-
-envScore = Math.round(Math.min(100, envScore));
-
-function calculateSPI(p, w, c, windDir, t){
-    let score = 50;
-
-    if(p > 1015) score += 10;
-    if(w > 5) score += 10;
-    if(c > 30) score += 10;
-    if(t >= 18 && t <= 24) score += 20;
-
-    return Math.min(100, score);
-}
-   
-// 🎯 CONFIDENCE
-let stability = 0;
-
-if(trend === "Stable") stability += 20;
-if(trend === "Falling") stability += 15;
-if(trend === "Rising") stability += 10;
-
-if(w > 3 && w < 15) stability += 20;
-
-if(t >= 18 && t <= 24) stability += 20;
-
-let agreement = 100 - Math.abs(envScore - spi);
-
-let confScore = Math.round((stability * 0.5) + (agreement * 0.5));
-confScore = Math.min(100, confScore);
-
-// =========================
-// 🧾 UPDATE TEXT VALUES
-// =========================
-animateValue("envScore", envScore + "%");
-animateValue("confScore", confScore + "%");
-colorMini("envScore", envScore);
-colorMini("confScore", confScore);
-updateTactical(spi, envScore, confScore, w, t);
-set("pressure", p + " hPa");
-set("wind", w.toFixed(1) + " km/h");
-set("cloud", c + "%");
-set("oxygen", oxygen.toFixed(1) + " mg/L");
-set("moon", getMoonPhase());
-set("season", getSeason());
-set("surfaceTemp", surfaceTemp.toFixed(1) + "°C"); 
-set("bottomTemp", bottomTemp.toFixed(1) + "°C");
-
-removeSplash();
-}
-
-function animateValue(id, value){
-    let el = document.getElementById(id);
-    if(!el) return;
-
-    el.style.transition = "all 0.6s ease";
-    el.innerText = value;
-}
-
-function colorMini(id, value){
-    let el = document.getElementById(id);
-    if(!el) return;
-
-    let color = "#00ffa6";
-    if(value < 50) color = "#ff4d4d";
-    else if(value < 70) color = "#ffaa00";
-
-    el.style.color = color;
-}
-
-function applyScout(){
-  lastConditions.scout = selected;
-  document.getElementById("scoutScreen").classList.add("hidden");
-}
-
-// ===============================
-// 🌦 TACTICAL SYSTEM (FIXED)
-// ===============================
-
-function updateTactical(spi, envScore, confScore, w, t){
-
-    // 🛟 Safety: ensure probeData exists
-    if(!probeData){
-        probeData = { surface: null, bottom: null };
-    }
-
-    let lines = [];
-
-    // =========================
-    // 🔥 PRIORITY
-    // =========================
-    if(spi > 75){
-        lines.push("🔥 PRIORITY: Stay on current spot — feeding window active");
-    } else if(spi < 50){
-        lines.push("⚠️ PRIORITY: Relocate or change depth");
-    }
-
-    // =========================
-    // 👁 SCOUT INPUT
-    // =========================
-    if(lastConditions.scout){
-
-        if(lastConditions.scout.bubbles){
-            lines.push("🎯 Fish actively feeding in area");
-        }
-
-        if(lastConditions.scout.rolling){
-            lines.push("🐟 Fish showing — strong indication of presence");
-        }
-
-        if(lastConditions.scout.murky){
-            lines.push("🌫 Low visibility — fish relying on scent");
-        }
-
-        if(lastConditions.scout.windBank){
-            lines.push("🌬 Wind pushing food — target this bank");
-        }
-    }
-
-    // =========================
-    // 🎯 SPI CORE
-    // =========================
-    if(spi > 85){
-        lines.push("🔥 Peak feeding window active");
-    } else if(spi > 70){
-        lines.push("⚡ Good feeding conditions");
-    } else {
-        lines.push("⚠️ Low feeding activity");
-    }
-
-    // =========================
-    // 🌿 ENVIRONMENT
-    // =========================
-    if(envScore > 75){
-        lines.push("🌿 Environment stable and supportive");
-    } else if(envScore < 50){
-        lines.push("🌧️ Environmental pressure affecting fish");
-    }
-
-    // =========================
-    // 🧠 CONFIDENCE
-    // =========================
-    if(confScore > 80){
-        lines.push("🧠 High confidence pattern detected");
-    } else if(confScore < 50){
-        lines.push("⚠️ Low confidence — conditions unstable");
-    }
-
-    // =========================
-    // 🌬️ WIND
-    // =========================
-    if(w < 5){
-        lines.push("🌬️ Light wind — slower movement zones");
-    } else if(w > 15){
-        lines.push("🌊 Strong wind — target windblown banks");
-    }
-
-    // =========================
-    // 🌡️ TEMP
-    // =========================
-    if(t >= 18 && t <= 24){
-        lines.push("🌡️ Optimal temperature range for feeding");
-    } else {
-        lines.push("🌡️ Suboptimal temperature — adjust depth");
-    }
-
-    // =========================
-    // 🧠 FINAL OUTPUT (SAFE)
-    // =========================
-let tacticalEl = document.getElementById("tactical");
-
-if(tacticalEl){
-    tacticalEl.innerHTML = lines.length > 0
-        ? lines.join("<br>") 
-        : "⚠️ No tactical data available"; 
-}
-}
-
- // ===============================
-// 🎯 EVENT LOGGER (CORE SYSTEM)
-// ===============================
-
-function logEvent(type, extra = {}){
-
-    if(!currentSession) return;
-
-    navigator.geolocation.getCurrentPosition(pos => {
-
-        let event = {
-            type: type,
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude,
-            time: Date.now(),
-            spi: lastSPI || 0,
-            conditions: lastConditions,
-            ...extra
-        };
-
-        currentSession.events.push(event);
-
-        let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
-
-        let index = sessions.findIndex(s => s.id === currentSession.id);
-        if(index !== -1){
-            sessions[index] = currentSession;
-        }
-
-        localStorage.setItem("aif_sessions", JSON.stringify(sessions));
-
-        console.log(type + " logged");
-
-    });
-}
-
-// ===============================
-// 🎯 REFRESH
-// ===============================
-
-function refreshData() {
-    const icon = document.getElementById("refreshIcon");
-
-    if (icon) {
-        icon.classList.add("refresh-spin");
-    }
-
-    fetchWeatherSafe();
-}
-  
-// ===============================
-// 🎯 DROP / SCOUT / ESP / CATCH
-// ===============================
-
-function dropPoint() {
-    if (!map) {
-        console.log("Map not ready");
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(position => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-
-        console.log("Dropped at:", lat, lon);
-
-        L.marker([lat, lon]).addTo(map);
-
-    }, err => {
-        console.log("GPS error:", err);
-    });
-}
-
-function ensureSession(){
-
-    if(currentSession){
-        return; // ✅ already exists → do nothing
-    }
-
-    // try load from storage first
-    let saved = localStorage.getItem("aif_current_session");
-
-    if(saved){
-        currentSession = JSON.parse(saved);
-        return;
-    }
-
-    // only ask ONCE
-    let dam = prompt("Enter Dam Name:");
-    let area = prompt("Enter Area / Peg:");
-
-    currentSession = {
-        id: Date.now(),
-        dam: dam || "Unknown",
-        area: area || "Unknown",
-        date: new Date().toISOString(),
-        events: []
-    };
-
-    localStorage.setItem("aif_current_session", JSON.stringify(currentSession)); 
-}
-
-function performScout(){
-    logEvent("scout");
-}
-
-// 🔴 FUTURE READY
-function logCatch(){
-    logEvent("catch", {
-        weight: prompt("Enter fish weight (kg):"),
-        bait: prompt("Bait used:")
-    });
-}
-
-function openScout(){
-    ensureSession();
-    logEvent ("scout");
-
-document.body.insertAdjacentHTML("beforeend", `
+				// =========================
+				// 💨 OXYGEN
+				// =========================
+				let oxygen = estimateOxygen(surfaceTemp, w);
+
+				// =========================
+				// 📦 STORE CONDITIONS
+				// =========================
+				lastConditions = {
+					airTemp: t,
+					pressure: p,
+					windSpeed: w,
+					windDir: windDir,
+					cloud: c,
+					moon: getMoonPhase(),
+					season: getSeason(),
+					trend: getPressureTrend(p)
+				};
+
+				// =========================
+				// 🎯 CALCULATE SPI
+				// =========================
+				let spi = calculateSPI(p, w, c, windDir, t);
+
+				if (lastSPI !== null) {
+					spi = Math.round((spi + lastSPI) / 2);
+				}
+				lastSPI = spi;
+
+				let trend = getPressureTrend(p);
+
+				if (trend === "Falling") spi += 10;
+				if (trend === "Rising") spi -= 5;
+
+				if (w > 8 && w < 20) spi += 5;
+				if (w < 2) spi -= 5;
+
+				spi = Math.max(0, Math.min(100, spi));
+
+				bubbleIntensity = (lastSPI || 50) / 100;
+
+				console.log("SPI VALUE", spi);
+				updateSPI(spi);
+				updateStrategy(spi);
+
+				let color = getSPIColor(spi);
+
+				let arc = document.getElementById("spiArc");
+				if (arc) {
+					arc.style.stroke = color;
+					arc.style.filter = "drop-shadow(0 0 10px " + color + ")";
+				}
+
+				let envScore = 0;
+
+				if (t >= 18 && t <= 24) envScore += 30;
+				else if (t >= 15 && t <= 28) envScore += 20;
+				else envScore += 10;
+
+				if (c >= 20 && c <= 60) envScore += 25;
+				else if (c < 20) envScore += 15;
+				else envScore += 10;
+
+				if (w >= 5 && w <= 15) envScore += 25;
+				else if (w < 5) envScore += 15;
+				else envScore += 10;
+
+				let oxygenFactor = (w * 0.5) - (t - 20);
+				envScore += Math.max(0, Math.min(20, oxygenFactor + 10));
+
+				envScore = Math.round(Math.min(100, envScore));
+
+				function calculateSPI(p, w, c, windDir, t) {
+					let score = 50;
+
+					if (p > 1015) score += 10;
+					if (w > 5) score += 10;
+					if (c > 30) score += 10;
+					if (t >= 18 && t <= 24) score += 20;
+
+					return Math.min(100, score);
+				}
+
+				// 🎯 CONFIDENCE
+				let stability = 0;
+
+				if (trend === "Stable") stability += 20;
+				if (trend === "Falling") stability += 15;
+				if (trend === "Rising") stability += 10;
+
+				if (w > 3 && w < 15) stability += 20;
+
+				if (t >= 18 && t <= 24) stability += 20;
+
+				let agreement = 100 - Math.abs(envScore - spi);
+
+				let confScore = Math.round((stability * 0.5) + (agreement * 0.5));
+				confScore = Math.min(100, confScore);
+
+				// =========================
+				// 🧾 UPDATE TEXT VALUES
+				// =========================
+				animateValue("envScore", envScore + "%");
+				animateValue("confScore", confScore + "%");
+				colorMini("envScore", envScore);
+				colorMini("confScore", confScore);
+				updateTactical(spi, envScore, confScore, w, t);
+				set("pressure", p + " hPa");
+				set("wind", w.toFixed(1) + " km/h");
+				set("cloud", c + "%");
+				set("oxygen", oxygen.toFixed(1) + " mg/L");
+				set("moon", getMoonPhase());
+				set("season", getSeason());
+				set("surfaceTemp", surfaceTemp.toFixed(1) + "°C");
+				set("bottomTemp", bottomTemp.toFixed(1) + "°C");
+
+				removeSplash();
+			}
+
+			function animateValue(id, value) {
+				let el = document.getElementById(id);
+				if (!el) return;
+
+				el.style.transition = "all 0.6s ease";
+				el.innerText = value;
+			}
+
+			function colorMini(id, value) {
+				let el = document.getElementById(id);
+				if (!el) return;
+
+				let color = "#00ffa6";
+				if (value < 50) color = "#ff4d4d";
+				else if (value < 70) color = "#ffaa00";
+
+				el.style.color = color;
+			}
+
+			function applyScout() {
+				lastConditions.scout = selected;
+				document.getElementById("scoutScreen").classList.add("hidden");
+			}
+
+			// ===============================
+			// 🌦 TACTICAL SYSTEM (FIXED)
+			// ===============================
+
+			function updateTactical(spi, envScore, confScore, w, t) {
+
+				// 🛟 Safety: ensure probeData exists
+				if (!probeData) {
+					probeData = {
+						surface: null,
+						bottom: null
+					};
+				}
+
+				let lines = [];
+
+				// =========================
+				// 🔥 PRIORITY
+				// =========================
+				if (spi > 75) {
+					lines.push("🔥 PRIORITY: Stay on current spot — feeding window active");
+				} else if (spi < 50) {
+					lines.push("⚠️ PRIORITY: Relocate or change depth");
+				}
+
+				// =========================
+				// 👁 SCOUT INPUT
+				// =========================
+				if (lastConditions.scout) {
+
+					if (lastConditions.scout.bubbles) {
+						lines.push("🎯 Fish actively feeding in area");
+					}
+
+					if (lastConditions.scout.rolling) {
+						lines.push("🐟 Fish showing — strong indication of presence");
+					}
+
+					if (lastConditions.scout.murky) {
+						lines.push("🌫 Low visibility — fish relying on scent");
+					}
+
+					if (lastConditions.scout.windBank) {
+						lines.push("🌬 Wind pushing food — target this bank");
+					}
+				}
+
+				// =========================
+				// 🎯 SPI CORE
+				// =========================
+				if (spi > 85) {
+					lines.push("🔥 Peak feeding window active");
+				} else if (spi > 70) {
+					lines.push("⚡ Good feeding conditions");
+				} else {
+					lines.push("⚠️ Low feeding activity");
+				}
+
+				// =========================
+				// 🌿 ENVIRONMENT
+				// =========================
+				if (envScore > 75) {
+					lines.push("🌿 Environment stable and supportive");
+				} else if (envScore < 50) {
+					lines.push("🌧️ Environmental pressure affecting fish");
+				}
+
+				// =========================
+				// 🧠 CONFIDENCE
+				// =========================
+				if (confScore > 80) {
+					lines.push("🧠 High confidence pattern detected");
+				} else if (confScore < 50) {
+					lines.push("⚠️ Low confidence — conditions unstable");
+				}
+
+				// =========================
+				// 🌬️ WIND
+				// =========================
+				if (w < 5) {
+					lines.push("🌬️ Light wind — slower movement zones");
+				} else if (w > 15) {
+					lines.push("🌊 Strong wind — target windblown banks");
+				}
+
+				// =========================
+				// 🌡️ TEMP
+				// =========================
+				if (t >= 18 && t <= 24) {
+					lines.push("🌡️ Optimal temperature range for feeding");
+				} else {
+					lines.push("🌡️ Suboptimal temperature — adjust depth");
+				}
+
+				// =========================
+				// 🧠 FINAL OUTPUT (SAFE)
+				// =========================
+				let tacticalEl = document.getElementById("tactical");
+
+				if (tacticalEl) {
+					tacticalEl.innerHTML = lines.length > 0 ?
+						lines.join("<br>") :
+						"⚠️ No tactical data available";
+				}
+			}
+
+			// ===============================
+			// 🎯 EVENT LOGGER (CORE SYSTEM)
+			// ===============================
+
+			function logEvent(type, extra = {}) {
+
+				if (!currentSession) return;
+
+				navigator.geolocation.getCurrentPosition(pos => {
+
+					let event = {
+						type: type,
+						lat: pos.coords.latitude,
+						lon: pos.coords.longitude,
+						time: Date.now(),
+						spi: lastSPI || 0,
+						conditions: lastConditions,
+						...extra
+					};
+
+					currentSession.events.push(event);
+
+					let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
+
+					let index = sessions.findIndex(s => s.id === currentSession.id);
+					if (index !== -1) {
+						sessions[index] = currentSession;
+					}
+
+					localStorage.setItem("aif_sessions", JSON.stringify(sessions));
+
+					console.log(type + " logged");
+
+				});
+			}
+
+			// ===============================
+			// 🎯 REFRESH
+			// ===============================
+
+			function refreshData() {
+				const icon = document.getElementById("refreshIcon");
+
+				if (icon) {
+					icon.classList.add("refresh-spin");
+				}
+
+				fetchWeatherSafe();
+			}
+
+			// ===============================
+			// 🎯 DROP / SCOUT / ESP / CATCH
+			// ===============================
+
+			function dropPoint() {
+				if (!map) {
+					console.log("Map not ready");
+					return;
+				}
+
+				navigator.geolocation.getCurrentPosition(position => {
+					const lat = position.coords.latitude;
+					const lon = position.coords.longitude;
+
+					console.log("Dropped at:", lat, lon);
+
+					L.marker([lat, lon]).addTo(map);
+
+				}, err => {
+					console.log("GPS error:", err);
+				});
+			}
+
+			function ensureSession() {
+
+				if (currentSession) {
+					return; // ✅ already exists → do nothing
+				}
+
+				// try load from storage first
+				let saved = localStorage.getItem("aif_current_session");
+
+				if (saved) {
+					currentSession = JSON.parse(saved);
+					return;
+				}
+
+				// only ask ONCE
+				let dam = prompt("Enter Dam Name:");
+				let area = prompt("Enter Area / Peg:");
+
+				currentSession = {
+					id: Date.now(),
+					dam: dam || "Unknown",
+					area: area || "Unknown",
+					date: new Date().toISOString(),
+					events: []
+				};
+
+				localStorage.setItem("aif_current_session", JSON.stringify(currentSession));
+			}
+
+			function performScout() {
+				logEvent("scout");
+			}
+
+			// 🔴 FUTURE READY
+			function logCatch() {
+				logEvent("catch", {
+					weight: prompt("Enter fish weight (kg):"),
+					bait: prompt("Bait used:")
+				});
+			}
+
+			function openScout() {
+				ensureSession();
+				logEvent("scout");
+
+				document.body.insertAdjacentHTML("beforeend", `
 <div id="scoutScreen" style="
 position:fixed;
 top:0; left:0;
@@ -757,39 +782,39 @@ Save & Continue
 
 </div>
 `);
-}
+			}
 
-function toggleScout(type, el){
+			function toggleScout(type, el) {
 
-    selected[type] = !selected[type];
+				selected[type] = !selected[type];
 
-    if(selected[type]){
-        el.classList.add("active"); 
-    } else {
-        el.classList.remove("active");
-    }
-}
+				if (selected[type]) {
+					el.classList.add("active");
+				} else {
+					el.classList.remove("active");
+				}
+			}
 
-// ===============================
-// 🔍 SCOUT SCAN FLOW (FINAL CLEAN)
-// ===============================
+			// ===============================
+			// 🔍 SCOUT SCAN FLOW (FINAL CLEAN)
+			// ===============================
 
-// store selections (make sure this exists once in your file) let selected = {};
+			// store selections (make sure this exists once in your file) let selected = {};
 
-// START SCAN (animation flow)
-function startScan(){
+			// START SCAN (animation flow)
+			function startScan() {
 
-    const resultBox = document.getElementById("scanArea");
+				const resultBox = document.getElementById("scanArea");
 
-    resultBox.innerHTML = "🔄 Checking sensors...";
+				resultBox.innerHTML = "🔄 Checking sensors...";
 
-    setTimeout(() => {
+				setTimeout(() => {
 
-        const sensors = checkSensors();
+					const sensors = checkSensors();
 
-        if(!sensors.temp && !sensors.turbidity && !sensors.depth){
+					if (!sensors.temp && !sensors.turbidity && !sensors.depth) {
 
-            resultBox.innerHTML = `
+						resultBox.innerHTML = `
 ❌ No sensors detected<br><br>
 
 <button onclick="retryScan()" style="
@@ -817,96 +842,99 @@ Exit
 </button>
             `;
 
-            return; 
-        }
+						return;
+					}
 
-        // ✅ sensors found → continue
-        runScanFlow();
+					// ✅ sensors found → continue
+					runScanFlow();
 
-    }, 1000);
-}
+				}, 1000);
+			}
 
-function retryScan(){
-    startScan(); // 🔁 just re-run everything 
-}
+			function retryScan() {
+				startScan(); // 🔁 just re-run everything 
+			}
 
-function runScanFlow(){
+			function runScanFlow() {
 
-    const resultBox = document.getElementById("scanArea");
+				const resultBox = document.getElementById("scanArea");
 
-    resultBox.innerHTML = "📡 Sensors connected...";
+				resultBox.innerHTML = "📡 Sensors connected...";
 
-    setTimeout(() => {
-        resultBox.innerHTML = "🌊 Scanning water...";
-    }, 1000);
+				setTimeout(() => {
+					resultBox.innerHTML = "🌊 Scanning water...";
+				}, 1000);
 
-    setTimeout(() => {
-        resultBox.innerHTML = "🧠 Processing data...";
-    }, 2000);
+				setTimeout(() => {
+					resultBox.innerHTML = "🧠 Processing data...";
+				}, 2000);
 
-    setTimeout(() => {
-        generateScoutResults(); // ✅ always ends flow
-    }, 3000);
-}
+				setTimeout(() => {
+					generateScoutResults(); // ✅ always ends flow
+				}, 3000);
+			}
 
-function checkSensors(){
+			function checkSensors() {
 
-    // 🔌 YOU CONTROL THIS LATER WITH REAL HARDWARE
-    let tempSensor = false;
-    let turbiditySensor = false;
-    let depthSensor = false;
+				// 🔌 YOU CONTROL THIS LATER WITH REAL HARDWARE
+				let tempSensor = false;
+				let turbiditySensor = false;
+				let depthSensor = false;
 
-    return {
-        temp: tempSensor,
-        turbidity: turbiditySensor,
-        depth: depthSensor
-    };
-}
-    
-// ===============================
-// 📊 SCOUT RESULTS ENGINE
-// ===============================
-function applyScoutAndClose(score){
+				return {
+					temp: tempSensor,
+					turbidity: turbiditySensor,
+					depth: depthSensor
+				};
+			}
 
-    lastConditions.scout = scoutInputs;
-    lastConditions.scoutScore = score;
+			// ===============================
+			// 📊 SCOUT RESULTS ENGINE
+			// ===============================
+			function applyScoutAndClose(score) {
 
-    document.getElementById("scoutScreen").remove();
+				lastConditions.scout = scoutInputs;
+				lastConditions.scoutScore = score;
 
-    fetchWeatherSafe();
-}
+				document.getElementById("scoutScreen").remove();
 
-function saveScoutData(score){
+				fetchWeatherSafe();
+			}
 
-    let entry = {
-        time: Date.now(),
-        inputs: scoutInputs,
-        probe: probeData,
-        score: score,
-        conditions: lastConditions,
-        spi: lastSPI
-    };
+			function saveScoutData(score) {
 
-    scoutHistory.push(entry);
-    localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory)); }
+				let entry = {
+					time: Date.now(),
+					inputs: scoutInputs,
+					probe: probeData,
+					score: score,
+					conditions: lastConditions,
+					spi: lastSPI
+				};
 
-function saveScout() {
-    scoutInputs = { ...selected};
-    scoutStep = "connect";
-    showConnectionStatus();
-}
+				scoutHistory.push(entry);
+				localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory));
+			}
 
-function showConnectionStatus(){
+			function saveScout() {
+				scoutInputs = {
+					...selected
+				};
+				scoutStep = "connect";
+				showConnectionStatus();
+			}
 
-    const box = document.getElementById("scanArea");
+			function showConnectionStatus() {
 
-    // 🔌 SENSOR STATES
-    let probe = false;
-    let turbidity = false;
-    let depth = true; // ← for testing
+				const box = document.getElementById("scanArea");
 
-    // ✅ BUILD UI
-    box.innerHTML = `
+				// 🔌 SENSOR STATES
+				let probe = false;
+				let turbidity = false;
+				let depth = true; // ← for testing
+
+				// ✅ BUILD UI
+				box.innerHTML = `
 <b>Device Status</b><br><br>
 
 Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
@@ -917,23 +945,23 @@ Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
 
 <button onclick="startScan()" id="startScanBtn">Start Scan</button> `;
 
-    // ✅ ADD THIS HERE (VERY IMPORTANT POSITION)
-    const anyConnected = probe || turbidity || depth;
+				// ✅ ADD THIS HERE (VERY IMPORTANT POSITION)
+				const anyConnected = probe || turbidity || depth;
 
-    const btn = document.getElementById("startScanBtn");
+				const btn = document.getElementById("startScanBtn");
 
-    if(btn && !anyConnected){
-        btn.disabled = true;
-        btn.style.opacity = 0.5;
-    }
-}
+				if (btn && !anyConnected) {
+					btn.disabled = true;
+					btn.style.opacity = 0.5;
+				}
+			}
 
-//=====================================
-//STEP 8 — RESULTS UI
-//=====================================
-function showResults(score){
+			//=====================================
+			//STEP 8 — RESULTS UI
+			//=====================================
+			function showResults(score) {
 
-document.getElementById("scanArea").innerHTML = `
+				document.getElementById("scanArea").innerHTML = `
 <h3 style="color:#00ffa6;">Results</h3>
 
 Surface: ${probeData?.surface ? probeData.surface.toFixed(1) : "--"}°C
@@ -953,68 +981,71 @@ border-radius:10px;
 Apply & Close
 </button>
 `;
-}
+			}
 
-//=====================================
-//STEP 9 — CLOSE + APPLY
-//=====================================
-function closeScout(){
-document.getElementById("scoutScreen").remove();
-fetchWeatherSafe();
-}
+			//=====================================
+			//STEP 9 — CLOSE + APPLY
+			//=====================================
+			function closeScout() {
+				document.getElementById("scoutScreen").remove();
+				fetchWeatherSafe();
+			}
 
-// ===============================
-// 📊 UI UPDATE
-// ===============================
+			// ===============================
+			// 📊 UI UPDATE
+			// ===============================
 
-function updateSPI(v){
-    let arc = document.getElementById("spiArc");
-    if(!arc) return;
+			function updateSPI(v) {
+				let arc = document.getElementById("spiArc");
+				if (!arc) return;
 
-    let r = 110;
-    let C = 2 * Math.PI * r;
+				let r = 110;
+				let C = 2 * Math.PI * r;
 
-    arc.setAttribute("stroke-dasharray", C);
-    arc.setAttribute("stroke-dashoffset", C - (v/100) * C);
+				arc.setAttribute("stroke-dasharray", C);
+				arc.setAttribute("stroke-dashoffset", C - (v / 100) * C);
 
-    // 🎯 Smooth animation
-    arc.style.transition = "stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1)";
+				// 🎯 Smooth animation
+				arc.style.transition = "stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1)";
 
-    // 🎨 Dynamic color (premium feel)
-    let color = "#00ffa6";
-    if(v < 50) color = "#ff4d4d";
-    else if(v < 70) color = "#ffaa00";
+				// 🎨 Dynamic color (premium feel)
+				let color = "#00ffa6";
+				if (v < 50) color = "#ff4d4d";
+				else if (v < 70) color = "#ffaa00";
 
-    arc.style.stroke = color;
+				arc.style.stroke = color;
 
-    let val = document.getElementById("spiValue");
-    if(val) val.textContent = v + "%";
-}
+				let val = document.getElementById("spiValue");
+				if (val) val.textContent = v + "%";
+			}
 
-function updateAI(spi,p,w,c){
+			function updateAI(spi, p, w, c) {
 
-let trend = getPressureTrend(p);
+				let trend = getPressureTrend(p);
 
-let insight = "";
+				let insight = "";
 
-if(spi > 75){
-    insight = "Fish are actively feeding. Stay on your line and increase baiting slightly."; } else if(spi > 55){
-    insight = "Fish are present but cautious. Try changing hookbait or depth."; } else{
-    insight = "Low activity. Consider relocating or reducing feed."; }
+				if (spi > 75) {
+					insight = "Fish are actively feeding. Stay on your line and increase baiting slightly.";
+				} else if (spi > 55) {
+					insight = "Fish are present but cautious. Try changing hookbait or depth.";
+				} else {
+					insight = "Low activity. Consider relocating or reducing feed.";
+				}
 
-let aiEl = document.getElementById("aiAnalysis");
-    if(aiEl){
-        aiEl.innerHTML = `
+				let aiEl = document.getElementById("aiAnalysis");
+				if (aiEl) {
+					aiEl.innerHTML = `
         <b>${feeding(spi)}</b><br>
         Trend: ${trend}<br><br>
         ${insight}
 `;
-}
-}
+				}
+			}
 
-function openAIDetail(){
+			function openAIDetail() {
 
-    document.body.insertAdjacentHTML("beforeend", `
+				document.body.insertAdjacentHTML("beforeend", `
     <div id="aiDetail" style="
     position:fixed;
     top:0; left:0;
@@ -1058,35 +1089,35 @@ function openAIDetail(){
     </div>
     `);
 
-}
+			}
 
-function closeAIDetail(){
-    document.getElementById("aiDetail").remove();
-}
-    
-// ===============================
-// 🛠 GLOBAL SET FUNCTION
-// ===============================
-function set(id,val){
-let el = document.getElementById(id);
-if(el) el.innerHTML = val;
-}
+			function closeAIDetail() {
+				document.getElementById("aiDetail").remove();
+			}
 
-// ===============================
-// 📊 REPORT SYSTEM (SESSION BASED)
-// ===============================
+			// ===============================
+			// 🛠 GLOBAL SET FUNCTION
+			// ===============================
+			function set(id, val) {
+				let el = document.getElementById(id);
+				if (el) el.innerHTML = val;
+			}
 
-function openReport(){
+			// ===============================
+			// 📊 REPORT SYSTEM (SESSION BASED)
+			// ===============================
 
-if(!currentSession) return;
+			function openReport() {
 
-let events = currentSession.events;
+				if (!currentSession) return;
 
-// BUILD TIMELINE
-let timelineHTML = "";
+				let events = currentSession.events;
 
-// CREATE SCREEN
-document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
+				// BUILD TIMELINE
+				let timelineHTML = "";
+
+				// CREATE SCREEN
+				document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
 position:fixed;
 top:0;
 left:0;
@@ -1124,33 +1155,33 @@ font-weight:600;
 </div>
 `);
 
-// ✅ INSERT TIMELINE (FIXED)
-document.getElementById("timeline").innerHTML = timelineHTML;
+				// ✅ INSERT TIMELINE (FIXED)
+				document.getElementById("timeline").innerHTML = timelineHTML;
 
-// CONTINUE
-renderReport();
-}
+				// CONTINUE
+				renderReport();
+			}
 
-function closeReport(){
-    let el = document.getElementById("reportScreen");
-    if(el) el.remove();
-}
+			function closeReport() {
+				let el = document.getElementById("reportScreen");
+				if (el) el.remove();
+			}
 
-// ===============================
-// 📊 REPORT CONTENT
-// ===============================
+			// ===============================
+			// 📊 REPORT CONTENT
+			// ===============================
 
-function renderReport(){
+			function renderReport() {
 
-let events = currentSession.events;
+				let events = currentSession.events;
 
-let drops = events.filter(e=>e.type==="drop");
-let scouts = events.filter(e=>e.type==="scout");
-let catches = events.filter(e=>e.type==="catch");
+				let drops = events.filter(e => e.type === "drop");
+				let scouts = events.filter(e => e.type === "scout");
+				let catches = events.filter(e => e.type === "catch");
 
-let avgSPI = Math.round(drops.reduce((s,d)=>s+d.spi,0)/drops.length); 
+				let avgSPI = Math.round(drops.reduce((s, d) => s + d.spi, 0) / drops.length);
 
-document.getElementById("reportSummary").innerHTML += ` 
+				document.getElementById("reportSummary").innerHTML += ` 
 <br><br>
 ${generateInsights(drops, scouts, catches)}
 Dam: ${currentSession.dam}<br>
@@ -1161,296 +1192,299 @@ Fish: ${catches.length}<br>
 Avg SPI: ${avgSPI}%
 `;
 
-renderTimeline(events);
-renderMap(events);
-}
+				renderTimeline(events);
+				renderMap(events);
+			}
 
-setTimeout(() => {
-    if(window.reportMap && typeof window.reportMap.invalidateSize == "function") {
-    window.reportMap.invalidateSize();
-    window.reportMap.setView([-26,28],13);
-}
-},300);
+			setTimeout(() => {
+				if (window.reportMap && typeof window.reportMap.invalidateSize == "function") {
+					window.reportMap.invalidateSize();
+					window.reportMap.setView([-26, 28], 13);
+				}
+			}, 300);
 
-// ===============================
-// 🗺 MAP
-// ===============================
+			// ===============================
+			// 🗺 MAP
+			// ===============================
 
-let map;
+			let map;
 
-window.openMap = function () {
+			window.openMap = function() {
 
-    const mapScreen = document.getElementById("mapScreen");
-    mapScreen.style.display = "block";
+				const mapScreen = document.getElementById("mapScreen");
+				mapScreen.style.display = "block";
 
-    if (!window.mapInitialized) {
-        map = L.map('map').setView([-26, 28], 13);
+				if (!window.mapInitialized) {
+					map = L.map('map').setView([-26, 28], 13);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        window.mapInitialized = true;
-    }
+					window.mapInitialized = true;
+				}
 
-    setTimeout(() => {
-        if (map) map.invalidateSize();
-    }, 300);
-};
+				setTimeout(() => {
+					if (map) map.invalidateSize();
+				}, 300);
+			};
 
-function closeMap(){
-    document.getElementById("mapScreen").style.display = "none";
-}
+			function closeMap() {
+				document.getElementById("mapScreen").style.display = "none";
+			}
 
-function renderMap(events){
+			function renderMap(events) {
 
-// 🔥 remove old map
-if(window.reportMap){
-    window.reportMap.remove();
-}
+				// 🔥 remove old map
+				if (window.reportMap) {
+					window.reportMap.remove();
+				}
 
-window.reportMap = L.map('reportMap').setView([-26,28],13);
+				window.reportMap = L.map('reportMap').setView([-26, 28], 13);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(window.reportMap);
+				L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(window.reportMap);
 
-events.forEach(e => {
+				events.forEach(e => {
 
-let color = "blue";
+					let color = "blue";
 
-if(e.type==="scout") color="yellow";
-if(e.type==="drop") color="green";
-if(e.type==="catch") color="red";
+					if (e.type === "scout") color = "yellow";
+					if (e.type === "drop") color = "green";
+					if (e.type === "catch") color = "red";
 
-L.circleMarker([e.lat,e.lon],{
-radius:6,
-color:color,
-fillColor:color,
-fillOpacity:0.8
-}).addTo(window.reportMap);
+					L.circleMarker([e.lat, e.lon], {
+						radius: 6,
+						color: color,
+						fillColor: color,
+						fillOpacity: 0.8
+					}).addTo(window.reportMap);
 
-});
+				});
 
-// 🔥 force correct size
-setTimeout(()=>{
-    window.reportMap.invalidateSize();
-},200);
+				// 🔥 force correct size
+				setTimeout(() => {
+					window.reportMap.invalidateSize();
+				}, 200);
 
-}
+			}
 
-// ===============================
-// 📋 TIMELINE
-// ===============================
+			// ===============================
+			// 📋 TIMELINE
+			// ===============================
 
-function renderTimeline(events){
+			function renderTimeline(events) {
 
-    let html = "<h3>Timeline</h3>";
+				let html = "<h3>Timeline</h3>";
 
-    events.forEach(e => {
-        html += `
+				events.forEach(e => {
+					html += `
         <div style="margin-top:10px">
         ${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}%
         </div>`;
-    });
+				});
 
-    document.getElementById("timeline").innerHTML = html; 
-}
+				document.getElementById("timeline").innerHTML = html;
+			}
 
-function feeding(spi){
+			function feeding(spi) {
 
-if(spi >= 85) return "Aggressive feeding"; 
-if(spi >= 70) return "Active feeding"; 
-if(spi >= 55) return "Moderate feeding"; 
-if(spi >= 40) return "Slow feeding";
+				if (spi >= 85) return "Aggressive feeding";
+				if (spi >= 70) return "Active feeding";
+				if (spi >= 55) return "Moderate feeding";
+				if (spi >= 40) return "Slow feeding";
 
-return "Very low activity";
-}
+				return "Very low activity";
+			}
 
-function getSPIColor(v){
-    if(v >= 70) return "#00ffa6";   // green
-    if(v >= 50) return "#ffaa00";   // orange
-    return "#ff4d4d";               // red
-}
+			function getSPIColor(v) {
+				if (v >= 70) return "#00ffa6"; // green
+				if (v >= 50) return "#ffaa00"; // orange
+				return "#ff4d4d"; // red
+			}
 
-function getSeason(){
-let month = new Date().getMonth() + 1; 
-if(month >= 12 || month <= 2) return "Summer"; 
-if(month >= 3 && month <= 5) return "Autumn"; 
-if(month >= 6 && month <= 8) return "Winter"; 
-return "Spring"; 
-}
+			function getSeason() {
+				let month = new Date().getMonth() + 1;
+				if (month >= 12 || month <= 2) return "Summer";
+				if (month >= 3 && month <= 5) return "Autumn";
+				if (month >= 6 && month <= 8) return "Winter";
+				return "Spring";
+			}
 
-function getStatusMessage(spi, trend, w, t){
+			function getStatusMessage(spi, trend, w, t) {
 
-    if(spi > 80){
-        return "🔥 FEEDING NOW — Stay on spot";
-    }
+				if (spi > 80) {
+					return "🔥 FEEDING NOW — Stay on spot";
+				}
 
-    if(spi > 65){
-        if(trend === "Falling"){
-            return "🔥 Pressure drop — feeding building";
-        }
-        return "⚡ Active window — be ready";
-    }
+				if (spi > 65) {
+					if (trend === "Falling") {
+						return "🔥 Pressure drop — feeding building";
+					}
+					return "⚡ Active window — be ready";
+				}
 
-    if(spi > 50){
-        return "🟡 Fish present — trigger needed";
-    }
+				if (spi > 50) {
+					return "🟡 Fish present — trigger needed";
+				}
 
-    if(spi > 35){
-        return "⚠️ Slow — adjust depth or bait";
-    }
+				if (spi > 35) {
+					return "⚠️ Slow — adjust depth or bait";
+				}
 
-    return "❌ Dead water — move spots";
-}
+				return "❌ Dead water — move spots";
+			}
 
-function getMoonPhase(){
-return "Waning"; // placeholder (we upgrade later) 
-}
+			function getMoonPhase() {
+				return "Waning"; // placeholder (we upgrade later) 
+			}
 
-function getPressureTrend(p){
-    if(lastPressure === null){
-        lastPressure = p;
-        return "Stable";
-}
+			function getPressureTrend(p) {
+				if (lastPressure === null) {
+					lastPressure = p;
+					return "Stable";
+				}
 
-    let diff = p - lastPressure;
-    lastPressure = p;
+				let diff = p - lastPressure;
+				lastPressure = p;
 
-    if(diff > 1) return "Rising";
-    if(diff < -1) return "Falling";
-    return "Stable";
-}
+				if (diff > 1) return "Rising";
+				if (diff < -1) return "Falling";
+				return "Stable";
+			}
 
-function generateInsights(drops, scouts, catches){
+			function generateInsights(drops, scouts, catches) {
 
-let text = "";
+				let text = "";
 
-// Drop analysis
-if (drops.length > 0) {
+				// Drop analysis
+				if (drops.length > 0) {
 
-    let avgSPI = Math.round(drops.reduce((s, d) => s + d.spi, 0) / drops.length);
+					let avgSPI = Math.round(drops.reduce((s, d) => s + d.spi, 0) / drops.length);
 
-    if (avgSPI >= 80) {
-        text += "🔥 High confidence feeding zone detected.<br>";
-    } else if (avgSPI >= 60) {
-        text += "⚡ Moderate feeding activity observed.<br>";
-    } else {
-        text += "⚠️ Low feeding activity.<br>";
-    }
+					if (avgSPI >= 80) {
+						text += "🔥 High confidence feeding zone detected.<br>";
+					} else if (avgSPI >= 60) {
+						text += "⚡ Moderate feeding activity observed.<br>";
+					} else {
+						text += "⚠️ Low feeding activity.<br>";
+					}
 
-    // Activity insight
-    if (drops.length > scouts.length) {
-        text += "🎯 Strong commitment to productive spots.<br>";
-    } else {
-        text += "🧭 More scouting recommended before drops.<br>";
-    }
+					// Activity insight
+					if (drops.length > scouts.length) {
+						text += "🎯 Strong commitment to productive spots.<br>";
+					} else {
+						text += "🧭 More scouting recommended before drops.<br>";
+					}
 
-    // Catch logic
-    if (catches.length > 0) {
-        text += "🎣 Successful session – pattern confirmation likely.<br>";
-    } else {
-        text += "📉 No catches recorded – refine timing or location.<br>";
-    }
+					// Catch logic
+					if (catches.length > 0) {
+						text += "🎣 Successful session – pattern confirmation likely.<br>";
+					} else {
+						text += "📉 No catches recorded – refine timing or location.<br>";
+					}
 
-}
+				}
 
-return text;
-}
+				return text;
+			}
 
-function updateBackground(spi){
-  document.body.classList.remove("low","medium","high");
+			function updateBackground(spi) {
+				document.body.classList.remove("low", "medium", "high");
 
-  if(spi > 80){
-    document.body.classList.add("high");
-  } else if(spi > 60){
-    document.body.classList.add("medium");
-  } else {
-    document.body.classList.add("low");
-  }
-}
+				if (spi > 80) {
+					document.body.classList.add("high");
+				} else if (spi > 60) {
+					document.body.classList.add("medium");
+				} else {
+					document.body.classList.add("low");
+				}
+			}
 
-setTimeout(() => {
-if (window.lucide) {
-    lucide.createIcons();
-}
-}, 100);
+			setTimeout(() => {
+				if (window.lucide) {
+					lucide.createIcons();
+				}
+			}, 100);
 
-window.confirmDrop = function () {
+			window.confirmDrop = function() {
 
-    ensureSession();
+				ensureSession();
 
-    if (!map) {
-        alert("Open map first");
-        return;
-    }
+				if (!map) {
+					alert("Open map first");
+					return;
+				}
 
-    navigator.geolocation.getCurrentPosition(
-        pos => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
+				navigator.geolocation.getCurrentPosition(
+					pos => {
+						const lat = pos.coords.latitude;
+						const lon = pos.coords.longitude;
 
-            L.marker([lat, lon]).addTo(map);
-            logEvent("drop", { lat, lon });
+						L.marker([lat, lon]).addTo(map);
+						logEvent("drop", {
+							lat,
+							lon
+						});
 
-            console.log("Dropped at:", lat, lon);
-        },
-        err => {
-            alert("GPS failed: " + err.message);
-            console.log("GPS error:", err);
-        }
-    );
-};
+						console.log("Dropped at:", lat, lon);
+					},
+					err => {
+						alert("GPS failed: " + err.message);
+						console.log("GPS error:", err);
+					}
+				);
+			};
 
-//====================
-// GPS (REAL LOCATION)
-//====================
+			//====================
+			// GPS (REAL LOCATION)
+			//====================
 
-function initGPS(){
-    if(!navigator.geolocation) return;
+			function initGPS() {
+				if (!navigator.geolocation) return;
 
-    navigator.geolocation.watchPosition(pos => {
-        userLocation = {
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude
-        };
+				navigator.geolocation.watchPosition(pos => {
+					userLocation = {
+						lat: pos.coords.latitude,
+						lon: pos.coords.longitude
+					};
 
-        if(map){
-            map.setView([userLocation.lat, userLocation.lon], 15);
-        }
+					if (map) {
+						map.setView([userLocation.lat, userLocation.lon], 15);
+					}
 
-    }, err => {
-        console.log("GPS error", err);
-    }, {
-        enableHighAccuracy: true
-    });
-}
+				}, err => {
+					console.log("GPS error", err);
+				}, {
+					enableHighAccuracy: true
+				});
+			}
 
-//====================
-// COMPASS
-//====================
+			//====================
+			// COMPASS
+			//====================
 
 
-function initCompass(){
+			function initCompass() {
 
-    window.addEventListener("deviceorientationabsolute", (e) => {
+				window.addEventListener("deviceorientationabsolute", (e) => {
 
-        if(e.alpha !== null){
-            compassHeading = Math.round(e.alpha);
+					if (e.alpha !== null) {
+						compassHeading = Math.round(e.alpha);
 
-            let el = document.getElementById("compassValue");
-            if(el){
-                el.innerText = compassHeading + "°";
-            }
-        }
+						let el = document.getElementById("compassValue");
+						if (el) {
+							el.innerText = compassHeading + "°";
+						}
+					}
 
-    }, true);
-}
+				}, true);
+			}
 
-//====================
-// PLAN SYSTEM
-//====================
+			//====================
+			// PLAN SYSTEM
+			//====================
 
-function openPlan(){
+			function openPlan() {
 
-document.body.insertAdjacentHTML("beforeend", ` <div id="planScreen" style='
+				document.body.insertAdjacentHTML("beforeend", ` <div id="planScreen" style='
 position:fixed;
 top:0; left:0;
 width:100%; height:100%;
@@ -1486,312 +1520,313 @@ font-weight:bold;
 
 </div>
 `);
-}
+			}
 
-function togglePlan(type, el){
+			function togglePlan(type, el) {
 
-    planSelections[type] = !planSelections[type];
+				planSelections[type] = !planSelections[type];
 
-    if(planSelections[type]){
-        el.classList.add("active");
-    } else {
-        el.classList.remove("active");
-    }
-}
+				if (planSelections[type]) {
+					el.classList.add("active");
+				} else {
+					el.classList.remove("active");
+				}
+			}
 
-function calculatePlanScore(){
+			function calculatePlanScore() {
 
-    let score = 50;
+				let score = 50;
 
-    if(planSelections.windBank) score += 10;
-    if(planSelections.activity) score += 15;
-    if(planSelections.noActivity) score -= 10;
+				if (planSelections.windBank) score += 10;
+				if (planSelections.activity) score += 15;
+				if (planSelections.noActivity) score -= 10;
 
-    if(planSelections.boilie) score += 8;
-    if(planSelections.popup) score += 5;
+				if (planSelections.boilie) score += 8;
+				if (planSelections.popup) score += 5;
 
-    if(planSelections.stay) score += 5;
-    if(planSelections.move) score -= 5;
+				if (planSelections.stay) score += 5;
+				if (planSelections.move) score -= 5;
 
-    return Math.max(0, Math.min(100, score));
-}
+				return Math.max(0, Math.min(100, score));
+			}
 
 
-function applyPlan(){
+			function applyPlan() {
 
-    planScore = calculatePlanScore();
+				planScore = calculatePlanScore();
 
-    lastConditions.plan = planSelections;
-    lastConditions.planScore = planScore;
+				lastConditions.plan = planSelections;
+				lastConditions.planScore = planScore;
 
-    let currentConf = parseInt(document.getElementById("confScore").innerText) || 50;
+				let currentConf = parseInt(document.getElementById("confScore").innerText) || 50;
 
-    let newConf = Math.round((currentConf + planScore) / 2);
+				let newConf = Math.round((currentConf + planScore) / 2);
 
-    set("confScore", newConf + "%");
+				set("confScore", newConf + "%");
 
-    updateTactical(lastSPI, parseInt(document.getElementById("envScore").innerText), newConf, lastConditions.windSpeed, lastConditions.airTemp);
+				updateTactical(lastSPI, parseInt(document.getElementById("envScore").innerText), newConf, lastConditions.windSpeed, lastConditions.airTemp);
 
-    document.getElementById("planScreen").remove();
-}
+				document.getElementById("planScreen").remove();
+			}
 
-//====================
-// BACKGROUND CALC
-//====================
+			//====================
+			// BACKGROUND CALC
+			//====================
 
-function resize(){
-  if(!canvas) return;
+			function resize() {
+				if (!canvas) return;
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-    
-let bubbles = [];
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+			}
 
-function spawnBubble(){
+			let bubbles = [];
 
-    let hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
+			function spawnBubble() {
 
-    let angle = Math.random() * Math.PI * 2;
-    let radius = Math.random() * hotspot.radius;
+				let hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
 
-    let x = hotspot.x + Math.cos(angle) * radius;
-    let y = hotspot.y;
+				let angle = Math.random() * Math.PI * 2;
+				let radius = Math.random() * hotspot.radius;
 
-    let base = (lastSPI || 50) / 100;
+				let x = hotspot.x + Math.cos(angle) * radius;
+				let y = hotspot.y;
 
-    bubbles.push({
-        x: x,
-        y: y,
-        size: Math.random() * (1 + base * 4) + 1,
-        speed: Math.random() * 1.2 + 0.5,
-        drift: Math.random() - 0.5,
-        alpha: 0.15 + Math.random() * 0.35
-    });
-}
+				let base = (lastSPI || 50) / 100;
 
-let ripples = [];
-function ripple(){
+				bubbles.push({
+					x: x,
+					y: y,
+					size: Math.random() * (1 + base * 4) + 1,
+					speed: Math.random() * 1.2 + 0.5,
+					drift: Math.random() - 0.5,
+					alpha: 0.15 + Math.random() * 0.35
+				});
+			}
 
-    if(!canvas || !ctx) return;
+			let ripples = [];
 
-    ripples.push({
-        r:0,
-        alpha:0.25,
-        x:canvas.width/2,
-        y:canvas.height*0.7
-    });
-}
+			function ripple() {
 
-let angle = 0;
+				if (!canvas || !ctx) return;
 
-function drawThermocline(){
-  let y = canvas.height * 0.45;
+				ripples.push({
+					r: 0,
+					alpha: 0.25,
+					x: canvas.width / 2,
+					y: canvas.height * 0.7
+				});
+			}
 
-  let gradient = ctx.createLinearGradient(0, y-20, 0, y+20);
-  gradient.addColorStop(0, "rgba(255,200,0,0)");
-  gradient.addColorStop(0.5, "rgba(255,200,0,0.25)");
-  gradient.addColorStop(1, "rgba(255,200,0,0)");
+			let angle = 0;
 
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, y-20, canvas.width, 40);
-}
+			function drawThermocline() {
+				let y = canvas.height * 0.45;
 
-function animate(){
+				let gradient = ctx.createLinearGradient(0, y - 20, 0, y + 20);
+				gradient.addColorStop(0, "rgba(255,200,0,0)");
+				gradient.addColorStop(0.5, "rgba(255,200,0,0.25)");
+				gradient.addColorStop(1, "rgba(255,200,0,0)");
 
-    if(!ctx || !canvas) return;
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0, y - 20, canvas.width, 40);
+			}
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+			function animate() {
 
-    drawThermocline();
+				if (!ctx || !canvas) return;
 
-    // FORCE bubbles
-let intensity = (lastSPI || 50) / 100;
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-// Normal spawn
-if(Math.random() < intensity / 2){
-    spawnBubble();
-}
+				drawThermocline();
 
-// 🔥 Burst trigger (only when SPI high) 
-    if(intensity > 0.7 && Math.random() < 0.05){
-    for(let i = 0; i < 10; i++){
-        spawnBubble();
-    }
-}
+				// FORCE bubbles
+				let intensity = (lastSPI || 50) / 100;
 
+				// Normal spawn
+				if (Math.random() < intensity / 2) {
+					spawnBubble();
+				}
 
-    let currentSPI = lastSPI || 50;
+				// 🔥 Burst trigger (only when SPI high) 
+				if (intensity > 0.7 && Math.random() < 0.05) {
+					for (let i = 0; i < 10; i++) {
+						spawnBubble();
+					}
+				}
 
-    bubbles.forEach((particle, i) => {
 
-        particle.y -= particle.speed;
-        particle.x += particle.drift;
+				let currentSPI = lastSPI || 50;
 
-        let r = Math.max(0, 255 - (currentSPI * 2));
-        let g = Math.min(255, currentSPI * 2);
-        let blue = 150;
+				bubbles.forEach((particle, i) => {
 
-        ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
+					particle.y -= particle.speed;
+					particle.x += particle.drift;
 
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fill();
+					let r = Math.max(0, 255 - (currentSPI * 2));
+					let g = Math.min(255, currentSPI * 2);
+					let blue = 150;
 
-        if(particle.y < 0) bubbles.splice(i, 1);
-    });
+					ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
 
-    // ✅ MOVE RIPPLE CODE HERE
-    ripples.forEach((r,i)=>{
-        r.r += 2;
-        r.alpha *= 0.96;
+					ctx.beginPath();
+					ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+					ctx.fill();
 
-        ctx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
-        ctx.stroke();
+					if (particle.y < 0) bubbles.splice(i, 1);
+				});
 
-        if(r.alpha < 0.01) ripples.splice(i,1);
-    });
+				// ✅ MOVE RIPPLE CODE HERE
+				ripples.forEach((r, i) => {
+					r.r += 2;
+					r.alpha *= 0.96;
 
-    requestAnimationFrame(animate);
-}
+					ctx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+					ctx.lineWidth = 1.5;
+					ctx.beginPath();
+					ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+					ctx.stroke();
 
- function updateStrategy(spi){
-    let text = "";
-    let detail = "";
+					if (r.alpha < 0.01) ripples.splice(i, 1);
+				});
 
-    if(lastSPI > 80){
-        text = "🔥 Aggressive Feeding";
-        detail = "Stay on spot. Increase baiting.";
-    } else if(lastSPI >= 60){
-        text = "⚡ Active Window";
-        detail = "Good conditions. Stay alert.";
-    } else if(lastSPI >= 40){
-        text = "⚠ Slow Activity";
-        detail = "Reduce bait. Try different depth.";
-    } else {
-        text = "❌ Low Activity";
-        detail = "Move or change location.";
-    }
+				requestAnimationFrame(animate);
+			}
 
-set("feed", text + " • " + detail);
-}
+			function updateStrategy(spi) {
+				let text = "";
+				let detail = "";
 
-function drawWaterProfile(surface, bottom){
+				if (lastSPI > 80) {
+					text = "🔥 Aggressive Feeding";
+					detail = "Stay on spot. Increase baiting.";
+				} else if (lastSPI >= 60) {
+					text = "⚡ Active Window";
+					detail = "Good conditions. Stay alert.";
+				} else if (lastSPI >= 40) {
+					text = "⚠ Slow Activity";
+					detail = "Reduce bait. Try different depth.";
+				} else {
+					text = "❌ Low Activity";
+					detail = "Move or change location.";
+				}
 
-    if(surface === undefined || bottom === undefined) return;
+				set("feed", text + " • " + detail);
+			}
 
-    const canvas = document.getElementById("waterGraph");
-    if(!canvas) return;
+			function drawWaterProfile(surface, bottom) {
 
-    const ctx = canvas.getContext("2d");
+				if (surface === undefined || bottom === undefined) return;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+				const canvas = document.getElementById("waterGraph");
+				if (!canvas) return;
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+				const ctx = canvas.getContext("2d");
 
-    // 🌊 Background
-    let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, "rgba(0,255,166,0.08)");
-    gradient.addColorStop(1, "rgba(0,0,0,0.8)");
+				canvas.width = canvas.offsetWidth;
+				canvas.height = canvas.offsetHeight;
 
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 📊 Curve
-    let diff = surface - bottom;
-    let midOffset = diff * 10;
+				// 🌊 Background
+				let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+				gradient.addColorStop(0, "rgba(0,255,166,0.08)");
+				gradient.addColorStop(1, "rgba(0,0,0,0.8)");
 
-    let startY = 20;
-    let endY = canvas.height - 20;
-    let midY = canvas.height / 2 - midOffset;
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.beginPath();
-    ctx.moveTo(10, startY);
+				// 📊 Curve
+				let diff = surface - bottom;
+				let midOffset = diff * 10;
 
-    ctx.quadraticCurveTo(
-        canvas.width / 2,
-        midY,
-        canvas.width - 10,
-        endY
-    );
+				let startY = 20;
+				let endY = canvas.height - 20;
+				let midY = canvas.height / 2 - midOffset;
 
-    ctx.strokeStyle = "#00ffa6";
-    ctx.lineWidth = 3;
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#00ffa6";
-    ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(10, startY);
 
-    ctx.shadowBlur = 0;
+				ctx.quadraticCurveTo(
+					canvas.width / 2,
+					midY,
+					canvas.width - 10,
+					endY
+				);
 
-    // 🌡 Thermocline
-    let thermoY = canvas.height / 2 - (diff * 5);
+				ctx.strokeStyle = "#00ffa6";
+				ctx.lineWidth = 3;
+				ctx.shadowBlur = 15;
+				ctx.shadowColor = "#00ffa6";
+				ctx.stroke();
 
-    ctx.strokeStyle = "rgba(255,200,0,0.4)";
-    ctx.setLineDash([6,6]);
+				ctx.shadowBlur = 0;
 
-    ctx.beginPath();
-    ctx.moveTo(0, thermoY);
-    ctx.lineTo(canvas.width, thermoY);
-    ctx.stroke();
+				// 🌡 Thermocline
+				let thermoY = canvas.height / 2 - (diff * 5);
 
-    ctx.setLineDash([]);
+				ctx.strokeStyle = "rgba(255,200,0,0.4)";
+				ctx.setLineDash([6, 6]);
 
-    // Labels
-    ctx.fillStyle = "#aaa";
-    ctx.font = "12px Arial";
+				ctx.beginPath();
+				ctx.moveTo(0, thermoY);
+				ctx.lineTo(canvas.width, thermoY);
+				ctx.stroke();
 
-    ctx.fillText("Surface", 10, 15);
-    ctx.fillText("Bottom", 10, canvas.height - 5);
-}
+				ctx.setLineDash([]);
 
-    function fetchWeatherSafe() {
+				// Labels
+				ctx.fillStyle = "#aaa";
+				ctx.font = "12px Arial";
 
-    const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
+				ctx.fillText("Surface", 10, 15);
+				ctx.fillText("Bottom", 10, canvas.height - 5);
+			}
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=-30.140153&lon=27.004008&appid=${API_KEY}&units=metric`;
+			function fetchWeatherSafe() {
 
-    fetch(url)
-    .then(res => {
-        if (!res.ok) throw new Error("Bad response");
-        return res.json();
-    })
-    .then(data => {
-        let pressure = data.main.pressure;
-        let wind = data.wind?.speed || 0;
-        let cloud = data.clouds?.all || 0;
+				const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
 
-        set("envScore", Math.round((pressure / 1050) * 100));
-        set("pressure", pressure + " hPa");
-        set("wind", wind.toFixed(1) + " km/h");
-        set("cloud", cloud + "%");
+				const url = `https://api.openweathermap.org/data/2.5/weather?lat=-30.140153&lon=27.004008&appid=${API_KEY}&units=metric`;
 
-        const bar = document.getElementById("tacticalBar");
-        if (bar) {
-            bar.innerText = message;
-        }
-        
-let message = "";
+				fetch(url)
+					.then(res => {
+						if (!res.ok) throw new Error("Bad response");
+						return res.json();
+					})
+					.then(data => {
+						let pressure = data.main.pressure;
+						let wind = data.wind?.speed || 0;
+						let cloud = data.clouds?.all || 0;
 
-if (pressure > 1015 && wind < 5) {
-    message = "Stable pressure • Calm wind • High feeding activity";
-} else if (pressure < 1005) {
-    message = "Low pressure • Fish less active • Slow approach"; 
-} else {
-    message = "Changing conditions • Moderate activity • Stay adaptive"; 
-}
+						set("envScore", Math.round((pressure / 1050) * 100));
+						set("pressure", pressure + " hPa");
+						set("wind", wind.toFixed(1) + " km/h");
+						set("cloud", cloud + "%");
 
-bar.innerText = message;
+						const bar = document.getElementById("tacticalBar");
+						if (bar) {
+							bar.innerText = message;
+						}
 
-        renderDashboard(data);
-    })
-    .catch(err => {
-        console.log("FETCH ERROR:", err);
-        simulateWeather();
-    })
-    .finally(() => {
-        //if (icon) icon.classList.remove("refresh-spin");
-});
+						let message = "";
+
+						if (pressure > 1015 && wind < 5) {
+							message = "Stable pressure • Calm wind • High feeding activity";
+						} else if (pressure < 1005) {
+							message = "Low pressure • Fish less active • Slow approach";
+						} else {
+							message = "Changing conditions • Moderate activity • Stay adaptive";
+						}
+
+						bar.innerText = message;
+
+						renderDashboard(data);
+					})
+					.catch(err => {
+						console.log("FETCH ERROR:", err);
+						simulateWeather();
+					})
+					.finally(() => {
+						//if (icon) icon.classList.remove("refresh-spin");
+					});
