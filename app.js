@@ -18,6 +18,7 @@ let userLocation = null;
 let compassHeading = null;
 let bubbleIntensity = 0.7;
 let hotspots = [];
+let SPI = 50;
 
 // ===============================
 // START SYSTEM
@@ -362,6 +363,10 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 				lastSPI = spi;
 
+				SPI = spi;
+
+				bubbleIntensity = SPI /100;
+
 				let trend = getPressureTrend(p);
 
 				if (trend === "Falling") spi += 10;
@@ -372,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				spi = Math.max(0, Math.min(100, spi));
 
-				bubbleIntensity = (lastSPI || 50) / 100;
+				bubbleIntensity = spi / 100;
 
 				console.log("SPI VALUE", spi);
 				updateSPI(spi);
@@ -404,17 +409,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				envScore += Math.max(0, Math.min(20, oxygenFactor + 10));
 
 				envScore = Math.round(Math.min(100, envScore));
-
-				function calculateSPI(p, w, c, windDir, t) {
-					let score = 50;
-
-					if (p > 1015) score += 10;
-					if (w > 5) score += 10;
-					if (c > 30) score += 10;
-					if (t >= 18 && t <= 24) score += 20;
-
-					return Math.min(100, score);
-				}
 
 				// 🎯 CONFIDENCE
 				let stability = 0;
@@ -798,6 +792,38 @@ Save & Continue
 				}
 			}
 
+
+			function calculateSPI(p, w, c, windDir, t) {
+
+    let score = 50;
+
+    // 🎯 PRESSURE
+    if (p > 1018) score += 15;
+    else if (p > 1010) score += 10;
+    else if (p < 1005) score -= 10;
+
+    // 🌬 WIND SPEED
+    if (w >= 5 && w <= 15) score += 15;
+    else if (w < 2) score -= 10;
+    else if (w > 20) score -= 5;
+
+    // ☁ CLOUD COVER
+    if (c >= 20 && c <= 60) score += 10;
+    else if (c < 10) score -= 5;
+    else if (c > 80) score -= 5;
+
+    // 🌡 TEMPERATURE
+    if (t >= 18 && t <= 24) score += 20;
+    else if (t >= 15 && t <= 28) score += 10;
+    else score -= 10;
+
+    // 🧠 WIND DIRECTION BONUS (optional but powerful)
+    if (windDir >= 180 && windDir <= 270) {
+        score += 5; // warm wind (example logic)
+    }
+
+    return Math.max(0, Math.min(100, Math.round(score))); }
+
 			// ===============================
 			// 🔍 SCOUT SCAN FLOW (FINAL CLEAN)
 			// ===============================
@@ -999,6 +1025,7 @@ Apply & Close
 			// ===============================
 
 			function updateSPI(v) {
+				SPI = v;
 				let arc = document.getElementById("spiArc");
 				if (!arc) return;
 
@@ -1605,10 +1632,9 @@ font-weight:bold;
 				bubbles.push({
 					x: x,
 					y: y,
-					size: Math.random() * (1 + base * 4) + 1,
+					size: Math.random() * 4 + 1,
 					speed: Math.random() * 1.2 + 0.5,
-					drift: Math.random() - 0.5,
-					alpha: 0.15 + Math.random() * 0.35
+					alpha: Math.random() * Math.PI * 2
 				});
 			}
 
@@ -1664,12 +1690,12 @@ font-weight:bold;
 				}
 
 
-				let currentSPI = lastSPI || 50;
+				let currentSPI = SPI || 50;
 
 				bubbles.forEach((particle, i) => {
 
 					particle.y -= particle.speed;
-					particle.x += particle.drift;
+					particle.x += Math.sin(particle.y * 0.05 + particle.offset) * 0.6;
 
 					let r = Math.max(0, 255 - (currentSPI * 2));
 					let g = Math.min(255, currentSPI * 2);
@@ -1719,7 +1745,8 @@ font-weight:bold;
 					detail = "Move or change location.";
 				}
 
-				set("feed", text + " • " + detail);
+				set("strategyText", text);
+				set("strategyNote", detail);
 			}
 
 			function drawWaterProfile(surface, bottom) {
