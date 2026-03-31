@@ -1831,6 +1831,5 @@ font-weight:bold;
             .finally(() => {
                 // optional
             });
-    }
 
 });
