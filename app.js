@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			}, 1000);
 
+
 			let dots = 0;
 			setInterval(() => {
 				const el = document.getElementById("dots");
@@ -1831,3 +1832,4 @@ font-weight:bold;
 						//if (icon) icon.classList.remove("refresh-spin");
 					});
 			});
+}
