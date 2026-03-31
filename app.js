@@ -17,7 +17,7 @@ let planScore = 0;
 let userLocation = null;
 let compassHeading = null;
 let bubbleIntensity = 0.7;
-let hotspots = [];
+let hotspots = {};
 
 // ===============================
 // START SYSTEM
