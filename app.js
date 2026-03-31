@@ -69,7 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
 					splash.remove();
 
 					// 🚀 START APP HERE
-					document.getElementById("aifCanvas").style.opacity = "1";
+					const mainCanvas = document.getElementById("waterGraph");
+					if (mainCanvas) {
+						mainCanvas.style.opacity = "1";
+					}
 
 					resize();
 					animate();
