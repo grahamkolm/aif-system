@@ -85,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
 					setTimeout(fetchWeatherSafe, 2000);
 
 				}, 3000);
+					
+				}, 3000);
 
 			let dots = 0;
 			setInterval(() => {
@@ -1831,5 +1833,5 @@ font-weight:bold;
             .finally(() => {
                 // optional
             });
-
+			}
 });
