@@ -1634,7 +1634,7 @@ font-weight:bold;
 					y: y,
 					size: Math.random() * 4 + 1,
 					speed: Math.random() * 1.2 + 0.5,
-					alpha: Math.random() * Math.PI * 2
+					offset: Math.random() * Math.PI * 2
 				});
 			}
 
@@ -1675,7 +1675,7 @@ font-weight:bold;
 				drawThermocline();
 
 				// FORCE bubbles
-				let intensity = (lastSPI || 50) / 100;
+				let intensity = bubbleIntensity;
 
 				// Normal spawn
 				if (Math.random() < intensity / 2) {
