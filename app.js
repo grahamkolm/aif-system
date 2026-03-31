@@ -28,7 +28,7 @@ let ctx;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-			canvas = document.getElementById("waterGraph");
+			canvas = document.getElementById("aifCanvas");
 			ctx = canvas?.getContext("2d");
 
 			const splashCanvas = document.getElementById("splashCanvas");
