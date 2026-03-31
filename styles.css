@@ -100,18 +100,18 @@ body {
     z-index: 2;
 }
 
-.splash-hash {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 80px;
-    font-weight: bold;
-    color: #00ffa6;
-    opacity: 0.9;
-    letter-spacing: 4px;
-    z-index: 4;   /* 🔥 ADD THIS */
-}
+// .splash-hash {
+//    position: absolute;
+//    top: 40%;
+//    left: 50%;
+//    transform: translate(-50%, -50%);
+//    font-size: 80px;
+//    font-weight: bold;
+//    color: #00ffa6;
+//    opacity: 0.9;
+//    letter-spacing: 4px;
+//    z-index: 4;   /* 🔥 ADD THIS */
+// }
 
 #splash .center {
     position: relative;
