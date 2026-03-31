@@ -1586,7 +1586,12 @@ font-weight:bold;
 			let bubbles = [];
 
 			function spawnBubble() {
+				if(!hotspots || hotspots.length === 0) return;
 
+				const b = hotspots[Math.floor(Math.random() * hotspots.length)];
+				if (!b) return;
+
+				let radius = b.radius || 5;
 				let hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
 
 				let angle = Math.random() * Math.PI * 2;
@@ -1620,6 +1625,7 @@ font-weight:bold;
 					y: canvas.height * 0.7
 				});
 			}
+}
 
 			let angle = 0;
 
