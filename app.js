@@ -1595,7 +1595,7 @@ font-weight:bold;
 				let hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
 
 				let angle = Math.random() * Math.PI * 2;
-				let radius = Math.random() * hotspot.radius;
+				radius = Math.random() * hotspot.radius;
 
 				let x = hotspot.x + Math.cos(angle) * radius;
 				let y = hotspot.y;
