@@ -1625,7 +1625,6 @@ font-weight:bold;
 					y: canvas.height * 0.7
 				});
 			}
-}
 
 			let angle = 0;
 
