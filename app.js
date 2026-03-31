@@ -25,7 +25,7 @@ let hotspots = [];
 
 let canvas;
 let ctx;
-throw new Error("TEST BREAK");
+
 document.addEventListener("DOMContentLoaded", () => {
 
     canvas = document.getElementById("aifCanvas");
@@ -1777,7 +1777,7 @@ function drawWaterProfile(surface, bottom){
 let message = "";
 
 if (pressure > 1015 && wind < 5) {
-    message = "Stable pressure • Calm wind • High feeding activity"; 
+    message = "Stable pressure • Calm wind • High feeding activity";
 } else if (pressure < 1005) {
     message = "Low pressure • Fish less active • Slow approach"; 
 } else {
