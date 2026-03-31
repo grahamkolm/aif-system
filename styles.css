@@ -29,7 +29,7 @@ body {
     display: none;
 }
 
-.mapScreen.active {
+#mapScreen.active {
     display: block;
 }
 
@@ -71,21 +71,6 @@ body {
   overflow: hidden;
 }
 
-#splash .overlay {
- position: absolute;
- inset: 0;
- background: rgba(0,0,0,0.85);
- backdrop-filter: blur(2px);
-}
-
-#splash .center {
- position: relative;
- text-align: center;
- color: #00ffb3;
- z-index: 2;
- animation: fadeIn 1.5s ease;
-}
-
 #splash h1 {
  font-size: 48px;
  margin: 0;
@@ -102,15 +87,43 @@ body {
  opacity: 0.8;
 }
 
-#splashCanvas {
- position: absolute;
- inset: 0;
- z-index: 1;
-}
-
 #aifCanvas {
     opacity: 0;
     transition: opacity 1s;
+}
+
+#splash .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(2px);
+    z-index: 1;
+}
+
+#splashCanvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+.splash-hash {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    font-weight: bold;
+    color: #00ffa6;
+    opacity: 0.9;
+    letter-spacing: 4px;
+    z-index: 4;   /* 🔥 ADD THIS */
+}
+
+#splash .center {
+    position: relative;
+    text-align: center;
+    color: #00ffb3;
+    z-index: 5;   /* 🔥 higher than hash */
 }
 
 /* ========================= */
@@ -517,8 +530,14 @@ transform:scale(1.05);
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  
   z-index: 0;
   pointer-events: none;
+
+  opacity: 0;
+  transition: opacity 1s ease;
 }
 
 body, .card, .water-card {
@@ -534,15 +553,6 @@ body, .card, .water-card {
 
 #bg,
 #overlay,
-#aifCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-}
 
 /* ========================= */
 /* ===== AI PANEL ===== */
