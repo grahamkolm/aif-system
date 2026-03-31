@@ -17,7 +17,7 @@ let planScore = 0;
 let userLocation = null;
 let compassHeading = null;
 let bubbleIntensity = 0.7;
-let hotspots = {};
+let hotspots = [];
 
 // ===============================
 // START SYSTEM
@@ -28,7 +28,7 @@ let ctx;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-			canvas = document.getElementById("aifCanvas");
+			canvas = document.getElementById("waterGraph");
 			ctx = canvas?.getContext("2d");
 
 			const splashCanvas = document.getElementById("splashCanvas");
