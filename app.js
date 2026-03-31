@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				}, 3000);
 					
-				}, 3000);
+			}, 3000);
 
 			let dots = 0;
 			setInterval(() => {
@@ -1833,5 +1833,6 @@ font-weight:bold;
             .finally(() => {
                 // optional
             });
-			}
+	}	
+
 });
