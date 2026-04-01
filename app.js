@@ -602,6 +602,59 @@ SPI = spi;
 	set("cloud", cloud + "%"); 
 	set("oxygen", oxygen.toFixed(1) + " mg/L");
 
+function updateSPI(spi) {
+
+    // Clamp safety
+    spi = Math.max(0, Math.min(100, spi));
+
+    // =========================
+    // 🎯 TEXT UPDATE
+    // =========================
+    set("spiValue", spi + "%");
+    colorMini("spiValue", spi);
+
+    // =========================
+    // 🎨 COLOR LOGIC
+    // =========================
+    let color;
+
+    if (spi >= 70) color = "#00ffa6";       // green
+    else if (spi >= 50) color = "#ffaa00";  // orange
+    else color = "#ff4d4d";                 // red
+
+    // =========================
+    // 🟢 CIRCLE ARC CONTROL
+    // =========================
+    const arc = document.getElementById("spiArc");
+
+    if (arc) {
+        const radius = 90; // must match SVG
+        const circumference = 2 * Math.PI * radius;
+
+        const offset = circumference - (spi / 100) * circumference;
+
+        arc.style.strokeDasharray = circumference;
+        arc.style.strokeDashoffset = offset;
+
+        arc.style.stroke = color;
+        arc.style.transition = "stroke-dashoffset 0.6s ease, stroke 0.6s ease";
+    }
+
+    // =========================
+    // ✨ GLOW EFFECT
+    // =========================
+    const glow = document.getElementById("spiGlow");
+    if (glow) {
+        glow.style.boxShadow = `0 0 20px ${color}`;
+    }
+
+    // =========================
+    // 🌊 BUBBLE INTENSITY LINK
+    // =========================
+    bubbleIntensity = spi / 100;
+}
+
+	
     // ---------------------------------
     // 🫧 VISUAL RESPONSE
     // ---------------------------------
