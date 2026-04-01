@@ -49,33 +49,55 @@
 <!-- SPI -->
     
 <div class="instrument">
-  <div class="spi-container">
+<div id="spiContainer" style="
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: auto;
+">
 
-<svg width="220" height="220">
-    <circle
-        cx="110"
-        cy="110"
-        r="90"
-        stroke="#1a1f2b"
-        stroke-width="12"
-        fill="none"
-    />
+    <!-- 🔵 SVG CIRCLE -->
+    <svg width="220" height="220">
 
-    <circle
-        id="spiArc"
-        cx="110"
-        cy="110"
-        r="90"
-        stroke="#00ffa6"
-        stroke-width="12"
-        fill="none"
-        stroke-linecap="round"
-        transform="rotate(-90 110 110)"
-    />
-</svg>
+        <!-- Background ring -->
+        <circle
+            cx="110"
+            cy="110"
+            r="90"
+            stroke="#1a1f2b"
+            stroke-width="12"
+            fill="none"
+        />
 
-
+        <!-- 🔥 ACTIVE SPI ARC -->
+        <circle
+            id="spiArc"
+            cx="110"
+            cy="110"
+            r="90"
+            stroke="#00ffa6"
+            stroke-width="12"
+            fill="none"
+            stroke-linecap="round"
+            transform="rotate(-90 110 110)"
+        />
     </svg>
+
+    <!-- 💯 SPI VALUE CENTER -->
+    <div id="spiValue" style="
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%, -50%);
+        font-size:28px;
+        font-weight:bold;
+        color:#00ffa6;
+    ">
+        0%
+    </div>
+
+</div>
+
 
     <!-- ✅ MINI CIRCLES -->
     <div class="env-circle">
