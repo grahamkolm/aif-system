@@ -671,7 +671,6 @@ function updateTactical(spi, w, t) {
     if (tacticalEl) {
         tacticalEl.innerHTML = lines.join("<br>");
     }
-}
 
     // ---------------------------------
     // 🎨 UPDATE UI
@@ -682,7 +681,6 @@ function updateTactical(spi, w, t) {
         bar.innerText = message;
     }
 }
-
 
 // =====================================================
 // 🔍 10. SCOUT SYSTEM
