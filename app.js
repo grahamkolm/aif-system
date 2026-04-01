@@ -678,7 +678,7 @@ function updateTactical(spi, w, t) {
     const bar = document.getElementById("tacticalBar");
 
     if (bar) {
-        bar.innerText = message;
+        bar.innerText = lines[0] || "";
     }
 }
 
