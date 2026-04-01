@@ -42,7 +42,83 @@ document.addEventListener("DOMContentLoaded", () => {
 // =====================================================
 // 💧 3. SPLASH SYSTEM
 // =====================================================
+let splashCanvas = document.getElementById("splashCanvas");
+let splashCtx = splashCanvas?.getContext("2d");
 
+// ---------------------------------------------
+// 📏 Resize Splash Canvas
+// ---------------------------------------------
+function resizeSplash() {
+    if (!splashCanvas) return;
+
+    splashCanvas.width = window.innerWidth;
+    splashCanvas.height = window.innerHeight; }
+
+window.addEventListener("resize", resizeSplash); resizeSplash();
+
+
+// ---------------------------------------------
+// 💧 Splash Ripple Effect
+// ---------------------------------------------
+function createSplashRipple() {
+    if (!splashCanvas) return;
+
+    ripples.push({
+        x: splashCanvas.width / 2,
+        y: splashCanvas.height / 2 + 50,
+        r: 0,
+        alpha: 0.6
+    });
+}
+
+// ---------------------------------------------
+// 🚀 Start Splash (ENTRY POINT)
+// ---------------------------------------------
+function startSplash() {
+
+    createSplashRipple();
+
+    setTimeout(() => {
+
+        const splash = document.getElementById("splash");
+        if (!splash) return;
+
+        splash.style.opacity = "0";
+        splash.style.transition = "opacity 1s ease";
+
+        setTimeout(() => {
+
+            splash.remove();
+
+            // 👉 START MAIN APP HERE
+            startApp();
+
+        }, 1200);
+
+    }, 2500);
+}
+
+
+// ---------------------------------------------
+// 🚀 Main App Starter (CLEAN HANDOFF)
+// ---------------------------------------------
+function startApp() {
+
+    const mainCanvas = document.getElementById("waterGraph");
+    if (mainCanvas) {
+        mainCanvas.style.opacity = "1";
+    }
+
+    resize();
+    animate();
+
+    generateHotspots();
+    setInterval(generateHotspots, 10000);
+
+    setInterval(ripple, 3000);
+
+    setTimeout(fetchWeatherSafe, 2000);
+}
 
 // =====================================================
 // 🧠 4. MAIN ENGINE LOOP (ANIMATE)
@@ -108,71 +184,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // =====================================================
 
 
-// ===============================
-// START SYSTEM
-// ===============================
-
-document.addEventListener("DOMContentLoaded", () => {
-
-			canvas = document.getElementById("aifCanvas");
-			ctx = canvas?.getContext("2d");
-
-			const splashCanvas = document.getElementById("splashCanvas");
-			const sctx = splashCanvas.getContext("2d");
-
-			function resizeSplash() {
-				splashCanvas.width = window.innerWidth;
-				splashCanvas.height = window.innerHeight;
-			}
-
-			window.addEventListener("resize", resizeSplash);
-			resizeSplash();
-
-			// 💧 CREATE RIPPLE (center drop)
-			function createSplashRipple() {
-				ripples.push({
-					x: splashCanvas.width / 2,
-					y: splashCanvas.height / 2 + 50,
-					r: 0,
-					alpha: 0.6
-				});
-			}
-
 			// ===============================
 			// ⏳ SPLASH EXIT + APP START
 			// ===============================
 
-			setTimeout(() => {
-
-				const splash = document.getElementById("splash");
-				if (!splash) return;
-
-				splash.style.opacity = "0";
-				splash.style.transition = "1s ease";
-
-				setTimeout(() => {
-
-					splash.remove();
-
-					// 🚀 START APP HERE
-					const mainCanvas = document.getElementById("waterGraph");
-					if (mainCanvas) {
-						mainCanvas.style.opacity = "1";
-					}
-
-					resize();
-					animate();
-
-					generateHotspots();
-					setInterval(generateHotspots, 10000);
-
-					setInterval(ripple, 3000);
-
-					setTimeout(fetchWeatherSafe, 2000);
-
-				}, 3000);
-					
-			}, 3000);
 
 			let dots = 0;
 			setInterval(() => {
@@ -297,16 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				return Math.max(5, Math.min(oxygen, 12));
 			}
 
-			function removeSplash() {
-				const splash = document.getElementById("splash");
-				if (!splash) return;
-
-				splash.style.opacity = "0";
-				splash.style.transition = "opacity 0.5s ease";
-
-				setTimeout(() => splash.remove(), 500);
-			}
-
+			
 			// ===============================
 			// 📊 DASHBOARD
 			// ===============================
@@ -1950,3 +1956,20 @@ font-weight:bold;
 	}	
 
 });
+
+
+
+
+
+
+
+// =====================================================
+// 🚀 DO NOT DELETE YET
+// =====================================================
+
+
+				
+
+
+
+				
