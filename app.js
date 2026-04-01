@@ -834,8 +834,8 @@ function initSession() {
 
     let sessions = JSON.parse(localStorage.getItem("aif_sessions")) || [];
 
-    const dam = prompt("Enter Dam Name:");
-    const area = prompt("Enter Area / Peg:");
+    const dam = localStorage.getItem("aif_dam") || "Default Dam";
+    const area = localStorage.getItem("aif_area") || "Default Area";
 
     currentSession = {
         id: Date.now(),
