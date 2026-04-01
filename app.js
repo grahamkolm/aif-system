@@ -1,4 +1,19 @@
 // =====================================================
+// 🌍 0. START 
+// =====================================================
+
+function resize() {
+    const canvas = document.getElementById("waterGraph");
+    if (!canvas) return;
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight; }
+
+window.addEventListener("resize", resize);
+
+resize();
+
+// =====================================================
 // 🌍 1. GLOBAL STATE (ALL VARIABLES ONLY HERE) 
 // =====================================================
 
@@ -614,56 +629,49 @@ updateTactical(SPI, lastConditions);
 // ---------------------------------------------
 // 🧠 Generate Tactical Advice
 // ---------------------------------------------
-function updateTactical(spi, conditions) {
+function updateTactical(spi, w, t) {
 
-    let message = "";
+    let lines = [];
 
-    const wind = conditions.windSpeed || 0;
-    const temp = conditions.surfaceTemp || 18;
-    const pressure = conditions.pressure || 1015;
-    const trend = conditions.trend || "Stable";
-
-    // ---------------------------------
-    // 🎯 SPI CORE LOGIC
-    // ---------------------------------
-    if (spi >= 75) {
-        message = "🔥 High activity • Fish aggressively • Increase feed rate";
-    }
-    else if (spi >= 60) {
-        message = "🟢 Good conditions • Stay consistent • Build the swim";
-    }
-    else if (spi >= 45) {
-        message = "🟡 Moderate • Fish cautious • Adjust baiting";
-    }
-    else {
-        message = "🔴 Low activity • Slow approach • Minimal feed";
+    // 🔥 PRIORITY
+    if (spi > 75) {
+        lines.push("🔥 Stay on spot — feeding window active");
+    } else if (spi < 50) {
+        lines.push("⚠️ Consider relocating or changing depth");
     }
 
-    // ---------------------------------
-    // 🌬 WIND ADJUSTMENT
-    // ---------------------------------
-    if (wind > 10) {
-        message += " • Strong wind: target windward bank";
+    // 🎯 SPI CORE
+    if (spi > 85) {
+        lines.push("🔥 Peak feeding conditions");
+    } else if (spi > 70) {
+        lines.push("⚡ Strong feeding activity");
+    } else if (spi > 50) {
+        lines.push("🟡 Fish present — trigger needed");
+    } else {
+        lines.push("❌ Low activity — rethink approach");
     }
 
-    // ---------------------------------
-    // 🌡 TEMP ADJUSTMENT
-    // ---------------------------------
-    if (temp > 22) {
-        message += " • Warm water: fish higher layers";
-    } else if (temp < 15) {
-        message += " • Cold water: fish deeper & slower";
+    // 🌬 WIND
+    if (w < 5) {
+        lines.push("🌬️ Light wind — fish less active");
+    } else if (w > 15) {
+        lines.push("🌊 Strong wind — target windblown areas");
     }
 
-    // ---------------------------------
-    // 📉 PRESSURE TREND
-    // ---------------------------------
-    if (trend === "Falling") {
-        message += " • Falling pressure: short feeding windows";
+    // 🌡 TEMP
+    if (t >= 18 && t <= 24) {
+        lines.push("🌡️ Ideal feeding temperature");
+    } else {
+        lines.push("🌡️ Suboptimal temp — adjust depth");
     }
-    else if (trend === "Rising") {
-        message += " • Rising pressure: fish may slow down";
+
+    // 🧠 OUTPUT
+    let tacticalEl = document.getElementById("tactical");
+
+    if (tacticalEl) {
+        tacticalEl.innerHTML = lines.join("<br>");
     }
+}
 
     // ---------------------------------
     // 🎨 UPDATE UI
@@ -782,7 +790,7 @@ function applyScout() {
     bubbleIntensity = SPI / 100;
 
     updateSPI(SPI);
-    updateTactical(SPI, lastConditions);
+    updateTactical(SPI, windSpeed, airTemp);
 
     const screen = document.getElementById("scoutScreen");
     if (screen) screen.remove();
