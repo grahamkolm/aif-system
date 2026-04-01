@@ -1,311 +1,182 @@
-/* ===================================== */
-/* 🌍 ROOT VARIABLES (FUTURE-PROOF) */
-/* ===================================== */
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-:root {
-    --primary: #00ffa6;
-    --bg: #05080d;
-    --card: rgba(10,20,30,0.7);
-    --card-strong: rgba(15,20,28,0.8);
-    --text: #ffffff;
-    --muted: #7a8a99;
-}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#05080d">
 
-/* ===================================== */
-/* 🔧 GLOBAL SAFETY */
-/* ===================================== */
+<title>AIF Dashboard</title>
 
-* {
-    box-sizing: border-box;
-    transition: all 0.2s ease;
-}
+<!-- LIBS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    justify-content: center;
-}
+<!-- CSS -->
+<link rel="stylesheet" href="styles.css">
 
-button, .dock-btn, .scout-option {
-    -webkit-tap-highlight-color: transparent; }
+</head>
 
-/* SAFE LAYER */
-#appRoot {
-    position: relative;
-    z-index: 2;
-}
+<body>
 
-.safe-layer {
-    position: relative;
-    z-index: 5;
-}
+<!-- ===================================== -->
+<!-- 🌍 APP ROOT (SAFE WRAPPER) -->
+<!-- ===================================== --> <div id="appRoot">
 
-.main {
-    width: 100%;
-    max-width: 420px;
-    padding: 0 12px 120px;
-    position: relative;
-}
+<!-- ===================================== -->
+<!-- 💧 SPLASH -->
+<!-- ===================================== --> <canvas id="aifCanvas"></canvas>
 
-/* ===================================== */
-/* 💧 SPLASH */
-/* ===================================== */
+<div id="splash">
+    <div class="overlay"></div>
+    <div class="splash-hash">#</div>
 
-#splash {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    <div class="center">
+        <span>Drop • Scan • Strike</span>
+    </div>
 
-#splash .overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-}
+    <canvas id="splashCanvas"></canvas>
+</div>
 
-#splashCanvas {
-    position: absolute;
-    inset: 0;
-}
+<!-- ===================================== -->
+<!-- 📱 MAIN APP -->
+<!-- ===================================== --> <div class="main">
 
-.splash-hash {
-    position: absolute;
-    font-size: 80px;
-    color: var(--primary);
-}
+<!-- ================= HEADER ================= --> <div class="header">
+    <div class="brand">AIF™</div>
+    <div class="subtitle1">Artificial Intelligence Fishing</div>
+    <div class="subtitle2">Drop • Scan • Strike</div> </div>
 
-#aifCanvas {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-}
+<!-- ================= SPI ================= --> <div class="instrument">
+  <div class="spi-container">
 
-/* ===================================== */
-/* 🧠 HEADER */
-/* ===================================== */
+    <svg viewBox="0 0 300 300">
 
-.header {
-    text-align: center;
-    margin-top: 20px;
-}
+      <circle cx="150" cy="150" r="110"
+        stroke="#2f4f4f"
+        stroke-width="10"
+        fill="none"
+        stroke-dasharray="8 12"/>
 
-.brand {
-    font-size: 22px;
-    color: var(--primary);
-}
+      <circle id="spiArc"
+        cx="150"
+        cy="150"
+        r="110"
+        stroke="var(--primary)"
+        stroke-width="14"
+        fill="none"
+        stroke-linecap="round"
+        transform="rotate(-90 150 150)"/>
 
-.subtitle1, .subtitle2 {
-    font-size: 12px;
-    opacity: 0.7;
-}
+      <text x="150" y="145"
+        text-anchor="middle"
+        class="spi-number"
+        id="spiValue">--%</text>
 
-/* ===================================== */
-/* 🎯 SPI */
-/* ===================================== */
+      <text x="150" y="175"
+        text-anchor="middle"
+        fill="#b9c3cc">SPI</text>
 
-.instrument {
-    display: flex;
-    justify-content: center;
-    margin-top: 18px;
-}
+    </svg>
 
-.spi-container {
-    width: 260px;
-    height: 240px;
-    position: relative;
-}
+  </div>
+</div>
 
-#spiArc {
-    filter: drop-shadow(0 0 8px rgba(0,255,166,0.6)); }
+<!-- ================= TACTICAL ================= --> <div id="tacticalBar" class="tactical-bar">
+    Waiting for environmental data...
+</div>
 
-.spi-number {
-    fill: var(--text);
-    font-size: 32px;
-    font-weight: bold;
-}
+<div id="tactical"></div>
 
-/* ===================================== */
-/* 🧠 TACTICAL */
-/* ===================================== */
+<!-- ================= WATER ================= --> <div class="card water-card">
 
-.tactical-bar {
-    margin: 16px;
-    padding: 12px;
-    border-radius: 14px;
-    background: rgba(0,255,156,0.05);
-    border: 1px solid rgba(0,255,166,0.2);
-    text-align: center;
-    font-size: 13px;
-    color: #bfffe3;
-}
+  <div class="card-title">Water Intelligence</div>
 
-#tactical {
-    margin: 12px;
-    font-size: 13px;
-    line-height: 1.5;
-}
+  <div class="water-temps">
+    <div class="temp-row">
+      <span class="temp-label">AIR</span>
+      <span id="wcAir">--°C</span>
+    </div>
 
-/* ===================================== */
-/* 🌊 CARDS */
-/* ===================================== */
+    <div class="temp-row main">
+      <span class="temp-label">SURFACE</span>
+      <span id="wcSurface">--°C</span>
+    </div>
 
-.card {
-    background: var(--card);
-    border-radius: 18px;
-    padding: 16px;
-    margin: 12px;
-    backdrop-filter: blur(10px);
-}
+    <div class="temp-row">
+      <span class="temp-label">BOTTOM</span>
+      <span id="wcBottom">--°C</span>
+    </div>
+  </div>
 
-.card-title {
-    text-align: center;
-    font-size: 14px;
-    opacity: 0.7;
-    margin-bottom: 10px;
-}
+  <canvas id="waterGraph"></canvas>
 
-/* ===================================== */
-/* 🌊 WATER */
-/* ===================================== */
+</div>
 
-.water-temps {
-    text-align: center;
-}
+<!-- ================= CONDITIONS ================= --> <div class="card">
+  <div class="card-title">Conditions</div>
 
-.temp-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    opacity: 0.7;
-}
+  <div class="cond-grid">
 
-.temp-row.main {
-    font-size: 16px;
-    opacity: 1;
-}
+    <div class="cond-item">
+      <label>Pressure</label>
+      <b id="pressure">--</b>
+    </div>
 
-.temp-main {
-    font-size: 22px;
-    color: var(--primary);
-    font-weight: bold;
-}
+    <div class="cond-item">
+      <label>Wind</label>
+      <b id="wind">--</b>
+    </div>
 
-#waterGraph {
-    width: 100%;
-    height: 120px;
-    margin: 10px 0;
-    border-radius: 10px;
-}
+    <div class="cond-item">
+      <label>Cloud</label>
+      <b id="cloud">--</b>
+    </div>
 
-/* ===================================== */
-/* 🌦 CONDITIONS */
-/* ===================================== */
+    <div class="cond-item">
+      <label>Oxygen</label>
+      <b id="oxygen">--</b>
+    </div>
 
-.cond-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    text-align: center;
-}
+  </div>
+</div>
 
-.cond-item label {
-    font-size: 12px;
-    opacity: 0.7;
-}
+<!-- ================= AI ================= --> <div class="ai-box" onclick="openAIDetail()">
+  <b>AI Tactical Analysis</b>
+  <div id="aiAnalysis"></div>
+</div>
 
-.cond-item b {
-    font-size: 16px;
-}
+</div>
 
-/* ===================================== */
-/* 🤖 AI */
-/* ===================================== */
+<!-- ===================================== -->
+<!-- 🧭 DOCK NAVIGATION -->
+<!-- ===================================== --> <div class="dock">
 
-.ai-box {
-    margin: 16px;
-    padding: 16px;
-    border-radius: 14px;
-    background: var(--card-strong);
-    border-left: 4px solid var(--primary); }
+<div class="dock-btn" onclick="refreshData()"> <i data-lucide="refresh-cw" id="refreshIcon"></i> <span>Refresh</span> </div>
 
-#aiAnalysis {
-    margin-top: 8px;
-    font-size: 13px;
-}
+<div class="dock-btn" onclick="openScout()">Scout</div> <div class="dock-btn" onclick="confirmDrop()">Drop</div>
+<div class="dock-btn" onclick="openMap()">Map</div> <div class="dock-btn" onclick="openPlan()">Plan</div> <div class="dock-btn" onclick="openReport()">Report</div>
 
-/* ===================================== */
-/* 🧭 DOCK */
-/* ===================================== */
+</div>
 
-.dock {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 420px;
-    width: 100%;
-    background: black;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    z-index: 10;
-}
+<!-- ===================================== -->
+<!-- 🗺 MAP OVERLAY -->
+<!-- ===================================== --> <div id="mapScreen" class="hidden safe-layer">
 
-.dock-btn {
-    font-size: 11px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    <div class="map-header">
+        <span>Map</span>
+        <button onclick="closeMap()">✕</button>
+    </div>
 
-.dock-btn i {
-    width: 22px;
-    height: 22px;
-    stroke: var(--primary);
-}
+    <div id="map"></div>
 
-/* ===================================== */
-/* 🗺 MAP */
-/* ===================================== */
+</div>
 
-#mapScreen {
-    position: fixed;
-    inset: 0;
-    background: black;
-    z-index: 9999;
-    display: none;
-}
+</div>
 
-#mapScreen.active {
-    display: block;
-}
+<!-- ===================================== -->
+<!-- 🚀 JS -->
+<!-- ===================================== --> <script src="app.js"></script>
 
-#map {
-    width: 100%;
-    height: 100%;
-}
-
-/* ===================================== */
-/* 🔧 UTIL */
-/* ===================================== */
-
-.hidden {
-    display: none;
-}
-
-.refresh-spin {
-    animation: spin 0.8s linear infinite; }
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
+</body>
+</html>
