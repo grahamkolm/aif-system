@@ -607,8 +607,6 @@ lastConditions = {
     });
 }
 
-updateTactical(SPI, lastConditions);
-
 // =====================================================
 // 🎯 9. TACTICAL SYSTEM
 // =====================================================
@@ -847,7 +845,13 @@ function logEvent(type, data = {}) {
         localStorage.setItem("aif_sessions", JSON.stringify(sessions));
     }
 }
+logEvent("dashboard_update", {
+	spi: newSPI
+	temp: surfaceTemp,
+	oxygen: oxygen
+});
 
+updateTactical(SPI, lastConditions);
 // ---------------------------------------------
 // 🗺 DAM DATABASE (LOCAL STORAGE)
 // ---------------------------------------------
