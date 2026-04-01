@@ -14,6 +14,10 @@ function getSeason() {
     return "Spring";
 }
 
+function getPressureTrend() {
+	return "Stable";
+}
+
 function resize() {
     const canvas = document.getElementById("waterGraph");
     if (!canvas) return;
