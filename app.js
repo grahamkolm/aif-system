@@ -2,6 +2,16 @@
 // 🌍 0. START 
 // =====================================================
 
+function resizeSplash() {
+    if (!splashCanvas) return;
+
+    splashCanvas.width = window.innerWidth;
+    splashCanvas.height = window.innerHeight; }
+
+resizeSplash();
+window.addEventListener("resize", resizeSplash);
+
+
 function getMoonPhase() {
 			return "Normal";
 }
