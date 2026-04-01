@@ -105,23 +105,44 @@
 
     <div style="
         position:relative;
-        width:120px;
-        height:120px;
+        width:140px;
+        height:140px;
         margin:auto;
         border-radius:50%;
         border:2px solid #1a1f2b;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
     ">
 
-        <!-- NEEDLE -->
-        <div id="compassNeedle" style="
+        <!-- 🧭 Direction Labels -->
+        <div style="position:absolute; top:5px; left:50%; transform:translateX(-50%); font-size:12px;">N</div>
+        <div style="position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:12px;">S</div>
+        <div style="position:absolute; left:5px; top:50%; transform:translateY(-50%); font-size:12px;">W</div>
+        <div style="position:absolute; right:5px; top:50%; transform:translateY(-50%); font-size:12px;">E</div>
+
+        <!-- 🌬 WIND DIRECTION (outer faint line) -->
+        <div id="windIndicator" style="
             position:absolute;
             top:50%;
             left:50%;
             width:2px;
-            height:50px;
+            height:60px;
+            background:rgba(0,150,255,0.5);
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(0deg);
+        "></div>
+
+        <!-- 🟢 COMPASS NEEDLE -->
+        <div id="compassNeedle" style="
+            position:absolute;
+            top:50%;
+            left:50%;
+            width:3px;
+            height:60px;
             background:#00ffa6;
             transform-origin: bottom center;
             transform: translate(-50%, -100%) rotate(0deg);
+            transition: transform 0.3s ease-out;
+            box-shadow: 0 0 10px #00ffa6;
         "></div>
 
     </div>
@@ -133,6 +154,7 @@
     ">0°</div>
 
 </div>
+
     
 </div>
 
