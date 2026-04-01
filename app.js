@@ -549,18 +549,6 @@ lastConditions = {
 // ===============================
 // 🎯 CALCULATE SPI
 // ===============================
-let spi = calculateSPI(pressure, windSpeed, cloud, windDir, airTemp);
-
-// smoothing
-if (lastSPI !== null) {
-    spi = Math.round((spi + lastSPI) / 2); }
-
-lastSPI = spi;
-SPI = spi;
-
-	
-    // store for next cycle
-    lastConditions.surfaceTemp = surfaceTemp;
 
     // ---------------------------------
     // 📊 SPI CALCULATION
@@ -586,7 +574,7 @@ SPI = spi;
     // ---------------------------------
     // 🎯 UI UPDATE
     // ---------------------------------
-    set("spiValue", newSPI + "%");
+    
     set("airTemp", airTemp.toFixed(1) + "°C");
     set("surfaceTemp", surfaceTemp.toFixed(1) + "°C");
 	set("bottomTemp", bottomTemp.toFixed(1) + "°C");
@@ -618,6 +606,8 @@ SPI = spi;
         oxygen: oxygen
     });
 }
+
+updateTactical(SPI, lastConditions);
 
 // =====================================================
 // 🎯 9. TACTICAL SYSTEM
@@ -1326,6 +1316,29 @@ function updateCompassUI(deg) {
 // ---------------------------------------------
 // 🔢 Animate Value Change (Smooth Text Update) 
 // ---------------------------------------------
+function updateSPI(v) {
+
+    let arc = document.getElementById("spiArc");
+    if (!arc) return;
+
+    let r = 110;
+    let C = 2 * Math.PI * r;
+
+    arc.setAttribute("stroke-dasharray", C);
+    arc.setAttribute("stroke-dashoffset", C - (v / 100) * C);
+
+    arc.style.transition = "stroke-dashoffset 1s ease";
+
+    let color = "#00ffa6";
+    if (v < 50) color = "#ff4d4d";
+    else if (v < 70) color = "#ffaa00";
+
+    arc.style.stroke = color;
+
+    let val = document.getElementById("spiValue");
+    if (val) val.textContent = v + "%";
+}
+
 function animateValue(id, value) {
     const el = document.getElementById(id);
     if (!el) return;
