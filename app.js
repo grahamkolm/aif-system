@@ -13,6 +13,15 @@ window.addEventListener("resize", resize);
 
 resize();
 
+function set(id, value) {
+	const el = document.getElementById(id);
+	if(el) el.innerText = value;
+}
+
+function getMoonPhase() {
+	return "Normal";
+}
+
 // =====================================================
 // 🌍 1. GLOBAL STATE (ALL VARIABLES ONLY HERE) 
 // =====================================================
