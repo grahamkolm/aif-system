@@ -680,6 +680,7 @@ function updateTactical(spi, conditions) {
     if (tacticalEl) {
         tacticalEl.innerHTML = lines.join("<br>");
     }
+}
 
     // ---------------------------------
     // 🎨 UPDATE UI
