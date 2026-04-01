@@ -674,14 +674,6 @@ function updateTactical(spi, conditions) {
     }
 }
 
-    // 🧠 OUTPUT
-    let tacticalEl = document.getElementById("tactical");
-
-    if (tacticalEl) {
-        tacticalEl.innerHTML = lines.join("<br>");
-    }
-}
-
     // ---------------------------------
     // 🎨 UPDATE UI
     // ---------------------------------
