@@ -384,7 +384,107 @@ function simulateWeather() {
 // =====================================================
 // 📊 7. SPI ENGINE (ONLY ONE)
 // =====================================================
+function calculateSPI(pressure, windSpeed, cloud, windDir, temp) {
 
+    let score = 50;
+
+    // ---------------------------------
+    // 🌡 PRESSURE (MOST IMPORTANT)
+    // ---------------------------------
+    if (pressure > 1020) score += 15;
+    else if (pressure > 1015) score += 10;
+    else if (pressure > 1010) score += 5;
+    else if (pressure < 1005) score -= 10;
+    else if (pressure < 1000) score -= 15;
+
+    // ---------------------------------
+    // 🌬 WIND SPEED
+    // ---------------------------------
+    if (windSpeed >= 5 && windSpeed <= 15) score += 15;
+    else if (windSpeed < 2) score -= 10;
+    else if (windSpeed > 20) score -= 5;
+
+    // ---------------------------------
+    // ☁ CLOUD COVER
+    // ---------------------------------
+    if (cloud >= 20 && cloud <= 60) score += 10;
+    else if (cloud < 10) score -= 5;
+    else if (cloud > 80) score -= 5;
+
+    // ---------------------------------
+    // 🌡 TEMPERATURE
+    // ---------------------------------
+    if (temp >= 18 && temp <= 24) score += 20;
+    else if (temp >= 15 && temp <= 28) score += 10;
+    else score -= 10;
+
+    // ---------------------------------
+    // 🧭 WIND DIRECTION (ADVANCED EDGE)
+    // ---------------------------------
+    if (windDir >= 180 && windDir <= 270) score += 5; // SW = feeding zones
+
+    // ---------------------------------
+    // 🎯 FINAL CLAMP
+    // ---------------------------------
+    score = Math.max(0, Math.min(100, score));
+
+    return Math.round(score);
+}
+
+// =====================================================
+// 🌊 8. ENVIRONMENT ENGINE (WATER MODEL) 
+// =====================================================
+
+// ---------------------------------------------
+// 🌡 Surface Temperature Estimate
+// ---------------------------------------------
+function estimateSurfaceTemp(prevWaterTemp, airTemp, windSpeed, sunFactor, hour) {
+
+    let temp = prevWaterTemp ?? airTemp;
+
+    // air influence
+    temp += (airTemp - temp) * 0.15;
+
+    // sun heating (day only)
+    if (hour >= 8 && hour <= 17) {
+        temp += sunFactor * 0.8;
+    }
+
+    // wind cooling
+    temp -= windSpeed * 0.02;
+
+    return Math.round(temp * 10) / 10;
+}
+
+
+// ---------------------------------------------
+// 🌡 Bottom Temperature Estimate
+// ---------------------------------------------
+function estimateBottomTemp(surfaceTempValue, depth, windSpeed) {
+
+    let gradient = depth * 0.15;
+
+    // wind mixes layers
+    gradient -= windSpeed * 0.05;
+
+    return surfaceTempValue - Math.max(gradient, 0.5); 
+}
+
+// ---------------------------------------------
+// 💧 Oxygen Estimate
+// ---------------------------------------------
+function estimateOxygen(temp, windSpeed) {
+
+    let oxygen = 9;
+
+    // warm water = less oxygen
+    oxygen -= (temp - 15) * 0.2;
+
+    // wind adds oxygen
+    oxygen += windSpeed * 0.1;
+
+    return Math.max(5, Math.min(oxygen, 12)); 
+}
 
 // =====================================================
 // 📊 8. DASHBOARD (renderDashboard)
@@ -404,7 +504,79 @@ function simulateWeather() {
 // =====================================================
 // 🧠 11. SESSION SYSTEM
 // =====================================================
+// ---------------------------------------------
+// 🎣 Initialize Session
+// ---------------------------------------------
+function initSession() {
 
+    let sessions = JSON.parse(localStorage.getItem("aif_sessions")) || [];
+
+    const dam = prompt("Enter Dam Name:");
+    const area = prompt("Enter Area / Peg:");
+
+    currentSession = {
+        id: Date.now(),
+        dam: dam || "Unknown",
+        area: area || "Unknown",
+        date: new Date().toISOString(),
+        events: []
+    };
+
+    sessions.push(currentSession);
+    localStorage.setItem("aif_sessions", JSON.stringify(sessions)); }
+
+
+// ---------------------------------------------
+// 🧠 Ensure Session Exists
+// ---------------------------------------------
+function ensureSession() {
+    if (!currentSession) {
+        initSession();
+    }
+}
+
+// ---------------------------------------------
+// 📝 Log Event
+// ---------------------------------------------
+function logEvent(type, data = {}) {
+
+    ensureSession();
+
+    const event = {
+        time: new Date().toISOString(),
+        type,
+        data
+    };
+
+    currentSession.events.push(event);
+
+    let sessions = JSON.parse(localStorage.getItem("aif_sessions")) || [];
+
+    const index = sessions.findIndex(s => s.id === currentSession.id);
+    if (index !== -1) {
+        sessions[index] = currentSession;
+        localStorage.setItem("aif_sessions", JSON.stringify(sessions));
+    }
+}
+
+// ---------------------------------------------
+// 🗺 DAM DATABASE (LOCAL STORAGE)
+// ---------------------------------------------
+function getDams() {
+    return JSON.parse(localStorage.getItem("aif_dams")) || []; }
+
+function saveDam(name) {
+
+    if (!name) return;
+
+    let dams = getDams();
+
+    // prevent duplicates
+    if (!dams.includes(name)) {
+        dams.push(name);
+        localStorage.setItem("aif_dams", JSON.stringify(dams));
+    }
+}
 
 // =====================================================
 // 🗺 12. MAP SYSTEM
@@ -430,7 +602,8 @@ function simulateWeather() {
 // 🛠 16. HELPERS + UTIL
 // =====================================================
 // ---------------------------------------------
-// 🔢 Animate Value Change (Smooth Text Update) // ---------------------------------------------
+// 🔢 Animate Value Change (Smooth Text Update) 
+// ---------------------------------------------
 function animateValue(id, value) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -464,109 +637,37 @@ function colorMini(id, value) {
     el.style.color = color;
 }
 
+// ---------------------------------------------
+// ⏳ Animated Dots (Loading Indicator)
+// ---------------------------------------------
+let dotsInterval = null;
 
-			// ===============================
-			// ⏳ SPLASH EXIT + APP START
-			// ===============================
+function startDots() {
+
+    let dots = 0;
+
+    if (dotsInterval) clearInterval(dotsInterval);
+
+    dotsInterval = setInterval(() => {
+        const el = document.getElementById("dots");
+        if (!el) return;
+
+        dots = (dots + 1) % 4;
+        el.innerText = ".".repeat(dots);
+    }, 400);
+}
+
+function stopDots() {
+    if (dotsInterval) {
+        clearInterval(dotsInterval);
+        dotsInterval = null;
+    }
+}
+
+// =======================================================================================================
 
 
-			let dots = 0;
-			setInterval(() => {
-				const el = document.getElementById("dots");
-				if (!el) return;
 
-				dots = (dots + 1) % 4;
-				el.innerText = ".".repeat(dots);
-			}, 400);
-
-			// ===============================
-			// 🧠 SESSION SYSTEM
-			// ===============================
-
-			function initSession() {
-
-				let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
-
-				let dam = prompt("Enter Dam Name:");
-				let area = prompt("Enter Area / Peg:");
-
-				currentSession = {
-					id: Date.now(),
-					dam: dam || "Unknown",
-					area: area || "Unknown",
-					date: new Date().toISOString(),
-					events: []
-				};
-
-				sessions.push(currentSession);
-				localStorage.setItem("aif_sessions", JSON.stringify(sessions));
-
-			}
-
-			// ===============================
-			// 🌦 WEATHER SYSTEM
-			// ===============================
-
-			
-
-			// =============================
-			// WATER + ENVIRONMENT MODELS
-			// =============================
-
-			function estimateSurfaceTemp({
-				prevWaterTemp,
-				airTemp,
-				windSpeed,
-				sunFactor,
-				hour
-			}) {
-
-				let temp = prevWaterTemp;
-
-				// air influence
-				temp += (airTemp - temp) * 0.15;
-
-				// sun heating (day only)
-				if (hour >= 8 && hour <= 17) {
-					temp += sunFactor * 0.8;
-				}
-
-				// wind cooling
-				temp -= windSpeed * 0.02;
-
-				return temp;
-			}
-
-			function estimateBottomTemp({
-				surfaceTempValue,
-				depth,
-				windSpeed
-			}) {
-
-				let gradient = depth * 0.15;
-
-				// wind mixes layers
-				gradient -= windSpeed * 0.05;
-
-				return surfaceTempValue - Math.max(gradient, 0.5);
-			}
-
-			
-
-			function estimateOxygen(temp, windSpeed) {
-
-				let oxygen = 9;
-
-				// warm water = less oxygen
-				oxygen -= (temp - 15) * 0.2;
-
-				// wind adds oxygen
-				oxygen += windSpeed * 0.1;
-
-				return Math.max(5, Math.min(oxygen, 12));
-			}
-
-			
 			// ===============================
 			// 📊 DASHBOARD
 			// ===============================
