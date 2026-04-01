@@ -126,13 +126,260 @@ function startApp() {
 
 
 // =====================================================
-// 🌊 5. VISUAL SYSTEM (BUBBLES / RIPPLE / THERMOCLINE) // =====================================================
+// 🌊 5. VISUAL SYSTEM (BUBBLES / RIPPLE / THERMOCLINE) 
+// =====================================================
+// ---------------------------------------------
+// 🫧 Bubble Spawn (HOTSPOT + WIND AWARE) // ---------------------------------------------
+function spawnBubble() {
 
+    if (!hotspots || hotspots.length === 0) return;
+
+    const hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
+    if (!hotspot) return;
+
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.random() * hotspot.radius;
+
+    const x = hotspot.x + Math.cos(angle) * radius;
+    const y = hotspot.y;
+
+    // 🌬 Wind influence (FIXED — was missing before)
+    const windBias = (lastConditions.windDir || 180) / 180 - 1;
+
+    bubbles.push({
+        x: x,
+        y: y,
+        size: Math.random() * 4 + 1,
+        speed: Math.random() * 1.2 + 0.5,
+        drift: (Math.random() - 0.5) + windBias * 0.3,
+        offset: Math.random() * Math.PI * 2,
+        alpha: 0.2 + Math.random() * 0.3
+    });
+}
+
+
+// ---------------------------------------------
+// 💧 Ripple Effect
+// ---------------------------------------------
+function ripple() {
+
+    if (!canvas || !ctx) return;
+
+    ripples.push({
+        r: 0,
+        alpha: 0.25,
+        x: canvas.width / 2,
+        y: canvas.height * 0.7
+    });
+}
+
+
+// ---------------------------------------------
+// 🌡 Thermocline Layer
+// ---------------------------------------------
+function drawThermocline() {
+
+    const y = canvas.height * 0.45;
+
+    const gradient = ctx.createLinearGradient(0, y - 20, 0, y + 20);
+    gradient.addColorStop(0, "rgba(255,200,0,0)");
+    gradient.addColorStop(0.5, "rgba(255,200,0,0.25)");
+    gradient.addColorStop(1, "rgba(255,200,0,0)");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, y - 20, canvas.width, 40); }
+
+
+// ---------------------------------------------
+// 🧠 MAIN ENGINE LOOP (ANIMATE)
+// ---------------------------------------------
+function animate() {
+
+    if (!ctx || !canvas) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawThermocline();
+
+    const intensity = bubbleIntensity;
+    const currentSPI = SPI || 50;
+
+    // ---------------------------------
+    // 🫧 Bubble Spawning
+    // ---------------------------------
+    if (Math.random() < intensity / 2) {
+        spawnBubble();
+    }
+
+    if (intensity > 0.7 && Math.random() < 0.05) {
+        for (let i = 0; i < 8; i++) spawnBubble();
+    }
+
+    // ---------------------------------
+    // 🫧 Bubble Movement + Draw
+    // ---------------------------------
+    bubbles.forEach((particle, i) => {
+
+        particle.y -= particle.speed;
+        particle.x += (particle.drift || 0) + Math.sin(particle.y * 0.05 + particle.offset) * 0.4;
+
+        // 🎨 Color based on SPI
+        const r = Math.max(0, 255 - currentSPI * 2);
+        const g = Math.min(255, currentSPI * 2);
+        const b = 150;
+
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${particle.alpha})`;
+
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (particle.y < 0) bubbles.splice(i, 1);
+    });
+
+    // ---------------------------------
+    // 💧 Ripple Animation
+    // ---------------------------------
+    ripples.forEach((r, i) => {
+
+        r.r += 2;
+        r.alpha *= 0.96;
+
+        ctx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+        ctx.lineWidth = 1.5;
+
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        if (r.alpha < 0.01) ripples.splice(i, 1);
+    });
+
+    requestAnimationFrame(animate);
+}
+
+// ---------------------------------------------
+// 🌍 Hotspot Generator
+// ---------------------------------------------
+function generateHotspots() {
+
+    hotspots = [];
+
+    const count = Math.floor(Math.random() * 2) + 1;
+
+    for (let i = 0; i < count; i++) {
+        hotspots.push({
+            x: canvas.width * (0.2 + Math.random() * 0.6),
+            y: canvas.height * (0.6 + Math.random() * 0.3),
+            radius: 80 + Math.random() * 120
+        });
+    }
+}
 
 // =====================================================
-// 🌦 6. WEATHER ENGINE
+// 🌦 6. WEATHER ENGINE (WIND INCLUDED)
 // =====================================================
+function fetchWeatherSafe() {
 
+    const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=-30.140153&lon=27.004008&appid=${API_KEY}&units=metric`;
+
+    fetch(url)
+        .then(res => {
+            if (!res.ok) throw new Error("Bad response");
+            return res.json();
+        })
+        .then(data => {
+
+            // ---------------------------------
+            // 🌡 Extract Data
+            // ---------------------------------
+            const pressure = data.main.pressure;
+            const temp = data.main.temp;
+
+            const windSpeedMS = data.wind?.speed || 0;
+            const windSpeedKMH = windSpeedMS * 3.6; // FIXED
+            const windDir = data.wind?.deg || 180;
+
+            const cloud = data.clouds?.all || 0;
+
+            // ---------------------------------
+            // 🌬 Store for system (VERY IMPORTANT)
+            // ---------------------------------
+            lastConditions = {
+                windDir: windDir,
+                windSpeed: windSpeedKMH
+            };
+
+            // ---------------------------------
+            // 📊 UI Updates
+            // ---------------------------------
+            set("envScore", Math.round((pressure / 1050) * 100));
+            set("pressure", pressure + " hPa");
+            set("wind", windSpeedKMH.toFixed(1) + " km/h");
+            set("cloud", cloud + "%");
+
+            // ---------------------------------
+            // 🧠 Tactical Message
+            // ---------------------------------
+            let message = "";
+
+            if (pressure > 1015 && windSpeedKMH < 10) {
+                message = "Stable pressure • Calm wind • High feeding activity";
+            } 
+            else if (pressure < 1005) {
+                message = "Low pressure • Fish less active • Slow approach";
+            } 
+            else {
+                message = "Changing conditions • Moderate activity • Stay adaptive";
+            }
+
+            const bar = document.getElementById("tacticalBar");
+            if (bar) {
+                bar.innerText = message;
+            }
+
+            // ---------------------------------
+            // 🚀 Send to Dashboard (SPI FLOW)
+            // ---------------------------------
+            renderDashboard(data);
+
+        })
+        .catch(err => {
+            console.log("FETCH ERROR:", err);
+            simulateWeather();
+        });
+}
+
+
+// ---------------------------------------------
+// 🌥 FALLBACK (NO API)
+// ---------------------------------------------
+function simulateWeather() {
+
+    const fakeData = {
+        main: {
+            temp: 22,
+            pressure: 1018
+        },
+        wind: {
+            speed: 3,
+            deg: 180
+        },
+        clouds: {
+            all: 40
+        }
+    };
+
+    // Also store conditions (IMPORTANT)
+    lastConditions = {
+        windDir: fakeData.wind.deg,
+        windSpeed: fakeData.wind.speed * 3.6
+    };
+
+    renderDashboard(fakeData);
+}
 
 // =====================================================
 // 📊 7. SPI ENGINE (ONLY ONE)
@@ -182,6 +429,40 @@ function startApp() {
 // =====================================================
 // 🛠 16. HELPERS + UTIL
 // =====================================================
+// ---------------------------------------------
+// 🔢 Animate Value Change (Smooth Text Update) // ---------------------------------------------
+function animateValue(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Prevent unnecessary updates
+    if (el.innerText === String(value)) return;
+
+    el.style.transition = "all 0.4s ease";
+    el.innerText = value;
+}
+
+
+// ---------------------------------------------
+// 🎨 Color Indicator Based on Value
+// ---------------------------------------------
+function colorMini(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    let color;
+
+    if (value >= 70) {
+        color = "#00ffa6";   // good (green)
+    } else if (value >= 50) {
+        color = "#ffaa00";   // medium (orange)
+    } else {
+        color = "#ff4d4d";   // poor (red)
+    }
+
+    el.style.transition = "color 0.3s ease";
+    el.style.color = color;
+}
 
 
 			// ===============================
@@ -226,21 +507,7 @@ function startApp() {
 			// 🌦 WEATHER SYSTEM
 			// ===============================
 
-			function simulateWeather() {
-				renderDashboard({
-					main: {
-						temp: 22,
-						pressure: 1018
-					},
-					wind: {
-						speed: 3,
-						deg: 180
-					},
-					clouds: {
-						all: 40
-					}
-				});
-			}
+			
 
 			// =============================
 			// WATER + ENVIRONMENT MODELS
@@ -284,20 +551,7 @@ function startApp() {
 				return surfaceTempValue - Math.max(gradient, 0.5);
 			}
 
-			function generateHotspots() {
-
-				hotspots = [];
-
-				let count = Math.floor(Math.random() * 2) + 1; // 1–2 zones
-
-				for (let i = 0; i < count; i++) {
-					hotspots.push({
-						x: canvas.width * (0.2 + Math.random() * 0.6),
-						y: canvas.height * (0.6 + Math.random() * 0.3),
-						radius: 80 + Math.random() * 120
-					});
-				}
-			}
+			
 
 			function estimateOxygen(temp, windSpeed) {
 
@@ -537,24 +791,7 @@ function startApp() {
 				removeSplash();
 			}
 
-			function animateValue(id, value) {
-				let el = document.getElementById(id);
-				if (!el) return;
-
-				el.style.transition = "all 0.6s ease";
-				el.innerText = value;
-			}
-
-			function colorMini(id, value) {
-				let el = document.getElementById(id);
-				if (!el) return;
-
-				let color = "#00ffa6";
-				if (value < 50) color = "#ff4d4d";
-				else if (value < 70) color = "#ffaa00";
-
-				el.style.color = color;
-			}
+			
 
 			function applyScout() {
 				lastConditions.scout = selected;
@@ -1701,119 +1938,7 @@ font-weight:bold;
 				canvas.height = window.innerHeight;
 			}
 
-			function spawnBubble() {
-				if(!hotspots || hotspots.length === 0) return;
-
-				const b = hotspots[Math.floor(Math.random() * hotspots.length)];
-				if (!b) return;
-
-				let radius = b.radius || 5;
-				let hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
-
-				let angle = Math.random() * Math.PI * 2;
-				radius = Math.random() * hotspot.radius;
-
-				let x = hotspot.x + Math.cos(angle) * radius;
-				let y = hotspot.y;
-
-				let base = (lastSPI || 50) / 100;
-
-				bubbles.push({
-					x: x,
-					y: y,
-					size: Math.random() * 4 + 1,
-					speed: Math.random() * 1.2 + 0.5,
-					offset: Math.random() * Math.PI * 2
-				});
-			}
-
-
-			function ripple() {
-
-				if (!canvas || !ctx) return;
-
-				ripples.push({
-					r: 0,
-					alpha: 0.25,
-					x: canvas.width / 2,
-					y: canvas.height * 0.7
-				});
-			}
-
-			let angle = 0;
-
-			function drawThermocline() {
-				let y = canvas.height * 0.45;
-
-				let gradient = ctx.createLinearGradient(0, y - 20, 0, y + 20);
-				gradient.addColorStop(0, "rgba(255,200,0,0)");
-				gradient.addColorStop(0.5, "rgba(255,200,0,0.25)");
-				gradient.addColorStop(1, "rgba(255,200,0,0)");
-
-				ctx.fillStyle = gradient;
-				ctx.fillRect(0, y - 20, canvas.width, 40);
-			}
-
-			function animate() {
-
-				if (!ctx || !canvas) return;
-
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-				drawThermocline();
-
-				// FORCE bubbles
-				let intensity = bubbleIntensity;
-
-				// Normal spawn
-				if (Math.random() < intensity / 2) {
-					spawnBubble();
-				}
-
-				// 🔥 Burst trigger (only when SPI high) 
-				if (intensity > 0.7 && Math.random() < 0.05) {
-					for (let i = 0; i < 10; i++) {
-						spawnBubble();
-					}
-				}
-
-
-				let currentSPI = SPI || 50;
-
-				bubbles.forEach((particle, i) => {
-
-					particle.y -= particle.speed;
-					particle.x += Math.sin(particle.y * 0.05 + particle.offset) * 0.6;
-
-					let r = Math.max(0, 255 - (currentSPI * 2));
-					let g = Math.min(255, currentSPI * 2);
-					let blue = 150;
-
-					ctx.fillStyle = `rgba(${r}, ${g}, ${blue}, 0.3)`;
-
-					ctx.beginPath();
-					ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-					ctx.fill();
-
-					if (particle.y < 0) bubbles.splice(i, 1);
-				});
-
-				// ✅ MOVE RIPPLE CODE HERE
-				ripples.forEach((r, i) => {
-					r.r += 2;
-					r.alpha *= 0.96;
-
-					ctx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
-					ctx.lineWidth = 1.5;
-					ctx.beginPath();
-					ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-					ctx.stroke();
-
-					if (r.alpha < 0.01) ripples.splice(i, 1);
-				});
-
-				requestAnimationFrame(animate);
-			}
+			
 
 			function updateStrategy(spi) {
 				let text = "";
@@ -1906,56 +2031,7 @@ font-weight:bold;
 				ctx.fillText("Bottom", 10, canvas.height - 5);
 			}
 
-			function fetchWeatherSafe() {
-
-				const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
-
-				const url = `https://api.openweathermap.org/data/2.5/weather?lat=-30.140153&lon=27.004008&appid=${API_KEY}&units=metric`;
-
-				fetch(url)
-					.then(res => {
-						if (!res.ok) throw new Error("Bad response");
-						return res.json();
-					})
-					.then(data => {
-						let pressure = data.main.pressure;
-						let wind = data.wind?.speed || 0;
-						let cloud = data.clouds?.all || 0;
-
-						set("envScore", Math.round((pressure / 1050) * 100));
-						set("pressure", pressure + " hPa");
-						set("wind", wind.toFixed(1) + " km/h");
-						set("cloud", cloud + "%");
-
-						const bar = document.getElementById("tacticalBar");
-						if (bar) {
-							bar.innerText = message;
-						}
-
-						let message = "";
-
-						if (pressure > 1015 && wind < 5) {
-							message = "Stable pressure • Calm wind • High feeding activity";
-						} else if (pressure < 1005) {
-							message = "Low pressure • Fish less active • Slow approach";
-						} else {
-							message = "Changing conditions • Moderate activity • Stay adaptive";
-						}
-
-						bar.innerText = message;
-
-						renderDashboard(data);
-					})
-					.catch(err => {
-                console.log("FETCH ERROR:", err);
-                simulateWeather();
-            })
-            .finally(() => {
-                // optional
-            });
-	}	
-
-});
+			
 
 
 
@@ -1967,7 +2043,24 @@ font-weight:bold;
 // 🚀 DO NOT DELETE YET
 // =====================================================
 
+function animateValue(id, value) {
+				let el = document.getElementById(id);
+				if (!el) return;
 
+				el.style.transition = "all 0.6s ease";
+				el.innerText = value;
+			}
+
+			function colorMini(id, value) {
+				let el = document.getElementById(id);
+				if (!el) return;
+
+				let color = "#00ffa6";
+				if (value < 50) color = "#ff4d4d";
+				else if (value < 70) color = "#ffaa00";
+
+				el.style.color = color;
+			}
 				
 
 
