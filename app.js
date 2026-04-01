@@ -577,7 +577,7 @@ updateTactical(SPI, lastConditions);
         windDir,
         surfaceTemp
     );
-
+		updateSPI(newSPI);
     // ---------------------------------
     // 🧠 SMOOTHING (ONLY PLACE)
     // ---------------------------------
@@ -630,6 +630,13 @@ updateTactical(SPI, lastConditions);
 // ---------------------------------------------
 // 🧠 Generate Tactical Advice
 // ---------------------------------------------
+function updateSPI(value) {
+	const el = document.getElementById("spiValue");
+	if (el) {
+		el.innerText = value + "%";
+	}
+}
+
 function updateTactical(spi, conditions) {
 
     let lines = [];
