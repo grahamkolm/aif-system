@@ -579,8 +579,7 @@ lastConditions = {
     set("surfaceTemp", surfaceTemp.toFixed(1) + "°C");
 	set("bottomTemp", bottomTemp.toFixed(1) + "°C");
 	
-    colorMini("spiValue", newSPI);
-	colorMini("surfaceTemp", surfaceTemp);
+    colorMini("surfaceTemp", surfaceTemp);
 	colorMini("bottomTemp", bottomTemp);
 	colorMini("spiValue", SPI);
 	
