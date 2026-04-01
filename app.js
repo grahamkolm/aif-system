@@ -130,6 +130,26 @@ function animateSplash() {
 // ---------------------------------------------
 // 🚀 Start Splash (ENTRY POINT)
 // ---------------------------------------------
+// 💧 Splash Ripple Effect
+function createSplashRipple() {
+    if (!splashCanvas) return;
+
+    ripples.push({
+        x: Math.random() * splashCanvas.width * 0.5,
+        y: Math.random() * splashCanvas.height,
+        r: 0,
+        alpha: 0.6
+    });
+}
+
+// 🚀 Start Splash (ENTRY POINT)
+function startSplash() {
+
+    createSplashRipple();
+
+    setTimeout(() => {
+        ...
+
 function startSplash() {
 
     createSplashRipple();
