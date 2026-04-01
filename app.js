@@ -148,13 +148,6 @@ function startSplash() {
     createSplashRipple();
 
     setTimeout(() => {
-        ...
-
-function startSplash() {
-
-    createSplashRipple();
-
-    setTimeout(() => {
 
         const splash = document.getElementById("splash");
         if (!splash) return;
