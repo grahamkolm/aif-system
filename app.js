@@ -100,8 +100,8 @@ function createSplashRipple() {
     if (!splashCanvas) return;
 
     ripples.push({
-        x: splashCanvas.width / 2,
-        y: splashCanvas.height / 2 + 50,
+        x: Math.random() * splashCanvas.width * 0.5,
+        y: Math.random() * splashCanvas.height,
         r: 0,
         alpha: 0.6
     });
