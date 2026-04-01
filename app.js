@@ -18,19 +18,6 @@ function set(id, value) {
 	if(el) el.innerText = value;
 }
 
-function getMoonPhase() {
-	return "Normal";
-}
-
-function getSeason() {
-    const month = new Date().getMonth() + 1;
-
-    if (month >= 12 || month <= 2) return "Summer";
-    if (month >= 3 && month <= 5) return "Autumn";
-    if (month >= 6 && month <= 8) return "Winter";
-    return "Spring";
-}
-
 // =====================================================
 // 🌍 1. GLOBAL STATE (ALL VARIABLES ONLY HERE) 
 // =====================================================
@@ -373,6 +360,19 @@ function fetchWeatherSafe() {
                 bar.innerText = message;
             }
 
+			function getMoonPhase() {
+			return "Normal";
+}
+
+function getSeason() {
+    		const month = new Date().getMonth() + 1;
+
+    		if (month >= 12 || month <= 2) return "Summer";
+    		if (month >= 3 && month <= 5) return "Autumn";
+    		if (month >= 6 && month <= 8) return "Winter";
+    return "Spring";
+}
+			
             // ---------------------------------
             // 🚀 Send to Dashboard (SPI FLOW)
             // ---------------------------------
