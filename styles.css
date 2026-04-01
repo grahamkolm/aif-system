@@ -56,12 +56,17 @@ button, .dock-btn, .scout-option {
 
 #splash {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     inset: 0;
     z-index: 9999;
     background: black;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 #splash .overlay {
@@ -72,6 +77,10 @@ button, .dock-btn, .scout-option {
 
 #splashCanvas {
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     inset: 0;
 }
 
