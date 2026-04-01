@@ -1152,6 +1152,246 @@ function closeReport() {
     if (el) el.remove();
 }
 
+// 🧠 CORE / SESSION / AI / REPORT (CLEAN VERSION) // =====================================================
+
+// ===============================
+// 🎯 EVENT LOGGER
+// ===============================
+function logEvent(type, extra = {}) {
+
+    if (!currentSession) return;
+
+    navigator.geolocation.getCurrentPosition(pos => {
+
+        let event = {
+            type: type,
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            time: Date.now(),
+            spi: lastSPI || 0,
+            conditions: lastConditions,
+            ...extra
+        };
+
+        currentSession.events.push(event);
+
+        let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
+
+        let index = sessions.findIndex(s => s.id === currentSession.id);
+        if (index !== -1) {
+            sessions[index] = currentSession;
+        }
+
+        localStorage.setItem("aif_sessions", JSON.stringify(sessions));
+
+    });
+}
+
+// ===============================
+// 📦 SESSION CONTROL
+// ===============================
+function ensureSession() {
+
+    if (currentSession) return;
+
+    let saved = localStorage.getItem("aif_current_session");
+
+    if (saved) {
+        currentSession = JSON.parse(saved);
+        return;
+    }
+
+    let dam = prompt("Enter Dam Name:");
+    let area = prompt("Enter Area / Peg:");
+
+    currentSession = {
+        id: Date.now(),
+        dam: dam || "Unknown",
+        area: area || "Unknown",
+        date: new Date().toISOString(),
+        events: []
+    };
+
+    localStorage.setItem("aif_current_session", JSON.stringify(currentSession)); }
+
+// ===============================
+// 🎣 CATCH LOGGING
+// ===============================
+function logCatch() {
+    logEvent("catch", {
+        weight: prompt("Enter fish weight (kg):"),
+        bait: prompt("Bait used:")
+    });
+}
+
+// ===============================
+// 📍 DROP POINT
+// ===============================
+window.confirmDrop = function() {
+
+    ensureSession();
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+
+            logEvent("drop", { lat, lon });
+
+            console.log("Dropped at:", lat, lon);
+        },
+        err => {
+            console.log("GPS error:", err);
+        }
+    );
+};
+
+// ===============================
+// 🎨 UI HELPERS
+// ===============================
+function set(id, val) {
+    let el = document.getElementById(id);
+    if (el) el.innerHTML = val;
+}
+
+function resize() {
+    if (!canvas) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+function updateBackground(spi) {
+    document.body.classList.remove("low", "medium", "high");
+
+    if (spi > 80) document.body.classList.add("high");
+    else if (spi > 60) document.body.classList.add("medium");
+    else document.body.classList.add("low");
+}
+
+// ===============================
+// 🧠 AI INSIGHT
+// ===============================
+function updateAI(spi, conditions) {
+
+    let trend = getPressureTrend(conditions.pressure || 1015);
+
+    let insight = "";
+
+    if (spi > 75) {
+        insight = "Fish actively feeding. Increase baiting.";
+    } else if (spi > 55) {
+        insight = "Fish cautious. Adjust bait/depth.";
+    } else {
+        insight = "Low activity. Consider moving.";
+    }
+
+    let aiEl = document.getElementById("aiAnalysis");
+    if (aiEl) {
+        aiEl.innerHTML = `
+<b>${feeding(spi)}</b><br>
+Trend: ${trend}<br><br>
+${insight}
+`;
+    }
+}
+
+function feeding(spi) {
+    if (spi >= 85) return "Aggressive feeding";
+    if (spi >= 70) return "Active feeding";
+    if (spi >= 55) return "Moderate feeding";
+    if (spi >= 40) return "Slow feeding";
+    return "Very low activity";
+}
+
+function getPressureTrend(p) {
+
+    if (lastPressure === null) {
+        lastPressure = p;
+        return "Stable";
+    }
+
+    let diff = p - lastPressure;
+    lastPressure = p;
+
+    if (diff > 1) return "Rising";
+    if (diff < -1) return "Falling";
+    return "Stable";
+}
+
+// ===============================
+// 📊 REPORT SYSTEM (CLEAN)
+// ===============================
+function openReport() {
+
+    if (!currentSession) return;
+
+    let events = currentSession.events;
+
+    document.body.insertAdjacentHTML("beforeend", `
+    <div id="reportScreen" style="
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:#05080d;
+        color:white;
+        z-index:999;
+        padding:20px;
+        overflow:auto;
+    ">
+
+    <button onclick="closeReport()">Close</button>
+
+    <h2 style="color:#00ffa6;">Session Report</h2>
+
+    <div id="reportSummary"></div>
+    <div id="timeline"></div>
+
+    </div>
+    `);
+
+    renderReport();
+}
+
+function closeReport() {
+    let el = document.getElementById("reportScreen");
+    if (el) el.remove();
+}
+
+function renderReport() {
+
+    let events = currentSession.events;
+
+    let drops = events.filter(e => e.type === "drop");
+    let catches = events.filter(e => e.type === "catch");
+
+    let avgSPI = drops.length
+        ? Math.round(drops.reduce((s, d) => s + d.spi, 0) / drops.length)
+        : 0;
+
+    document.getElementById("reportSummary").innerHTML = `
+Drops: ${drops.length}<br>
+Fish: ${catches.length}<br>
+Avg SPI: ${avgSPI}%
+`;
+
+    renderTimeline(events);
+}
+
+function renderTimeline(events) {
+
+    let html = "<h3>Timeline</h3>";
+
+    events.forEach(e => {
+        html += `
+<div>
+${new Date(e.time).toLocaleTimeString()} • ${e.type} • SPI ${e.spi}% </div>`;
+    });
+
+    document.getElementById("timeline").innerHTML = html; 
+}
+
+
 // =====================================================
 // 📋 14. PLAN SYSTEM
 // =====================================================
