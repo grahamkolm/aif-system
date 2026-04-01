@@ -1,6 +1,19 @@
 // =====================================================
 // 🌍 0. START 
 // =====================================================
+const splashCanvas = document.getElementById("splashCanvas");
+const splashCtx = splashCanvas ? splashCanvas.getContext("2d") : null;
+
+function resizeSplash() {
+	if (!splashCanvas) return;
+
+	splashCanvas.width = window.innerWith;
+	splashCanvas.height = window.innerHeight;
+}
+
+window.addEvenetListener("resize", resizeSplash);
+resizeSplash();
+
 function getMoonPhase() {
 			return "Normal";
 }
@@ -1435,3 +1448,46 @@ function stopDots() {
 }
 
 simulateWeather();
+
+const splashCanvas = document.getElementById("splashCanvas");
+const splashCtx = splashCanvas.getContext("2d");
+
+function resizeSplash() {
+    splashCanvas.width = window.innerWidth;
+    splashCanvas.height = window.innerHeight; }
+
+resizeSplash();
+window.addEventListener("resize", resizeSplash);
+
+let ripples = [];
+
+function createRipple() {
+    ripples.push({
+        x: Math.random() * splashCanvas.width,
+        y: Math.random() * splashCanvas.height,
+        r: 0,
+        alpha: 0.5
+    });
+}
+
+function animateSplash() {
+    splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
+
+    ripples.forEach((r, i) => {
+        r.r += 1.5;
+        r.alpha *= 0.96;
+
+        splashCtx.beginPath();
+        splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+        splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+        splashCtx.stroke();
+
+        if (r.alpha < 0.02) ripples.splice(i, 1);
+    });
+
+    if (Math.random() < 0.1) createRipple();
+
+    requestAnimationFrame(animateSplash);
+}
+
+animateSplash();
