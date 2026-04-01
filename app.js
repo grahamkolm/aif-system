@@ -630,41 +630,49 @@ updateTactical(SPI, lastConditions);
 // ---------------------------------------------
 // 🧠 Generate Tactical Advice
 // ---------------------------------------------
-function updateTactical(spi, w, t) {
+function updateTactical(spi, conditions) {
 
     let lines = [];
 
-    // 🔥 PRIORITY
-    if (spi > 75) {
-        lines.push("🔥 Stay on spot — feeding window active");
-    } else if (spi < 50) {
-        lines.push("⚠️ Consider relocating or changing depth");
-    }
+    let w = conditions.windSpeed;
+    let t = conditions.airTemp;
+    let envScore = conditions.envScore || 50;
+    let confScore = conditions.confScore || 50;
 
-    // 🎯 SPI CORE
-    if (spi > 85) {
-        lines.push("🔥 Peak feeding conditions");
-    } else if (spi > 70) {
-        lines.push("⚡ Strong feeding activity");
-    } else if (spi > 50) {
-        lines.push("🟡 Fish present — trigger needed");
-    } else {
+    if (spi > 75) {
+        lines.push("🔥 Strong feeding window — stay on spot");
+    } else if (spi < 50) {
         lines.push("❌ Low activity — rethink approach");
     }
 
-    // 🌬 WIND
-    if (w < 5) {
-        lines.push("🌬️ Light wind — fish less active");
-    } else if (w > 15) {
-        lines.push("🌊 Strong wind — target windblown areas");
+    if (envScore > 75) {
+        lines.push("🌿 Stable environment");
+    } else if (envScore < 50) {
+        lines.push("🌧 Pressure affecting fish");
     }
 
-    // 🌡 TEMP
-    if (t >= 18 && t <= 24) {
-        lines.push("🌡️ Ideal feeding temperature");
-    } else {
-        lines.push("🌡️ Suboptimal temp — adjust depth");
+    if (confScore > 80) {
+        lines.push("🧠 High confidence pattern");
     }
+
+    if (w < 5) {
+        lines.push("🌬 Light wind");
+    } else if (w > 15) {
+        lines.push("🌊 Strong wind — fish wind banks");
+    }
+
+    if (t >= 18 && t <= 24) {
+        lines.push("🌡 Optimal feeding temp");
+    } else {
+        lines.push("🌡 Suboptimal temp — adjust depth");
+    }
+
+    let tacticalEl = document.getElementById("tactical");
+
+    if (tacticalEl) {
+        tacticalEl.innerHTML = lines.join("<br>");
+    }
+}
 
     // 🧠 OUTPUT
     let tacticalEl = document.getElementById("tactical");
