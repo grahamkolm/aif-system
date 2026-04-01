@@ -674,11 +674,182 @@ function updateSPI(spi) {
 // =====================================================
 // 🎯 9. TACTICAL SYSTEM
 // =====================================================
+// ---------------------------------------------
+// 🧠 Generate Tactical Advice
+// ---------------------------------------------
+function updateTactical(spi, conditions) {
+
+    let message = "";
+
+    const wind = conditions.windSpeed || 0;
+    const temp = conditions.surfaceTemp || 18;
+    const pressure = conditions.pressure || 1015;
+    const trend = conditions.trend || "Stable";
+
+    // ---------------------------------
+    // 🎯 SPI CORE LOGIC
+    // ---------------------------------
+    if (spi >= 75) {
+        message = "🔥 High activity • Fish aggressively • Increase feed rate";
+    }
+    else if (spi >= 60) {
+        message = "🟢 Good conditions • Stay consistent • Build the swim";
+    }
+    else if (spi >= 45) {
+        message = "🟡 Moderate • Fish cautious • Adjust baiting";
+    }
+    else {
+        message = "🔴 Low activity • Slow approach • Minimal feed";
+    }
+
+    // ---------------------------------
+    // 🌬 WIND ADJUSTMENT
+    // ---------------------------------
+    if (wind > 10) {
+        message += " • Strong wind: target windward bank";
+    }
+
+    // ---------------------------------
+    // 🌡 TEMP ADJUSTMENT
+    // ---------------------------------
+    if (temp > 22) {
+        message += " • Warm water: fish higher layers";
+    } else if (temp < 15) {
+        message += " • Cold water: fish deeper & slower";
+    }
+
+    // ---------------------------------
+    // 📉 PRESSURE TREND
+    // ---------------------------------
+    if (trend === "Falling") {
+        message += " • Falling pressure: short feeding windows";
+    }
+    else if (trend === "Rising") {
+        message += " • Rising pressure: fish may slow down";
+    }
+
+    // ---------------------------------
+    // 🎨 UPDATE UI
+    // ---------------------------------
+    const bar = document.getElementById("tacticalBar");
+
+    if (bar) {
+        bar.innerText = message;
+    }
+}
 
 
 // =====================================================
 // 🔍 10. SCOUT SYSTEM
 // =====================================================
+function openScout() {
+
+    if (document.getElementById("scoutScreen")) return;
+
+    scoutInputs = {};
+
+    document.body.insertAdjacentHTML("beforeend", `
+    <div id="scoutScreen" style="
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:#05080d;
+        color:white;
+        z-index:999;
+        padding:20px;
+        overflow:auto;
+    ">
+
+    <button onclick="applyScout()" style="
+        position:fixed;
+        top:20px;
+        right:20px;
+        background:#00ffa6;
+        border:none;
+        padding:10px 14px;
+        border-radius:10px;
+        font-weight:bold;
+    ">Apply</button>
+
+    <h2 style="color:#00ffa6;">AIF™ Scout Mode</h2>
+
+    <h3>Fish Activity</h3>
+    <div class="scout-grid">
+        <div class="scout-option" onclick="toggleScout('jumping',this)">🐟 Jumping</div>
+        <div class="scout-option" onclick="toggleScout('bubbling',this)">🫧 Bubbling</div>
+        <div class="scout-option" onclick="toggleScout('none',this)">🚫 None</div>
+    </div>
+
+    <h3>Water Clarity</h3>
+    <div class="scout-grid">
+        <div class="scout-option" onclick="toggleScout('clear',this)">💧 Clear</div>
+        <div class="scout-option" onclick="toggleScout('stained',this)">🌫 Stained</div>
+        <div class="scout-option" onclick="toggleScout('dirty',this)">🟤 Dirty</div>
+    </div>
+
+    <h3>Bird Activity</h3>
+    <div class="scout-grid">
+        <div class="scout-option" onclick="toggleScout('birdsActive',this)">🐦 Active</div>
+        <div class="scout-option" onclick="toggleScout('noBirds',this)">🚫 None</div>
+    </div>
+
+    </div>
+    `);
+}
+
+// ===============================
+// 🔁 TOGGLE SCOUT INPUTS
+// ===============================
+function toggleScout(type, el) {
+
+    scoutInputs[type] = !scoutInputs[type];
+
+    el.classList.toggle("active", scoutInputs[type]); }
+
+// ===============================
+// 🧠 CALCULATE SCOUT SCORE
+// ===============================
+function calculateScoutScore() {
+
+    let score = 50;
+
+    // fish activity
+    if (scoutInputs.jumping) score += 20;
+    if (scoutInputs.bubbling) score += 15;
+    if (scoutInputs.none) score -= 15;
+
+    // water clarity
+    if (scoutInputs.clear) score += 5;
+    if (scoutInputs.stained) score += 10;
+    if (scoutInputs.dirty) score -= 10;
+
+    // birds
+    if (scoutInputs.birdsActive) score += 10;
+    if (scoutInputs.noBirds) score -= 5;
+
+    return Math.max(0, Math.min(100, score)); }
+
+// ===============================
+// ✅ APPLY SCOUT
+// ===============================
+function applyScout() {
+
+    let scoutScore = calculateScoutScore();
+
+    lastConditions.scout = { ...scoutInputs };
+    lastConditions.scoutScore = scoutScore;
+
+    let boostedSPI = Math.round((SPI + scoutScore) / 2);
+
+    SPI = boostedSPI;
+    bubbleIntensity = SPI / 100;
+
+    updateSPI(SPI);
+    updateTactical(SPI, lastConditions);
+
+    const screen = document.getElementById("scoutScreen");
+    if (screen) screen.remove();
+}
 
 
 // =====================================================
@@ -761,12 +932,225 @@ function saveDam(name) {
 // =====================================================
 // 🗺 12. MAP SYSTEM
 // =====================================================
+function openMap() {
 
+    if (document.getElementById("mapScreen")) return;
+
+    document.body.insertAdjacentHTML("beforeend", `
+    <div id="mapScreen" style="
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:#05080d;
+        color:white;
+        z-index:999;
+        padding:20px;
+        overflow:auto;
+    ">
+
+    <button onclick="closeMap()" style="
+        position:fixed;
+        top:20px;
+        right:20px;
+        background:#ff4d4d;
+        border:none;
+        padding:10px 14px;
+        border-radius:10px;
+        font-weight:bold;
+    ">Close</button>
+
+    <h2 style="color:#00ffa6;">AIF™ Map</h2>
+
+    <div id="mapInfo" style="margin-top:20px;">
+        Loading location...
+    </div>
+
+    <div style="margin-top:20px;">
+        <button onclick="saveHotspot()" style="
+            background:#00ffa6;
+            border:none;
+            padding:10px;
+            border-radius:10px;
+        ">📍 Save Hotspot</button>
+    </div>
+
+    <div id="hotspotList" style="margin-top:20px;"></div>
+
+    </div>
+    `);
+
+    renderMapInfo();
+}
+
+// ===============================
+// ❌ CLOSE MAP
+// ===============================
+function closeMap() {
+    const map = document.getElementById("mapScreen");
+    if (map) map.remove();
+}
+
+// ===============================
+// 📍 SHOW CURRENT LOCATION
+// ===============================
+function renderMapInfo() {
+
+    const el = document.getElementById("mapInfo");
+    if (!el) return;
+
+    if (!userLocation) {
+        el.innerText = "GPS not ready...";
+        return;
+    }
+
+    el.innerHTML = `
+        <div>Latitude: ${userLocation.lat.toFixed(5)}</div>
+        <div>Longitude: ${userLocation.lon.toFixed(5)}</div>
+    `;
+
+    renderHotspots();
+}
+
+// ===============================
+// 📌 SAVE HOTSPOT
+// ===============================
+function saveHotspot() {
+
+    if (!userLocation) return;
+
+    hotspots.push({
+        lat: userLocation.lat,
+        lon: userLocation.lon,
+        time: Date.now()
+    });
+
+    localStorage.setItem("aif_hotspots", JSON.stringify(hotspots));
+
+    renderHotspots();
+}
+
+// ===============================
+// 📦 LOAD HOTSPOTS
+// ===============================
+function loadHotspots() {
+    hotspots = JSON.parse(localStorage.getItem("aif_hotspots")) || []; }
+
+// ===============================
+// 📋 DISPLAY HOTSPOTS
+// ===============================
+function renderHotspots() {
+
+    const list = document.getElementById("hotspotList");
+    if (!list) return;
+
+    if (!hotspots.length) {
+        list.innerHTML = "<div>No hotspots yet</div>";
+        return;
+    }
+
+    list.innerHTML = hotspots.map((h, i) => `
+        <div style="
+            padding:8px;
+            margin-bottom:6px;
+            background:#0c1118;
+            border-radius:6px;
+        ">
+            📍 ${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}
+        </div>
+    `).join("");
+}
 
 // =====================================================
 // 📊 13. REPORT SYSTEM
 // =====================================================
+function getSessions() {
+    return JSON.parse(localStorage.getItem("aif_sessions")) || []; }
 
+// ===============================
+// 📊 GENERATE REPORT SUMMARY
+// ===============================
+function generateReport() {
+
+    const sessions = getSessions();
+
+    if (!sessions.length) {
+        alert("No session data available");
+        return;
+    }
+
+    let totalSessions = sessions.length;
+    let avgSPI = 0;
+    let bestSPI = 0;
+
+    sessions.forEach(s => {
+        let events = s.events || [];
+
+        events.forEach(e => {
+            if (e.type === "dashboard_update") {
+                avgSPI += e.data.spi;
+                if (e.data.spi > bestSPI) bestSPI = e.data.spi;
+            }
+        });
+    });
+
+    avgSPI = Math.round(avgSPI / (sessions.length || 1));
+
+    showReport({
+        totalSessions,
+        avgSPI,
+        bestSPI
+    });
+}
+
+// ===============================
+// 📺 SHOW REPORT UI
+// ===============================
+function showReport(data) {
+
+    if (document.getElementById("reportScreen")) return;
+
+    document.body.insertAdjacentHTML("beforeend", `
+    <div id="reportScreen" style="
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:#05080d;
+        color:white;
+        z-index:999;
+        padding:20px;
+        overflow:auto;
+    ">
+
+    <button onclick="closeReport()" style="
+        position:fixed;
+        top:20px;
+        right:20px;
+        background:#ff4d4d;
+        border:none;
+        padding:10px 14px;
+        border-radius:10px;
+        font-weight:bold;
+    ">Close</button>
+
+    <h2 style="color:#00ffa6;">AIF™ Report</h2>
+
+    <div style="margin-top:20px;">
+        <div>Total Sessions: ${data.totalSessions}</div>
+        <div>Average SPI: ${data.avgSPI}%</div>
+        <div>Best SPI: ${data.bestSPI}%</div>
+    </div>
+
+    </div>
+    `);
+}
+
+// ===============================
+// ❌ CLOSE REPORT
+// ===============================
+function closeReport() {
+    const el = document.getElementById("reportScreen");
+    if (el) el.remove();
+}
 
 // =====================================================
 // 📋 14. PLAN SYSTEM
@@ -1054,1171 +1438,3 @@ function stopDots() {
     }
 }
 
-// =======================================================================================================
-
-
-			
-
-			function applyScout() {
-				lastConditions.scout = selected;
-				document.getElementById("scoutScreen").classList.add("hidden");
-			}
-
-			// ===============================
-			// 🌦 TACTICAL SYSTEM (FIXED)
-			// ===============================
-
-			function updateTactical(spi, envScore, confScore, w, t) {
-
-				// 🛟 Safety: ensure probeData exists
-				if (!probeData) {
-					probeData = {
-						surface: null,
-						bottom: null
-					};
-				}
-
-				let lines = [];
-
-				// =========================
-				// 🔥 PRIORITY
-				// =========================
-				if (spi > 75) {
-					lines.push("🔥 PRIORITY: Stay on current spot — feeding window active");
-				} else if (spi < 50) {
-					lines.push("⚠️ PRIORITY: Relocate or change depth");
-				}
-
-				// =========================
-				// 👁 SCOUT INPUT
-				// =========================
-				if (lastConditions.scout) {
-
-					if (lastConditions.scout.bubbles) {
-						lines.push("🎯 Fish actively feeding in area");
-					}
-
-					if (lastConditions.scout.rolling) {
-						lines.push("🐟 Fish showing — strong indication of presence");
-					}
-
-					if (lastConditions.scout.murky) {
-						lines.push("🌫 Low visibility — fish relying on scent");
-					}
-
-					if (lastConditions.scout.windBank) {
-						lines.push("🌬 Wind pushing food — target this bank");
-					}
-				}
-
-				// =========================
-				// 🎯 SPI CORE
-				// =========================
-				if (spi > 85) {
-					lines.push("🔥 Peak feeding window active");
-				} else if (spi > 70) {
-					lines.push("⚡ Good feeding conditions");
-				} else {
-					lines.push("⚠️ Low feeding activity");
-				}
-
-				// =========================
-				// 🌿 ENVIRONMENT
-				// =========================
-				if (envScore > 75) {
-					lines.push("🌿 Environment stable and supportive");
-				} else if (envScore < 50) {
-					lines.push("🌧️ Environmental pressure affecting fish");
-				}
-
-				// =========================
-				// 🧠 CONFIDENCE
-				// =========================
-				if (confScore > 80) {
-					lines.push("🧠 High confidence pattern detected");
-				} else if (confScore < 50) {
-					lines.push("⚠️ Low confidence — conditions unstable");
-				}
-
-				// =========================
-				// 🌬️ WIND
-				// =========================
-				if (w < 5) {
-					lines.push("🌬️ Light wind — slower movement zones");
-				} else if (w > 15) {
-					lines.push("🌊 Strong wind — target windblown banks");
-				}
-
-				// =========================
-				// 🌡️ TEMP
-				// =========================
-				if (t >= 18 && t <= 24) {
-					lines.push("🌡️ Optimal temperature range for feeding");
-				} else {
-					lines.push("🌡️ Suboptimal temperature — adjust depth");
-				}
-
-				// =========================
-				// 🧠 FINAL OUTPUT (SAFE)
-				// =========================
-				let tacticalEl = document.getElementById("tactical");
-
-				if (tacticalEl) {
-					tacticalEl.innerHTML = lines.length > 0 ?
-						lines.join("<br>") :
-						"⚠️ No tactical data available";
-				}
-			}
-
-			// ===============================
-			// 🎯 EVENT LOGGER (CORE SYSTEM)
-			// ===============================
-
-			function logEvent(type, extra = {}) {
-
-				if (!currentSession) return;
-
-				navigator.geolocation.getCurrentPosition(pos => {
-
-					let event = {
-						type: type,
-						lat: pos.coords.latitude,
-						lon: pos.coords.longitude,
-						time: Date.now(),
-						spi: lastSPI || 0,
-						conditions: lastConditions,
-						...extra
-					};
-
-					currentSession.events.push(event);
-
-					let sessions = JSON.parse(localStorage.getItem("aif_sessions") || "[]");
-
-					let index = sessions.findIndex(s => s.id === currentSession.id);
-					if (index !== -1) {
-						sessions[index] = currentSession;
-					}
-
-					localStorage.setItem("aif_sessions", JSON.stringify(sessions));
-
-					console.log(type + " logged");
-
-				});
-			}
-
-			// ===============================
-			// 🎯 REFRESH
-			// ===============================
-
-			function refreshData() {
-				const icon = document.getElementById("refreshIcon");
-
-				if (icon) {
-					icon.classList.add("refresh-spin");
-				}
-
-				fetchWeatherSafe();
-			}
-
-			// ===============================
-			// 🎯 DROP / SCOUT / ESP / CATCH
-			// ===============================
-
-			function dropPoint() {
-				if (!map) {
-					console.log("Map not ready");
-					return;
-				}
-
-				navigator.geolocation.getCurrentPosition(position => {
-					const lat = position.coords.latitude;
-					const lon = position.coords.longitude;
-
-					console.log("Dropped at:", lat, lon);
-
-					L.marker([lat, lon]).addTo(map);
-
-				}, err => {
-					console.log("GPS error:", err);
-				});
-			}
-
-			function ensureSession() {
-
-				if (currentSession) {
-					return; // ✅ already exists → do nothing
-				}
-
-				// try load from storage first
-				let saved = localStorage.getItem("aif_current_session");
-
-				if (saved) {
-					currentSession = JSON.parse(saved);
-					return;
-				}
-
-				// only ask ONCE
-				let dam = prompt("Enter Dam Name:");
-				let area = prompt("Enter Area / Peg:");
-
-				currentSession = {
-					id: Date.now(),
-					dam: dam || "Unknown",
-					area: area || "Unknown",
-					date: new Date().toISOString(),
-					events: []
-				};
-
-				localStorage.setItem("aif_current_session", JSON.stringify(currentSession));
-			}
-
-			function performScout() {
-				logEvent("scout");
-			}
-
-			// 🔴 FUTURE READY
-			function logCatch() {
-				logEvent("catch", {
-					weight: prompt("Enter fish weight (kg):"),
-					bait: prompt("Bait used:")
-				});
-			}
-
-			function openScout() {
-				ensureSession();
-				logEvent("scout");
-
-				document.body.insertAdjacentHTML("beforeend", `
-<div id="scoutScreen" style="
-position:fixed;
-top:0; left:0;
-width:100%; height:100%;
-background:#05080d;
-color:white;
-z-index:999;
-padding:20px;
-font-family:Arial;
-overflow:auto;
-">
-
-<h2 style="color:#00ffa6;">Scout Mode</h2>
-
-<p style="opacity:0.7;">Quickly log activity & scan water</p>
-
-<div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;">
-
-<div style="margin-top:20px;display:flex;flex-direction:column;gap:15px;">
-
-<div class="scout-group">
-  <h3>Fish Activity</h3>
-  <div class="scout-grid">
-    <div class="scout-option" onclick="toggleScout('bubbles', this)">🫧 Bubbles</div>
-    <div class="scout-option" onclick="toggleScout('rolling', this)">🐟 Rolling Fish</div>
-    <div class="scout-option" onclick="toggleScout('none', this)">🚫 No Activity</div>
-  </div>
-</div>
-
-<div class="scout-group">
-  <h3>Water Clarity</h3>
-  <div class="scout-grid">
-    <div class="scout-option" onclick="toggleScout('clear', this)">💧 Clear</div>
-    <div class="scout-option" onclick="toggleScout('stained', this)">🌤 Slightly Stained</div>
-    <div class="scout-option" onclick="toggleScout('murky', this)">🌫 Murky</div>
-  </div>
-</div>
-
-<div class="scout-group">
-  <h3>Life Signs</h3>
-  <div class="scout-grid">
-    <div class="scout-option" onclick="toggleScout('birds', this)">🕊 Birds Active</div>
-    <div class="scout-option" onclick="toggleScout('noBirds', this)">❌ No Birds</div>
-  </div>
-</div>
-
-<div class="scout-group">
-  <h3>Structure</h3>
-  <div class="scout-grid">
-    <div class="scout-option" onclick="toggleScout('weed', this)">🌿 Weed</div>
-    <div class="scout-option" onclick="toggleScout('drop', this)">📉 Drop-off</div>
-    <div class="scout-option" onclick="toggleScout('flat', this)">🏞 Flat</div>
-  </div>
-</div>
-
-<div class="scout-group">
-  <h3>Wind Effect</h3>
-  <div class="scout-grid">
-    <div class="scout-option" onclick="toggleScout('windBank', this)">🌬 Windblown Bank</div>
-    <div class="scout-option" onclick="toggleScout('calm', this)">🪶 Calm Water</div>
-  </div>
-</div>
-
-</div>
-
-<button onclick="saveScout()" style="
-position:sticky;
-bottom:20px;
-margin-top:25px;
-width:100%;
-padding:14px;
-background:#00ffa6;
-border:none;
-border-radius:10px;
-font-weight:bold;
-z-index:10;
-">
-Save & Continue
-</button>
-
-<div id="scanArea" style="margin-top:20px;"></div>
-
-</div>
-`);
-			}
-
-			function toggleScout(type, el) {
-
-				selected[type] = !selected[type];
-
-				if (selected[type]) {
-					el.classList.add("active");
-				} else {
-					el.classList.remove("active");
-				}
-			}
-
-
-			function calculateSPI(p, w, c, windDir, t) {
-
-    let score = 50;
-
-    // 🎯 PRESSURE
-    if (p > 1018) score += 15;
-    else if (p > 1010) score += 10;
-    else if (p < 1005) score -= 10;
-
-    // 🌬 WIND SPEED
-    if (w >= 5 && w <= 15) score += 15;
-    else if (w < 2) score -= 10;
-    else if (w > 20) score -= 5;
-
-    // ☁ CLOUD COVER
-    if (c >= 20 && c <= 60) score += 10;
-    else if (c < 10) score -= 5;
-    else if (c > 80) score -= 5;
-
-    // 🌡 TEMPERATURE
-    if (t >= 18 && t <= 24) score += 20;
-    else if (t >= 15 && t <= 28) score += 10;
-    else score -= 10;
-
-    // 🧠 WIND DIRECTION BONUS (optional but powerful)
-    if (windDir >= 180 && windDir <= 270) {
-        score += 5; // warm wind (example logic)
-    }
-
-    return Math.max(0, Math.min(100, Math.round(score))); }
-
-			// ===============================
-			// 🔍 SCOUT SCAN FLOW (FINAL CLEAN)
-			// ===============================
-
-			// store selections (make sure this exists once in your file) let selected = {};
-
-			// START SCAN (animation flow)
-			function startScan() {
-
-				const resultBox = document.getElementById("scanArea");
-
-				resultBox.innerHTML = "🔄 Checking sensors...";
-
-				setTimeout(() => {
-
-					const sensors = checkSensors();
-
-					if (!sensors.temp && !sensors.turbidity && !sensors.depth) {
-
-						resultBox.innerHTML = `
-❌ No sensors detected<br><br>
-
-<button onclick="retryScan()" style="
-width:100%;
-padding:14px;
-margin-top:10px;
-background:#ffaa00;
-border:none;
-border-radius:10px;
-font-weight:bold;
-">
-Retry
-</button>
-
-<button onclick="closeScout()" style="
-width:100%;
-padding:14px;
-margin-top:10px;
-background:#444;
-border:none;
-border-radius:10px;
-color:white;
-">
-Exit
-</button>
-            `;
-
-						return;
-					}
-
-					// ✅ sensors found → continue
-					runScanFlow();
-
-				}, 1000);
-			}
-
-			function retryScan() {
-				startScan(); // 🔁 just re-run everything 
-			}
-
-			function runScanFlow() {
-
-				const resultBox = document.getElementById("scanArea");
-
-				resultBox.innerHTML = "📡 Sensors connected...";
-
-				setTimeout(() => {
-					resultBox.innerHTML = "🌊 Scanning water...";
-				}, 1000);
-
-				setTimeout(() => {
-					resultBox.innerHTML = "🧠 Processing data...";
-				}, 2000);
-
-				setTimeout(() => {
-					generateScoutResults(); // ✅ always ends flow
-				}, 3000);
-			}
-
-			function checkSensors() {
-
-				// 🔌 YOU CONTROL THIS LATER WITH REAL HARDWARE
-				let tempSensor = false;
-				let turbiditySensor = false;
-				let depthSensor = false;
-
-				return {
-					temp: tempSensor,
-					turbidity: turbiditySensor,
-					depth: depthSensor
-				};
-			}
-
-			// ===============================
-			// 📊 SCOUT RESULTS ENGINE
-			// ===============================
-			function applyScoutAndClose(score) {
-
-				lastConditions.scout = scoutInputs;
-				lastConditions.scoutScore = score;
-
-				document.getElementById("scoutScreen").remove();
-
-				fetchWeatherSafe();
-			}
-
-			function saveScoutData(score) {
-
-				let entry = {
-					time: Date.now(),
-					inputs: scoutInputs,
-					probe: probeData,
-					score: score,
-					conditions: lastConditions,
-					spi: lastSPI
-				};
-
-				scoutHistory.push(entry);
-				localStorage.setItem("aif_scout_history", JSON.stringify(scoutHistory));
-			}
-
-			function saveScout() {
-				scoutInputs = {
-					...selected
-				};
-				scoutStep = "connect";
-				showConnectionStatus();
-			}
-
-			function showConnectionStatus() {
-
-				const box = document.getElementById("scanArea");
-
-				// 🔌 SENSOR STATES
-				let probe = false;
-				let turbidity = false;
-				let depth = true; // ← for testing
-
-				// ✅ BUILD UI
-				box.innerHTML = `
-<b>Device Status</b><br><br>
-
-Probe: ${probe ? "✅ Connected" : "❌ Not Connected"}<br>
-Turbidity: ${turbidity ? "✅ Connected" : "❌ Not Connected"}<br>
-Depth: ${depth ? "✅ Connected" : "❌ Not Connected"}<br><br>
-
-<button onclick="showConnectionStatus()">Recheck Devices</button>
-
-<button onclick="startScan()" id="startScanBtn">Start Scan</button> `;
-
-				// ✅ ADD THIS HERE (VERY IMPORTANT POSITION)
-				const anyConnected = probe || turbidity || depth;
-
-				const btn = document.getElementById("startScanBtn");
-
-				if (btn && !anyConnected) {
-					btn.disabled = true;
-					btn.style.opacity = 0.5;
-				}
-			}
-
-			//=====================================
-			//STEP 8 — RESULTS UI
-			//=====================================
-			function showResults(score) {
-
-				document.getElementById("scanArea").innerHTML = `
-<h3 style="color:#00ffa6;">Results</h3>
-
-Surface: ${probeData?.surface ? probeData.surface.toFixed(1) : "--"}°C
-Bottom: ${probeData?.bottom ? probeData.bottom.toFixed(1) : "--"}°C
-${probeData.thermo}<br><br>
-
-Fishing Score: ${score}%<br>
-
-<button onclick="closeScout()" style="
-margin-top:20px;
-width:100%;
-padding:12px;
-background:#00ffa6;
-border:none;
-border-radius:10px;
-">
-Apply & Close
-</button>
-`;
-			}
-
-			//=====================================
-			//STEP 9 — CLOSE + APPLY
-			//=====================================
-			function closeScout() {
-				document.getElementById("scoutScreen").remove();
-				fetchWeatherSafe();
-			}
-
-			// ===============================
-			// 📊 UI UPDATE
-			// ===============================
-
-			function updateSPI(v) {
-				SPI = v;
-				let arc = document.getElementById("spiArc");
-				if (!arc) return;
-
-				let r = 110;
-				let C = 2 * Math.PI * r;
-
-				arc.setAttribute("stroke-dasharray", C);
-				arc.setAttribute("stroke-dashoffset", C - (v / 100) * C);
-
-				// 🎯 Smooth animation
-				arc.style.transition = "stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1)";
-
-				// 🎨 Dynamic color (premium feel)
-				let color = "#00ffa6";
-				if (v < 50) color = "#ff4d4d";
-				else if (v < 70) color = "#ffaa00";
-
-				arc.style.stroke = color;
-
-				let val = document.getElementById("spiValue");
-				if (val) val.textContent = v + "%";
-			}
-
-			function updateAI(spi, p, w, c) {
-
-				let trend = getPressureTrend(p);
-
-				let insight = "";
-
-				if (spi > 75) {
-					insight = "Fish are actively feeding. Stay on your line and increase baiting slightly.";
-				} else if (spi > 55) {
-					insight = "Fish are present but cautious. Try changing hookbait or depth.";
-				} else {
-					insight = "Low activity. Consider relocating or reducing feed.";
-				}
-
-				let aiEl = document.getElementById("aiAnalysis");
-				if (aiEl) {
-					aiEl.innerHTML = `
-        <b>${feeding(spi)}</b><br>
-        Trend: ${trend}<br><br>
-        ${insight}
-`;
-				}
-			}
-
-			function openAIDetail() {
-
-				document.body.insertAdjacentHTML("beforeend", `
-    <div id="aiDetail" style="
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:#05080d;
-    color:white;
-    z-index:999;
-    padding:20px;
-    overflow:auto;
-    ">
-
-    <h2 style="color:#00ffa6;">AI Breakdown</h2>
-
-    <div style="margin-top:15px;line-height:1.6">
-
-    <b>Environment</b><br>
-    Temp: ${lastConditions.airTemp?.toFixed(1)}°C<br>
-    Wind: ${lastConditions.windSpeed} km/h<br>
-    Cloud: ${lastConditions.cloud}%<br><br>
-
-    <b>Pressure</b><br>
-    Trend: ${getPressureTrend(lastConditions.pressure)}<br><br>
-
-    <b>AI Insight</b><br>
-    ${document.getElementById("tactical")?.innerText || "No tactical data"}
-
-    </div>
-
-    <button onclick="closeAIDetail()" style="
-    margin-top:20px;
-    width:100%;
-    padding:14px;
-    background:#00ffa6;
-    border:none;
-    border-radius:10px;
-    font-weight:bold;
-    ">
-    Close
-    </button>
-
-    </div>
-    `);
-
-			}
-
-			function closeAIDetail() {
-				document.getElementById("aiDetail").remove();
-			}
-
-			// ===============================
-			// 🛠 GLOBAL SET FUNCTION
-			// ===============================
-			function set(id, val) {
-				let el = document.getElementById(id);
-				if (el) el.innerHTML = val;
-			}
-
-			// ===============================
-			// 📊 REPORT SYSTEM (SESSION BASED)
-			// ===============================
-
-			function openReport() {
-
-				if (!currentSession) return;
-
-				let events = currentSession.events;
-
-				// BUILD TIMELINE
-				let timelineHTML = "";
-
-				// CREATE SCREEN
-				document.body.insertAdjacentHTML("beforeend", ` <div id="reportScreen" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#05080d;
-color:white;
-z-index:999;
-overflow:auto;
-padding:20px;
-font-family:Arial;
-">
-
-<button onclick="closeReport()" style="
-position:fixed;
-top:20px;
-right:20px;
-background:#00ffa6;
-color:#081018;
-border:none;
-padding:10px 16px;
-border-radius:8px;
-font-weight:600;
-">Close</button>
-
-<h2 style="color:#00ffa6;">AIF SESSION REPORT</h2>
-
-<div id="reportSummary"></div>
-
-<h3 style="margin-top:20px;color:#00ffa6;">Timeline</h3>
-<div id="timeline"></div>
-
-<h3 style="margin-top:20px;color:#00ffa6;">Session Map</h3> <div id="reportMap" style="height:220px;border-radius:12px;"></div>
-
-</div>
-`);
-
-				// ✅ INSERT TIMELINE (FIXED)
-				document.getElementById("timeline").innerHTML = timelineHTML;
-
-				// CONTINUE
-				renderReport();
-			}
-
-			function closeReport() {
-				let el = document.getElementById("reportScreen");
-				if (el) el.remove();
-			}
-
-			// ===============================
-			// 📊 REPORT CONTENT
-			// ===============================
-
-			function renderReport() {
-
-				let events = currentSession.events;
-
-				let drops = events.filter(e => e.type === "drop");
-				let scouts = events.filter(e => e.type === "scout");
-				let catches = events.filter(e => e.type === "catch");
-
-				let avgSPI = Math.round(drops.reduce((s, d) => s + d.spi, 0) / drops.length);
-
-				document.getElementById("reportSummary").innerHTML += ` 
-<br><br>
-${generateInsights(drops, scouts, catches)}
-Dam: ${currentSession.dam}<br>
-Area: ${currentSession.area}<br>
-Drops: ${drops.length}<br>
-Scouts: ${scouts.length}<br>
-Fish: ${catches.length}<br>
-Avg SPI: ${avgSPI}%
-`;
-
-				renderTimeline(events);
-				renderMap(events);
-			}
-
-			setTimeout(() => {
-				if (window.reportMap && typeof window.reportMap.invalidateSize == "function") {
-					window.reportMap.invalidateSize();
-					window.reportMap.setView([-26, 28], 13);
-				}
-			}, 300);
-
-			// ===============================
-			// 🗺 MAP
-			// ===============================
-
-			let map;
-
-			window.openMap = function() {
-
-				const mapScreen = document.getElementById("mapScreen");
-				mapScreen.style.display = "block";
-
-				if (!window.mapInitialized) {
-					map = L.map('map').setView([-26, 28], 13);
-
-					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-					window.mapInitialized = true;
-				}
-
-				setTimeout(() => {
-					if (map) map.invalidateSize();
-				}, 300);
-			};
-
-			function closeMap() {
-				document.getElementById("mapScreen").style.display = "none";
-			}
-
-			function renderMap(events) {
-
-				// 🔥 remove old map
-				if (window.reportMap) {
-					window.reportMap.remove();
-				}
-
-				window.reportMap = L.map('reportMap').setView([-26, 28], 13);
-
-				L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(window.reportMap);
-
-				events.forEach(e => {
-
-					let color = "blue";
-
-					if (e.type === "scout") color = "yellow";
-					if (e.type === "drop") color = "green";
-					if (e.type === "catch") color = "red";
-
-					L.circleMarker([e.lat, e.lon], {
-						radius: 6,
-						color: color,
-						fillColor: color,
-						fillOpacity: 0.8
-					}).addTo(window.reportMap);
-
-				});
-
-				// 🔥 force correct size
-				setTimeout(() => {
-					window.reportMap.invalidateSize();
-				}, 200);
-
-			}
-
-			// ===============================
-			// 📋 TIMELINE
-			// ===============================
-
-			function renderTimeline(events) {
-
-				let html = "<h3>Timeline</h3>";
-
-				events.forEach(e => {
-					html += `
-        <div style="margin-top:10px">
-        ${new Date(e.time).toLocaleTimeString()} • ${e.type.toUpperCase()} • SPI ${e.spi}%
-        </div>`;
-				});
-
-				document.getElementById("timeline").innerHTML = html;
-			}
-
-			function feeding(spi) {
-
-				if (spi >= 85) return "Aggressive feeding";
-				if (spi >= 70) return "Active feeding";
-				if (spi >= 55) return "Moderate feeding";
-				if (spi >= 40) return "Slow feeding";
-
-				return "Very low activity";
-			}
-
-			function getSPIColor(v) {
-				if (v >= 70) return "#00ffa6"; // green
-				if (v >= 50) return "#ffaa00"; // orange
-				return "#ff4d4d"; // red
-			}
-
-			function getSeason() {
-				let month = new Date().getMonth() + 1;
-				if (month >= 12 || month <= 2) return "Summer";
-				if (month >= 3 && month <= 5) return "Autumn";
-				if (month >= 6 && month <= 8) return "Winter";
-				return "Spring";
-			}
-
-			function getStatusMessage(spi, trend, w, t) {
-
-				if (spi > 80) {
-					return "🔥 FEEDING NOW — Stay on spot";
-				}
-
-				if (spi > 65) {
-					if (trend === "Falling") {
-						return "🔥 Pressure drop — feeding building";
-					}
-					return "⚡ Active window — be ready";
-				}
-
-				if (spi > 50) {
-					return "🟡 Fish present — trigger needed";
-				}
-
-				if (spi > 35) {
-					return "⚠️ Slow — adjust depth or bait";
-				}
-
-				return "❌ Dead water — move spots";
-			}
-
-			function getMoonPhase() {
-				return "Waning"; // placeholder (we upgrade later) 
-			}
-
-			function getPressureTrend(p) {
-				if (lastPressure === null) {
-					lastPressure = p;
-					return "Stable";
-				}
-
-				let diff = p - lastPressure;
-				lastPressure = p;
-
-				if (diff > 1) return "Rising";
-				if (diff < -1) return "Falling";
-				return "Stable";
-			}
-
-			function generateInsights(drops, scouts, catches) {
-
-				let text = "";
-
-				// Drop analysis
-				if (drops.length > 0) {
-
-					let avgSPI = Math.round(drops.reduce((s, d) => s + d.spi, 0) / drops.length);
-
-					if (avgSPI >= 80) {
-						text += "🔥 High confidence feeding zone detected.<br>";
-					} else if (avgSPI >= 60) {
-						text += "⚡ Moderate feeding activity observed.<br>";
-					} else {
-						text += "⚠️ Low feeding activity.<br>";
-					}
-
-					// Activity insight
-					if (drops.length > scouts.length) {
-						text += "🎯 Strong commitment to productive spots.<br>";
-					} else {
-						text += "🧭 More scouting recommended before drops.<br>";
-					}
-
-					// Catch logic
-					if (catches.length > 0) {
-						text += "🎣 Successful session – pattern confirmation likely.<br>";
-					} else {
-						text += "📉 No catches recorded – refine timing or location.<br>";
-					}
-
-				}
-
-				return text;
-			}
-
-			function updateBackground(spi) {
-				document.body.classList.remove("low", "medium", "high");
-
-				if (spi > 80) {
-					document.body.classList.add("high");
-				} else if (spi > 60) {
-					document.body.classList.add("medium");
-				} else {
-					document.body.classList.add("low");
-				}
-			}
-
-			setTimeout(() => {
-				if (window.lucide) {
-					lucide.createIcons();
-				}
-			}, 100);
-
-			window.confirmDrop = function() {
-
-				ensureSession();
-
-				if (!map) {
-					alert("Open map first");
-					return;
-				}
-
-				navigator.geolocation.getCurrentPosition(
-					pos => {
-						const lat = pos.coords.latitude;
-						const lon = pos.coords.longitude;
-
-						L.marker([lat, lon]).addTo(map);
-						logEvent("drop", {
-							lat,
-							lon
-						});
-
-						console.log("Dropped at:", lat, lon);
-					},
-					err => {
-						alert("GPS failed: " + err.message);
-						console.log("GPS error:", err);
-					}
-				);
-			};
-
-			//====================
-			// GPS (REAL LOCATION)
-			//====================
-
-			function initGPS() {
-				if (!navigator.geolocation) return;
-
-				navigator.geolocation.watchPosition(pos => {
-					userLocation = {
-						lat: pos.coords.latitude,
-						lon: pos.coords.longitude
-					};
-
-					if (map) {
-						map.setView([userLocation.lat, userLocation.lon], 15);
-					}
-
-				}, err => {
-					console.log("GPS error", err);
-				}, {
-					enableHighAccuracy: true
-				});
-			}
-
-			//====================
-			// COMPASS
-			//====================
-
-
-			function initCompass() {
-
-				window.addEventListener("deviceorientationabsolute", (e) => {
-
-					if (e.alpha !== null) {
-						compassHeading = Math.round(e.alpha);
-
-						let el = document.getElementById("compassValue");
-						if (el) {
-							el.innerText = compassHeading + "°";
-						}
-					}
-
-				}, true);
-			}
-
-	
-			//====================
-			// BACKGROUND CALC
-			//====================
-
-			function resize() {
-				if (!canvas) return;
-
-				canvas.width = window.innerWidth;
-				canvas.height = window.innerHeight;
-			}
-
-			
-
-			function updateStrategy(spi) {
-				let text = "";
-				let detail = "";
-
-				if (lastSPI > 80) {
-					text = "🔥 Aggressive Feeding";
-					detail = "Stay on spot. Increase baiting.";
-				} else if (lastSPI >= 60) {
-					text = "⚡ Active Window";
-					detail = "Good conditions. Stay alert.";
-				} else if (lastSPI >= 40) {
-					text = "⚠ Slow Activity";
-					detail = "Reduce bait. Try different depth.";
-				} else {
-					text = "❌ Low Activity";
-					detail = "Move or change location.";
-				}
-
-				set("strategyText", text);
-				set("strategyNote", detail);
-			}
-
-			function drawWaterProfile(surface, bottom) {
-
-				if (surface === undefined || bottom === undefined) return;
-
-				const canvas = document.getElementById("waterGraph");
-				if (!canvas) return;
-
-				const ctx = canvas.getContext("2d");
-
-				canvas.width = canvas.offsetWidth;
-				canvas.height = canvas.offsetHeight;
-
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-				// 🌊 Background
-				let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-				gradient.addColorStop(0, "rgba(0,255,166,0.08)");
-				gradient.addColorStop(1, "rgba(0,0,0,0.8)");
-
-				ctx.fillStyle = gradient;
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-				// 📊 Curve
-				let diff = surface - bottom;
-				let midOffset = diff * 10;
-
-				let startY = 20;
-				let endY = canvas.height - 20;
-				let midY = canvas.height / 2 - midOffset;
-
-				ctx.beginPath();
-				ctx.moveTo(10, startY);
-
-				ctx.quadraticCurveTo(
-					canvas.width / 2,
-					midY,
-					canvas.width - 10,
-					endY
-				);
-
-				ctx.strokeStyle = "#00ffa6";
-				ctx.lineWidth = 3;
-				ctx.shadowBlur = 15;
-				ctx.shadowColor = "#00ffa6";
-				ctx.stroke();
-
-				ctx.shadowBlur = 0;
-
-				// 🌡 Thermocline
-				let thermoY = canvas.height / 2 - (diff * 5);
-
-				ctx.strokeStyle = "rgba(255,200,0,0.4)";
-				ctx.setLineDash([6, 6]);
-
-				ctx.beginPath();
-				ctx.moveTo(0, thermoY);
-				ctx.lineTo(canvas.width, thermoY);
-				ctx.stroke();
-
-				ctx.setLineDash([]);
-
-				// Labels
-				ctx.fillStyle = "#aaa";
-				ctx.font = "12px Arial";
-
-				ctx.fillText("Surface", 10, 15);
-				ctx.fillText("Bottom", 10, canvas.height - 5);
-			}
-
-			
-
-
-
-
-
-
-
-
-			}
-				
-
-
-
-				
