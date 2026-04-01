@@ -971,14 +971,22 @@ function updateCompassUI(deg) {
     const text = document.getElementById("compassText");
 
     if (needle) {
-        needle.style.transform = `rotate(${deg}deg)`;
+        needle.style.transform =
+            `translate(-50%, -100%) rotate(${deg}deg)`;
     }
 
     if (text) {
         text.innerText = deg + "°";
     }
-}
 
+    // 🌬 WIND ALIGNMENT (NEW)
+    const wind = document.getElementById("windIndicator");
+
+    if (wind && lastConditions.windDir !== undefined) {
+        wind.style.transform =
+            `translate(-50%, -100%) rotate(${lastConditions.windDir}deg)`;
+    }
+}
 
 // =====================================================
 // 🛠 16. HELPERS + UTIL
