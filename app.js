@@ -56,7 +56,6 @@ let bubbleIntensity = 0.7;
 let hotspots = [];
 let SPI = 50;
 let bubbles = [];
-let ripples = [];
 let canvas;
 let ctx;
 
