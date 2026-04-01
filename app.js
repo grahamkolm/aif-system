@@ -1456,9 +1456,6 @@ function stopDots() {
 
 simulateWeather();
 
-const splashCanvas = document.getElementById("splashCanvas");
-const splashCtx = splashCanvas.getContext("2d");
-
 function resizeSplash() {
     splashCanvas.width = window.innerWidth;
     splashCanvas.height = window.innerHeight; }
