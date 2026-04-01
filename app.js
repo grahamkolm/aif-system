@@ -883,6 +883,101 @@ function applyPlan() {
 // =====================================================
 // 🧭 15. GPS + COMPASS
 // =====================================================
+// ---------------------------------------------
+// 📍 GPS INITIALIZATION
+// ---------------------------------------------
+function initGPS() {
+
+    if (!navigator.geolocation) {
+        console.log("GPS not supported");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+
+            userLocation = {
+                lat: pos.coords.latitude,
+                lon: pos.coords.longitude
+            };
+
+            console.log("GPS:", userLocation);
+
+        },
+        (err) => {
+            console.log("GPS ERROR:", err);
+        },
+        {
+            enableHighAccuracy: true
+        }
+    );
+}
+
+
+// ---------------------------------------------
+// 🧭 COMPASS INITIALIZATION
+// ---------------------------------------------
+function initCompass() {
+
+    // iOS requires permission
+    if (typeof DeviceOrientationEvent !== "undefined" &&
+        typeof DeviceOrientationEvent.requestPermission === "function") {
+
+        DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+                if (permissionState === "granted") {
+                    window.addEventListener("deviceorientation", handleOrientation);
+                }
+            })
+            .catch(console.error);
+
+    } else {
+        // Android / normal browsers
+        window.addEventListener("deviceorientation", handleOrientation);
+    }
+}
+
+
+// ---------------------------------------------
+// 🧭 HANDLE ORIENTATION
+// ---------------------------------------------
+function handleOrientation(event) {
+
+    let heading;
+
+    // iOS
+    if (event.webkitCompassHeading) {
+        heading = event.webkitCompassHeading;
+    }
+    // Android
+    else if (event.alpha !== null) {
+        heading = 360 - event.alpha;
+    }
+
+    if (heading !== null && !isNaN(heading)) {
+        compassHeading = Math.round(heading);
+
+        updateCompassUI(compassHeading);
+    }
+}
+
+
+// ---------------------------------------------
+// 🎯 COMPASS UI UPDATE
+// ---------------------------------------------
+function updateCompassUI(deg) {
+
+    const needle = document.getElementById("compassNeedle");
+    const text = document.getElementById("compassText");
+
+    if (needle) {
+        needle.style.transform = `rotate(${deg}deg)`;
+    }
+
+    if (text) {
+        text.innerText = deg + "°";
+    }
+}
 
 
 // =====================================================
