@@ -525,11 +525,6 @@ function renderDashboard(data) {
     const oxygen = estimateOxygen(surfaceTemp, windSpeed);
 
 // ===============================
-// 🧪 OXYGEN
-// ===============================
-
-
-// ===============================
 // 📦 STORE CONDITIONS
 // ===============================
 lastConditions = {
@@ -546,6 +541,13 @@ lastConditions = {
     oxygen: oxygen
 };
 
+	logEvent("dashboard_update", {
+	spi: newSPI,
+	temp: surfaceTemp,
+	oxygen: oxygen
+});
+
+updateTactical(SPI, lastConditions);
 // ===============================
 // 🎯 CALCULATE SPI
 // ===============================
@@ -844,11 +846,6 @@ function logEvent(type, data = {}) {
         localStorage.setItem("aif_sessions", JSON.stringify(sessions));
     }
 }
-logEvent("dashboard_update", {
-	spi: newSPI
-	temp: surfaceTemp,
-	oxygen: oxygen
-});
 
 updateTactical(SPI, lastConditions);
 // ---------------------------------------------
