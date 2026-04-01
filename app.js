@@ -578,7 +578,7 @@ lastConditions = {
 };
 
 	logEvent("dashboard_update", {
-	spi: newSPI,
+	spi: SPI,
 	temp: surfaceTemp,
 	oxygen: oxygen
 });
