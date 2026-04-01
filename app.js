@@ -489,6 +489,133 @@ function estimateOxygen(temp, windSpeed) {
 // =====================================================
 // 📊 8. DASHBOARD (renderDashboard)
 // =====================================================
+// ---------------------------------------------
+// 📊 Render Dashboard (CORE FLOW)
+// ---------------------------------------------
+function renderDashboard(data) {
+
+    if (!data || !data.main) return;
+
+    // ---------------------------------
+    // 🌦 RAW WEATHER
+    // ---------------------------------
+    const airTemp = data.main.temp;
+    const pressure = data.main.pressure;
+    const cloud = data.clouds?.all || 0;
+
+    const windSpeedMS = data.wind?.speed || 0;
+    const windSpeed = windSpeedMS * 3.6; // km/h
+    const windDir = data.wind?.deg || 180;
+
+    // ---------------------------------
+    // 🌊 ENVIRONMENT MODEL
+    // ---------------------------------
+    const hour = new Date().getHours();
+    const prevSurface = lastConditions.surfaceTemp || airTemp;
+
+    const surfaceTemp = estimateSurfaceTemp(
+        prevSurface,
+        airTemp,
+        windSpeed,
+        1, // sun factor (can improve later)
+        hour
+    );
+
+    const bottomTemp = estimateBottomTemp(surfaceTemp, 5, windSpeed);
+    const oxygen = estimateOxygen(surfaceTemp, windSpeed);
+
+// ===============================
+// 🧪 OXYGEN
+// ===============================
+let oxygen = estimateOxygen(surfaceTemp, windSpeed);
+
+// ===============================
+// 📦 STORE CONDITIONS
+// ===============================
+lastConditions = {
+    airTemp: airTemp,
+    pressure: pressure,
+    windSpeed: windSpeed,
+    windDir: windDir,
+    cloud: cloud,
+    moon: getMoonPhase(),
+    season: getSeason(),
+    trend: getPressureTrend(pressure),
+    surfaceTemp: surfaceTemp,
+    bottomTemp: bottomTemp,
+    oxygen: oxygen
+};
+
+// ===============================
+// 🎯 CALCULATE SPI
+// ===============================
+let spi = calculateSPI(pressure, windSpeed, cloud, windDir, airTemp);
+
+// smoothing
+if (lastSPI !== null) {
+    spi = Math.round((spi + lastSPI) / 2); }
+
+lastSPI = spi;
+SPI = spi;
+
+	
+    // store for next cycle
+    lastConditions.surfaceTemp = surfaceTemp;
+
+    // ---------------------------------
+    // 📊 SPI CALCULATION
+    // ---------------------------------
+    let newSPI = calculateSPI(
+        pressure,
+        windSpeed,
+        cloud,
+        windDir,
+        surfaceTemp
+    );
+
+    // ---------------------------------
+    // 🧠 SMOOTHING (ONLY PLACE)
+    // ---------------------------------
+    if (lastSPI !== null) {
+        newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
+    }
+
+    lastSPI = newSPI;
+    SPI = newSPI;
+
+    // ---------------------------------
+    // 🎯 UI UPDATE
+    // ---------------------------------
+    set("spiValue", newSPI + "%");
+    set("airTemp", airTemp.toFixed(1) + "°C");
+    set("surfaceTemp", surfaceTemp.toFixed(1) + "°C");
+	set("bottomTemp", bottomTemp.toFixed(1) + "°C");
+	
+    colorMini("spiValue", newSPI);
+	colorMini("surfaceTemp", surfaceTemp);
+	colorMini("bottomTemp", bottomTemp);
+	colorMini("spiValue", SPI);
+	
+	set("spiValue", SPI + "%");
+	set("pressure", pressure + " hPa");
+	set("wind", windSpeed.toFixed(1) + " km/h"); 
+	set("cloud", cloud + "%"); 
+	set("oxygen", oxygen.toFixed(1) + " mg/L");
+
+    // ---------------------------------
+    // 🫧 VISUAL RESPONSE
+    // ---------------------------------
+    bubbleIntensity = Math.max(0.2, newSPI / 100);
+
+    // ---------------------------------
+    // 📝 LOG EVENT (optional but powerful)
+    // ---------------------------------
+    logEvent("dashboard_update", {
+        spi: newSPI,
+        temp: surfaceTemp,
+        oxygen: oxygen
+    });
+}
 
 
 // =====================================================
@@ -591,7 +718,114 @@ function saveDam(name) {
 // =====================================================
 // 📋 14. PLAN SYSTEM
 // =====================================================
+// ===============================
+// 🚀 OPEN PLAN
+// ===============================
+function openPlan() {
 
+    if (document.getElementById("planScreen")) return;
+
+    planSelections = {};
+
+    document.body.insertAdjacentHTML("beforeend", `
+    <div id="planScreen" style="
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:#05080d;
+        color:white;
+        z-index:999;
+        padding:20px;
+        overflow:auto;
+    ">
+
+    <button onclick="applyPlan()" style="
+        position:fixed;
+        top:20px;
+        right:20px;
+        background:#00ffa6;
+        border:none;
+        padding:10px 14px;
+        border-radius:10px;
+        font-weight:bold;
+    ">Apply</button>
+
+    <h2 style="color:#00ffa6;">AIF™ 60-Min Tactical Plan</h2>
+
+    <h3>0–5 Minutes • Arrival Scan</h3>
+    <div class="scout-grid">
+        <div class="scout-option" onclick="togglePlan('windBank',this)">🌬 Wind Bank</div>
+        <div class="scout-option" onclick="togglePlan('activity',this)">🐟 Activity</div>
+        <div class="scout-option" onclick="togglePlan('noActivity',this)">🚫 No Activity</div>
+    </div>
+
+    <h3>20–40 Minutes • Tactical Decision</h3>
+    <div class="scout-grid">
+        <div class="scout-option" onclick="togglePlan('boilie',this)">🎯 Boilie</div>
+        <div class="scout-option" onclick="togglePlan('popup',this)">⚪ Pop-up</div>
+    </div>
+
+    <h3>40–60 Minutes • Execution</h3>
+    <div class="scout-grid">
+        <div class="scout-option" onclick="togglePlan('stay',this)">🎯 Stay</div>
+        <div class="scout-option" onclick="togglePlan('move',this)">🚶 Move</div>
+    </div>
+
+    </div>
+    `);
+}
+
+// ===============================
+// 🔁 TOGGLE PLAN OPTIONS
+// ===============================
+function togglePlan(type, el) {
+    planSelections[type] = !planSelections[type];
+    el.classList.toggle("active", planSelections[type]); }
+
+// ===============================
+// 🧠 CALCULATE PLAN SCORE
+// ===============================
+function calculatePlanScore() {
+
+    let score = 50;
+
+    if (planSelections.windBank) score += 10;
+    if (planSelections.activity) score += 15;
+    if (planSelections.noActivity) score -= 10;
+
+    if (planSelections.boilie) score += 8;
+    if (planSelections.popup) score += 5;
+
+    if (planSelections.stay) score += 5;
+    if (planSelections.move) score -= 5;
+
+    // intelligent boost
+    if (lastConditions.windSpeed > 5 && planSelections.windBank) score += 5;
+    if (lastConditions.surfaceTemp > 20 && planSelections.popup) score += 5;
+
+    return Math.max(0, Math.min(100, score)); }
+
+// ===============================
+// ✅ APPLY PLAN
+// ===============================
+function applyPlan() {
+
+    planScore = calculatePlanScore();
+
+    lastConditions.plan = { ...planSelections };
+    lastConditions.planScore = planScore;
+
+    let boostedSPI = Math.round((SPI + planScore) / 2);
+
+    SPI = boostedSPI;
+    bubbleIntensity = SPI / 100;
+
+    set("spiValue", SPI + "%");
+    colorMini("spiValue", SPI);
+
+    const screen = document.getElementById("planScreen");
+    if (screen) screen.remove();
+}
 
 // =====================================================
 // 🧭 15. GPS + COMPASS
@@ -666,231 +900,6 @@ function stopDots() {
 
 // =======================================================================================================
 
-
-
-			// ===============================
-			// 📊 DASHBOARD
-			// ===============================
-
-			function renderDashboard(d) {
-
-				set("statusText", " Live environmental data");
-
-				// =========================
-				// 📥 GET DATA
-				// =========================
-				let t = d?.main?.temp ?? 20;
-				let p = d.main.pressure;
-				let w = d.wind.speed;
-				let c = d.clouds.all;
-				let windDir = d.wind.deg;
-
-				// =========================
-				// 🌊 CALCULATE TEMPS
-				// =========================
-				let sunFactor = (100 - c) / 100;
-
-				let hour = new Date().getHours();
-
-				// Sun influence depends on time
-				let sunEffect = 0;
-
-				if (hour >= 10 && hour <= 16) {
-					sunEffect = sunFactor * 1.2; // peak heating
-				} else if (hour >= 7 && hour < 10) {
-					sunEffect = sunFactor * 0.6; // warming up
-				} else {
-					sunEffect = 0.2; // minimal effect
-				}
-
-				console.log("ELEMENTS:",
-					document.getElementById("wcSurface"),
-					document.getElementById("wcBottom")
-				);
-
-				// Wind cooling reduced slightly
-				let windCooling = w * 0.15;
-
-				// FINAL surface temp
-				let surfaceTemp = t + sunEffect - windCooling;
-
-				let mixingFactor = Math.min(1, w / 5);
-				let depthDrop = 0.5 + (1 - mixingFactor) * 1.2;
-
-				let bottomTemp = surfaceTemp - depthDrop;
-
-				console.log("TEMP CHECK", surfaceTemp, bottomTemp);
-
-				drawWaterProfile(surfaceTemp, bottomTemp);
-
-				// =========================
-				// 🛟 SAFETY (FIXED SCOPE)
-				// =========================
-				if (surfaceTemp === undefined || bottomTemp === undefined) {
-					console.log("Temps fallback triggered");
-
-					surfaceTemp = t;
-					bottomTemp = t - 1.5;
-				}
-
-				let insight = "";
-
-				if (surfaceTemp > bottomTemp) {
-					insight = "Cooling depth detected • Fish holding lower";
-				} else {
-					insight = "Stable column • Fish active across layers";
-				}
-
-				let insightEl = document.getElementById("wcInsight");
-				if (insightEl) insightEl.innerText = insight;
-
-				// =========================
-				// 📏 LIMITS
-				// =========================
-				surfaceTemp = Math.max(5, Math.min(35, surfaceTemp));
-				bottomTemp = Math.max(4, Math.min(surfaceTemp - 0.3, bottomTemp));
-
-				// =========================
-				// 🎨 COLOR FUNCTION
-				// =========================
-				function getTempColor(temp) {
-					if (temp >= 18 && temp <= 24) return "#00ffa6";
-					if ((temp >= 14 && temp < 18) || (temp > 24 && temp <= 28)) return "#ffaa00";
-					return "#ff4d4d";
-				}
-
-				// =========================
-				// 🖥 UPDATE UI (ALWAYS RUNS NOW ✅)
-				// =========================
-				let airEl = document.getElementById("wcAir");
-				if (airEl) {
-					airEl.innerHTML = t.toFixed(1) + "°C";
-					airEl.style.color = getTempColor(t);
-				}
-
-				let surfaceEl = document.getElementById("wcSurface");
-				if (surfaceEl) {
-					surfaceEl.innerHTML = surfaceTemp.toFixed(1) + "°C";
-					surfaceEl.style.color = getTempColor(surfaceTemp);
-				}
-
-				let bottomEl = document.getElementById("wcBottom");
-				if (bottomEl) {
-					bottomEl.innerHTML = bottomTemp.toFixed(1) + "°C";
-					bottomEl.style.color = getTempColor(bottomTemp);
-				}
-
-				// =========================
-				// 💨 OXYGEN
-				// =========================
-				let oxygen = estimateOxygen(surfaceTemp, w);
-
-				// =========================
-				// 📦 STORE CONDITIONS
-				// =========================
-				lastConditions = {
-					airTemp: t,
-					pressure: p,
-					windSpeed: w,
-					windDir: windDir,
-					cloud: c,
-					moon: getMoonPhase(),
-					season: getSeason(),
-					trend: getPressureTrend(p)
-				};
-
-				// =========================
-				// 🎯 CALCULATE SPI
-				// =========================
-				let spi = calculateSPI(p, w, c, windDir, t);
-
-				if (lastSPI !== null) {
-					spi = Math.round((spi + lastSPI) / 2);
-				}
-				lastSPI = spi;
-
-				SPI = spi;
-
-				bubbleIntensity = SPI /100;
-
-				let trend = getPressureTrend(p);
-
-				if (trend === "Falling") spi += 10;
-				if (trend === "Rising") spi -= 5;
-
-				if (w > 8 && w < 20) spi += 5;
-				if (w < 2) spi -= 5;
-
-				spi = Math.max(0, Math.min(100, spi));
-
-				bubbleIntensity = spi / 100;
-
-				console.log("SPI VALUE", spi);
-				updateSPI(spi);
-				updateStrategy(spi);
-
-				let color = getSPIColor(spi);
-
-				let arc = document.getElementById("spiArc");
-				if (arc) {
-					arc.style.stroke = color;
-					arc.style.filter = "drop-shadow(0 0 10px " + color + ")";
-				}
-
-				let envScore = 0;
-
-				if (t >= 18 && t <= 24) envScore += 30;
-				else if (t >= 15 && t <= 28) envScore += 20;
-				else envScore += 10;
-
-				if (c >= 20 && c <= 60) envScore += 25;
-				else if (c < 20) envScore += 15;
-				else envScore += 10;
-
-				if (w >= 5 && w <= 15) envScore += 25;
-				else if (w < 5) envScore += 15;
-				else envScore += 10;
-
-				let oxygenFactor = (w * 0.5) - (t - 20);
-				envScore += Math.max(0, Math.min(20, oxygenFactor + 10));
-
-				envScore = Math.round(Math.min(100, envScore));
-
-				// 🎯 CONFIDENCE
-				let stability = 0;
-
-				if (trend === "Stable") stability += 20;
-				if (trend === "Falling") stability += 15;
-				if (trend === "Rising") stability += 10;
-
-				if (w > 3 && w < 15) stability += 20;
-
-				if (t >= 18 && t <= 24) stability += 20;
-
-				let agreement = 100 - Math.abs(envScore - spi);
-
-				let confScore = Math.round((stability * 0.5) + (agreement * 0.5));
-				confScore = Math.min(100, confScore);
-
-				// =========================
-				// 🧾 UPDATE TEXT VALUES
-				// =========================
-				animateValue("envScore", envScore + "%");
-				animateValue("confScore", confScore + "%");
-				colorMini("envScore", envScore);
-				colorMini("confScore", confScore);
-				updateTactical(spi, envScore, confScore, w, t);
-				set("pressure", p + " hPa");
-				set("wind", w.toFixed(1) + " km/h");
-				set("cloud", c + "%");
-				set("oxygen", oxygen.toFixed(1) + " mg/L");
-				set("moon", getMoonPhase());
-				set("season", getSeason());
-				set("surfaceTemp", surfaceTemp.toFixed(1) + "°C");
-				set("bottomTemp", bottomTemp.toFixed(1) + "°C");
-
-				removeSplash();
-			}
 
 			
 
@@ -1937,97 +1946,7 @@ Avg SPI: ${avgSPI}%
 				}, true);
 			}
 
-			//====================
-			// PLAN SYSTEM
-			//====================
-
-			function openPlan() {
-
-				document.body.insertAdjacentHTML("beforeend", ` <div id="planScreen" style='
-position:fixed;
-top:0; left:0;
-width:100%; height:100%;
-background:#05080d;
-color:white;
-z-index:999;
-padding:20px;
-overflow:auto;
-'>
-
-<button onclick="applyPlan()" style='
-position:fixed;
-top:20px;
-right:20px;
-background:#00ffa6;
-border:none;
-padding:10px 14px;
-border-radius:10px;
-font-weight:bold;
-'>Apply</button>
-
-<h2 style="color:#00ffa6;">AIF™ 60-Min Tactical Plan</h2>
-
-<h3>0–5 Minutes • Arrival Scan</h3>
-<div class="scout-grid">
-<div class="scout-option" onclick="togglePlan('windBank',this)">🌬 Wind Bank</div> <div class="scout-option" onclick="togglePlan('activity',this)">🐟 Activity</div> <div class="scout-option" onclick="togglePlan('noActivity',this)">🚫 No Activity</div> </div>
-
-<h3>20–40 Minutes • Tactical Decision</h3> <div class="scout-grid"> <div class="scout-option" onclick="togglePlan('boilie',this)">🎯 Boilie</div> <div class="scout-option" onclick="togglePlan('popup',this)">⚪ Pop-up</div> </div>
-
-<h3>40–60 Minutes • Execution</h3>
-<div class="scout-grid">
-<div class="scout-option" onclick="togglePlan('stay',this)">🎯 Stay</div> <div class="scout-option" onclick="togglePlan('move',this)">🚶 Move</div> </div>
-
-</div>
-`);
-			}
-
-			function togglePlan(type, el) {
-
-				planSelections[type] = !planSelections[type];
-
-				if (planSelections[type]) {
-					el.classList.add("active");
-				} else {
-					el.classList.remove("active");
-				}
-			}
-
-			function calculatePlanScore() {
-
-				let score = 50;
-
-				if (planSelections.windBank) score += 10;
-				if (planSelections.activity) score += 15;
-				if (planSelections.noActivity) score -= 10;
-
-				if (planSelections.boilie) score += 8;
-				if (planSelections.popup) score += 5;
-
-				if (planSelections.stay) score += 5;
-				if (planSelections.move) score -= 5;
-
-				return Math.max(0, Math.min(100, score));
-			}
-
-
-			function applyPlan() {
-
-				planScore = calculatePlanScore();
-
-				lastConditions.plan = planSelections;
-				lastConditions.planScore = planScore;
-
-				let currentConf = parseInt(document.getElementById("confScore").innerText) || 50;
-
-				let newConf = Math.round((currentConf + planScore) / 2);
-
-				set("confScore", newConf + "%");
-
-				updateTactical(lastSPI, parseInt(document.getElementById("envScore").innerText), newConf, lastConditions.windSpeed, lastConditions.airTemp);
-
-				document.getElementById("planScreen").remove();
-			}
-
+	
 			//====================
 			// BACKGROUND CALC
 			//====================
@@ -2140,27 +2059,7 @@ font-weight:bold;
 
 
 
-// =====================================================
-// 🚀 DO NOT DELETE YET
-// =====================================================
 
-function animateValue(id, value) {
-				let el = document.getElementById(id);
-				if (!el) return;
-
-				el.style.transition = "all 0.6s ease";
-				el.innerText = value;
-			}
-
-			function colorMini(id, value) {
-				let el = document.getElementById(id);
-				if (!el) return;
-
-				let color = "#00ffa6";
-				if (value < 50) color = "#ff4d4d";
-				else if (value < 70) color = "#ffaa00";
-
-				el.style.color = color;
 			}
 				
 
