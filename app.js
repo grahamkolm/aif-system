@@ -587,7 +587,8 @@ updateTactical(SPI, lastConditions);
 
     lastSPI = newSPI;
     SPI = newSPI;
-
+	updateSPI(SPI);
+	
     // ---------------------------------
     // 🎯 UI UPDATE
     // ---------------------------------
