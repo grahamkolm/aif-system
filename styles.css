@@ -21,6 +21,7 @@
 }
 
 body {
+    position: relative;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -29,6 +30,7 @@ body {
     color: var(--text);
     display: flex;
     justify-content: center;
+    z-index: 2;
 }
 
 button, .dock-btn, .scout-option {
@@ -105,9 +107,13 @@ button, .dock-btn, .scout-option {
 
 #aifCanvas {
     position: fixed;
+    top: 0;
+    left; 0;
+    width: 100vw;
+    height: 100vh;
     inset: 0;
     pointer-events: none;
-    z-index: 2;
+    z-index: 0;
 }
 
 .splash-loader {
