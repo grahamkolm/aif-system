@@ -1504,4 +1504,3 @@ window.addEventListener("resize", resizeSplash);
 
 
 animateSplash();
-});
