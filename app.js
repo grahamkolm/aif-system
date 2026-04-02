@@ -1,6 +1,8 @@
 // =====================================================
 // 🌍 0. START 
 // =====================================================
+let splashActive = true;
+
 const splashCanvas = document.getElementById("splashCanvas");
 const splashCtx = splashCanvas ? splashCanvas.getContext("2d") : null;
 
@@ -115,6 +117,8 @@ function createRipple() {
 }
 
 function animateSplash() {
+
+    if (!splashActive) return; // 🔥 STOP LOOP
 
     if (!splashCtx || !splashCanvas) return;
 
