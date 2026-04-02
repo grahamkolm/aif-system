@@ -103,7 +103,7 @@ window.addEventListener("resize", resizeSplash); resizeSplash();
 // ---------------------------------------------
 // 💧 Splash Ripple Effect
 // ---------------------------------------------
-let SplashRipples = [];
+let splashRipples = [];
 
 function createsSplashRipple() {
  	if (!splashCanvas) return;
@@ -125,11 +125,11 @@ function animateSplash() {
     splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
     if (SplashRipples.length < 20) {
-        createRipple();
+        createSplashRipple();
     }
 
     for (let i = 0; i < SplashRipples.length; i++) {
-        const r = ripples[i];
+        const r = SplashRipples[i];
 
         r.y -= 0.8;
         r.r += 0.3;
