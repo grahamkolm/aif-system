@@ -120,26 +120,34 @@ function createRipple() {
 }
 
 function animateSplash() {
-    splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
+    for (let i = 0; i < ripples.length; i++) {
+    const r = ripples[i];
 
-    ripples.forEach((r, i) => {
-		r.r += 1.5;
-		r.y -= 1.2;
-		r.alpha *= 0.96;
+    // move upward
+    r.y -= 0.8;
 
-        splashCtx.beginPath();
-		splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-		splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
-		splashCtx.lineWidth = 1.5;
-        splashCtx.stroke();
+    // grow slightly
+    r.r += 0.3;
 
-        if (r.alpha < 0.02) ripples.splice(i, 1);
-    });
+    // fade
+    r.alpha *= 0.98;
 
-    if (Math.random() < 0.1) createSplashRipple();
+    // reset when off screen
+    if (r.y < 0 || r.alpha < 0.05) {
+        r.x = Math.random() * splashCanvas.width;
+        r.y = splashCanvas.height + Math.random() * 50;
+        r.r = 0;
+        r.alpha = 0.5;
+    }
 
-    requestAnimationFrame(animateSplash);
+    // draw
+    splashCtx.beginPath();
+    splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+    splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+    splashCtx.lineWidth = 2;
+    splashCtx.stroke();
 }
+
 
 // ---------------------------------------------
 // 🚀 Start Splash (ENTRY POINT)
