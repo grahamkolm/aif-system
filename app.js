@@ -108,7 +108,7 @@ let splashRipples = [];
 function createSplashRipple() {
     if (!splashCanvas) return;
 
-    splashRipples.push({
+    splashRipple.push({
         x: Math.random() * splashCanvas.width,
         y: splashCanvas.height + 20,
         r: 0,
@@ -152,19 +152,6 @@ function animateSplash() {
 // ---------------------------------------------
 // 🚀 Start Splash (ENTRY POINT)
 // ---------------------------------------------
-// 💧 Splash Ripple Effect
-function createSplashRipple() {
-    if (!splashCanvas) return;
-
-    SplashRipples.push({
-        x: Math.random() * splashCanvas.width * 0.5,
-        y: Math.random() * splashCanvas.height,
-        r: 0,
-        alpha: 0.6
-    });
-}
-
-// 🚀 Start Splash (ENTRY POINT)
 function startSplash() {
 
     createSplashRipple();
