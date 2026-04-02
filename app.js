@@ -22,15 +22,11 @@ function getPressureTrend() {
 }
 
 function resize() {
-    const canvas = document.getElementById("waterGraph");
     if (!canvas) return;
 
     canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight; }
-
-window.addEventListener("resize", resize);
-
-resize();
+    canvas.height = canvas.offsetHeight; 
+}
 
 function set(id, value) {
 	const el = document.getElementById(id);
