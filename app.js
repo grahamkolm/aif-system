@@ -67,6 +67,7 @@ let SPI = 50;
 let bubbles = [];
 let canvas;
 let ctx;
+let ripples = [];
 
 // =====================================================
 // 🚀 2. APP BOOT (DOMContentLoaded ONLY) //
