@@ -25,7 +25,7 @@ body::before {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.75);
-    z-index: 0;
+    z-index: 1;
     }
     
 body {
@@ -61,6 +61,7 @@ button, .dock-btn, .scout-option {
     max-width: 420px;
     padding: 0 12px 120px;
     position: relative;
+    z-index: 2;
 }
 
 /* ===================================== */
