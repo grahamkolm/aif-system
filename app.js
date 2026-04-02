@@ -4,6 +4,11 @@
 const splashCanvas = document.getElementById("splashCanvas");
 const splashCtx = splashCanvas ? splashCanvas.getContext("2d") : null;
 
+function set(id, value) {
+	const el = document.elementById(id);
+	if (el) el.innerText = value;
+}
+
 function getMoonPhase() {
 			return "Normal";
 }
