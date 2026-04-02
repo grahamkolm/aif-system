@@ -58,7 +58,7 @@ let canvas;
 let ctx;
 
 // =====================================================
-// 🚀 2. APP BOOT (DOMContentLoaded ONLY) // 
+// 🚀 2. APP BOOT (DOMContentLoaded ONLY) //
 // =====================================================
 
 document.addEventListener("DOMContentLoaded", () => {
