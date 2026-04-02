@@ -220,22 +220,32 @@ function startApp() {
 // 🌊 5. VISUAL SYSTEM (BUBBLES / RIPPLE / THERMOCLINE) 
 // =====================================================
 // ---------------------------------------------
-// 🫧 Bubble Spawn (HOTSPOT + WIND AWARE) // ---------------------------------------------
+// 🫧 Bubble Spawn (HOTSPOT + WIND AWARE) 
+// ---------------------------------------------
 function spawnBubble() {
 
-    if (!canvas) return;
+  function spawnBubble() {
+
+    if (!canvas || hotspots.length === 0) return;
+
+    const h = hotspots[Math.floor(Math.random() * hotspots.length)];
+
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.random() * h.radius;
+
+    const x = h.x + Math.cos(angle) * radius;
 
     bubbles.push({
-        x: canvas.width * (0.3 + Math.random() * 0.4), // center area
-        y: canvas.height + 10, // ALWAYS start from bottom
+        x: x,
+        y: canvas.height + 10, // always from bottom
 
-        size: Math.random() * 4 + 2,
-        speed: Math.random() * 1.5 + 0.8,
+        size: Math.random() * 3 + 2,
+        speed: Math.random() * 1.2 + 0.8,
 
-        drift: (Math.random() - 0.5) * 0.6,
+        drift: (Math.random() - 0.5) * 0.4,
         offset: Math.random() * Math.PI * 2,
 
-        alpha: 0.25 + Math.random() * 0.25
+        alpha: 0.3 + Math.random() * 0.3
     });
 }
 
@@ -302,7 +312,10 @@ function animate() {
     bubbles.forEach((particle, i) => {
 
         particle.y -= particle.speed;
-        particle.x += particle.drift + Math.sin(particle.y * 0.05 + particle.offset) * 0.5;
+        const windPush = (lastConditions.windDir || 180 / 360 -0.5) * 1.2;
+		particle.x += particle.drift
+			+ Math.sin(particle.y * 0.05 + particle.offset) * 0.5
+			+ windPush;
 
         // 🎨 Color based on SPI
         const r = 0;
@@ -346,16 +359,17 @@ function generateHotspots() {
 
     hotspots = [];
 
-    const count = Math.floor(Math.random() * 2) + 1;
+    const count = Math.floor(SPI / 30) + 1; // more SPI = more activity
 
     for (let i = 0; i < count; i++) {
         hotspots.push({
             x: canvas.width * (0.2 + Math.random() * 0.6),
             y: canvas.height * (0.6 + Math.random() * 0.3),
-            radius: 80 + Math.random() * 120
+            radius: 60 + Math.random() * 100
         });
     }
 }
+
 
 // =====================================================
 // 🌦 6. WEATHER ENGINE (WIND INCLUDED)
