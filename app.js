@@ -145,7 +145,7 @@ function animateSplash() {
         splashCtx.stroke();
     }
 
-    requestAnimationFrame(animateSplash); // 🔥 THIS WAS MISSING }
+    requestAnimationFrame(animateSplash);
 }
 
 // ---------------------------------------------
@@ -223,30 +223,21 @@ function startApp() {
 // 🫧 Bubble Spawn (HOTSPOT + WIND AWARE) // ---------------------------------------------
 function spawnBubble() {
 
-    if (!hotspots || hotspots.length === 0) return;
-
-    const hotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
-    if (!hotspot) return;
-
-    const angle = Math.random() * Math.PI * 2;
-    const radius = Math.random() * hotspot.radius;
-
-    const x = hotspot.x + Math.cos(angle) * radius;
-    const y = hotspot.y;
-
-    // 🌬 Wind influence (FIXED — was missing before)
-    const windBias = (lastConditions.windDir || 180) / 180 - 1;
+    if (!canvas) return;
 
     bubbles.push({
-    x: canvas.width*0.4 + Math.random()*canvas.width*0.2,
-    y: canvas.height*0.9,
-    size: Math.random()*3+1,
-    speed: Math.random()*1.2+0.5,
-    drift: Math.random()-0.5,
-    alpha: 0.15 + Math.random()*0.15
+        x: canvas.width * (0.3 + Math.random() * 0.4), // center area
+        y: canvas.height + 10, // ALWAYS start from bottom
+
+        size: Math.random() * 4 + 2,
+        speed: Math.random() * 1.5 + 0.8,
+
+        drift: (Math.random() - 0.5) * 0.6,
+        offset: Math.random() * Math.PI * 2,
+
+        alpha: 0.25 + Math.random() * 0.25
     });
 }
-
 
 // ---------------------------------------------
 // 💧 Ripple Effect
@@ -311,12 +302,12 @@ function animate() {
     bubbles.forEach((particle, i) => {
 
         particle.y -= particle.speed;
-        particle.x += (particle.drift || 0) + Math.sin(particle.y * 0.05 + particle.offset) * 0.4;
+        particle.x += particle.drift + Math.sin(particle.y * 0.05 + particle.offset) * 0.5;
 
         // 🎨 Color based on SPI
-        const r = Math.max(0, 255 - currentSPI * 2);
-        const g = Math.min(255, currentSPI * 2);
-        const b = 150;
+        const r = 0;
+        const g = 255;
+        const b = 180;
 
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${particle.alpha})`;
 
