@@ -695,6 +695,18 @@ updateTactical(SPI, lastConditions);
 // ---------------------------------------------
 // 🧠 Generate Tactical Advice
 // ---------------------------------------------
+function updateSPICircle(value) {
+    const circle = document.querySelector(".progress-ring-circle");
+    if (!circle) return;
+
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+
+    circle.style.strokeDasharray = `${circumference}`;
+    
+    const offset = circumference - (value / 100) * circumference;
+    circle.style.strokeDashoffset = offset; }
+
 function updateSPI(value) {
 	const el = document.getElementById("spiValue");
 	if (el) {
