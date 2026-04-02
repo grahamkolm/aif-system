@@ -224,8 +224,6 @@ function startApp() {
 // ---------------------------------------------
 function spawnBubble() {
 
-  function spawnBubble() {
-
     if (!canvas || hotspots.length === 0) return;
 
     const h = hotspots[Math.floor(Math.random() * hotspots.length)];
@@ -312,7 +310,7 @@ function animate() {
     bubbles.forEach((particle, i) => {
 
         particle.y -= particle.speed;
-        const windPush = (lastConditions.windDir || 180 / 360 -0.5) * 1.2;
+        const windPush = ((lastConditions.windDir || 180) / 360 -0.5) * 1.2;
 		particle.x += particle.drift
 			+ Math.sin(particle.y * 0.05 + particle.offset) * 0.5
 			+ windPush;
