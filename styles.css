@@ -143,8 +143,10 @@ button, .dock-btn, .scout-option {
 /* ===================================== */
 
 .header {
+    position: relative;
     text-align: center;
     margin-top: 20px;
+    z-index: 5;
 }
 
 .brand {
@@ -152,9 +154,16 @@ button, .dock-btn, .scout-option {
     color: var(--primary);
 }
 
-.subtitle1, .subtitle2 {
+.subtitle1 {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+.subtitle2 {
     font-size: 12px;
-    opacity: 0.7;
+    opacity: 0.6;
+    margin-top: 2px;
 }
 
 /* ===================================== */
