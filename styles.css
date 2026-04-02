@@ -252,6 +252,9 @@ button, .dock-btn, .scout-option {
 
     animation: pulseGlow 2.5s infinite ease-in-out; }
 
+#envCircle, #confCircle {
+    transition: all 0.3s ease;
+}
 
 /* ===================================== */
 /* 🧠 TACTICAL */
