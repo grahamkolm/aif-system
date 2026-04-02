@@ -111,7 +111,7 @@ function createSplashRipple() {
 
     splashRipples.push({
         x: Math.random() * splashCanvas.width,
-        y: splashCanvas.height + 20,
+        y: splashCanvas.height * (0.6 + Math.random() * 0.4)
         r: 0,
         alpha: 0.5
     });
@@ -142,9 +142,13 @@ function animateSplash() {
         splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
         splashCtx.stroke();
 
-        if (r.alpha < 0.05) {
-            splashRipples.splice(i, 1);
-        }
+		if (r.alpha < 0.05) {
+    		r.x = Math.random() * splashCanvas.width;
+    		r.y = Math.random() * splashCanvas.height; // ✅ FIXED
+    		r.r = 0;
+    		r.alpha = 0.5;
+		}
+
     }
 
     requestAnimationFrame(animateSplash);
