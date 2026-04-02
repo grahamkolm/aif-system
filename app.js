@@ -1,6 +1,8 @@
 // =====================================================
 // 🌍 0. START 
 // =====================================================
+const splashCanvas = document.getElementById("splashCanvas");
+const splashCtx = splashCanvas ? splashCanvas.getContext("2d") : null;
 
 function resizeSplash() {
     if (!splashCanvas) return;
@@ -10,7 +12,6 @@ function resizeSplash() {
 
 resizeSplash();
 window.addEventListener("resize", resizeSplash);
-
 
 function getMoonPhase() {
 			return "Normal";
