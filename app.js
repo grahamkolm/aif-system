@@ -139,6 +139,7 @@ function animateSplash() {
     }
 
     requestAnimationFrame(animateSplash); // 🔥 THIS WAS MISSING }
+}
 
 // ---------------------------------------------
 // 🚀 Start Splash (ENTRY POINT)
@@ -1493,3 +1494,4 @@ function stopDots() {
 }
 
 simulateWeather();
+animateSplash();
