@@ -110,10 +110,10 @@ let ripples = [];
 
 function createRipple() {
     ripples.push({
-        x: splashCanvas.width / 2,
-        y: splashCanvas.height * 0.75,
+        x: Math.random() * splashCanvas.width,
+        y: splashCanvas.height + 20,
         r: 0,
-        alpha: 1
+        alpha: 0.5
     });
 }
 
@@ -121,13 +121,14 @@ function animateSplash() {
     splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
     ripples.forEach((r, i) => {
-        r.r += 1.5;
-        r.alpha *= 0.96;
+		r.r += 1.5;
+		r.y -= 1.2;
+		r.alpha *= 0.96;
 
-        splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+        splashCtx.beginPath();
+		splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+		splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
 		splashCtx.lineWidth = 1.5;
-		splashCtx.beginPath();
-        splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
         splashCtx.stroke();
 
         if (r.alpha < 0.02) ripples.splice(i, 1);
