@@ -120,6 +120,8 @@ button, .dock-btn, .scout-option {
     background: rgba(0,255,163,0.2);
     overflow: hidden;
     border-radius: 2px;
+    transform: translateX(-50%);
+    z-index: 3;
 }
 
 .splash-loader::after {
