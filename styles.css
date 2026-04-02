@@ -130,12 +130,12 @@ button, .dock-btn, .scout-option {
     height: 100%;
     width: 40%;
     background: #00ffa3;
+    opacity: 0.8;
     animation: loadBar 1.2s ease-in-out infinite; }
 
 @keyframes loadBar {
     0% { transform: translateX(-100%); }
-    50% { transform: translateX(50%); }
-    100% { transform: translateX(150%); } }
+    100% { transform: translateX(200%); } }
 }
 
 /* ===================================== */
