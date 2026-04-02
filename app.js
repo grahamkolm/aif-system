@@ -24,14 +24,18 @@ function getPressureTrend() {
 function resize() {
     if (!canvas) return;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight; 
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
+    ctx.scale(dpr, dpr); // 🔥 THIS IS KEY 
 }
 
-function set(id, value) {
-	const el = document.getElementById(id);
-	if(el) el.innerText = value;
-}
 
 // =====================================================
 // 🌍 1. GLOBAL STATE (ALL VARIABLES ONLY HERE) 
