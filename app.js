@@ -103,12 +103,12 @@ window.addEventListener("resize", resizeSplash); resizeSplash();
 // ---------------------------------------------
 // 💧 Splash Ripple Effect
 // ---------------------------------------------
-let ripples = [];
+let SplashRipples = [];
 
-function createRipple() {
+function createsSplashRipple() {
  	if (!splashCanvas) return;
 	
-	ripples.push({
+	SplashRipples.push({
         r:0,
         alpha:0.25,
         x:Math.random() * splashCanvas.width,
@@ -124,11 +124,11 @@ function animateSplash() {
 
     splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
-    if (ripples.length < 20) {
+    if (SplashRipples.length < 20) {
         createRipple();
     }
 
-    for (let i = 0; i < ripples.length; i++) {
+    for (let i = 0; i < SplashRipples.length; i++) {
         const r = ripples[i];
 
         r.y -= 0.8;
@@ -159,7 +159,7 @@ function animateSplash() {
 function createSplashRipple() {
     if (!splashCanvas) return;
 
-    ripples.push({
+    SplashRipples.push({
         x: Math.random() * splashCanvas.width * 0.5,
         y: Math.random() * splashCanvas.height,
         r: 0,
@@ -183,10 +183,11 @@ function startSplash() {
 
         setTimeout(() => {
 
-            splash.remove();
+    	splashActive = false;
 
-            // 👉 START MAIN APP HERE
-            startApp();
+		splash.remove();
+
+        startApp();
 
         }, 1200);
 
@@ -405,6 +406,7 @@ function fetchWeatherSafe() {
             // 🌬 Store for system (VERY IMPORTANT)
             // ---------------------------------
             lastConditions = {
+				...lastConditions,
                 windDir: windDir,
                 windSpeed: windSpeedKMH
             };
@@ -448,7 +450,6 @@ function fetchWeatherSafe() {
             simulateWeather();
         });
 }
-
 
 // ---------------------------------------------
 // 🌥 FALLBACK (NO API)
@@ -625,6 +626,7 @@ function renderDashboard(data) {
 // 📦 STORE CONDITIONS
 // ===============================
 lastConditions = {
+	...lastConditions,
     airTemp: airTemp,
     pressure: pressure,
     windSpeed: windSpeed,
@@ -723,13 +725,6 @@ function updateSPICircle(value) {
     
     const offset = circumference - (value / 100) * circumference;
     circle.style.strokeDashoffset = offset; }
-
-function updateSPI(value) {
-	const el = document.getElementById("spiValue");
-	if (el) {
-		el.innerText = value + "%";
-	}
-}
 
 function updateTactical(spi, conditions) {
 
