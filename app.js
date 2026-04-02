@@ -108,7 +108,7 @@ let splashRipples = [];
 function createSplashRipple() {
     if (!splashCanvas) return;
 
-    splashRipple.push({
+    splashRipples.push({
         x: Math.random() * splashCanvas.width,
         y: splashCanvas.height + 20,
         r: 0,
