@@ -1,16 +1,18 @@
 // =====================================================
 // 🌍 0. START 
 // =====================================================
+
 const splashCanvas = document.getElementById("splashCanvas");
 const splashCtx = splashCanvas ? splashCanvas.getContext("2d") : null;
 
 function resizeSplash() {
-    if (!splashCanvas) return;
-
+	if(!splasCanvas) return;
     splashCanvas.width = window.innerWidth;
-    splashCanvas.height = window.innerHeight; }
+    splashCanvas.height = window.innerHeight; 
+}
 
 resizeSplash();
+
 window.addEventListener("resize", resizeSplash);
 
 function getMoonPhase() {
@@ -1503,3 +1505,4 @@ window.addEventListener("resize", resizeSplash);
 
 
 animateSplash();
+});
