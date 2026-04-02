@@ -159,6 +159,7 @@ function createSplashRipple() {
 function startSplash() {
 
     createSplashRipple();
+	animateSplash();
 
     setTimeout(() => {
 
@@ -1492,4 +1493,3 @@ function stopDots() {
 }
 
 simulateWeather();
-animateSplash();
