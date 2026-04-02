@@ -55,7 +55,7 @@ button, .dock-btn, .scout-option {
 /* ===================================== */
 
 #splash {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
     width: 100vw;
@@ -102,6 +102,32 @@ button, .dock-btn, .scout-option {
     inset: 0;
     pointer-events: none;
     z-index: 2;
+}
+
+.splash-loader {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 3px;
+    background: rgba(0,255,163,0.2);
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.splash-loader::after {
+    content: "";
+    position: absolute;
+    left: -40%;
+    width: 40%;
+    height: 100%;
+    background: #00ffa3;
+    animation: loadMove 1.2s linear infinite; }
+
+@keyframes loadMove {
+    0% { left: -40%; }
+    100% { left: 100%; }
 }
 
 /* ===================================== */
