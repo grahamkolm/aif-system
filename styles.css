@@ -126,16 +126,16 @@ button, .dock-btn, .scout-option {
 
 .splash-loader::after {
     content: "";
-    position: absolute;
-    left: -40%;
-    width: 40%;
+    display: block;
     height: 100%;
+    width: 40%;
     background: #00ffa3;
-    animation: loadMove 1.2s linear infinite; }
+    animation: loadBar 1.2s ease-in-out infinite; }
 
-@keyframes loadMove {
-    0% { left: -40%; }
-    100% { left: 100%; }
+@keyframes loadBar {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(50%); }
+    100% { transform: translateX(150%); } }
 }
 
 /* ===================================== */
