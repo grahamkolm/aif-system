@@ -5,7 +5,7 @@ const splashCanvas = document.getElementById("splashCanvas");
 const splashCtx = splashCanvas ? splashCanvas.getContext("2d") : null;
 
 function set(id, value) {
-	const el = document.grtElementById(id);
+	const el = document.getElementById(id);
 	if (el) el.innerText = value;
 }
 
