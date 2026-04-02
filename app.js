@@ -112,10 +112,10 @@ let ripples = [];
 
 function createRipple() {
     ripples.push({
-        x: Math.random() * splashCanvas.width,
-        y: splashCanvas.height + 20,
-        r: 0,
-        alpha: 0.5
+        r:0,
+        alpha:0.25,
+        x:canvas.width/2,
+        y:canvas.height*0.7
     });
 }
 
@@ -230,13 +230,12 @@ function spawnBubble() {
     const windBias = (lastConditions.windDir || 180) / 180 - 1;
 
     bubbles.push({
-        x: x,
-        y: y,
-        size: Math.random() * 4 + 1,
-        speed: Math.random() * 1.2 + 0.5,
-        drift: (Math.random() - 0.5) + windBias * 0.3,
-        offset: Math.random() * Math.PI * 2,
-        alpha: 0.2 + Math.random() * 0.3
+    x: canvas.width*0.4 + Math.random()*canvas.width*0.2,
+    y: canvas.height*0.9,
+    size: Math.random()*3+1,
+    speed: Math.random()*1.2+0.5,
+    drift: Math.random()-0.5,
+    alpha: 0.15 + Math.random()*0.15
     });
 }
 
