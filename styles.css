@@ -32,8 +32,7 @@ body {
     position: relative;
     margin: 0;
     padding: 0;
-    background: url("splash.jpg") no-repeat center center fixed;
-    background-size: cover !important;
+    background: #05080d;
     overflow-x: hidden;
     font-family: -sans-serif;
     color: var(--text);
@@ -78,7 +77,8 @@ button, .dock-btn, .scout-option {
     height: 100vh;
     inset: 0;
     z-index: 9999;
-    background: #05080d;
+    background: url("splash.jpg") no-repeat center center fixed;
+    background-size: cover !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -88,7 +88,7 @@ button, .dock-btn, .scout-option {
 #splash .overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0,0,0,0.6);
 }
 
 #splashCanvas {
