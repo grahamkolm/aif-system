@@ -148,12 +148,6 @@ button, .dock-btn, .scout-option {
 /* 🧠 HEADER */
 /* ===================================== */
 
-aifTitle {
-    text-align: center;
-    width: 100%;
-    display: block;
-}
-
 .header {
     position: absolute;
     text-align: center;
@@ -168,10 +162,14 @@ aifTitle {
 }
 
 .subtitle1 {
-    font-size: 14px;
+    font-size: 28px;
+    font-weight: bold;
     opacity: 0.8;
     margin-top: 4px;
     text-align: center;
+    color: #00ffa6;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0,255,163,0.6);
 }
 
 .subtitle2 {
