@@ -124,15 +124,16 @@ function animateSplash() {
         r.r += 1.5;
         r.alpha *= 0.96;
 
-        splashCtx.beginPath();
-        splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
         splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+		splashCtx.lineWidth = 1.5;
+		splashCtx.beginPath();
+        splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
         splashCtx.stroke();
 
         if (r.alpha < 0.02) ripples.splice(i, 1);
     });
 
-    if (Math.random() < 0.1) createRipple();
+    if (Math.random() < 0.1) createSplashRipple();
 
     requestAnimationFrame(animateSplash);
 }
