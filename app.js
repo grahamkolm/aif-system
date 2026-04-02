@@ -110,10 +110,10 @@ let ripples = [];
 
 function createRipple() {
     ripples.push({
-        x: Math.random() * splashCanvas.width,
-        y: Math.random() * splashCanvas.height,
+        x: splashCanvas.width / 2,
+        y: splashCanvas.height * 0.75,
         r: 0,
-        alpha: 0.5
+        alpha: 1
     });
 }
 
