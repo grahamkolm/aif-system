@@ -147,6 +147,7 @@ button, .dock-btn, .scout-option {
     text-align: center;
     margin-top: 20px;
     z-index: 5;
+    width: 100%;
 }
 
 .brand {
