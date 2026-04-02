@@ -148,6 +148,12 @@ button, .dock-btn, .scout-option {
 /* 🧠 HEADER */
 /* ===================================== */
 
+aifTitle {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
 .header {
     position: absolute;
     text-align: center;
