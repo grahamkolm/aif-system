@@ -133,7 +133,6 @@ function animateSplash() {
 
         const r = splashRipples[i];
 
-        r.y -= 0.8;
         r.r += 0.3;
         r.alpha *= 0.98;
 
