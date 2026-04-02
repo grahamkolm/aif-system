@@ -111,7 +111,7 @@ function createSplashRipple() {
 
     splashRipples.push({
         x: Math.random() * splashCanvas.width,
-        y: splashCanvas.height * (0.6 + Math.random() * 0.4)
+        y: Math.random() * splashCanvas.height,
         r: 0,
         alpha: 0.5
     });
