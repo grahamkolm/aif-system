@@ -1494,4 +1494,3 @@ function stopDots() {
 }
 
 simulateWeather();
-animateSplash();
