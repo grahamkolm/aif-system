@@ -105,48 +105,45 @@ window.addEventListener("resize", resizeSplash); resizeSplash();
 // ---------------------------------------------
 let splashRipples = [];
 
-function createsSplashRipple() {
- 	if (!splashCanvas) return;
-	
-	SplashRipples.push({
-        r:0,
-        alpha:0.25,
-        x:Math.random() * splashCanvas.width,
-        y:splashCanvas.height + 20
+function createSplashRipple() {
+    if (!splashCanvas) return;
+
+    splashRipples.push({
+        x: Math.random() * splashCanvas.width,
+        y: splashCanvas.height + 20,
+        r: 0,
+        alpha: 0.5
     });
 }
 
 function animateSplash() {
 
-    if (!splashActive) return; // 🔥 STOP LOOP
+    if (!splashActive) return;
 
     if (!splashCtx || !splashCanvas) return;
 
     splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
-    if (SplashRipples.length < 20) {
+    if (splashRipples.length < 20) {
         createSplashRipple();
     }
 
-    for (let i = 0; i < SplashRipples.length; i++) {
-        const r = SplashRipples[i];
+    for (let i = 0; i < splashRipples.length; i++) {
+
+        const r = splashRipples[i];
 
         r.y -= 0.8;
         r.r += 0.3;
         r.alpha *= 0.98;
 
-        if (r.y < 0 || r.alpha < 0.05) {
-            r.x = Math.random() * splashCanvas.width;
-            r.y = splashCanvas.height + Math.random() * 50;
-            r.r = 0;
-            r.alpha = 0.5;
-        }
-
         splashCtx.beginPath();
         splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
         splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
-        splashCtx.lineWidth = 2;
         splashCtx.stroke();
+
+        if (r.alpha < 0.05) {
+            splashRipples.splice(i, 1);
+        }
     }
 
     requestAnimationFrame(animateSplash);
