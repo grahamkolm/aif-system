@@ -1,5 +1,5 @@
 {
-  "name": "AIF",
+  "name": "AIF Dashboard",
   "short_name": "AIF",
   "start_url": "index Plan.html",
   "display": "standalone",
@@ -7,14 +7,15 @@
   "theme_color": "#05080d",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
+
