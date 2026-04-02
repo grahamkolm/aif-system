@@ -89,8 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // =====================================================
 // 💧 3. SPLASH SYSTEM
 // =====================================================
-let splashCanvas = document.getElementById("splashCanvas");
-let splashCtx = splashCanvas?.getContext("2d");
+
 
 // ---------------------------------------------
 // 📏 Resize Splash Canvas
