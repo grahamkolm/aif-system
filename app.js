@@ -632,6 +632,9 @@ lastConditions = {
 });
 
 updateTactical(SPI, lastConditions);
+updateMiniCircle("envCircle", "ENV", lastConditions.envScore || 50); 
+updateMiniCircle("confCircle", "CONF", lastConditions.confScore || 50);
+
 // ===============================
 // 🎯 CALCULATE SPI
 // ===============================
@@ -1425,6 +1428,18 @@ function updateSPI(v) {
 
     let val = document.getElementById("spiValue");
     if (val) val.textContent = v + "%";
+}
+
+function updateMiniCircle(id, label, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.style.transform = "scale(1.2)";
+    
+    setTimeout(() => {
+        el.innerText = `${label} ${value}%`;
+        el.style.transform = "scale(1)";
+    }, 150);
 }
 
 function animateValue(id, value) {
