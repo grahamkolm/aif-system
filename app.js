@@ -2,19 +2,6 @@
 // 🌍 0. START 
 // =====================================================
 
-const splashCanvas = document.getElementById("splashCanvas");
-const splashCtx = splashCanvas ? splashCanvas.getContext("2d") : null;
-
-function resizeSplash() {
-	if(!splasCanvas) return;
-    splashCanvas.width = window.innerWidth;
-    splashCanvas.height = window.innerHeight; 
-}
-
-resizeSplash();
-
-window.addEventListener("resize", resizeSplash);
-
 function getMoonPhase() {
 			return "Normal";
 }
@@ -104,50 +91,54 @@ function resizeSplash() {
 
 window.addEventListener("resize", resizeSplash); resizeSplash();
 
-
 // ---------------------------------------------
 // 💧 Splash Ripple Effect
 // ---------------------------------------------
 let ripples = [];
 
 function createRipple() {
-    ripples.push({
+ 	if (!splashCanvas) return;
+	
+	ripples.push({
         r:0,
         alpha:0.25,
-        x:canvas.width/2,
-        y:canvas.height*0.7
+        x:Math.random() * splashCanvas.width,
+        y:splashCanvas.height + 20
     });
 }
 
 function animateSplash() {
-    for (let i = 0; i < ripples.length; i++) {
-    const r = ripples[i];
 
-    // move upward
-    r.y -= 0.8;
+    if (!splashCtx || !splashCanvas) return;
 
-    // grow slightly
-    r.r += 0.3;
+    splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
-    // fade
-    r.alpha *= 0.98;
-
-    // reset when off screen
-    if (r.y < 0 || r.alpha < 0.05) {
-        r.x = Math.random() * splashCanvas.width;
-        r.y = splashCanvas.height + Math.random() * 50;
-        r.r = 0;
-        r.alpha = 0.5;
+    if (ripples.length < 20) {
+        createRipple();
     }
 
-    // draw
-    splashCtx.beginPath();
-    splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-    splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
-    splashCtx.lineWidth = 2;
-    splashCtx.stroke();
-}
+    for (let i = 0; i < ripples.length; i++) {
+        const r = ripples[i];
 
+        r.y -= 0.8;
+        r.r += 0.3;
+        r.alpha *= 0.98;
+
+        if (r.y < 0 || r.alpha < 0.05) {
+            r.x = Math.random() * splashCanvas.width;
+            r.y = splashCanvas.height + Math.random() * 50;
+            r.r = 0;
+            r.alpha = 0.5;
+        }
+
+        splashCtx.beginPath();
+        splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+        splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
+        splashCtx.lineWidth = 2;
+        splashCtx.stroke();
+    }
+
+    requestAnimationFrame(animateSplash); // 🔥 THIS WAS MISSING }
 
 // ---------------------------------------------
 // 🚀 Start Splash (ENTRY POINT)
@@ -1501,14 +1492,4 @@ function stopDots() {
 }
 
 simulateWeather();
-
-function resizeSplash() {
-    splashCanvas.width = window.innerWidth;
-    splashCanvas.height = window.innerHeight; }
-
-resizeSplash();
-window.addEventListener("resize", resizeSplash);
-
-
-
 animateSplash();
