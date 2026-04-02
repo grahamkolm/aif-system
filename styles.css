@@ -84,6 +84,12 @@ button, .dock-btn, .scout-option {
     inset: 0;
 }
 
+#splashImage {
+    position: absolute;
+    width: 250px;
+    z-index: 2;
+}
+
 .splash-hash {
     position: absolute;
     font-size: 80px;
