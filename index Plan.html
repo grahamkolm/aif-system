@@ -100,39 +100,37 @@
     <div id="confCircle">CONF 65%</div>
 </div>
      
-<!-- ================= TACTICAL ================= --> <div id="tacticalBar" class="tactical-bar">
+<!-- ================= TACTICAL ================= --> 
+<div id="tacticalBar" class="tactical-bar">
     Waiting for environmental data...
 </div>
 
 <div id="tactical"></div>
 
-<!-- ================= WATER ================= --> <div class="card water-card">
+<!-- ================= WATER ================= --> 
+<div class="card">
+    <div class="card-title">Water Intelligence</div>
 
-  <div class="card-title">Water Intelligence</div>
-
-  <div class="water-temps">
     <div class="temp-row">
-      <span class="temp-label">AIR</span>
-      <span id="wcAir">--°C</span>
+        <span>AIR</span>
+        <span>--°C</span>
     </div>
 
     <div class="temp-row main">
-      <span class="temp-label">SURFACE</span>
-      <span id="wcSurface">--°C</span>
+        <span>SURFACE</span>
+        <span>--°C</span>
     </div>
 
     <div class="temp-row">
-      <span class="temp-label">BOTTOM</span>
-      <span id="wcBottom">--°C</span>
+        <span>BOTTOM</span>
+        <span>--°C</span>
     </div>
-  </div>
-
-  <canvas id="waterGraph"></canvas>
-
 </div>
 
-<!-- ================= CONDITIONS ================= --> <div class="card">
-  <div class="card-title">Conditions</div>
+
+<!-- ================= CONDITIONS ================= --> 
+<div class="card">
+<div class="card-title">Conditions</div>
 
   <div class="cond-grid">
 
@@ -159,7 +157,8 @@
   </div>
 </div>
 
-<!-- ================= AI ================= --> <div class="ai-box" onclick="openAIDetail()">
+<!-- ================= AI ================= --> 
+<div class="ai-box" onclick="openAIDetail()">
   <b>AI Tactical Analysis</b>
   <div id="aiAnalysis"></div>
 </div>
@@ -168,7 +167,8 @@
 
 <!-- ===================================== -->
 <!-- 🧭 DOCK NAVIGATION -->
-<!-- ===================================== --> <div class="dock">
+<!-- ===================================== --> 
+<div class="dock">
 
 <div class="dock-btn" onclick="refreshData()"> <i data-lucide="refresh-cw" id="refreshIcon"></i> <span>Refresh</span> </div>
 
@@ -179,7 +179,8 @@
 
 <!-- ===================================== -->
 <!-- 🗺 MAP OVERLAY -->
-<!-- ===================================== --> <div id="mapScreen" class="hidden safe-layer">
+<!-- ===================================== --> 
+     <div id="mapScreen" class="hidden safe-layer">
 
     <div class="map-header">
         <span>Map</span>
@@ -194,7 +195,8 @@
 
 <!-- ===================================== -->
 <!-- 🚀 JS -->
-<!-- ===================================== --> <script src="app.js"></script>
+<!-- ===================================== --> 
+<script src="app.js"></script>
 
 </body>
 </html>
