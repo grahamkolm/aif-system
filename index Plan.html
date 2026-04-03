@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#05080d">
+<link rel="manifest" href="manifest.json"> <meta name="theme-color" content="#05080d">
+<link rel="apple-touch-icon" href="icon.png"> <link rel="icon" type="image/png" href="icon.png">
 
-<link rel="manifest" href="manifest.json"> <link rel="icon" href="icon.png"> <link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"> <meta name="theme-color" content="#05080d"> <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>AIF Dashboard</title>
 
@@ -15,22 +15,24 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <!-- CSS -->
-<link rel="stylesheet" href="styles.css?v=5">
+<link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
 
-<!-- ================= ROOT ================= --> <div id="appRoot">
-
-<!-- ================= BACKGROUND FX ================= --> <canvas id="aifCanvas"></canvas>
-
-<!-- ================= SPLASH ================= --> <div id="splash">
-    <canvas id="splashCanvas"></canvas>
-    <div class="splash-loader"></div>
+<img id="bg" src="background.jpg" alt="" />
+<div id="overlay"></div>
+<canvas id="aifCanvas"></canvas>
+    
+<div id="splash">
+    <h1>AIF™</h1>
+    <p id="bootText">
+        Initializing system<span id="dots"></span>
+    </p>
 </div>
 
-<!-- ================= MAIN APP ================= --> <div class="main">
+<div class="main">
 
 <!-- HEADER -->
 <div class="header">
@@ -42,7 +44,7 @@
 <div class="instrument">
   <div class="spi-container">
 
-    <svg viewBox="0 0 300 300">
+    <svg id="spiGauge" viewBox="0 0 300 300">
 
       <circle cx="150" cy="150" r="110"
         stroke="#2f4f4f"
@@ -54,7 +56,7 @@
         cx="150"
         cy="150"
         r="110"
-        stroke="var(--primary)"
+        stroke="#00ffa6"
         stroke-width="14"
         fill="none"
         stroke-linecap="round"
@@ -66,106 +68,147 @@
         id="spiValue">--%</text>
 
       <text x="150" y="175"
-        text-anchor="middle"
-        fill="#b9c3cc">SPI</text>
+        text-anchor="middle">SPI</text>
 
     </svg>
+
+    <!-- ✅ MINI CIRCLES -->
+    <div class="env-circle">
+      <div class="mini-value" id="envScore">--%</div>
+      <div class="mini-label">ENV</div>
+    </div>
+
+    <div class="conf-circle">
+      <div class="mini-value" id="confScore">--%</div>
+      <div class="mini-label">CONF</div>
+    </div>
 
   </div>
 </div>
 
-<!-- MINI CIRCLES -->
-<div style="display:flex; justify-content:center; gap:20px; margin-top:10px;">
-    <div id="envCircle">ENV 50%</div>
-    <div id="confCircle">CONF 50%</div>
-</div>
-
 <!-- TACTICAL -->
-<div id="tacticalBar" class="tactical-bar">
-    Waiting for environmental data...
+<div id="statusText" class="status-box">
+  Waiting for environmental data...
 </div>
 
-<div id="tactical"></div>
+<!-- TILES -->
+<!-- ===============================
+🧠 WATER INTELLIGENCE
+=============================== -->
+<div class="card water-card">
 
-<!-- WATER CARD -->
-<div class="card">
-    <div class="card-title">Water Intelligence</div>
+  <div class="card-title">Water Intelligence</div>
 
-    <div class="temp-row">
-        <span>AIR</span>
-        <span id="wcAir">--°C</span>
-    </div>
+  <div class="water-temps">
+    <div id="wcAir" class="temp-small">--°</div>
+    <div id="wcSurface" class="temp-main">--°</div>
+    <div id="wcBottom" class="temp-small">--°</div>
+  </div>
 
-    <div class="temp-row main">
-        <span>SURFACE</span>
-        <span id="wcSurface">--°C</span>
-    </div>
+  <canvas id="waterGraph"></canvas>
 
-    <div class="temp-row">
-        <span>BOTTOM</span>
-        <span id="wcBottom">--°C</span>
-    </div>
+  <div class="water-meta">
+    <span id="wcDepth">--</span>
+    <span id="wcClarity">--</span>
+  </div>
 
-    <canvas id="waterGraph"></canvas>
+  <div id="wcInsight" class="water-insight"></div>
+
 </div>
 
-<!-- CONDITIONS -->
+<!-- ===============================
+🌦 CONDITIONS
+=============================== -->
 <div class="card">
   <div class="card-title">Conditions</div>
 
-  <div class="cond-grid">
+  <div class="cond-grid">   <!-- ✅ THIS IS THE FIX -->
 
     <div class="cond-item">
+      <div class="icon">🌡</div>
       <label>Pressure</label>
       <b id="pressure">--</b>
     </div>
 
     <div class="cond-item">
+      <div class="icon">💨</div>
       <label>Wind</label>
       <b id="wind">--</b>
     </div>
 
     <div class="cond-item">
+      <div class="icon">☁️</div>
       <label>Cloud</label>
       <b id="cloud">--</b>
     </div>
 
     <div class="cond-item">
+      <div class="icon">🫧</div>
       <label>Oxygen</label>
       <b id="oxygen">--</b>
     </div>
 
-  </div>
+    <div class="cond-item">
+      <div class="icon">🍂</div>
+      <label>Season</label>
+      <b id="season">--</b>
+    </div>
+
+    <div class="cond-item">
+      <div class="icon">🌙</div>
+      <label>Moon</label>
+      <b id="moon">--</b>
+    </div>
+
+  </div> <!-- ✅ END GRID -->
+
+</div>
+
+<!-- ===============================
+🎯 STRATEGY
+=============================== -->
+<div class="card strategy-card">
+
+  <div class="card-title">Strategy</div>
+
+  <div id="strategyText" class="strategy-main">--</div>
+  <div id="strategyNote" class="strategy-note">--</div>
+  <div id="strategyAction" class="strategy-action">--</div>
+
 </div>
 
 <!-- AI -->
-<div class="ai-box" onclick="openAIDetail()">
-  <b>AI Tactical Analysis</b>
-  <div id="aiAnalysis"></div>
-</div>
+<div class="ai-box" onclick="openAIDetail()"> <b>AI Tactical Analysis</b> <div id="aiAnalysis" class="ai-content"></div> </div>
+
+</div> <!-- END MAIN -->
+
+<!-- DOCK -->
+<div class="dock">
+
+<div class="dock-btn" onclick="refreshData()"> <i data-lucide="refresh-cw" id="refreshIcon"></i> <span>Refresh</span> </div>
+
+<div class="dock-btn" onclick="openScout()"> <i data-lucide="crosshair"></i> Scout </div>
+
+<div class="dock-btn" onclick="confirmDrop()"> <i data-lucide="target"></i> Drop </div>
+
+<div class="dock-btn" onclick="openMap()"> <i data-lucide="map"></i> <span>Map</span></div>
+
+<div class="dock-btn" onclick="openPlan()"> <i data-lucide="clipboard-list"></i> <span>Plan</span></div>    
+
+<div class="dock-btn" onclick="openReport()"> <i data-lucide="bar-chart-3"></i> Report </div>
 
 </div>
 
-<!-- ================= DOCK ================= --> <div class="dock">
-
-<div class="dock-btn" onclick="refreshData()"> <i data-lucide="refresh-cw"></i> <span>Refresh</span> </div>
-
-<div class="dock-btn" onclick="openScout()">Scout</div> <div class="dock-btn" onclick="confirmDrop()">Drop</div>
-<div class="dock-btn" onclick="openMap()">Map</div> <div class="dock-btn" onclick="openPlan()">Plan</div> <div class="dock-btn" onclick="openReport()">Report</div>
-
-</div>
-
-<!-- ================= MAP ================= --> <div id="mapScreen" class="hidden safe-layer">
+<div id="mapScreen" class="hidden">
     <div class="map-header">
         <span>Map</span>
-        <button onclick="closeMap()">✕</button>
+        <button onclick="closeMap()">X</button>
     </div>
     <div id="map"></div>
 </div>
-
-</div>
-
+    
 <!-- JS -->
+<!-- <script src="spi-engine.js"></script> -->
 <script src="app.js"></script>
 
 </body>
