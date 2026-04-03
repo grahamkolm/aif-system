@@ -75,12 +75,32 @@ let ripples = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    const splash = document.getElementById("splash");
+    const main = document.querySelector(".main");
+
+    setTimeout(() => {
+
+        splash.style.opacity = "0";
+        main.classList.add("visible");
+		initGPS();
+    	initCompass();
+    	startSplash();
+		
+        setTimeout(() => {
+            splash.style.display = "none";
+        }, 800);
+
+    }, 2000);
+
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
     const splash = document.getElementById('splash');
     const main = document.querySelector('.main');
 
-    initGPS();
-    initCompass();
-    startSplash();
+    
  
 });
 
