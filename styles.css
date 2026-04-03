@@ -57,10 +57,10 @@ button, .dock-btn, .scout-option {
 
 .main {
     width: 100%;
-    max-width: 420px;
-    padding: 0 12px 120px;
-    position: relative;
-    z-index: 2;
+    margin: 0 auto;
+    max-widtxh: 420px;
+    padding: 20p 16px 120px;
+    text-align: centter;
 }
 
 /* ===================================== */
@@ -179,19 +179,14 @@ ui-center {
 .subtitle1 {
     font-size: 20px;
     font-weight: bold;
-    opacity: 0.8;
-    margin-top: 4px;
-    text-align: center;
-    color: #05080d;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(0,255,163,0.6);
+    margin-top: 6px;
+    color: rgba(255,255,255,0.9)
+    text-shadow: 0 0 10px rgba(0,255,163,0.4);
 }
 
 .subtitle2 {
     font-size: 12px;
-    opacity: 0.6;
-    margin-top: 2px;
-    text-align: center;
+    color: rgba(255,255,255,0.6)
 }
 
 /* ===================================== */
@@ -296,11 +291,12 @@ ui-center {
 /* ===================================== */
 
 .card {
-    background: var(--card);
-    border-radius: 18px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 16px;
     padding: 16px;
-    margin: 12px;
+    margin: 16px 0;
     backdrop-filter: blur(10px);
+    border: 1px solder rgba(0,255,166,0.1);
 }
 
 .card-title {
