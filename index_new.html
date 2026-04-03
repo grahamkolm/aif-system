@@ -821,100 +821,90 @@ return "North-West"
 
 }
   
-function calculateSPI(p,w,c,windDir,t){
+function calculateSPI(p, w, c, windDir, t){
 
-let score = 45
+  let score = 45;
 
-/* PRESSURE TREND */
+  // ===============================
+  // 📈 PRESSURE TREND
+  // ===============================
+  let trend = getPressureTrend(p);
 
-let trend = getPressureTrend(p)
+  if(trend === "rising") score += 12;
+  else if(trend === "stable") score += 8;
+  else if(trend === "falling") score -= 10;
 
-if(trend === "rising") score += 10
-if(trend === "stable") score += 6
-if(trend === "falling") score -= 8
+  // ===============================
+  // ⚡ PRESSURE VELOCITY (change speed)
+  // ===============================
+  let pressureRate = Math.abs(
+    pressureHistory[pressureHistory.length - 1] -
+    pressureHistory[pressureHistory.length - 2]
+  );
 
+  if (pressureRate < 0.5) score += 8;        // stable = very good
+  else if (pressureRate < 1.5) score += 3;
+  else if (pressureRate > 3) score -= 10;    // shock change = bad
 
-/* PRESSURE VELOCITY */
+  // ===============================
+  // 🌡 WATER TEMP (OPTIMAL ZONE)
+  // ===============================
+  if (t >= 18 && t <= 24) score += 20;       // prime feeding
+  else if (t >= 14 && t < 18) score += 10;
+  else if (t > 24 && t <= 28) score += 8;
+  else score -= 12;
 
-let pressureRate = Math.abs((pressureHistory[pressureHistory.length-1] || 0) - (pressureHistory[0] || 0))
+  // ===============================
+  // 🌬 WIND SPEED (MODERATE BEST)
+  // ===============================
+  if (w >= 5 && w <= 15) score += 12;
+  else if (w > 15 && w <= 25) score += 5;
+  else if (w < 2) score -= 5;
+  else score -= 10;
 
-if(pressureRate >= 3) score -= 6
-if(pressureRate <= 1) score += 3 
+  // ===============================
+  // 🌬 WIND DIRECTION (ADVANCED EDGE)
+  // ===============================
+  if (windDir === "onshore") score += 10;     // pushes food → fish follow
+  else if (windDir === "cross") score += 4;
+  else if (windDir === "offshore") score -= 6;
 
-/* PRESSURE STABILIZATION WINDOW */
-if(trend === "stable" && p >= 1018 && p <= 1026){
-score += 8
+  // ===============================
+  // ☁ CLOUD COVER (BALANCED BEST)
+  // ===============================
+  if (c >= 30 && c <= 70) score += 10;
+  else if (c > 70) score += 6;
+  else if (c < 10) score -= 8;
+
+  // ===============================
+  // 🧠 INTELLIGENCE BONUS (COMBINATIONS)
+  // ===============================
+  if (trend === "rising" && w >= 5 && w <= 15) {
+    score += 8; // classic feeding trigger combo
+  }
+
+  if (t >= 18 && t <= 24 && c >= 30) {
+    score += 6; // perfect comfort zone
+  }
+
+  // ===============================
+  // 🛑 CLAMP RESULT
+  // ===============================
+  score = Math.max(0, Math.min(100, score));
+
+  // ===============================
+  // 🎯 ENV & CONF SPLIT (for your UI)
+  // ===============================
+  let env = Math.round(score * 0.85);
+  let conf = Math.round(70 + (pressureRate < 1 ? 20 : 0));
+
+  return {
+    spi: score,
+    env: env,
+    conf: conf
+  };
 }
 
-/* PRESSURE MOMENTUM */
-
-if(pressureRate >= 5){
-score -= 8
-}
-
-if(pressureRate >= 4 && trend === "falling"){ score += 10 }
- 
-/* WIND SPEED FEEDING DRIFT */
-
-if(w >= 6 && w <= 18){
-score += 8
-}
-
-if(w > 18 && w <= 25){
-score += 4
-}
-
-if(w < 3){
-score -= 3
-}
-
-/* WIND DIRECTION INTELLIGENCE */
-
-if(w >= 5){
-
-// simuboatLate windward feeding advantage
-score += 5
-
-}
-
-/* WIND DIRECTION STABILITY */
-
-if(typeof lastWindDir !== "undefined"){
-
-let diff = Math.abs(windDir - lastWindDir)
-
-if(diff > 45){
-score -= 4
-}
-
-}
-
-lastWindDir = windDir
-  
-/* CLOUD COVER */
-  
-if(c >= 20 && c <= 70) score += 10
-if(c > 80) score += 4
-if(c < 10) score -= 3
-
-/* LOW LIGHT FEEDING */
-
-if(c > 60 && sunriseWindow() > 0){
-score += 6
-}
-
-if(c > 80){
-score += 4
-}
-
-/* THERMO STABILITY */
-let surfaceTemp = sensorTemp ?? estimateSurfaceTemp({
-  prevWaterTemp: lastSurfaceTemp || (t - 0.5),
-  airTemp: t,
-  windSpeed: w || 2,
-  sunFactor: 1 - (c || 0) / 100,
-  hour: new Date().getHours()
-});
 
 lastSurfaceTemp = surfaceTemp;
 let bottomTemp;
