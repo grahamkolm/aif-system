@@ -4,10 +4,8 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#05080d">
-<link rel="icon" href="aif-logo.jpg" type="image/x-icon">
-<link rel="icon" type="image/png" sizes="32x32" href="aif-logo.jpg"> <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
-<link rel="apple-touch-icon" href="aif-logo.jpg">
-<link rel="manifest" href="manifest.json">
+
+<link rel="manifest" href="manifest.json"> <link rel="icon" href="icon.png"> <link rel="apple-touch-icon" href="icon.png">
 
 <title>AIF Dashboard</title>
 
@@ -17,50 +15,31 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <!-- CSS -->
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=5">
 
 </head>
 
 <body>
 
-<!-- ===================================== -->
-<!-- 🌍 APP ROOT (SAFE WRAPPER) -->
-<!-- ===================================== --> 
-<div id="appRoot">
+<!-- ================= ROOT ================= --> <div id="appRoot">
 
-<!-- ===================================== -->
-<!-- 💧 SPLASH -->
-<!-- ===================================== --> 
-<canvas id="aifCanvas"></canvas>
+<!-- ================= BACKGROUND FX ================= --> <canvas id="aifCanvas"></canvas>
 
-<div id="splash">
-     <canvas id="splashCanvas"></canvas>
-     <div class="splash-loader"></div>
-   
+<!-- ================= SPLASH ================= --> <div id="splash">
+    <canvas id="splashCanvas"></canvas>
+    <div class="splash-loader"></div>
 </div>
 
-<div id="app"></div>
+<!-- ================= MAIN APP ================= --> <div class="main">
 
-<!-- ===================================== -->
-<!-- 📱 MAIN APP -->
-<!-- ===================================== --> <div class="main">
-
-<!-- ================= HEADER ================= --> <div class="header">
-<div class="header" style="text-align:center;">
-
+<!-- HEADER -->
+<div class="header">
     <div class="brand">AIF™</div>
+    <div class="subtitle1">Artificial Intelligence Fishing</div>
+    <div class="subtitle2">Drop • Scan • Strike</div> </div>
 
-    <div class="subtitle1">
-        Artificial Intelligence Fishing
-    </div>
-
-    <div class="subtitle2">
-        Drop • Scan • Strike
-    </div>
-
-</div>
-
-<!-- ================= SPI ================= --> <div class="instrument">
+<!-- SPI -->
+<div class="instrument">
   <div class="spi-container">
 
     <svg viewBox="0 0 300 300">
@@ -95,86 +74,71 @@
   </div>
 </div>
 
+<!-- MINI CIRCLES -->
 <div style="display:flex; justify-content:center; gap:20px; margin-top:10px;">
-    <div id="envCircle">ENV 70%</div>
-    <div id="confCircle">CONF 65%</div>
+    <div id="envCircle">ENV 50%</div>
+    <div id="confCircle">CONF 50%</div>
 </div>
-     
-<!-- ================= TACTICAL ================= --> 
+
+<!-- TACTICAL -->
 <div id="tacticalBar" class="tactical-bar">
     Waiting for environmental data...
 </div>
 
 <div id="tactical"></div>
 
-<!-- ================= WATER ================= --> 
+<!-- WATER CARD -->
 <div class="card">
     <div class="card-title">Water Intelligence</div>
 
     <div class="temp-row">
         <span>AIR</span>
-        <span>--°C</span>
+        <span id="wcAir">--°C</span>
     </div>
 
     <div class="temp-row main">
         <span>SURFACE</span>
-        <span>--°C</span>
+        <span id="wcSurface">--°C</span>
     </div>
 
     <div class="temp-row">
         <span>BOTTOM</span>
-        <span>--°C</span>
+        <span id="wcBottom">--°C</span>
     </div>
+
+    <canvas id="waterGraph"></canvas>
 </div>
 
-
-<!-- ================= CONDITIONS ================= --> 
+<!-- CONDITIONS -->
 <div class="card">
   <div class="card-title">Conditions</div>
 
-  <div class="cond-grid">   <!-- ✅ THIS IS THE FIX -->
+  <div class="cond-grid">
 
     <div class="cond-item">
-      <div class="icon">🌡</div>
       <label>Pressure</label>
       <b id="pressure">--</b>
     </div>
 
     <div class="cond-item">
-      <div class="icon">💨</div>
       <label>Wind</label>
       <b id="wind">--</b>
     </div>
 
     <div class="cond-item">
-      <div class="icon">☁️</div>
       <label>Cloud</label>
       <b id="cloud">--</b>
     </div>
 
     <div class="cond-item">
-      <div class="icon">🫧</div>
       <label>Oxygen</label>
       <b id="oxygen">--</b>
     </div>
 
-    <div class="cond-item">
-      <div class="icon">🍂</div>
-      <label>Season</label>
-      <b id="season">--</b>
-    </div>
-
-    <div class="cond-item">
-      <div class="icon">🌙</div>
-      <label>Moon</label>
-      <b id="moon">--</b>
-    </div>
-
-  </div> <!-- ✅ END GRID -->
-
+  </div>
 </div>
 
-<!-- ================= AI ================= --> 
+<!-- AI -->
 <div class="ai-box" onclick="openAIDetail()">
   <b>AI Tactical Analysis</b>
   <div id="aiAnalysis"></div>
@@ -182,46 +146,26 @@
 
 </div>
 
-<!-- ===================================== -->
-<!-- 🧭 DOCK NAVIGATION -->
-<!-- ===================================== --> 
-<!-- DOCK -->
-<div class="dock">
+<!-- ================= DOCK ================= --> <div class="dock">
 
-<div class="dock-btn" onclick="refreshData()"> <i data-lucide="refresh-cw" id="refreshIcon"></i> <span>Refresh</span> </div>
+<div class="dock-btn" onclick="refreshData()"> <i data-lucide="refresh-cw"></i> <span>Refresh</span> </div>
 
-<div class="dock-btn" onclick="openScout()"> <i data-lucide="crosshair"></i> Scout </div>
-
-<div class="dock-btn" onclick="confirmDrop()"> <i data-lucide="target"></i> Drop </div>
-
-<div class="dock-btn" onclick="openMap()"> <i data-lucide="map"></i> <span>Map</span></div>
-
-<div class="dock-btn" onclick="openPlan()"> <i data-lucide="clipboard-list"></i> <span>Plan</span></div>    
-
-<div class="dock-btn" onclick="openReport()"> <i data-lucide="bar-chart-3"></i> Report </div>
+<div class="dock-btn" onclick="openScout()">Scout</div> <div class="dock-btn" onclick="confirmDrop()">Drop</div>
+<div class="dock-btn" onclick="openMap()">Map</div> <div class="dock-btn" onclick="openPlan()">Plan</div> <div class="dock-btn" onclick="openReport()">Report</div>
 
 </div>
 
-
-<!-- ===================================== -->
-<!-- 🗺 MAP OVERLAY -->
-<!-- ===================================== --> 
-     <div id="mapScreen" class="hidden safe-layer">
-
+<!-- ================= MAP ================= --> <div id="mapScreen" class="hidden safe-layer">
     <div class="map-header">
         <span>Map</span>
         <button onclick="closeMap()">✕</button>
     </div>
-
     <div id="map"></div>
-
 </div>
 
 </div>
 
-<!-- ===================================== -->
-<!-- 🚀 JS -->
-<!-- ===================================== --> 
+<!-- JS -->
 <script src="app.js"></script>
 
 </body>
