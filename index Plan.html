@@ -130,31 +130,48 @@
 
 <!-- ================= CONDITIONS ================= --> 
 <div class="card">
-<div class="card-title">Conditions</div>
+  <div class="card-title">Conditions</div>
 
-  <div class="cond-grid">
+  <div class="cond-grid">   <!-- ✅ THIS IS THE FIX -->
 
     <div class="cond-item">
+      <div class="icon">🌡</div>
       <label>Pressure</label>
       <b id="pressure">--</b>
     </div>
 
     <div class="cond-item">
+      <div class="icon">💨</div>
       <label>Wind</label>
       <b id="wind">--</b>
     </div>
 
     <div class="cond-item">
+      <div class="icon">☁️</div>
       <label>Cloud</label>
       <b id="cloud">--</b>
     </div>
 
     <div class="cond-item">
+      <div class="icon">🫧</div>
       <label>Oxygen</label>
       <b id="oxygen">--</b>
     </div>
 
-  </div>
+    <div class="cond-item">
+      <div class="icon">🍂</div>
+      <label>Season</label>
+      <b id="season">--</b>
+    </div>
+
+    <div class="cond-item">
+      <div class="icon">🌙</div>
+      <label>Moon</label>
+      <b id="moon">--</b>
+    </div>
+
+  </div> <!-- ✅ END GRID -->
+
 </div>
 
 <!-- ================= AI ================= --> 
@@ -168,14 +185,23 @@
 <!-- ===================================== -->
 <!-- 🧭 DOCK NAVIGATION -->
 <!-- ===================================== --> 
+<!-- DOCK -->
 <div class="dock">
 
 <div class="dock-btn" onclick="refreshData()"> <i data-lucide="refresh-cw" id="refreshIcon"></i> <span>Refresh</span> </div>
 
-<div class="dock-btn" onclick="openScout()">Scout</div> <div class="dock-btn" onclick="confirmDrop()">Drop</div>
-<div class="dock-btn" onclick="openMap()">Map</div> <div class="dock-btn" onclick="openPlan()">Plan</div> <div class="dock-btn" onclick="openReport()">Report</div>
+<div class="dock-btn" onclick="openScout()"> <i data-lucide="crosshair"></i> Scout </div>
+
+<div class="dock-btn" onclick="confirmDrop()"> <i data-lucide="target"></i> Drop </div>
+
+<div class="dock-btn" onclick="openMap()"> <i data-lucide="map"></i> <span>Map</span></div>
+
+<div class="dock-btn" onclick="openPlan()"> <i data-lucide="clipboard-list"></i> <span>Plan</span></div>    
+
+<div class="dock-btn" onclick="openReport()"> <i data-lucide="bar-chart-3"></i> Report </div>
 
 </div>
+
 
 <!-- ===================================== -->
 <!-- 🗺 MAP OVERLAY -->
