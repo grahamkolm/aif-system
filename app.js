@@ -539,6 +539,34 @@ function calculateSPI(pressure, windSpeed, cloud, windDir, temp) {
 // =====================================================
 // 🌊 8. ENVIRONMENT ENGINE (WATER MODEL) 
 // =====================================================
+function estimateSurfaceTemp({
+prevWaterTemp,
+airTemp,
+windSpeed,
+sunFactor,
+hour
+}){
+
+let dayFactor = (hour >= 6 && hour <= 18) ? 1 : -0.5 let airEffect = (airTemp - prevWaterTemp) * 0.1 let sunEffect = sunFactor * 0.5 * dayFactor let windEffect = -windSpeed * 0.03
+
+return prevWaterTemp + airEffect + sunEffect + windEffect }
+
+function estimateBottomTemp(data){
+
+let surfaceTemp = data.surfaceTemp
+let depth = data.depth
+let w = data.windSpeed || 2
+
+let dropRate = (w > 18) ? 0.15 : 0.1
+
+let bottomTemp = surfaceTemp - (depth * dropRate)
+
+if(bottomTemp >= surfaceTemp){
+bottomTemp = surfaceTemp - 0.5
+}
+
+return bottomTemp
+}
 
 // ---------------------------------------------
 // 🌡 Surface Temperature Estimate
@@ -901,6 +929,49 @@ function applyScout() {
     if (screen) screen.remove();
 }
 
+function confirmDrop(){
+  
+navigator.geolocation.getCurrentPosition(function(pos){
+
+let boatLat = pos.coords.latitude;
+let boatLon = pos.coords.longitude;
+
+let drops = JSON.parse(localStorage.getItem("aif_drops") || "[]");
+
+drops.push({
+boatLat:boatLat,
+lon:boatLon,
+time:Date.now()
+});
+
+localStorage.setItem("aif_drops",JSON.stringify(drops));
+
+alert("Drop logged successfully");
+
+});
+
+}
+
+function closeDrop(){
+document.getElementById("dropPanel").remove();
+}
+
+function closeSetup(){
+document.getElementById("setupPopup").style.display = "none";
+}
+
+function resetSession(){
+
+if(confirm("Reset all scouting and drop data?")){
+
+localStorage.removeItem("aif_scout");
+localStorage.removeItem("aif_drops");
+
+alert("Session reset complete");
+
+}
+
+}
 
 // =====================================================
 // 🧠 11. SESSION SYSTEM
@@ -1523,5 +1594,183 @@ function stopDots() {
         dotsInterval = null;
     }
 }
+
+// =========================
+// 🧠 ENVIRONMENT HELPERS
+// =========================
+
+function getMoonPhase(){
+let d=new Date()
+let lp=2551443
+let now=d.getTime()/1000
+let new_moon=592500
+let phase=((now-new_moon)%lp)/lp
+
+if(phase<0.25)return"Waxing"
+if(phase<0.5)return"Full"
+if(phase<0.75)return"Waning"
+return"New"
+}
+
+function sunriseWindow(){
+let h=new Date().getHours()
+if(h>=5 && h<=9)return 10
+if(h>=17 && h<=20)return 12
+return 0
+}
+
+function seasonalWeight(){
+let m=new Date().getMonth()+1
+if(m<=2||m==12)return 8
+if(m<=5)return 4
+if(m<=8)return -4
+return 6
+}
+
+
+// =========================
+// 🌬 WIND SYSTEM
+// =========================
+
+function windBankPrediction(deg){
+if(deg >= 337 || deg < 22) return "South bank (wind pushing north)"
+if(deg < 67) return "South-West bank"
+if(deg < 112) return "West bank (wind pushing east)"
+if(deg < 157) return "North-West bank"
+if(deg < 202) return "North bank (wind pushing south)"
+if(deg < 247) return "North-East bank"
+if(deg < 292) return "East bank (wind pushing west)"
+return "South-East bank"
+}
+
+function windDriftStrength(w){
+if(w < 4) return "Low drift"
+if(w <= 10) return "Moderate drift"
+if(w <= 18) return "Strong feeding drift"
+return "Heavy water movement"
+}
+
+function windDirectionName(deg){
+if(deg >= 337 || deg < 22) return "North"
+if(deg < 67) return "North-East"
+if(deg < 112) return "East"
+if(deg < 157) return "South-East"
+if(deg < 202) return "South"
+if(deg < 247) return "South-West"
+if(deg < 292) return "West"
+return "North-West"
+}
+
+
+// =========================
+// 📈 PRESSURE SYSTEM
+// =========================
+
+function getPressureTrend(p){
+pressureHistory.push(p)
+if(pressureHistory.length>6) pressureHistory.shift()
+if(pressureHistory.length<2) return"stable"
+
+let diff=pressureHistory[pressureHistory.length-1]-pressureHistory[0]
+
+if(diff>1)return"rising"
+if(diff<-1)return"falling"
+return"stable"
+}
+
+function detectWeatherPhase(p,trend,c,w){ if(trend==="falling" && w>=10 && c>50) return "Pre-frontal feeding window"
+if(trend==="rising" && p>=1015) return "Post-frontal stabilization"
+if(trend==="stable" && p>=1018 && p<=1025) return "Stable high pressure phase"
+return "Unstable weather phase"
+}
+
+
+// =========================
+// 🎯 STRIKE SYSTEM
+// =========================
+
+function detectStrikeWindow(spi,trend,w,c){
+let hour = new Date().getHours()
+
+if(hour>=5 && hour<=9 && spi>=60) return "Sunrise window"
+if(hour>=17 && hour<=20 && spi>=60) return "Sunset window"
+
+if(trend==="falling" && w>=10 && c>50)
+return "Pre-frontal strike window forming"
+
+if(trend==="rising" && spi>=65)
+return "Post-frontal feeding window"
+
+if(spi>=75)
+return "High probability feeding activity"
+
+return "No major strike window detected"
+}
+
+function predictStrikeDuration(spi,trend,w,c){
+
+let duration = 20
+
+if(spi >= 80) duration += 40
+else if(spi >= 65) duration += 25
+else if(spi >= 50) duration += 10
+
+if(trend === "stable") duration += 10
+if(trend === "rising") duration += 5
+if(trend === "falling") duration -= 5
+
+if(w >= 6 && w <= 15) duration += 10
+if(w > 18) duration -= 5
+
+if(c > 60) duration += 5
+
+return duration
+}
+
+// =========================
+// 🧠 AI ENGINE
+// =========================
+
+function generateAI(spi,p,w,c,windDir,t){
+
+let aiText = ""
+let trend = getPressureTrend(p)
+
+aiText += "<b>Environmental Scan</b><br>"
+
+if(p >= 1015 && p <= 1022){
+aiText += "Stable pressure detected.<br>"
+}
+
+if(detectPressureStabilization()){
+aiText += "Pressure stabilization detected.<br>"
+}
+
+aiText += "<br><b>Activity Assessment</b><br>"
+aiText += "SPI: <b>" + spi + "%</b><br>"
+
+let duration = predictStrikeDuration(spi,trend,w,c)
+aiText += "Strike window: <b>" + duration + " min</b><br>"
+
+aiText += "<br><b>Tactical Recommendation</b><br>"
+
+aiText += "Windward bank: <b>" + windBankPrediction(windDir) + "</b><br>"
+aiText += "Drift: <b>" + windDriftStrength(w) + "</b><br>"
+
+document.getElementById("aiContent").innerHTML = aiText }
+
+function estimateOxygen(temp, wind, cloud){
+
+let oxygen = 9
+
+if(temp > 25) oxygen -= 2
+else if(temp > 20) oxygen -= 1
+
+if(wind >= 6 && wind <= 18) oxygen += 1.5 else if(wind > 18) oxygen += 2
+
+if(cloud > 60) oxygen += 0.5
+
+return Math.max(5, Math.min(12, oxygen)) }
+
 
 simulateWeather();
