@@ -67,12 +67,12 @@ button, .dock-btn, .scout-option {
 .main {
     width: 100%;
     max-width: 420px;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0 auto;
     padding: 20px 16px 80px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     z-index: 3;
 }
 
@@ -249,7 +249,7 @@ button, .dock-btn, .scout-option {
 /* ===================================== */
 
 .instrument{
-    margin-top:18px;
+    margin-top:10px;
     margin-bottom:5px 0;
     display:flex;
     justify-content:center;
