@@ -20,6 +20,8 @@
 }
 
 html, .body {
+    margin: 0;
+    padding: 0;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -63,14 +65,14 @@ button, .dock-btn, .scout-option {
 /* ===================================== */
 
 .main {
-    position: absolute;
+    position: relative;
     top: 0;
-    left: 50%;
     width: 100%;
+    max-width: 420px;
     height: 100vh;
     margin: 0 auto;
     max-width: 420px;
-    padding: 20px 16px;
+    padding: 20px 16px 120px;
     padding-top: 80px;
     text-align: center;
     display: flex;
@@ -78,7 +80,6 @@ button, .dock-btn, .scout-option {
     align-items: center;
     justify-content: flex-start;
     opacity: 1;
-    transform: tanslateX(-50%);
     transition: opacity 0.5s ease;
     z-index: 3;
 }
