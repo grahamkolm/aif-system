@@ -253,12 +253,14 @@ button, .dock-btn, .scout-option {
     margin-bottom:5px 0;
     display:flex;
     justify-content:center;
+    height: auto !important;
 }
 
 .spi-container{
     position:relative;
     margin-top: 0;
     width:260px;
+    height: auto !important;
     height:240px;
     display:flex;
     justify-content:center;
@@ -326,6 +328,7 @@ button, .dock-btn, .scout-option {
     grid-template-columns:repeat(3,1fr);
     gap:10px;
     margin:10px;
+    height: auto !important;
 }
 
 .tile{
@@ -354,6 +357,7 @@ button, .dock-btn, .scout-option {
     border-radius:14px;
     padding:16px;
     border-left:4px solid #00ff9c;
+    height: auto !important;
 }
 
 .ai-content{
