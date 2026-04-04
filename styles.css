@@ -24,6 +24,7 @@ body::before {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.2);
+    pointer-events: none;
     z-index: 1;
 }
 
@@ -64,11 +65,11 @@ button, .dock-btn, .scout-option {
     max-width: 420px;
     padding: 20px 16px 120px;
     text-align: center;
-    display: none;
-    opacity: 0;
+    display: block;
+    opacity: 1;
     transition: opacity 0.5s ease;
     position: relative;
-    z-index: 2;
+    z-index: 3;
 }
 
 .main.visible {
