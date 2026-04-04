@@ -24,29 +24,36 @@
 
 <body>
 
-<img id="bg" src="background.jpg" alt="" />
-<div id="overlay"></div>
-<canvas id="aifCanvas"></canvas>
-    
+<div class="bg-main"></div>
+
 <div id="splash">
-    <h1>AIF™</h1>
-    <p id="bootText">
-        Initializing system<span id="dots"></span>
-    </p>
+    <div class="splash-content">
+        <div class="loader">
+            <div class="bar"></div>
+        </div>
+        <div class="water-glow"></div>
+    </div>
 </div>
 
-<div class="main">
+<div id="appRoot">
+    <div class="main">
 
-<div class="big-main"></div>
-    <div id="appRoot">
-        <div class="main visible">
+        <div class="header">
+            <div class="brand">AIF™</div>
+            <div class="subtitle1">Artificial Intelligence Fishing</div>
+            <div class="subtitle2">Drop • Scan • Strike</div>
         </div>
+
+        <!-- KEEP YOUR SPI + TILES HERE -->
+
     </div>
-<!-- HEADER -->
-<div class="header">
-    <div class="brand">AIF™</div>
-    <div class="subtitle1">Artificial Intelligence Fishing</div>
-    <div class="subtitle2">Drop • Scan • Strike</div> </div>
+</div>
+
+<script>
+setTimeout(() => {
+    document.getElementById("splash").style.display = "none"; }, 2000); </script>
+
+</body>
 
 <!-- SPI -->
 <div class="instrument">
@@ -227,5 +234,3 @@ setTimeout(() => {
     document.querySelector(".main").classList.add("visible");
     }, 2000);
 </script>
-    
-</body>
