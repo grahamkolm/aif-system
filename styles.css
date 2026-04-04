@@ -60,15 +60,21 @@ button, .dock-btn, .scout-option {
 /* ===================================== */
 
 .main {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100vh;
     margin: 0 auto;
     max-width: 420px;
-    padding: 20px;
+    padding: 20px 16px;
     text-align: center;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     opacity: 1;
     transition: opacity 0.5s ease;
-    position: relative;
     z-index: 3;
 }
 
