@@ -72,10 +72,12 @@ button, .dock-btn, .scout-option {
     padding: 20px 16px 120px;
     display: block;
     z-index: 3;
+    display: none;
 }
 
 .main.visible {
     opacity: 1;
+    display: block;
 }
 
 /* ===================================== */
