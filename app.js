@@ -217,7 +217,7 @@ function generateHotspots() {
 
 function fetchWeatherSafe() {
 
-    const API_KEY = "YOUR_API_KEY";
+    const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
 
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY}`)
         .then(r => r.json())
