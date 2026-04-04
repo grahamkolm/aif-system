@@ -63,7 +63,7 @@ button, .dock-btn, .scout-option {
     width: 100%;
     margin: 0 auto;
     max-width: 420px;
-    padding: 20px 16px 120px;
+    padding: 20px;
     text-align: center;
     display: block;
     opacity: 1;
@@ -85,7 +85,7 @@ button, .dock-btn, .scout-option {
     position: fixed;
     inset: 0;
     background:url("background.jpg")center/cover no-repeat;
-    opacity: 0.2;
+    opacity: 0.4;
     transform: scale(1.1);
     filter: blur(6px) brightness(0.6);
     z-index: 0;
