@@ -65,6 +65,7 @@ button, .dock-btn, .scout-option {
 /* ===================================== */
 
 .main {
+    position: relative;
     width: 100%;
     max-width: 420px;
     min-height: 100vh;
@@ -231,7 +232,7 @@ button, .dock-btn, .scout-option {
 
 .header{
     text-align:center;
-    margin-top:18px;
+    margin-top:10px;
     margin-bottom: 5px;
 }
 
