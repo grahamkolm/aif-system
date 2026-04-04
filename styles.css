@@ -37,13 +37,12 @@ body::before {
 }
 
 body {
-    position: relative;
     margin: 0;
     padding: 0;
-    background: #05080d !important;
-    overflow-x: hidden;
+    background: #05080d;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text);
+    display: block;
 }
 
 button, .dock-btn, .scout-option {
@@ -70,10 +69,8 @@ button, .dock-btn, .scout-option {
     max-width: 420px;
     min-height: 100vh;
     margin: 0 auto;
-    padding: 20px 16px 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    padding: 20px 16px 120px;
+    display: block;
     z-index: 3;
 }
 
