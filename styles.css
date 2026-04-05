@@ -83,7 +83,7 @@ body{
 }
 
 /* 🧠 MAIN SCREEN */
-#main {
+.main {
     position: relative;
     z-index: 2;
 
@@ -194,6 +194,8 @@ body{
 
 .conf-circle{
     right:-40px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 /* SPI TEXT */
