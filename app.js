@@ -486,8 +486,6 @@ function openScout(){
 
 }
 
-let scoutData = {};
-
 document.querySelectorAll(".opt").forEach(btn => {
     btn.addEventListener("click", () => {
 
