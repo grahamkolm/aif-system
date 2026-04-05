@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ SET IT HERE (correct place)
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
-
+    document.getElementById("scoutScreen).classList.add("hidden");
+        
     setTimeout(() => {
 
         splash.style.opacity = "0";
