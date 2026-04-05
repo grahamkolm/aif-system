@@ -26,10 +26,13 @@ html, body {
 #splash {
     position: fixed;
     inset: 0;
-    background: #05080d;
+
+    background: url("splash.jpg") center / cover no-repeat;
+    
     display: flex;
     justify-content: center;
     align-items: center;
+
     z-index: 10;
 }
 
@@ -72,11 +75,11 @@ html, body {
     height: 100vh;
 
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
-    text-align: center;
 
-    padding: 20px;
+    padding-top: 100px;
 }
 
 /* HIDDEN STATE */
