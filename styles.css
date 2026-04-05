@@ -90,7 +90,8 @@ html, body {
 
 /* HEADER */
 .header {
-    max-width: 300px;
+    width: 100%;
+    max-width: 320px;
 }
 
 .brand {
