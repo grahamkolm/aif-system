@@ -2,6 +2,7 @@
 // 🌍 0. GLOBAL BASE
 // =====================================================
 
+let originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
 let splashActive = true;
 let pressureHistory = [];
 
@@ -512,6 +513,19 @@ function startScan(){
 
     setTimeout(() => {
 
+fetch("http://192.168.4.1/data") // 👉 change IP if needed
+    .then(res => res.json())
+    .then(sensorData => {
+
+        renderDashboard(sensorData);
+        showSummary();
+
+    })
+    .catch(err => {
+
+        console.error("Sensor error:", err);
+
+        // fallback so app doesn’t break
         let sensorData = {
             main: { temp: 21.5, pressure: 1016 },
             wind: { speed: 2.5, deg: 140 },
@@ -519,11 +533,8 @@ function startScan(){
         };
 
         renderDashboard(sensorData);
-
         showSummary();
-
-    }, 2500);
-}
+    });
 
 function showSummary(){
 
@@ -546,7 +557,8 @@ function closeScout(){
     document.getElementById("scoutScreen").classList.add("hidden");
 
     // optional: reset UI for next time
-    location.reload();
+    screen.classList.add("hidden");
+    screen.innHTML = originalScoutHTML;
 }
 
 
