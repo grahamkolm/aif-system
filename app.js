@@ -487,24 +487,19 @@ function openScout(){
 
 let scoutData = {};
 
-document.addEventListener("click", (e) => {
+document.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => {
 
-    if (e.target.classList.contains("opt")) {
+        const type = btn.dataset.type;
 
-        let type = e.target.dataset.type;
-        let value = e.target.dataset.value;
-
-        // remove active from group
+        // remove active in same group
         document.querySelectorAll(`.opt[data-type="${type}"]`)
             .forEach(el => el.classList.remove("active"));
 
-        // activate selected
-        e.target.classList.add("active");
+        btn.classList.add("active");
 
-        // store selection
-        scoutData[type] = value;
-    }
-
+        scoutData[type] = btn.dataset.value;
+    });
 });
 
 function startScan(){
@@ -541,6 +536,17 @@ function startScan(){
             });
 
     }, 2500);
+}
+
+function saveAndScan() {
+
+    console.log("Scout saved:", scoutData);
+
+    // 🔥 SAVE (local for now)
+    localStorage.setItem("scoutData", JSON.stringify(scoutData));
+
+    // 👉 then scan
+    startScan();
 }
 
 function showSummary(){
