@@ -572,5 +572,6 @@ function closeScout(){
     screen.classList.add("hidden");
 
     // restore original UI
-    screen.innerHTML = originalScoutHTML; }
+    screen.innerHTML = originalScoutHTML; 
+}
 
