@@ -183,11 +183,24 @@ function animate() {
         b.y -= b.speed;
         b.x += b.drift;
 
-        ctx.fillStyle = `rgba(0,255,160,${b.alpha})`;
+let gradient = ctx.createRadialGradient(
+    b.x - b.size * 0.3,  // light offset (top-left highlight)
+    b.y - b.size * 0.3,
+    0,
+    b.x,
+    b.y,
+    b.size
+);
 
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
-        ctx.fill();
+gradient.addColorStop(0, `rgba(255,255,255,${b.alpha})`);       // bright core
+gradient.addColorStop(0.4, `rgba(200,230,255,${b.alpha * 0.5})`); // soft blue glow
+gradient.addColorStop(1, `rgba(180,220,255,0)`);                // fade out
+
+ctx.fillStyle = gradient;
+
+ctx.beginPath();
+ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2); ctx.fill();
+
 
         if (b.y < 0) bubbles.splice(i, 1);
     });
