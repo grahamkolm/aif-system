@@ -16,6 +16,10 @@ html, body {
 /* 🌊 BACKGROUND */
 .bg {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     inset: 0;
     background: url("background.jpg") center / cover no-repeat;
     filter: brightness(0.7);
@@ -146,8 +150,10 @@ body{
 /* SPI */
 .instrument{
     margin-top:18px;
+    width: 100%
     display:flex;
     justify-content:center;
+    margin-top: 10px;
 }
 
 .spi-container{
@@ -180,7 +186,10 @@ body{
     border:2px solid rgba(0,255,156,0.4); }
 
 .env-circle{
+    position: absolute;
     left:-40px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .conf-circle{
@@ -230,5 +239,6 @@ body{
     background:black;
     display:flex;
     justify-content:space-evenly;
+    z-index: 5;
 }
 
