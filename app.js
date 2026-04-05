@@ -471,41 +471,11 @@ function updateSPI(v){
 
 function openScout(){
 
-    console.log("Scout mode started");
+    console.log("Scout mode opened");
 
-    // 1. Update tactical bar (visual feedback)
-    let tactical = document.getElementById("tactical");
-    if(tactical){
-        tactical.innerText = "🔍 Scanning environment...";
-    }
+    // 👉 Show Scout UI instead of scanning immediately
+    document.getElementById("scoutScreen").classList.remove("hidden");
 
-    // 2. Simulate sensor delay (replace later with real sensor)
-    setTimeout(() => {
-
-        // 👉 FAKE SENSOR DATA (for now)
-        let sensorData = {
-            main: {
-                temp: 21.5,
-                pressure: 1016
-            },
-            wind: {
-                speed: 2.5,
-                deg: 140
-            },
-            clouds: {
-                all: 35
-            }
-        };
-
-        // 3. Push into your system
-        renderDashboard(sensorData);
-
-        // 4. Update tactical bar again
-        if(tactical){
-            tactical.innerText = "✅ Scan complete — data updated";
-        }
-
-    }, 2000);
 }
 
 let scoutData = {};
@@ -529,4 +499,54 @@ document.addEventListener("click", (e) => {
     }
 
 });
+
+function startScan(){
+
+    let screen = document.getElementById("scoutScreen");
+
+    // 👉 Show scanning state
+    screen.innerHTML = `
+        <div class="scout-title">Scanning...</div>
+        <div style="margin-top:20px;">Connecting to sensors...</div>
+    `;
+
+    setTimeout(() => {
+
+        let sensorData = {
+            main: { temp: 21.5, pressure: 1016 },
+            wind: { speed: 2.5, deg: 140 },
+            clouds: { all: 35 }
+        };
+
+        renderDashboard(sensorData);
+
+        showSummary();
+
+    }, 2500);
+}
+
+function showSummary(){
+
+    let screen = document.getElementById("scoutScreen");
+
+    screen.innerHTML = `
+        <div class="scout-title">Scan Complete</div>
+
+        <div>Clarity: ${scoutData.clarity || "-"}</div>
+        <div>Birds: ${scoutData.birds || "-"}</div>
+        <div>Activity: ${scoutData.activity || "-"}</div>
+
+        <div style="margin-top:20px;">SPI Updated</div>
+
+        <div class="scout-btn" onclick="closeScout()">Done</div>
+    `;
+}
+
+function closeScout(){
+    document.getElementById("scoutScreen").classList.add("hidden");
+
+    // optional: reset UI for next time
+    location.reload();
+}
+
 
