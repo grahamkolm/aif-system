@@ -16,8 +16,7 @@ let hotspots = [];
 let SPI = 50;
 
 let bubbles = [];
-let canvas = document.getElementById("waterGraph");
-let ctx = canvas ? canvas.getContext("2d") : null; let ripples = [];
+let canvas, ctx;
 
 // =====================================================
 // 🚀 1. APP BOOT
@@ -100,6 +99,8 @@ function startSplash() {
         splashActive = false;
         document.getElementById("splash")?.remove();
         startApp();
+        canvas = document.getElementById:("waterGraph");
+        ctx = canvas ? canvas.getContext("2d") : null;
     }, 3500);
 }
 
@@ -319,7 +320,9 @@ document.getElementById("pressure").innerText = p + " hPa";
 document.getElementById("wind").innerText = w.toFixed(1) + " km/h"; 
 document.getElementById("cloud").innerText = c + "%";
 
-// simulated values (until sensor ready) document.getElementById("surface").innerText = (t - 0.5).toFixed(1) + "°C"; document.getElementById("bottom").innerText = (t - 1.5).toFixed(1) + "°C";
+// simulated values (until sensor ready) 
+document.getElementById("surface").innerText = (t - 0.5).toFixed(1) + "°C"; 
+document.getElementById("bottom").innerText = (t - 1.5).toFixed(1) + "°C";
 
 // helpers
 document.getElementById("moon").innerText = getMoonPhase(); document.getElementById("season").innerText = getSeason();
