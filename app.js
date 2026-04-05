@@ -574,5 +574,3 @@ function closeScout(){
     // restore original UI
     screen.innerHTML = originalScoutHTML; }
 
-
-
