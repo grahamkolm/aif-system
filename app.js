@@ -18,7 +18,7 @@ let SPI = 50;
 let bubbles = [];
 let canvas, ctx;
 let ripples =[];
-let scoutData = ();
+let scoutData = {};
 
 // =====================================================
 // 🚀 1. APP BOOT
