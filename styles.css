@@ -306,4 +306,62 @@ body{
     padding: 10px 0; /* 🔥 bigger tap zone */ 
 }
 
+/* SCOUT */
+
+.scout {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,10,15,0.95);
+    z-index: 20;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.scout-title {
+    color: #00ffa6;
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+.scout-group {
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 20px;
+}
+
+.scout-label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.scout-options {
+    display: flex;
+    gap: 10px;
+}
+
+.opt {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+}
+
+.opt.active {
+    background: rgba(0,255,166,0.2);
+    border: 1px solid #00ffa6;
+    box-shadow: 0 0 10px rgba(0,255,166,0.5); }
+
+.scout-btn {
+    margin-top: 20px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: #00ffa6;
+    color: black;
+    font-weight: bold;
+}
 
