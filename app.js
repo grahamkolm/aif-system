@@ -273,6 +273,7 @@ function renderDashboard(data) {
 
     let newSPI = calculateSPI(p, w, c, windDir, t);
 
+    // smooth SPI
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
     }
@@ -280,10 +281,37 @@ function renderDashboard(data) {
     lastSPI = newSPI;
     SPI = newSPI;
 
+    // =========================
+    // ✅ UPDATE SPI RING
+    // =========================
     updateSPI(SPI);
 
+    // =========================
+    // ✅ ENV SCORE
+    // =========================
+    let env = Math.round(
+        (100 - Math.abs(p - 1018) * 2) + (c * 0.2)
+    );
+
+    env = Math.max(40, Math.min(env, 95));
+
+    let envEl = document.getElementById("envScore");
+    if (envEl) envEl.innerText = env + "%";
+
+    // =========================
+    // ✅ CONF SCORE
+    // =========================
+    let conf = Math.round((SPI + env) / 2);
+
+    let confEl = document.getElementById("confScore");
+    if (confEl) confEl.innerText = conf + "%";
+
+    // =========================
+    // ✅ VISUAL LINK (important)
+    // =========================
     bubbleIntensity = SPI / 100;
 }
+
 
 // =====================================================
 // 🧠 8. ENVIRONMENT HELPERS
