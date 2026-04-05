@@ -1,414 +1,45 @@
-/* ===================================== */
-/* 🌍 ROOT VARIABLES (FUTURE-PROOF) */
-/* ===================================== */
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-:root {
-    --primary: #00ffa6;
-    --bg: #05080d;
-    --card: rgba(10,20,30,0.7);
-    --card-strong: rgba(15,20,28,0.8);
-    --text: #ffffff;
-    --muted: #7a8a99;
-}
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>AIF</title>
 
-/* ===================================== */
-/* 🔧 GLOBAL SAFETY */
-/* ===================================== */
+<link rel="stylesheet" href="styles.css">
 
-* {
-    box-sizing: border-box;
-}
+</head>
 
-html, .body {
-    overflow-x: hidden;
-}
+<body>
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.2);
-    pointer-events: none;
-    z-index: 1;
-}
+<!-- 🌊 BACKGROUND -->
+<div class="bg"></div>
 
-body {
-    margin: 0;
-    padding: 0;
-    background: #05080d;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--text);
-    display: block;
-}
+<!-- 🚀 SPLASH -->
+<div id="splash">
+    <div class="splash-content">
+        <div class="logo">AIF™</div>
+        <div class="loader">
+            <div class="bar"></div>
+        </div>
+    </div>
+</div>
 
-button, .dock-btn, .scout-option {
-    -webkit-tap-highlight-color: transparent; }
+<!-- 🧠 MAIN -->
+<div id="main" class="hidden">
 
-/* SAFE LAYER */
-#appRoot {
-    position: relative;
-    z-index: 2;
-}
+    <div class="header">
+        <div class="brand">AIF™</div>
+        <div class="subtitle1">Artificial Intelligence Fishing</div>
+        <div class="subtitle2">Drop • Scan • Strike</div>
+    </div>
 
-.safe-layer {
-    position: relative;
-    z-index: 5;
-}
+</div>
 
-/* ===================================== */
-/* MAIN */
-/* ===================================== */
+<script>
+setTimeout(() => {
+    document.getElementById("splash").style.display = "none";
+    document.getElementById("main").classList.remove("hidden");
+}, 2000);
+</script>
 
-.main {
-    position: relative;
-    
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    
-    padding: 20px 16px 120px;
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    z-index: 3;
-
-}
-
-.main.visible {
-    opacity: 1;
-    display: block;
-}
-
-/* ===================================== */
-/* 💧 BACKGROUND */
-/* ===================================== */
-
-.bg-main {
-    position: fixed;
-    inset: 0;
-    background:url("background.jpg")center/cover no-repeat;
-    opacity: 0.7;
-    filter: blur(2px) brightness(0.75 saturate(1.2));
-    z-index: 0;
-}
-
-/* ===================================== */
-/* 💧 SPLASH */
-/* ===================================== */
-
-#splash{
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:url("splash.jpg")center/cover no-repeat;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-    overflow:hidden;
-}
-
-#splash::after{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-}
-
-#splash .overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-}
-
-.splash-content{
-    text-align:center;
-}
-
-.logo{
-    font-size:64px;
-    color:#00ffa6;
-    text-shadow:0 0 25px rgba(0,255,166,0.5); }
-
-/* LOADER BAR */
-.loader{
-    width:200px;
-    height:4px;
-    background:rgba(255,255,255,0.1);
-    margin-top:20px;
-    overflow:hidden;
-    border-radius:2px;
-}
-
-.loader .bar{
-    width:0%;
-    height:100%;
-    background:#00ffa6;
-    animation:load 2s linear forwards;
-}
-
-@keyframes load{
-    from{width:0%;}
-    to{width:100%;}
-}
-
-/* WATER GLOW EFFECT */
-.water-glow{
-    position:absolute;
-    bottom:-50px;
-    width:300px;
-    height:300px;
-    background:radial-gradient(circle, rgba(0,255,166,0.2), transparent 70%);
-    animation:pulse 2s infinite ease-in-out; }
-
-@keyframes pulse{
-    0%{transform:scale(1);opacity:0.6;}
-    50%{transform:scale(1.3);opacity:1;}
-    100%{transform:scale(1);opacity:0.6;}
-}
-
-#splashCanvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-#splashImage {
-    position: absolute;
-    max-width: 80%;
-    max-height: 80%;
-    object-fit: contain;
-    z-index: 2;
-}
-
-.splash-hash {
-    position: absolute;
-    font-size: 80px;
-    color: var(--primary);
-}
-
-#aifCanvas {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.splash-loader {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 3px;
-    background: rgba(0,255,163,0.2);
-    overflow: hidden;
-    border-radius: 2px;
-    z-index: 3;
-}
-
-.splash-loader::after {
-    content: "";
-    display: block;
-    height: 100%;
-    width: 40%;
-    background: #00ffa3;
-    opacity: 0.8;
-    animation: loadBar 1.2s ease-in-out infinite; }
-
-@keyframes loadBar {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(200%); } }
-
-/* ===================================== */
-/* 🧠 HEADER */
-/* ===================================== */
-
-.header{
-    text-align:center;
-    margin-top:10px;
-    margin-bottom: 5px;
-}
-
-.brand{
-    font-size:36px;
-    font-weight:700;
-    color:#00ff9c;
-}
-
-.subtitle1{font-size:20px;color:#b9c3cc;}
-.subtitle2{font-size:15px;color:#7fffb2;margin-top:6px;margin-bottom:10px;}
-
-/* ===================================== */
-/* 🎯 SPI */
-/* ===================================== */
-
-.instrument{
-    margin-top:10px;
-    margin-bottom:5px 0;
-    display:flex;
-    justify-content:center;
-    height: auto !important;
-}
-
-.spi-container{
-    position:relative;
-    margin-top: 0;
-    width:260px;
-    height: auto !important;
-    height:240px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:visible;
-    background: radial-gradient(circle at center, rgba(0,255,156,0.08) 0%, rgba(0,255,156,0.04) 35%, transparent 70%);
-    border-radius:50%;
-}
-
-.env-circle,
-.conf-circle{
-    position:absolute;
-    top:43%;
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
-    background:rgba(15,20,28,0.9);
-    border:2px solid rgba(0,255,156,0.4);
-    box-shadow:0 0 12px rgba(0,255,156,0.35);
-    z-index:10;
-}
-
-.env-circle{
-    left: 0;
-    transform:translate(-20px, 10px);
-}
-
-.conf-circle{
-    right:0;
-    transform:translate(20px, 10px);
-}
-
-.mini-value{
-    font-size:20px;
-    font-weight:600;
-    color:#00ffa6;
-}
-
-.mini-label{
-    font-size:11px;
-    color:#9aa4ad;
-    margin-top:2px;
-    opacity:0.7;
-}
-
-#spiGauge{
-    margin-top:-25px;
-    width:260px;
-    height:260px;
-    position:relative;
-    z-index:2;
-}
-
-/* ===================================== */
-/* 🌊 TILES */
-/* ===================================== */
-
-.tile-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin:10px;
-    height: auto !important;
-}
-
-.tile{
-    background:rgba(15,20,28,0.75);
-    border-radius:12px;
-    padding:14px;
-    text-align:center;
-    border:1px solid rgba(255,255,255,0.05); }
-
-.tile-title{
-    font-size:12px;
-    color:#9aa4ad;
-}
-
-.tile-value{
-    font-size:18px;
-}
-
-/* ===================================== */
-/* 🤖 AI */
-/* ===================================== */
-
-.ai-box{
-    margin:20px;
-    background:rgba(15,20,28,0.75);
-    border-radius:14px;
-    padding:16px;
-    border-left:4px solid #00ff9c;
-    height: auto !important;
-}
-
-.ai-content{
-    max-height:120px;
-    overflow:hidden;
-}
-
-.ai-content.expanded{
-    max-height:1000px;
-}
-
-/* ===================================== */
-/* 🧭 DOCK */
-/* ===================================== */
-
-.dock{
-    position:fixed;
-    bottom:0;
-    left:50%;
-    transform:translateX(-50%);
-    width:100%;
-    max-width:420px;
-    background:black;
-    display:flex;
-    justify-content:space-evenly;
-    padding:10px 0;
-    border-top:1px solid rgba(255,255,255,0.1);
-    z-index:10;
-}
-
-.dock-btn{
-    text-align:center;
-    font-size:11px;
-    width:16%;
-}
-
-/* ===================================== */
-/* 🔧 POPUP */
-/* ===================================== */
-
-#setupPopup{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:#05080d;
-    display:none;
-    z-index:9999;
-    color:white;
-    overflow:auto;
-    padding:20px;
-}
+</body>
+</html>
