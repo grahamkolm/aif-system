@@ -99,7 +99,7 @@ function startSplash() {
         splashActive = false;
         document.getElementById("splash")?.remove();
         startApp();
-        canvas = document.getElementById:("waterGraph");
+        canvas = document.getElementById("waterGraph");
         ctx = canvas ? canvas.getContext("2d") : null;
     }, 3500);
 }
