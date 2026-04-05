@@ -205,36 +205,61 @@ Report
 
 <div id="scoutScreen" class="scout hidden">
 
-    <div class="scout-title">SCOUT MODE</div>
+    <div class="scout-header">
+        <div class="scout-title">Scout Mode</div>
+        <div class="scout-sub">Quickly log activity & scan water</div>
+    </div>
 
-    <div class="scout-group">
+    <!-- FISH ACTIVITY -->
+    <div class="scout-section">
+        <div class="scout-label">Fish Activity</div>
+        <div class="scout-options">
+            <div class="opt" data-type="activity" data-value="bubbles">Bubbles</div>
+            <div class="opt active" data-type="activity" data-value="rolling">Rolling Fish</div>
+            <div class="opt" data-type="activity" data-value="none">No Activity</div>
+        </div>
+    </div>
+
+    <!-- WATER -->
+    <div class="scout-section">
         <div class="scout-label">Water Clarity</div>
         <div class="scout-options">
-            <div class="opt" data-type="clarity" data-value="clear">Clear</div>
-            <div class="opt" data-type="clarity" data-value="medium">Medium</div>
-            <div class="opt" data-type="clarity" data-value="dirty">Dirty</div>
+            <div class="opt active" data-type="clarity" data-value="clear">Clear</div>
+            <div class="opt" data-type="clarity" data-value="stained">Slightly Stained</div>
+            <div class="opt" data-type="clarity" data-value="murky">Murky</div>
         </div>
     </div>
 
-    <div class="scout-group">
-        <div class="scout-label">Bird Activity</div>
+    <!-- LIFE -->
+    <div class="scout-section">
+        <div class="scout-label">Life Signs</div>
         <div class="scout-options">
-            <div class="opt" data-type="birds" data-value="none">None</div>
-            <div class="opt" data-type="birds" data-value="some">Some</div>
-            <div class="opt" data-type="birds" data-value="active">Active</div>
+            <div class="opt" data-type="life" data-value="birds">Birds Active</div>
+            <div class="opt" data-type="life" data-value="none">No Birds</div>
         </div>
     </div>
 
-    <div class="scout-group">
-        <div class="scout-label">Surface Activity</div>
+    <!-- STRUCTURE -->
+    <div class="scout-section">
+        <div class="scout-label">Structure</div>
         <div class="scout-options">
-            <div class="opt" data-type="activity" data-value="low">Low</div>
-            <div class="opt" data-type="activity" data-value="medium">Medium</div>
-            <div class="opt" data-type="activity" data-value="high">High</div>
+            <div class="opt" data-type="structure" data-value="weed">Weed</div>
+            <div class="opt active" data-type="structure" data-value="dropoff">Drop-off</div>
+            <div class="opt" data-type="structure" data-value="flat">Flat</div>
         </div>
     </div>
 
-    <div class="scout-btn" onclick="startScan()">Start Scan</div>
+    <!-- WIND -->
+    <div class="scout-section">
+        <div class="scout-label">Wind Effect</div>
+        <div class="scout-options">
+            <div class="opt" data-type="wind" data-value="bank">Windblown Bank</div>
+            <div class="opt active" data-type="wind" data-value="calm">Calm Water</div>
+        </div>
+    </div>
+
+    <!-- BUTTON -->
+    <div class="scout-btn" onclick="saveAndScan()">Save & Continue</div>
 
 </div>
     
