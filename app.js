@@ -2,7 +2,6 @@
 // 🌍 0. GLOBAL BASE
 // =====================================================
 
-let originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
 let splashActive = true;
 let pressureHistory = [];
 
@@ -29,6 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const splash = document.getElementById("splash");
     const main = document.querySelector(".main");
 
+let originalScoutHTML;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const splash = document.getElementById("splash");
+    const main = document.querySelector(".main");
+
+    // ✅ SET IT HERE (correct place)
+    originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
+
     setTimeout(() => {
 
         splash.style.opacity = "0";
@@ -42,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }, 2000);
 });
+
 
 // =====================================================
 // 💧 2. SPLASH SYSTEM
@@ -505,7 +515,6 @@ function startScan(){
 
     let screen = document.getElementById("scoutScreen");
 
-    // 👉 Show scanning state
     screen.innerHTML = `
         <div class="scout-title">Scanning...</div>
         <div style="margin-top:20px;">Connecting to sensors...</div>
@@ -513,28 +522,30 @@ function startScan(){
 
     setTimeout(() => {
 
-fetch("http://192.168.4.1/data") // 👉 change IP if needed
-    .then(res => res.json())
-    .then(sensorData => {
+        fetch("http://192.168.4.1/data")
+            .then(res => res.json())
+            .then(sensorData => {
 
-        renderDashboard(sensorData);
-        showSummary();
+                renderDashboard(sensorData);
+                showSummary();
 
-    })
-    .catch(err => {
+            })
+            .catch(err => {
 
-        console.error("Sensor error:", err);
+                console.error("Sensor error:", err);
 
-        // fallback so app doesn’t break
-        let sensorData = {
-            main: { temp: 21.5, pressure: 1016 },
-            wind: { speed: 2.5, deg: 140 },
-            clouds: { all: 35 }
-        };
+                let sensorData = {
+                    main: { temp: 21.5, pressure: 1016 },
+                    wind: { speed: 2.5, deg: 140 },
+                    clouds: { all: 35 }
+                };
 
-        renderDashboard(sensorData);
-        showSummary();
-    });
+                renderDashboard(sensorData);
+                showSummary();
+            });
+
+    }, 2500);
+}
 
 function showSummary(){
 
@@ -554,11 +565,13 @@ function showSummary(){
 }
 
 function closeScout(){
-    document.getElementById("scoutScreen").classList.add("hidden");
 
-    // optional: reset UI for next time
+    let screen = document.getElementById("scoutScreen");
+
     screen.classList.add("hidden");
-    screen.innHTML = originalScoutHTML;
-}
+
+    // restore original UI
+    screen.innerHTML = originalScoutHTML; }
+
 
 
