@@ -220,13 +220,13 @@ body{
 .env-circle{
     position: absolute;
     left:-40px;
-    top: 50%;
+    top: 65%;
     transform: translateY(-50%);
 }
 
 .conf-circle{
     right:-40px;
-    top: 50%;
+    top: 65%;
     transform: translateY(-50%);
 }
 
