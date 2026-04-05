@@ -110,6 +110,17 @@ function startSplash() {
 
 function startApp() {
 
+    // ✅ FIRST: get canvas
+    canvas = document.getElementById("waterGraph");
+    ctx = canvas ? canvas.getContext("2d") : null;
+
+    // 🛑 Safety check
+    if (!canvas || !ctx) {
+        console.error("Canvas not found!");
+        return;
+    }
+
+    // ✅ THEN run everything else
     resizeCanvas();
     animate();
 
@@ -202,7 +213,11 @@ function animate() {
 }
 
 function generateHotspots() {
+
+    if (!canvas) return; // 🛑 prevent crash
+
     hotspots = [];
+
     for (let i = 0; i < Math.floor(SPI / 25); i++) {
         hotspots.push({
             x: canvas.width * Math.random(),
@@ -211,6 +226,7 @@ function generateHotspots() {
         });
     }
 }
+
 
 // =====================================================
 // 🌦 5. WEATHER ENGINE
