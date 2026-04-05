@@ -23,11 +23,6 @@ let ripples =[];
 // 🚀 1. APP BOOT
 // =====================================================
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    const splash = document.getElementById("splash");
-    const main = document.querySelector(".main");
-
 let originalScoutHTML;
 
 document.addEventListener("DOMContentLoaded", () => {
