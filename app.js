@@ -504,6 +504,8 @@ document.querySelectorAll(".opt").forEach(btn => {
 
 function startScan(){
 
+    let scoutData = JSON.parse(localStorage.getItem("scoutData")) ||{};
+    console.log("Loaded Scout Data:", scoutData);
     let screen = document.getElementById("scoutScreen");
 
     screen.innerHTML = `
@@ -525,11 +527,11 @@ function startScan(){
 
                 console.error("Sensor error:", err);
 
-                let sensorData = {
-                    main: { temp: 21.5, pressure: 1016 },
-                    wind: { speed: 2.5, deg: 140 },
-                    clouds: { all: 35 }
-                };
+                let sensorData = null;
+                if (!sensorData) {
+                    console.warn("No sensor data available");
+                    return;
+                }
 
                 renderDashboard(sensorData);
                 showSummary();
