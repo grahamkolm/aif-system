@@ -507,3 +507,26 @@ function openScout(){
 
     }, 2000);
 }
+
+let scoutData = {};
+
+document.addEventListener("click", (e) => {
+
+    if (e.target.classList.contains("opt")) {
+
+        let type = e.target.dataset.type;
+        let value = e.target.dataset.value;
+
+        // remove active from group
+        document.querySelectorAll(`.opt[data-type="${type}"]`)
+            .forEach(el => el.classList.remove("active"));
+
+        // activate selected
+        e.target.classList.add("active");
+
+        // store selection
+        scoutData[type] = value;
+    }
+
+});
+
