@@ -125,7 +125,7 @@ body{
 
 /* HIDDEN STATE */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* HEADER */
