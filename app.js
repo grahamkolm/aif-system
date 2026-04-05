@@ -18,6 +18,7 @@ let SPI = 50;
 let bubbles = [];
 let canvas, ctx;
 let ripples =[];
+let scoutData = ();
 
 // =====================================================
 // 🚀 1. APP BOOT
@@ -504,8 +505,9 @@ document.querySelectorAll(".opt").forEach(btn => {
 
 function startScan(){
 
-    let scoutData = JSON.parse(localStorage.getItem("scoutData")) ||{};
+    scoutData = JSON.parse(localStorage.getItem("scoutData")) || {};
     console.log("Loaded Scout Data:", scoutData);
+
     let screen = document.getElementById("scoutScreen");
 
     screen.innerHTML = `
@@ -515,40 +517,42 @@ function startScan(){
 
     setTimeout(() => {
 
-fetch("http://192.168.4.1/data")
-    .then(res => res.json())
-    .then(sensorData => {
+        fetch("http://192.168.4.1/data")
+            .then(res => res.json())
+            .then(sensorData => {
 
-        if (!sensorData) {
-            console.warn("No sensor data available");
-            screen.innerHTML = `
-                <div class="scout-title">No Sensor Found</div>
-                <div style="margin-top:20px;">Check connection</div>
-                <div class="scout-btn" onclick="closeScout()">Back</div>
-            `;
-            return;
-        }
+                if (!sensorData) {
+                    console.warn("No sensor data available");
+                    screen.innerHTML = `
+                        <div class="scout-title">No Sensor Found</div>
+                        <div style="margin-top:20px;">Check connection</div>
+                        <div class="scout-btn" onclick="closeScout()">Back</div>
+                    `;
+                    return;
+                }
 
-        renderDashboard(sensorData);
-        showSummary();
+                renderDashboard(sensorData);
+                showSummary();
 
-    })
-    .catch(() => {
-        screen.innerHTML = `
-            <div class="scout-title">Connection Failed</div>
-            <div style="margin-top:20px;">ESP not reachable</div>
-            <div class="scout-btn" onclick="closeScout()">Back</div>
-        `;
-    });
+            })
+            .catch(() => {
+                screen.innerHTML = `
+                    <div class="scout-title">Connection Failed</div>
+                    <div style="margin-top:20px;">ESP not reachable</div>
+                    <div class="scout-btn" onclick="closeScout()">Back</div>
+                `;
+            });
+
+    }, 2000); // ⬅️ THIS WAS MISSING
+
+}
 
 function saveAndScan() {
 
     console.log("Scout saved:", scoutData);
 
-    // 🔥 SAVE (local for now)
     localStorage.setItem("scoutData", JSON.stringify(scoutData));
 
-    // 👉 then scan
     startScan();
 }
 
@@ -575,7 +579,7 @@ function closeScout(){
 
     screen.classList.add("hidden");
 
-    // restore original UI
     screen.innerHTML = originalScoutHTML; 
 }
+
 
