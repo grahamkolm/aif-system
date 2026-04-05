@@ -1,45 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>AIF</title>
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #05080d;
+    color: white;
+}
 
-<link rel="stylesheet" href="styles.css">
+/* 🌊 BACKGROUND */
+.bg {
+    position: fixed;
+    inset: 0;
+    background: url("background.jpg") center / cover no-repeat;
+    filter: brightness(0.7);
+    z-index: 0;
+}
 
-</head>
+/* 🚀 SPLASH */
+#splash {
+    position: fixed;
+    inset: 0;
+    background: #05080d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
 
-<body>
+.splash-content {
+    text-align: center;
+}
 
-<!-- 🌊 BACKGROUND -->
-<div class="bg"></div>
+.logo {
+    font-size: 48px;
+    color: #00ffa6;
+    margin-bottom: 20px;
+}
 
-<!-- 🚀 SPLASH -->
-<div id="splash">
-    <div class="splash-content">
-        <div class="logo">AIF™</div>
-        <div class="loader">
-            <div class="bar"></div>
-        </div>
-    </div>
-</div>
+/* LOADER */
+.loader {
+    width: 200px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    overflow: hidden;
+    border-radius: 2px;
+}
 
-<!-- 🧠 MAIN -->
-<div id="main" class="hidden">
+.bar {
+    height: 100%;
+    width: 0%;
+    background: #00ffa6;
+    animation: load 2s linear forwards;
+}
 
-    <div class="header">
-        <div class="brand">AIF™</div>
-        <div class="subtitle1">Artificial Intelligence Fishing</div>
-        <div class="subtitle2">Drop • Scan • Strike</div>
-    </div>
+@keyframes load {
+    from { width: 0%; }
+    to { width: 100%; }
+}
 
-</div>
+/* 🧠 MAIN SCREEN */
+#main {
+    position: relative;
+    z-index: 2;
 
-<script>
-setTimeout(() => {
-    document.getElementById("splash").style.display = "none";
-    document.getElementById("main").classList.remove("hidden");
-}, 2000);
-</script>
+    height: 100vh;
 
-</body>
-</html>
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    padding: 20px;
+}
+
+/* HIDDEN STATE */
+.hidden {
+    display: none;
+}
+
+/* HEADER */
+.header {
+    max-width: 300px;
+}
+
+.brand {
+    font-size: 36px;
+    color: #00ffa6;
+    margin-bottom: 10px;
+}
+
+.subtitle1 {
+    font-size: 18px;
+    color: #cfd8dc;
+}
+
+.subtitle2 {
+    font-size: 14px;
+    color: #7fffb2;
+    margin-top: 6px;
+}
