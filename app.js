@@ -515,30 +515,31 @@ function startScan(){
 
     setTimeout(() => {
 
-        fetch("http://192.168.4.1/data")
-            .then(res => res.json())
-            .then(sensorData => {
+fetch("http://192.168.4.1/data")
+    .then(res => res.json())
+    .then(sensorData => {
 
-                renderDashboard(sensorData);
-                showSummary();
+        if (!sensorData) {
+            console.warn("No sensor data available");
+            screen.innerHTML = `
+                <div class="scout-title">No Sensor Found</div>
+                <div style="margin-top:20px;">Check connection</div>
+                <div class="scout-btn" onclick="closeScout()">Back</div>
+            `;
+            return;
+        }
 
-            })
-            .catch(err => {
+        renderDashboard(sensorData);
+        showSummary();
 
-                console.error("Sensor error:", err);
-
-                let sensorData = null;
-                if (!sensorData) {
-                    console.warn("No sensor data available");
-                    return;
-                }
-
-                renderDashboard(sensorData);
-                showSummary();
-            });
-
-    }, 2500);
-}
+    })
+    .catch(() => {
+        screen.innerHTML = `
+            <div class="scout-title">Connection Failed</div>
+            <div style="margin-top:20px;">ESP not reachable</div>
+            <div class="scout-btn" onclick="closeScout()">Back</div>
+        `;
+    });
 
 function saveAndScan() {
 
