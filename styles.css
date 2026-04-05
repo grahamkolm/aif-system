@@ -201,7 +201,8 @@ body{
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.9);
+    border: 2px solid #00ff9c;
+    box-shadow: 0 0 18px rgba(0,255,156,09);
     bottom: 20px;
 
     display: flex;
@@ -222,12 +223,16 @@ body{
     left:-40px;
     top: 75%;
     transform: translateY(-50%);
+    border: 2px solid #00ff9c;
+    box-shadow: 0 0 12px rgba(0,255,156,0.6);
 }
 
 .conf-circle{
     right:-40px;
     top: 75%;
     transform: translateY(-50%);
+    border: 2px solid #4da6ff;
+    box-shadow: 0 0 12px rgba(77,166,255,0.6);
 }
 
 .mini-value {
@@ -269,10 +274,35 @@ body{
 }
 
 .tile{
-    background:rgba(15,20,28,0.75);
-    border-radius:12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 110px;
+    height: 110px;
+    background:rgba(0,0,0,0.4);
+    border-radius:18px;
+    backdrop-filter: blur(6px);
     padding:14px;
     text-align:center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    transition: 0.2 ease;
+}
+
+.tile.i {
+    width: 26px;
+    height: 26px;
+    margin-bottom: 6px;
+}
+
+.tile-title {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.tile.hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 rgba(0,255,156,0.4);
 }
 
 /* DOCK */
@@ -298,12 +328,23 @@ body{
 }
 
 .dock-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
     flex: 1;
     text-align: center;
     font-size: 12px;
     color: white;
 
     padding: 10px 0; /* 🔥 bigger tap zone */ 
+}
+
+.dock=btn i {
+    width: 22px;
+    height: 22px;
 }
 
 /* SCOUT */
