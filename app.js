@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ SET IT HERE (correct place)
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
-    document.getElementById("scoutScreen).classList.add("hidden");
+    document.getElementById("scoutScreen").classList.add("hidden");
         
     setTimeout(() => {
 
