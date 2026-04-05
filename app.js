@@ -434,3 +434,45 @@ function updateSPI(v){
 
     document.getElementById("spiValue").textContent = v + "%"; }
 
+// =====================================================
+// 🎯 SCOUT MODE (SENSOR TRIGGER)
+// =====================================================
+
+function openScout(){
+
+    console.log("Scout mode started");
+
+    // 1. Update tactical bar (visual feedback)
+    let tactical = document.getElementById("tactical");
+    if(tactical){
+        tactical.innerText = "🔍 Scanning environment...";
+    }
+
+    // 2. Simulate sensor delay (replace later with real sensor)
+    setTimeout(() => {
+
+        // 👉 FAKE SENSOR DATA (for now)
+        let sensorData = {
+            main: {
+                temp: 21.5,
+                pressure: 1016
+            },
+            wind: {
+                speed: 2.5,
+                deg: 140
+            },
+            clouds: {
+                all: 35
+            }
+        };
+
+        // 3. Push into your system
+        renderDashboard(sensorData);
+
+        // 4. Update tactical bar again
+        if(tactical){
+            tactical.innerText = "✅ Scan complete — data updated";
+        }
+
+    }, 2000);
+}
