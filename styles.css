@@ -343,6 +343,10 @@ body{
     gap: 10px;
 }
 
+#scoutSCreen.hidden {
+    display: none !important;
+}
+
 .opt {
     flex: 1;
     padding: 10px;
