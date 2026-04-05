@@ -40,6 +40,7 @@ html, body {
 #main {
     position: relative;
     z-index: 2;
+    min-height: 100vh;
 }
     
 /* 🚀 SPLASH */
@@ -111,9 +112,15 @@ body{
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    opacity: 0;
 
     padding-top: 40px;
     padding-bottom: 120px;
+    transition: opacity 0.8s ease;
+}
+
+.main-visible {
+    opacity: 1;
 }
 
 /* HIDDEN STATE */
