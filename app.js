@@ -390,9 +390,10 @@ function updateSPI(v){
     if(!arc) return;
 
     let r = 110;
-    let C = 2*Math.PI*r;
+    let C = 2 * Math.PI * r;
 
-    arc.setAttribute("stroke-dasharray",C);
-    arc.setAttribute("stroke-dashoffset",C-(v/100)*C);
+    arc.style.strokeDasharray = C;
+    arc.style.strokeDashoffset = C - (v/100) * C;
 
-    document.getElementById("spiValue").textContent = v+"%"; }
+    document.getElementById("spiValue").textContent = v + "%"; }
+
