@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
 
         splash.style.opacity = "0";
-        main.classList.add("visible");
+        main.classList.add("main-visible");
 
         initGPS();
         initCompass();
