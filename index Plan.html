@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1"> <title>AIF Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>AIF</title>
 
 <link rel="stylesheet" href="styles.css">
 
@@ -10,164 +10,36 @@
 
 <body>
 
-<!-- BACKGROUND -->
-<div class="bg-main"></div>
+<!-- 🌊 BACKGROUND -->
+<div class="bg"></div>
 
-<!-- SPLASH -->
+<!-- 🚀 SPLASH -->
 <div id="splash">
-  <div class="splash-content">
-    <div class="loader">
-      <div class="bar"></div>
+    <div class="splash-content">
+        <div class="logo">AIF™</div>
+        <div class="loader">
+            <div class="bar"></div>
+        </div>
     </div>
-    <div class="water-glow"></div>
-  </div>
 </div>
 
-<!-- APP ROOT -->
-<div id="appRoot">
+<!-- 🧠 MAIN -->
+<div id="main" class="hidden">
 
-  <div class="main">
-
-    <!-- HEADER -->
     <div class="header">
-      <div class="brand">AIF™</div>
-      <div class="subtitle1">Artificial Intelligence Fishing</div>
-      <div class="subtitle2">Drop • Scan • Strike</div>
+        <div class="brand">AIF™</div>
+        <div class="subtitle1">Artificial Intelligence Fishing</div>
+        <div class="subtitle2">Drop • Scan • Strike</div>
     </div>
-
-    <!-- SPI -->
-    <div class="instrument">
-      <div class="spi-container">
-
-        <svg id="spiGauge" viewBox="0 0 300 300">
-
-          <circle cx="150" cy="150" r="110"
-            stroke="#2f4f4f"
-            stroke-width="10"
-            fill="none"
-            stroke-dasharray="8 12"/>
-
-          <circle id="spiArc"
-            cx="150"
-            cy="150"
-            r="110"
-            stroke="#00ffa6"
-            stroke-width="14"
-            fill="none"
-            stroke-linecap="round"
-            transform="rotate(-90 150 150)"/>
-
-          <text x="150" y="145" text-anchor="middle" id="spiValue">--%</text>
-          <text x="150" y="175" text-anchor="middle">SPI</text>
-
-        </svg>
-
-        <div class="env-circle">
-          <div class="mini-value" id="envScore">--%</div>
-          <div class="mini-label">ENV</div>
-        </div>
-
-        <div class="conf-circle">
-          <div class="mini-value" id="confScore">--%</div>
-          <div class="mini-label">CONF</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- STATUS -->
-    <div id="statusText" class="status-box">
-      Waiting for environmental data...
-    </div>
-
-    <!-- WATER INTELLIGENCE -->
-    <div class="card water-card">
-
-      <div class="card-title">Water Intelligence</div>
-
-      <div class="water-temps">
-        <div id="wcAir" class="temp-small">--°</div>
-        <div id="wcSurface" class="temp-main">--°</div>
-        <div id="wcBottom" class="temp-small">--°</div>
-      </div>
-
-      <canvas id="waterGraph"></canvas>
-
-      <div class="water-meta">
-        <span id="wcDepth">--</span>
-        <span id="wcClarity">--</span>
-      </div>
-
-      <div id="wcInsight" class="water-insight"></div>
-
-    </div>
-
-    <!-- CONDITIONS -->
-    <div class="card">
-
-      <div class="card-title">Conditions</div>
-
-      <div class="cond-grid">
-
-        <div class="cond-item"><label>Pressure</label><b id="pressure">--</b></div>
-        <div class="cond-item"><label>Wind</label><b id="wind">--</b></div>
-        <div class="cond-item"><label>Cloud</label><b id="cloud">--</b></div>
-        <div class="cond-item"><label>Oxygen</label><b id="oxygen">--</b></div>
-        <div class="cond-item"><label>Season</label><b id="season">--</b></div>
-        <div class="cond-item"><label>Moon</label><b id="moon">--</b></div>
-
-      </div>
-
-    </div>
-
-    <!-- STRATEGY -->
-    <div class="card strategy-card">
-
-      <div class="card-title">Strategy</div>
-
-      <div id="strategyText">--</div>
-      <div id="strategyNote">--</div>
-      <div id="strategyAction">--</div>
-
-    </div>
-
-    <!-- AI -->
-    <div class="ai-box">
-      <b>AI Tactical Analysis</b>
-      <div id="aiAnalysis"></div>
-    </div>
-
-  </div>
 
 </div>
-
-<!-- DOCK -->
-<div class="dock">
-
-  <div class="dock-btn">Refresh</div>
-  <div class="dock-btn">Scout</div>
-  <div class="dock-btn">Drop</div>
-  <div class="dock-btn">Map</div>
-  <div class="dock-btn">Plan</div>
-  <div class="dock-btn">Report</div>
-
-</div>
-
-<!-- MAP -->
-<div id="mapScreen" class="hidden">
-  <div class="map-header">
-    <span>Map</span>
-    <button>X</button>
-  </div>
-  <div id="map"></div>
-</div>
-
-<!-- SCRIPT -->
-<script src="app.js"></script>
 
 <script>
 setTimeout(() => {
-  document.getElementById("splash").style.display = "none"; }, 2000); </script>
+    document.getElementById("splash").style.display = "none";
+    document.getElementById("main").classList.remove("hidden");
+}, 2000);
+</script>
 
 </body>
 </html>
