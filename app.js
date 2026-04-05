@@ -310,8 +310,36 @@ function renderDashboard(data) {
     // ✅ VISUAL LINK (important)
     // =========================
     bubbleIntensity = SPI / 100;
-}
 
+// =========================
+// ✅ UPDATE TILES
+// =========================
+document.getElementById("air").innerText = t.toFixed(1) + "°C"; 
+document.getElementById("pressure").innerText = p + " hPa"; 
+document.getElementById("wind").innerText = w.toFixed(1) + " km/h"; 
+document.getElementById("cloud").innerText = c + "%";
+
+// simulated values (until sensor ready) document.getElementById("surface").innerText = (t - 0.5).toFixed(1) + "°C"; document.getElementById("bottom").innerText = (t - 1.5).toFixed(1) + "°C";
+
+// helpers
+document.getElementById("moon").innerText = getMoonPhase(); document.getElementById("season").innerText = getSeason();
+
+// simple oxygen estimate
+let oxygen = 8 + (w * 0.1) - (t * 0.1);
+document.getElementById("oxygen").innerText = oxygen.toFixed(1);
+
+// =========================
+// ✅ TACTICAL BAR
+// =========================
+let text =
+    "SPI " + SPI + "% • " +
+    "Wind " + w.toFixed(0) + " km/h • " +
+    "Pressure " + p + " hPa";
+
+let tactical = document.getElementById("tactical");
+if(tactical) tactical.innerText = text;
+
+}
 
 // =====================================================
 // 🧠 8. ENVIRONMENT HELPERS
@@ -335,6 +363,15 @@ function sunriseWindow(){
     if(h>=5 && h<=9)return 10;
     if(h>=17 && h<=20)return 12;
     return 0;
+}
+
+function getSeason(){
+    let m = new Date().getMonth()+1;
+
+    if(m<=2||m==12)return "Summer";
+    if(m<=5)return "Autumn";
+    if(m<=8)return "Winter";
+    return "Spring";
 }
 
 function seasonalWeight(){
