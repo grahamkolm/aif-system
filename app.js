@@ -376,7 +376,8 @@ function renderDashboard(data) {
 
     console.log("SPI INPUT:", t, p, w, c);
     
-    let newSPI = calculateSPI(p, w, c, windDir, t);
+    let result = calculateSPI(p, w, c, windDir, t);
+    let newSPI = result.score;
 
     let status = document.getElementById("tactical");
     if (status) status.innerText = "Live data active";
@@ -384,12 +385,7 @@ function renderDashboard(data) {
 
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
-
-    let result = {
-        score: newSPI,
-        reasons: []
-    };
-   
+ 
     let SPI = result.score;
 
     let combineReasons = [
