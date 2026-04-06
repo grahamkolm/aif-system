@@ -2,7 +2,7 @@
 // 🌍 0. GLOBAL BASE
 // =====================================================
 
-let splashActive = true;
+let splashActive = true; 
 let pressureHistory = [];
 
 let currentSession = null;
