@@ -772,6 +772,19 @@ function refreshDashboard(){
     }, 1500);
 }
 
+function toggleAI() {
+    const panel = document.getElementById("aiPanel");
+    const toggle = document.getElementById("aiToggle");
+
+    panel.classList.toggle("active");
+
+    if (panel.classList.contains("active")) {
+        toggle.innerText = "−";
+    } else {
+        toggle.innerText = "+";
+    }
+}
+
 // =====================================================
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
 // =====================================================
