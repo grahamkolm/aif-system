@@ -636,8 +636,6 @@ function estimateOxygen(temp, wind, cloud) {
     return Math.max(5, Math.min(14, oxygen)); 
 }
 
-
-
 // =====================================================
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
 // =====================================================
