@@ -308,8 +308,6 @@ function calculateSPI(p, w, c, windDir, t) {
 // =====================================================
 
 function renderDashboard(data) {
-
-console.log("SPI INPUT:" (t, p, w, c));
   
     const t = data.main.temp;
     const p = data.main.pressure;
@@ -319,6 +317,8 @@ console.log("SPI INPUT:" (t, p, w, c));
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
 
+    console.log("SPI INPUT:", t, p, w, c);
+    
     let newSPI = calculateSPI(p, w, c, windDir, t);
 
     let status = document.getElementById("tactical");
