@@ -405,12 +405,12 @@ body{
 .scout-group {
     width: 100%;
     max-width: 320px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
 .scout-group h3 {
     text-align: left;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .scout-label {
@@ -435,6 +435,19 @@ body{
     padding: 20px;
 }
 
+.scout-container {
+    width: 100%;
+    max-width: 420px;
+
+    margin: 20px auto;
+    padding: 20px;
+
+    background: rgba(0,0,0,0.45)
+    backdrop-filter: blur(10px);
+
+    border-radius: 20px;
+}
+
 .section {
     margin-bottom: 20px;
     text-align: left;
@@ -448,7 +461,8 @@ body{
 }
 
 .opt {
-    min-width: 110px;
+    flex: 1 1 calc(33% - 10px);
+    min-width: 100px;
     padding: 12px 16px;
     border-radius: 14px;
 
@@ -478,6 +492,12 @@ body{
         inset 0 0 8px rgba(0,255,166,0.15);
 
     transform: scale(1.05);
+}
+
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .option-row {
