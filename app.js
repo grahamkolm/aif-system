@@ -290,6 +290,25 @@ function simulateWeather() {
     });
 }
 
+function analyzeWeather(w, p, c){
+
+    let insights = [];
+
+    if(w >= 5 && w <= 15){
+        insights.push("Wind pushing food toward bank");
+    }
+
+    if(p > 1015){
+        insights.push("Stable pressure supports feeding");
+    }
+
+    if(c >= 30 && c <= 70){
+        insights.push("Cloud cover improves fish confidence");
+    }
+
+    return insights;
+}
+
 // =====================================================
 // 📊 6. SPI ENGINE (UNIFIED)
 // =====================================================
@@ -624,6 +643,20 @@ function getPressureTrend(p){
     if(diff<-1)return "falling";
     return "stable";
 }
+
+function generateStrategy(tempInsights, weatherInsights, spi){
+
+    if(spi >= 75){
+        return "Fish shallow near windward bank. Active feeding likely.";
+    }
+
+    if(spi >= 60){
+        return "Fish mid-depth. Use moderate feeding approach.";
+    }
+
+    return "Fish deeper. Slow presentation recommended."; 
+}
+
 
 // =====================================================
 // 🧭 9. GPS + COMPASS
