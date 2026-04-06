@@ -313,6 +313,9 @@ console.log("SPI INPUT:" (t, p, w, c});
 
 let status = document.getElementById("tactical");
 if (status) status.innerText = "Live data active";
+
+let msg = document.querySelector(".status-text");
+if (msg) msg.innerText = "Conditions optimal";
     
     const t = data.main.temp;
     const p = data.main.pressure;
