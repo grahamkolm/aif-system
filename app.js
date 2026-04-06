@@ -310,13 +310,7 @@ function calculateSPI(p, w, c, windDir, t) {
 function renderDashboard(data) {
 
 console.log("SPI INPUT:" (t, p, w, c));
-
-let status = document.getElementById("tactical");
-if (status) status.innerText = "Live data active";
-
-let msg = document.querySelector(".status-text");
-if (msg) msg.innerText = "Conditions optimal";
-    
+  
     const t = data.main.temp;
     const p = data.main.pressure;
     const w = data.wind.speed * 3.6;
@@ -327,6 +321,12 @@ if (msg) msg.innerText = "Conditions optimal";
 
     let newSPI = calculateSPI(p, w, c, windDir, t);
 
+    let status = document.getElementById("tactical");
+    if (status) status.innerText = "Live data active";
+
+    let msg = document.querySelector(".status-text");
+    if (msg) msg.innerText = "Conditions optimal";
+    
     // smooth SPI
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
