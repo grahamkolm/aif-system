@@ -20,6 +20,10 @@ let canvas, ctx;
 let ripples =[];
 let scoutData = {};
 
+const GREEN = "#00ffa6";
+const ORANGE = "#ffc400";
+const RED = "#ff3b3b";
+    
 // =====================================================
 // 🚀 1. APP BOOT
 // =====================================================
@@ -62,7 +66,10 @@ let splashRipples = [];
 function resizeSplash() {
     if (!splashCanvas) return;
     splashCanvas.width = window.innerWidth;
-    splashCanvas.height = window.innerHeight; } window.addEventListener("resize", resizeSplash); resizeSplash();
+    splashCanvas.height = window.innerHeight;
+} 
+window.addEventListener("resize", resizeSplash); 
+resizeSplash();
 
 function createSplashRipple() {
     splashRipples.push({
@@ -307,6 +314,8 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind.deg;
+    let surfaceTemp = t - 0.5;
+    let bottomTemp = t - 1.5;
 
     let newSPI = calculateSPI(p, w, c, windDir, t);
 
@@ -351,21 +360,121 @@ function renderDashboard(data) {
 // =========================
 // ✅ UPDATE TILES
 // =========================
-document.getElementById("air").innerText = t.toFixed(1) + "°C"; 
-document.getElementById("pressure").innerText = p + " hPa"; 
-document.getElementById("wind").innerText = w.toFixed(1) + " km/h"; 
-document.getElementById("cloud").innerText = c + "%";
-
-// simulated values (until sensor ready) 
-document.getElementById("surface").innerText = (t - 0.5).toFixed(1) + "°C"; 
-document.getElementById("bottom").innerText = (t - 1.5).toFixed(1) + "°C";
 
 // helpers
 document.getElementById("moon").innerText = getMoonPhase(); document.getElementById("season").innerText = getSeason();
 
-// simple oxygen estimate
-let oxygen = 8 + (w * 0.1) - (t * 0.1);
-document.getElementById("oxygen").innerText = oxygen.toFixed(1);
+    // ================= HELPER FUNCTION =================
+    function setIcon(iconName, value, rules) {
+        let icon = document.querySelector(`[data-lucide="${iconName}"]`);
+        if (!icon) return;
+
+        for (let r of rules) {
+            if (value >= r.min && value <= r.max) {
+                icon.style.stroke = r.color;
+                return;
+            }
+        }
+
+        icon.style.stroke = GREEN;
+    }
+
+    // ================= AIR =================
+    document.getElementById("air").innerText = t.toFixed(1) + "°C";
+
+    setIcon("sun", t, [
+        { min: 30, max: 100, color: RED },
+        { min: 25, max: 29, color: ORANGE }
+    ]);
+
+    // ================= SURFACE =================
+    document.getElementById("surface").innerText = surfaceTemp.toFixed(1) + "°C";
+
+    setIcon("waves", surfaceTemp, [
+        { min: 30, max: 100, color: RED },
+        { min: 22, max: 29, color: ORANGE }
+    ]);
+
+    // ================= BOTTOM =================
+    document.getElementById("bottom").innerText = bottomTemp.toFixed(1) + "°C";
+
+    setIcon("arrow-down", bottomTemp, [
+        { min: 28, max: 100, color: RED },
+        { min: 20, max: 27, color: ORANGE }
+    ]);
+
+    // ================= PRESSURE =================
+    document.getElementById("pressure").innerText = p + " hPa";
+
+    setIcon("gauge", p, [
+        { min: 1022, max: 1100, color: ORANGE },
+        { min: 0, max: 1005, color: RED }
+    ]);
+
+    // ================= WIND =================
+    document.getElementById("wind").innerText = w.toFixed(1) + " km/h";
+
+    setIcon("wind", w, [
+        { min: 20, max: 100, color: RED },
+        { min: 12, max: 19, color: ORANGE }
+    ]);
+
+    // ================= CLOUD =================
+    document.getElementById("cloud").innerText = c + "%";
+
+    setIcon("cloud", c, [
+        { min: 80, max: 100, color: RED },
+        { min: 40, max: 79, color: ORANGE }
+    ]);
+
+    // ================= MOON =================
+    document.getElementById("moon").innerText = getMoonPhase();
+    setIcon("moon", 1, [{ min: 0, max: 10, color: "#8fb3ff" }]);
+
+    // ================= SEASON =================
+    document.getElementById("season").innerText = getSeason();
+    setIcon("leaf", 1, [{ min: 0, max: 10, color: GREEN }]);
+
+    // ================= OXYGEN =================
+    let oxygen = estimateOxygen(t, w, c);
+
+    document.getElementById("oxygen").innerText =
+        oxygen.toFixed(1) + " mg/L";
+
+    setIcon("droplets", oxygen, [
+        { min: 9, max: 20, color: GREEN },
+        { min: 7, max: 8.9, color: ORANGE },
+        { min: 0, max: 6.9, color: RED }
+    ]);
+
+    // ================= FEED =================
+    document.getElementById("feed").innerText = feeding(SPI);
+
+    setIcon("fish", SPI, [
+        { min: 70, max: 100, color: GREEN },
+        { min: 50, max: 69, color: ORANGE },
+        { min: 0, max: 49, color: RED }
+    ]);
+
+    // ================= ENV + CONF =================
+    let envScore = Math.round(
+        (100 - Math.abs(p - 1018) * 2) + (c * 0.2)
+    );
+
+    envScore = Math.max(40, Math.min(envScore, 95));
+
+    document.getElementById("envScore").innerText = envScore + "%";
+
+    let conf = Math.round((SPI + envScore) / 2);
+    document.getElementById("confScore").innerText = conf + "%";
+
+    // ================= TILE GLOW =================
+    document.querySelectorAll(".tile").forEach(tile => {
+        tile.style.boxShadow = SPI >= 80
+            ? "0 0 12px rgba(0,255,156,0.25), inset 0 0 10px rgba(255,255,255,0.05)"
+            : "0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05)";
+    });
+    
 
 // =========================
 // ✅ TACTICAL BAR
@@ -471,7 +580,28 @@ function updateSPI(v){
     arc.style.strokeDasharray = C;
     arc.style.strokeDashoffset = C - (v/100) * C;
 
-    document.getElementById("spiValue").textContent = v + "%"; }
+    document.getElementById("spiValue").textContent = v + "%";
+
+    // 🔥 ADD YOUR GLOW HERE
+    let gauge = document.getElementById("spiGauge");
+
+    if(gauge){
+        gauge.style.filter = v >= 70
+            ? "drop-shadow(0 0 12px rgba(0,255,156,0.35))"
+            : "drop-shadow(0 0 6px rgba(0,255,156,0.15))";
+    }
+
+    let envCircle = document.querySelector(".env-circle");
+    let confCircle = document.querySelector(".conf-circle");
+
+    if(v >= 70){
+        envCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
+        confCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
+    } else {
+        envCircle.style.boxShadow = "none";
+        confCircle.style.boxShadow = "none";
+    }
+}
 
 // =====================================================
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
