@@ -484,8 +484,6 @@ document.getElementById("moon").innerText = getMoonPhase(); document.getElementB
 
         // ================= CALCULATE SCOUT SCORING FOR SPI =================
 
-    let scout = JSON.parse(localStorage.getItem("scoutData")) || {};
-
     let scoutImpact = calculateScoutImpact(scout);
 
     let finalSPI = Math.max(0, Math.min(100, SPI + scoutImpact));
