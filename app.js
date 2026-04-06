@@ -650,6 +650,15 @@ function estimateOxygen(temp, wind, cloud) {
     return Math.max(5, Math.min(14, oxygen)); 
 }
 
+function refreshDashboard(){
+    console.log("Manual refresh triggered");
+
+    // optional loading effect
+    document.getElementById("spiValue").innerText = "...";
+
+    fetchWeatherSafe();
+}
+
 // =====================================================
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
 // =====================================================
