@@ -397,10 +397,12 @@ function renderDashboard(data) {
         ...tempAnalysis.insights
         ];
     
-    let reaonsEl = document.getElementById("spiReasons");
+    let reasonsEl = document.getElementById("spiReasons");
+
     if (reasonsEl) {
-        reasonsEl.innerText = combineReasons.join("\n");
+    reasonsEl.innerText = combineReasons.join("\n"); 
     }
+
     
     newSPI += tempAnalysis.score;
     
