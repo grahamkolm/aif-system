@@ -301,8 +301,13 @@ body{
 }
 
 .tiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
     position: relative;
     z-index: 1;
+    margin-bottom: 80px;
 }
 
 .tile.i {
@@ -502,14 +507,16 @@ body{
 
 .ai-panel {
     position: relative;
-    bottom: 80px;
+    width: 100%;
     margin: 20px 15px 100px 15px;
-    border-radius: 14px;
-    background: rgba(0,0,0,0.45);
+    margin-top: 20px;
+    border-radius: 16px;
+    background: rgba(0,0,0,0.5);
     backdrop-filter: blur(8px);
     overflow: hidden;
     transition: all 0.3s ease;
-    z-index: 10;
+    z-index: 5;
+    padding: 12px;
 }
 
 .ai-header {
@@ -529,6 +536,11 @@ body{
     color: #cfe;
     font-size: 13px;
     line-height: 1.5;
+    diplay: none;
+}
+
+.ai-panel.active .ai-content {
+    display: block;
 }
 
 /* Expanded state */
