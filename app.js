@@ -655,7 +655,7 @@ document.querySelectorAll(".opt").forEach(btn => {
         const type = btn.dataset.type;
 
         // remove active in same group
-        document.querySelectorAll(`.opt[data-type="${type}"]`)
+        document.querySelectorAll(`.opt[data-type="${type}"]`) 
             .forEach(el => el.classList.remove("active"));
 
         btn.classList.add("active");
