@@ -296,23 +296,34 @@ function simulateWeather() {
 
 function calculateSPI(p, w, c, windDir, t){
 
-   let score = 50;
-
+let score = 50;
+let reasons = [];
+    
 // pressure trend
 let trend = getPressureTrend(p);
 if (trend === "rising") score += 6;
 if (trend === "falling") score -= 6;
 
-// wind
-if (w >= 5 && w <= 15) score += 8;
-else if (w > 20) score -= 5;
+ // wind
+    if (w >= 5 && w <= 15){
+        score += 8;
+        reasons.push("Moderate wind improves feeding");
+    }
 
-// cloud
-if (c >= 30 && c <= 70) score += 6;
+    // cloud
+    if (c >= 30 && c <= 70){
+        score += 6;
+        reasons.push("Cloud cover reduces light pressure");
+    }
 
-// temp (most important)
-if (t >= 18 && t <= 24) score += 12;
-else if (t < 10 || t > 30) score -= 8;
+ // temp
+    if (t >= 18 && t <= 24){
+        score += 12;
+        reasons.push("Ideal temperature range");
+    } else {
+        score -= 8;
+        reasons.push("Suboptimal temperature");
+    }
 
 // timing
 score += sunriseWindow() * 0.6;
@@ -322,9 +333,12 @@ score += seasonalWeight() * 0.6;
 let moon = getMoonPhase();
 if (moon === "Full") score += 3;
 
-// clamp
-return Math.max(20, Math.min(95, score));
+    return {
+        score: Math.max(20, Math.min(95, score)),
+        reasons: reasons
+    };
 }
+
 
 // =====================================================
 // 📊 7. DASHBOARD
@@ -350,7 +364,13 @@ function renderDashboard(data) {
 
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
-    
+
+    let result = calculateSPI(...);
+    let SPI = result.score;
+
+    document.getElementById("spiReasons").innerText =
+    result.reasons.join("\n");
+
     // smooth SPI
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
