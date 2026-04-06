@@ -499,8 +499,8 @@ document.getElementById("confScore").innerText = conf + "%";
             ? "0 0 12px rgba(0,255,156,0.25), inset 0 0 10px rgba(255,255,255,0.05)"
             : "0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05)";
     });
+}
     
-
 // =========================
 // ✅ TACTICAL BAR
 // =========================
