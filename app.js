@@ -372,36 +372,34 @@ function renderDashboard(data) {
     const windDir = data.wind.deg;
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
-    let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
+    
 
     console.log("SPI INPUT:", t, p, w, c);
     
     let result = calculateSPI(p, w, c, windDir, t);
     let newSPI = result.score;
-
+    
+    let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
+    newSPI += tempAnalysis.score;
+    
     let status = document.getElementById("tactical");
     if (status) status.innerText = "Live data active";
     
-
+    let combineReasons = [
+        ...(result.reasons || []),
+        ...(tempAnalysis.insights || [])
+    ];
+    
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
  
     let SPI = result.score;
-
-    let combineReasons = [
-        ...result.reasons,
-        ...tempAnalysis.insights
-        ];
     
     let reasonsEl = document.getElementById("spiReasons");
-
     if (reasonsEl) {
     reasonsEl.innerText = combineReasons.join("\n"); 
     }
-
-    
-    newSPI += tempAnalysis.score;
-    
+   
     // smooth SPI
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
