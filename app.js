@@ -42,7 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
 
         splash.style.opacity = "0";
+        
+        const bg = new Image();
+        bg.src = "background.jpg";
+
+        bg.onload = () => {
         main.classList.add("main-visible");
+};
 
         initGPS();
         initCompass();
