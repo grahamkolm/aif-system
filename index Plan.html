@@ -164,9 +164,17 @@
 
 </div>
 
-<div id="aiPanel" class="ai-panel">
-    <div class="ai-title">AI Tactical Insight</div>
-    <pre id="spiReasons"></pre>
+<div id="aiPanel" class="ai-panel collapsed">
+    
+    <div class="ai-header" onclick="toggleAI()">
+        <span>AI Tactical Insight</span>
+        <span id="aiToggle">+</span>
+    </div>
+
+    <div id="aiContent" class="ai-content">
+        <pre id="spiReasons"></pre>
+    </div>
+
 </div>
     
 <!-- ================= DOCK ================= --> 
