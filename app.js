@@ -392,8 +392,6 @@ function renderDashboard(data) {
     
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
- 
-    let SPI = result.score;
     
     let reasonsEl = document.getElementById("spiReasons");
     if (reasonsEl) {
@@ -437,8 +435,9 @@ function renderDashboard(data) {
     // =========================
     // ✅ VISUAL LINK (important)
     // =========================
-    bubbleIntensity = SPI / 100;
-   
+    bubbleIntensity = finalSPI / 100;
+    document.getElementById("feed").innerText = feeding(finalSPI);
+    
 // =========================
 // ✅ UPDATE TILES
 // =========================
@@ -540,8 +539,6 @@ document.getElementById("moon").innerText = getMoonPhase(); document.getElementB
 
         // ================= CALCULATE SCOUT SCORING FOR SPI =================
 
-    updateSPI(finalSPI);
-
     // ================= ENV + CONF =================
 let envScore = Math.round(
     (100 - Math.abs(p - 1018) * 2) + (c * 0.2) );
@@ -566,7 +563,7 @@ document.getElementById("confScore").innerText = conf + "%";
 // ✅ TACTICAL BAR
 // =========================
 let text =
-    "SPI " + SPI + "% • " +
+    "SPI " + finalSPI.toFixed(1)  + "% • " +
     "Wind " + w.toFixed(0) + " km/h • " +
     "Pressure " + p + " hPa";
 
@@ -712,7 +709,7 @@ function updateSPI(v){
     arc.style.strokeDasharray = C;
     arc.style.strokeDashoffset = C - (v/100) * C;
 
-    document.getElementById("spiValue").textContent = v + "%";
+    document.getElementById("spiValue").textContent = v.toFixed(1) + "%";
 
     // 🔥 ADD YOUR GLOW HERE
     let gauge = document.getElementById("spiGauge");
