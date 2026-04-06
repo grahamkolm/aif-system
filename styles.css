@@ -394,6 +394,11 @@ body{
     margin-bottom: 20px;
 }
 
+.scout-group h3 {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
 .scout-label {
     margin-bottom: 10px;
     font-size: 14px;
@@ -405,6 +410,15 @@ body{
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+#scout-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 20px;
 }
 
 .section {
