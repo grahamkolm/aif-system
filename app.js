@@ -385,7 +385,11 @@ function renderDashboard(data) {
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
 
-    let result = calculateSPI(...);
+    let result = {
+        score: newSPI,
+        reasons: []
+    };
+   
     let SPI = result.score;
 
     let combineReasons = [
