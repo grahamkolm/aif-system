@@ -309,7 +309,7 @@ function calculateSPI(p, w, c, windDir, t) {
 
 function renderDashboard(data) {
 
-console.log("SPI INPUT:" (t, p, w, c});
+console.log("SPI INPUT:" (t, p, w, c));
 
 let status = document.getElementById("tactical");
 if (status) status.innerText = "Live data active";
