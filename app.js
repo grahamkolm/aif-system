@@ -339,6 +339,7 @@ function renderDashboard(data) {
 
     let status = document.getElementById("tactical");
     if (status) status.innerText = "Live data active";
+    
 
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
@@ -348,13 +349,22 @@ function renderDashboard(data) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
     }
 
-    lastSPI = newSPI;
-    SPI = newSPI;
+    let scout = JSON.parse(localStorage.getItem("scoutData")) || {};
+    let scoutImpact = calculateScoutImpact(scout);
+    let finalSPI = Math.max(0, Math.min(100, newSPI + scoutImpact));
+
+    console.log("base SPI:", newSPI);
+    console.log("Scout Data:", scout);
+    console.log("Scout Impact:", scoutImpact);
+    console.log("Final SPI:", finalSPI);
+    
+    lastSPI = finalSPI;
+    SPI = finalSPI;
 
     // =========================
     // ✅ UPDATE SPI RING
     // =========================
-    updateSPI(SPI);
+    updateSPI(finalSPI);
 
     // =========================
     // ✅ ENV SCORE
