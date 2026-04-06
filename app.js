@@ -122,6 +122,8 @@ function startSplash() {
         startApp();
         canvas = document.getElementById("waterGraph");
         ctx = canvas ? canvas.getContext("2d") : null;
+        setInterval(FetchWeatherSafe, 30000);
+        
     }, 3500);
 }
 
@@ -383,7 +385,7 @@ function renderDashboard(data) {
     newSPI += tempAnalysis.score;
     
     let status = document.getElementById("tactical");
-    if (status) status.innerText = "Live data active";
+    if (status) status.innerText = "Updating...";
     
     let combineReasons = [
         ...(result.reasons || []),
