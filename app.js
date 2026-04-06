@@ -436,7 +436,7 @@ document.getElementById("moon").innerText = getMoonPhase(); document.getElementB
     setIcon("leaf", 1, [{ min: 0, max: 10, color: GREEN }]);
 
     // ================= OXYGEN =================
-    let oxygen = estimateOxygen(t, w, c);
+        let oxygen = estimateOxygen(t, w, c);
 
     document.getElementById("oxygen").innerText =
         oxygen.toFixed(1) + " mg/L";
@@ -603,6 +603,24 @@ function updateSPI(v){
         confCircle.style.boxShadow = "none";
     }
 }
+
+function estimateOxygen(temp, wind, cloud) {
+
+    // Base oxygen decreases with temperature
+    let base = 14.6 - (temp * 0.4);
+
+    // Wind increases oxygen
+    let windEffect = wind * 0.1;
+
+    // Clouds slightly increase oxygen (less sunlight = less algae consumption swings)
+    let cloudEffect = cloud * 0.02;
+
+    let oxygen = base + windEffect + cloudEffect;
+
+    return Math.max(5, Math.min(14, oxygen)); 
+}
+
+
 
 // =====================================================
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
