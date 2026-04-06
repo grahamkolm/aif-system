@@ -345,14 +345,6 @@ function renderDashboard(data) {
     if (envEl) envEl.innerText = env + "%";
 
     // =========================
-    // ✅ CONF SCORE
-    // =========================
-    let conf = Math.round((SPI + env) / 2);
-
-    let confEl = document.getElementById("confScore");
-    if (confEl) confEl.innerText = conf + "%";
-
-    // =========================
     // ✅ VISUAL LINK (important)
     // =========================
     bubbleIntensity = SPI / 100;
