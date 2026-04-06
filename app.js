@@ -653,6 +653,12 @@ function estimateOxygen(temp, wind, cloud) {
 function refreshDashboard(){
     console.log("Manual refresh triggered");
 
+    let icon = document.getElementById("refreshIcon");
+    if(icon){
+    icon.style.transform = "rotate(360deg)";
+    icon.style.transition = "0.5s";
+}
+
     // optional loading effect
     document.getElementById("spiValue").innerText = "...";
 
