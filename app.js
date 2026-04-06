@@ -318,6 +318,7 @@ if (moon === "Full") score += 3;
 
 // clamp
 return Math.max(20, Math.min(95, score));
+}
 
 // =====================================================
 // 📊 7. DASHBOARD
