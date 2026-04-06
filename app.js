@@ -372,7 +372,7 @@ function renderDashboard(data) {
     // ✅ VISUAL LINK (important)
     // =========================
     bubbleIntensity = SPI / 100;
-
+   
 // =========================
 // ✅ UPDATE TILES
 // =========================
@@ -471,6 +471,16 @@ document.getElementById("moon").innerText = getMoonPhase(); document.getElementB
         { min: 50, max: 69, color: ORANGE },
         { min: 0, max: 49, color: RED }
     ]);
+
+        // ================= CALCULATE SCOUT SCORING FOR SPI =================
+
+    let scout = JSON.parse(localStorage.getItem("scoutData")) || {};
+
+    let scoutImpact = calculateScoutImpact(scout);
+
+    let finalSPI = Math.max(0, Math.min(100, SPI + scoutImpact));
+
+    updateSPI(finalSPI);
 
     // ================= ENV + CONF =================
 let envScore = Math.round(
@@ -732,6 +742,39 @@ function showSummary(){
 
         <div class="scout-btn" onclick="closeScout()">Done</div>
     `;
+}
+
+function calculateScoutImpact(scout){
+
+    let score = 0;
+
+    // 🐟 Activity
+    if(scout.activity === "none") score -= 15;
+    if(scout.activity === "bubbles") score += 5;
+    if(scout.activity === "rolling") score += 15;
+
+    // 🌊 Clarity
+    if(scout.clarity === "clear") score += 5;
+    if(scout.clarity === "stained") score += 10;
+    if(scout.clarity === "murky") score -= 5;
+
+    // 🐦 Birds
+    if(scout.birds === "some") score += 5;
+    if(scout.birds === "active") score += 10;
+
+    // 🌬 Wind effect
+    if(scout.wind === "bank") score += 10;
+    if(scout.wind === "calm") score -= 5;
+
+    // 🌊 Surface activity
+    if(scout.surface === "medium") score += 5;
+    if(scout.surface === "high") score += 10;
+
+    // 🪵 Structure
+    if(scout.structure === "weed") score += 5;
+    if(scout.structure === "dropoff") score += 10;
+
+    return Math.max(-20, Math.min(20, score)); 
 }
 
 function closeScout(){
