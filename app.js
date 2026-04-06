@@ -353,6 +353,7 @@ function renderDashboard(data) {
     const windDir = data.wind.deg;
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
+    let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
 
     console.log("SPI INPUT:", t, p, w, c);
     
@@ -368,9 +369,16 @@ function renderDashboard(data) {
     let result = calculateSPI(...);
     let SPI = result.score;
 
+    let combineReasons = [
+        ...result.reasons,
+        ...tempAnalysis.insights
+        ];
+    
     document.getElementById("spiReasons").innerText =
-    result.reasons.join("\n");
+    combineReasons.join("\n");
 
+    newSPI += tempAnalysis.score;
+    
     // smooth SPI
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
@@ -562,6 +570,22 @@ function getMoonPhase(){
     if(phase<0.75)return"Waning";
     return"New";
 }
+
+function analyzeTemperature(air, surface, bottom){
+
+    let insights = [];
+
+    if(surface >= 18 && surface <= 24){
+        insights.push("Fish likely feeding in upper layers");
+    }
+
+    if(bottom < surface){
+        insights.push("Thermal layering present — fish may move between depths");
+    }
+
+    return insights;
+}
+
 
 function sunriseWindow(){
     let h=new Date().getHours();
