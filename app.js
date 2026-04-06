@@ -729,4 +729,12 @@ function closeScout(){
     screen.innerHTML = originalScoutHTML; 
 }
 
+function feeding(spi) {
+
+    if (spi >= 80) return "High Activity 🔥";
+    if (spi >= 60) return "Active 👍";
+    if (spi >= 40) return "Slow 😐";
+    return "Low Activity ❄️";
+}
+
 
