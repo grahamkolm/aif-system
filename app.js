@@ -397,9 +397,11 @@ function renderDashboard(data) {
         ...tempAnalysis.insights
         ];
     
-    document.getElementById("spiReasons").innerText =
-    combineReasons.join("\n");
-
+    let reaonsEl = document.getElementById("spiReasons");
+    if (reasonsEl) {
+        reasonsEl.innerText = combineReasons.join("\n");
+    }
+    
     newSPI += tempAnalysis.score;
     
     // smooth SPI
