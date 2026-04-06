@@ -291,9 +291,9 @@ function calculateSPI(p, w, c, windDir, t) {
     if (trend === "rising") score += 10;
     if (trend === "falling") score -= 10;
 
-    if (w >= 5 && w <= 15) score += 12;
-    if (c >= 30 && c <= 70) score += 10;
-    if (t >= 18 && t <= 24) score += 20;
+    if (w >= 5 && w <= 15) score += 8;
+    if (c >= 30 && c <= 70) score += 6;
+    if (t >= 18 && t <= 24) score += 10;
 
     score += sunriseWindow();
     score += seasonalWeight();
@@ -309,6 +309,11 @@ function calculateSPI(p, w, c, windDir, t) {
 
 function renderDashboard(data) {
 
+console.log("SPI INPUT:" (t, p, w, c});
+
+let status = document.getElementById("tactical");
+if (status) status.innerText = "Live data active";
+    
     const t = data.main.temp;
     const p = data.main.pressure;
     const w = data.wind.speed * 3.6;
@@ -449,16 +454,17 @@ document.getElementById("moon").innerText = getMoonPhase(); document.getElementB
     ]);
 
     // ================= ENV + CONF =================
-    let envScore = Math.round(
-        (100 - Math.abs(p - 1018) * 2) + (c * 0.2)
-    );
+let envScore = Math.round(
+    (100 - Math.abs(p - 1018) * 2) + (c * 0.2) );
 
-    envScore = Math.max(40, Math.min(envScore, 95));
+envScore = Math.max(40, Math.min(envScore, 95));
 
-    document.getElementById("envScore").innerText = envScore + "%";
+let conf = Math.round((SPI + envScore) / 2);
 
-    let conf = Math.round((SPI + envScore) / 2);
-    document.getElementById("confScore").innerText = conf + "%";
+// ✅ UPDATE UI
+document.getElementById("envScore").innerText = envScore + "%"; 
+document.getElementById("confScore").innerText = conf + "%";
+
 
     // ================= TILE GLOW =================
     document.querySelectorAll(".tile").forEach(tile => {
