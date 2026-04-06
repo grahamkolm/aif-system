@@ -594,21 +594,37 @@ function getMoonPhase(){
     return"New";
 }
 
-function analyzeTemperature(air, surface, bottom){
+function analyzeTemperature(air, surface, bottom) {
 
-    let insights = [];
+    let score = 0;
+    let insights = []; // ✅ MUST be an array
 
-    if(surface >= 18 && surface <= 24){
-        insights.push("Fish likely feeding in upper layers");
+    // Surface temp logic
+    if (surface >= 18 && surface <= 24) {
+        score += 8;
+        insights.push("Surface temp optimal (18–24°C)");
+    } else if (surface > 24) {
+        score -= 4;
+        insights.push("Surface temp too warm — fish may go deeper");
+    } else {
+        score -= 6;
+        insights.push("Surface temp too cold — reduced activity");
     }
 
-    if(bottom < surface){
-        insights.push("Thermal layering present — fish may move between depths");
+    // Thermal layering
+    if (bottom < surface - 3) {
+        score -= 4;
+        insights.push("Thermal drop detected — fish holding deeper");
+    } else {
+        score += 2;
+        insights.push("Stable water column — good feeding movement");
     }
 
-    return insights;
+    return {
+        score: score,
+        insights: insights // ✅ THIS is what fixes your error
+    };
 }
-
 
 function sunriseWindow(){
     let h=new Date().getHours();
