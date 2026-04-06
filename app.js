@@ -284,40 +284,34 @@ function simulateWeather() {
 
 function calculateSPI(p, w, c, windDir, t){
 
-    let score = 50;
+   let score = 50;
 
-    // ================= TEMP (MOST IMPORTANT)
-    if (t >= 18 && t <= 24) score += 25;
-    else if (t >= 15 && t <= 27) score += 10;
-    else score -= 15;
+// pressure trend
+let trend = getPressureTrend(p);
+if (trend === "rising") score += 6;
+if (trend === "falling") score -= 6;
 
-    // ================= WIND
-    if (w >= 5 && w <= 15) score += 15;
-    else if (w > 20) score -= 15;
+// wind
+if (w >= 5 && w <= 15) score += 8;
+else if (w > 20) score -= 5;
 
-    // ================= CLOUD
-    if (c >= 30 && c <= 70) score += 10;
-    else if (c >= 85) score -= 10;
+// cloud
+if (c >= 30 && c <= 70) score += 6;
 
-    // ================= PRESSURE TREND
-    let trend = getPressureTrend(p);
-    if (trend === "rising") score += 12;
-    if (trend === "falling") score -= 15;
+// temp (most important)
+if (t >= 18 && t <= 24) score += 12;
+else if (t < 10 || t > 30) score -= 8;
 
-    // ================= INTERACTION (KEY UPGRADE)
-    if (t > 26 && w > 15) score -= 10; // hot + windy = bad
-    if (trend === "rising" && c > 40) score += 5; // feeding trigger
+// timing
+score += sunriseWindow() * 0.6;
+score += seasonalWeight() * 0.6;
 
-    // ================= TIME WINDOWS
-    score += sunriseWindow();
+// moon
+let moon = getMoonPhase();
+if (moon === "Full") score += 3;
 
-    // ================= SEASON
-    score += seasonalWeight();
-
-    // ================= MOON
-    if (getMoonPhase() === "Full") score += 5;
-
-    return Math.max(0, Math.min(100, score)); }
+// clamp
+return Math.max(20, Math.min(95, score));
 
 // =====================================================
 // 📊 7. DASHBOARD
