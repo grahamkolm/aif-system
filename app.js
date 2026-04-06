@@ -282,24 +282,40 @@ function simulateWeather() {
 // 📊 6. SPI ENGINE (UNIFIED)
 // =====================================================
 
-function calculateSPI(p, w, c, windDir, t) {
+function calculateSPI(p, w, c, windDir, t){
 
     let score = 50;
 
+    // ================= TEMP (MOST IMPORTANT)
+    if (t >= 18 && t <= 24) score += 25;
+    else if (t >= 15 && t <= 27) score += 10;
+    else score -= 15;
+
+    // ================= WIND
+    if (w >= 5 && w <= 15) score += 15;
+    else if (w > 20) score -= 15;
+
+    // ================= CLOUD
+    if (c >= 30 && c <= 70) score += 10;
+    else if (c >= 85) score -= 10;
+
+    // ================= PRESSURE TREND
     let trend = getPressureTrend(p);
+    if (trend === "rising") score += 12;
+    if (trend === "falling") score -= 15;
 
-    if (trend === "rising") score += 10;
-    if (trend === "falling") score -= 10;
+    // ================= INTERACTION (KEY UPGRADE)
+    if (t > 26 && w > 15) score -= 10; // hot + windy = bad
+    if (trend === "rising" && c > 40) score += 5; // feeding trigger
 
-    if (w >= 5 && w <= 15) score += 8;
-    if (c >= 30 && c <= 70) score += 6;
-    if (t >= 18 && t <= 24) score += 10;
-
+    // ================= TIME WINDOWS
     score += sunriseWindow();
+
+    // ================= SEASON
     score += seasonalWeight();
 
-    let moon = getMoonPhase();
-    if (moon === "Full") score += 5;
+    // ================= MOON
+    if (getMoonPhase() === "Full") score += 5;
 
     return Math.max(0, Math.min(100, score)); }
 
