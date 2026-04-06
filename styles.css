@@ -496,34 +496,37 @@ body{
 /* 🔥 AI */
 
 .ai-panel {
-    position: fixed;          /* 🔥 key fix */
-    top: 100px;
-    right: 10px;
-
-    width: 40%;
-    max-width: 320px;
-
-    padding: 15px;
-    border-radius: 12px;
-
+    margin: 20px 15px 100px 15px;
+    border-radius: 14px;
     background: rgba(0,0,0,0.45);
     backdrop-filter: blur(8px);
-    box-shadow: 0 0 25px rgba(0,255,156,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
 
+.ai-header {
+    padding: 14px;
+    font-weight: bold;
+    color: #00ffa6;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.ai-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding: 0 14px;
     color: #cfe;
     font-size: 13px;
     line-height: 1.5;
-
-    z-index: 999;             /* stay on top */
 }
 
-@media (max-width: 768px) {
-    .ai-panel {
-        width: 85%;
-        right: 7.5%;
-        top: auto;
-        bottom: 80px;  /* sits above nav bar */
-    }
+/* Expanded state */
+.ai-panel.active .ai-content {
+    max-height: 300px;
+    padding: 10px 14px 15px 14px;
 }
 
 .ai-title {
