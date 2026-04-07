@@ -90,10 +90,15 @@ html, body {
 }
 
 body{
+    content: "";
+    position: fixed;
+    inset: 0;
     margin: 0;
-    background:#05080d;
+    background:rgba(0,0,0,0.45);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     color:#e6edf3;
+    pointer-events: none;
+    z-index: 0;
     
     overflow-x:hidden; /* 🔥 kills side scrolling */ 
     overflow y: auto;
@@ -449,19 +454,23 @@ body{
 }
 
 .section {
-    margin: 18px 16px;
-    padding: 14px;
-    border-radius: 16px;
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(10px);
+    margin: 20px 16px;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(10,20,25,0.55);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,255,150,0.08);
     margin-bottom: 20px;
     text-align: left;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .section-title {
-  font-size: 14px;
-  color: #aaa;
-  margin-bottom: 10px;
+  font-size: 15px;
+  color: #e6eddf3;
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
 }
 
 .label {
@@ -507,23 +516,26 @@ body{
 
 .options {
   display: flex;
-  flex-wrap: wrap;
+  flex: 1;
+  min-width: 30%
   gap: 10px;
   flex: 1;
   text-align: center;
-  padding: 12px 16px;
-  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  border-radius: 14px;
   border: 1px solid rgba(0,255,150,0.2);
-  color: #ccc;
-  transition: all 0.2s ease;
+  color: #d0d7de;
+  transition: all 0.25s ease;
+  background: rgba(0,0,0,0.25);
 
 }
 
 .option.active {
-  background: rgba(0,255,150,0.15);
-  border: 1px solid #00ffaa;
-  box-shadow: 0 0 12px rgba(0,255,150,0.4);
-  transform: scale(1.05);
+  background: rgba(0,255,150,0.12);
+  border: 1px solid rgba(0,255,150,0.25);
+  box-shadow: 0 0 10px rgba(0,255,150,0.25;
+  transform: scale(1.03);
 }
 
 .option-row {
@@ -539,18 +551,22 @@ body{
 
 .option-group {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .scout-btn {
-    margin-top: 30px;
+    margin: 24px 16px;
     background: #00ff9c;
+    border-radius: 18px;
     color: black;
-    padding: 16px;
+    padding: 18px;
     text-align: center;
     border-radius: 14px;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 16px;
+    background: linear-gradient(135deg, #00ffaa, #00cc88);
+    box-shadow: 0 10px 30px rgba(0,255,150,0.3);
 }
 
 @keyframes spin {
