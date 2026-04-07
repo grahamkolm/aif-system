@@ -395,7 +395,7 @@ function renderDashboard(data) {
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
     
-    let reasonsEl = document.getElementById("spiReasons");
+    let reasonsEl = document.getElementById("aiContent");
     if (reasonsEl) {
     reasonsEl.innerText = combineReasons.join("\n"); 
     }
