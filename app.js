@@ -697,11 +697,22 @@ function initCompass(){
 }
 
 function openMap() {
-    document.getElementById("mapScreen").classList.remove("hidden");
-}
+    let mapScreen = document.getElementById("mapScreen");
+    mapScreen.classList.remove("hidden");
 
-function closeMap() {
-    document.getElementById("mapScreen").classList.add("hidden");
+    // init map
+    setTimeout(() => {
+        let map = L.map('mapContainer').setView([-26.2, 28.0], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: ''
+        }).addTo(map);
+
+        L.marker([-26.2, 28.0]).addTo(map)
+            .bindPopup("Your fishing spot 🎯")
+            .openPopup();
+
+    }, 100);
 }
 
 // =====================================================
