@@ -604,20 +604,25 @@ body{
 }
 
 .map-header {
-    display: flex;
+    display: relative;
     justify-content: space-between;
     align-items: center;
 
     padding: 16px;
     font-size: 16px;
     color: white;
+    z-index: 10000;
 }
 
 .map-close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
     background: none;
     border: none;
     color: white;
-    font-size: 22px;
+    font-size: 20px;
+    z-index: 10001;
 }
 
 
