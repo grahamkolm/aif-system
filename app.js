@@ -715,6 +715,38 @@ function openMap() {
     }, 100);
 }
 
+let mapInstance = null;
+
+function openMap() {
+
+    let mapScreen = document.getElementById("mapScreen");
+    mapScreen.classList.remove("hidden");
+
+    // prevent reloading map every click
+    if (mapInstance) return;
+
+    setTimeout(() => {
+
+        mapInstance = L.map('mapContainer').setView([-26.2, 28.0], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: ''
+        }).addTo(mapInstance);
+
+        // default marker
+        L.marker([-26.2, 28.0])
+            .addTo(mapInstance)
+            .bindPopup("Your fishing spot 🎯")
+            .openPopup();
+
+    }, 100);
+}
+
+function closeMap() {
+    document.getElementById("mapScreen").classList.add("hidden");
+}
+
+
 // =====================================================
 // 🎯 10. UI HELPERS
 // =====================================================
