@@ -597,14 +597,9 @@ body{
     flex-direction: column;
 }
 
-.hidden {
-    display: none;
-}
-
 #mapContainer {
     flex: 1;
     width: 100%;
-    background: red;
 }
 
 .map-header {
