@@ -449,8 +449,19 @@ body{
 }
 
 .section {
+    margin: 18px 16px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
     margin-bottom: 20px;
     text-align: left;
+}
+
+.section-title {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 10px;
 }
 
 .label {
@@ -495,9 +506,24 @@ body{
 }
 
 .options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+  text-align: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,255,150,0.2);
+  color: #ccc;
+  transition: all 0.2s ease;
+
+}
+
+.option.active {
+  background: rgba(0,255,150,0.15);
+  border: 1px solid #00ffaa;
+  box-shadow: 0 0 12px rgba(0,255,150,0.4);
+  transform: scale(1.05);
 }
 
 .option-row {
@@ -511,6 +537,11 @@ body{
     display: none;
 }
 
+.option-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
 .scout-btn {
     margin-top: 30px;
