@@ -676,7 +676,7 @@ function generateStrategy(tempInsights, weatherInsights, spi){
 
 
 // =====================================================
-// 🧭 9. GPS + COMPASS
+// 🧭 9. GPS + COMPASS + MAP
 // =====================================================
 
 function initGPS(){
@@ -694,6 +694,14 @@ function initCompass(){
             compassHeading = 360 - e.alpha;
         }
     });
+}
+
+function openMap() {
+    document.getElementById("mapScreen").classList.remove("hidden");
+}
+
+function closeMap() {
+    document.getElementById("mapScreen").classList.add("hidden");
 }
 
 // =====================================================
