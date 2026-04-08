@@ -445,7 +445,8 @@ function renderDashboard(data) {
 // =========================
 
 // helpers
-document.getElementById("moon").innerText = getMoonPhase(); document.getElementById("season").innerText = getSeason();
+document.getElementById("moon").innerText = getMoonPhase(); 
+document.getElementById("season").innerText = getSeason();
 
     // ================= HELPER FUNCTION =================
     function setIcon(iconName, value, rules) {
