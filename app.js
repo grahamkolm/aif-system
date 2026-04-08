@@ -845,7 +845,7 @@ function openScout(){
 
     // 👉 Show Scout UI instead of scanning immediately
     document.getElementById("scoutScreen").classList.remove("hidden");
-
+    document.body.style.overflow = "hidden";
 }
 
 document.querySelectorAll(".opt").forEach(btn => {
@@ -967,7 +967,8 @@ function calculateScoutImpact(scout){
 }
 
 function closeScout(){
-
+    
+    document.body.style.overflow = "auto";
     let screen = document.getElementById("scoutScreen");
 
     screen.classList.add("hidden");
