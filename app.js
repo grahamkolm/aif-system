@@ -122,7 +122,7 @@ function startSplash() {
         startApp();
         canvas = document.getElementById("waterGraph");
         ctx = canvas ? canvas.getContext("2d") : null;
-        setInterval(FetchWeatherSafe, 30000);
+ //       setInterval(FetchWeatherSafe, 30000);
         
     }, 3500);
 }
