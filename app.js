@@ -148,7 +148,7 @@ function startApp() {
     setInterval(generateHotspots, 10000);
     setInterval(ripple, 3000);
 
-    setTimeout(fetchWeatherSafe, 2000);
+//    setTimeout(fetchWeatherSafe, 2000);
 }
 
 function resizeCanvas() {
