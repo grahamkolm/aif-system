@@ -10,6 +10,7 @@ html, body {
     overflow-x: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #05080d;
+    overflow-y: auto !important;
     color: white;
 }
 
@@ -139,6 +140,8 @@ body{
 /* HIDDEN STATE */
 .hidden {
     display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
 }
 
 /* HEADER */
@@ -432,12 +435,17 @@ body{
     justify-content: flex-start;
 }
 
-#scout-screen {
-    display: flex;
+#scoutScreen {
+    display: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
     padding: 20px;
+    background: rgba(0,0,0,0.95);
 }
 
 .scout-container {
