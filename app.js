@@ -697,35 +697,42 @@ function initCompass(){
     });
 }
 
+let mapInstance;
+
 function openMap() {
 
-    let mapScreen = document.getElementById("mapScreen");
+    const mapScreen = document.getElementById("mapScreen");
+
     mapScreen.classList.remove("hidden");
     document.body.style.overflow = "hidden";
 
-    if (mapInstance) {
-        setTimeout(() => mapInstance.invalidateSize(), 200);
-        return;
-    }
-
+    // 👉 FORCE layout BEFORE Leaflet init
     setTimeout(() => {
 
-        mapInstance = L.map('mapContainer').setView([-26.2, 28.0], 13);
+        if (!mapInstance) {
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: ''
-        }).addTo(mapInstance);
+            mapInstance = L.map('mapContainer', {
+                zoomControl: true
+            }).setView([-26.2, 28.0], 13);
 
-        L.marker([-26.2, 28.0])
-            .addTo(mapInstance)
-            .bindPopup("Your fishing spot 🎯")
-            .openPopup();
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '',
+                maxZoom: 19
+            }).addTo(mapInstance);
 
-        // 🔥 CRITICAL FIX
-        setTimeout(() => mapInstance.invalidateSize(), 200);
+            L.marker([-26.2, 28.0])
+                .addTo(mapInstance)
+                .bindPopup("Your fishing spot 🎯")
+                .openPopup();
+        }
 
-    }, 100);
-}
+        // 🔥 DOUBLE FIX (important)
+        setTimeout(() => {
+            mapInstance.invalidateSize();
+        }, 200);
+
+    }, 300); // ⬅️ THIS DELAY FIXES BLACK SCREEN }
+
 
 function closeMap() {
     document.getElementById("mapScreen").classList.add("hidden");
