@@ -200,6 +200,9 @@ body{
 }
 
 #spiGauge{
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
     width: 260px;
     height: 260px;
     position: relative;
