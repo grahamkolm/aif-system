@@ -711,4 +711,73 @@ body{
     z-index: 10001;
 }
 
+.scout-card {
+    background: rgba(10,20,20,0.9);
+    border-radius: 20px;
+    padding: 25px;
+    margin: 80px 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 30px rgba(0,255,150,0.08); }
+
+.sensor-list {
+    margin-top: 20px;
+}
+
+.sensor-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #cfe;
+}
+
+.scout-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 600;
+}
+
+.btn.primary {
+    background: #00ffa6;
+    color: black;
+}
+
+.btn.secondary {
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+.scan-loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0,255,150,0.2);
+    border-top: 3px solid #00ffa6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.scan-text {
+    text-align: center;
+    color: #9fb;
+    line-height: 1.6;
+}
+
+.error-text {
+    text-align: center;
+    color: #ff6b6b;
+    margin-top: 10px;
+}
 
