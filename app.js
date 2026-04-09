@@ -829,7 +829,6 @@ function toggleAI() {
 
     if (panel.classList.contains("active")) {
         toggle.innerText = "−";
-        panel.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
         toggle.innerText = "+";
     }
