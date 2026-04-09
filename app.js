@@ -1056,27 +1056,88 @@ function feeding(spi) {
     return "Low Activity ❄️";
 }
 
-const spi = document.getElementById("spiGauge");
+    // 🌊 HOLD AND COACH
+function setupHold(elementId, callback) {
 
-let holdTimer;
+    let timer;
+    const el = document.getElementById(elementId);
 
-spi.addEventListener("touchstart", () => {
-    console.log("🟢 touch start");
+    el.addEventListener("touchstart", () => {
+        timer = setTimeout(callback, 600);
+    });
 
-    holdTimer = setTimeout(() => {
-        console.log("🔥 HOLD TRIGGERED");
-        alert("SPI HOLD WORKING");
-    }, 800); // hold time
-});
+    el.addEventListener("touchend", () => {
+        clearTimeout(timer);
+    });
+}
 
-spi.addEventListener("touchend", () => {
-    console.log("🔴 touch end");
-    clearTimeout(holdTimer);
-});
+// Apply
+setupHold("spiGauge", showSPIInsight);
+setupHold("envScore", showENVInsight);
+setupHold("confScore", showCONFInsight);
 
-spi.addEventListener("touchmove", () => {
-    clearTimeout(holdTimer);
-});
+function showSPIInsight(){
+
+    let t = lastConditions?.main?.temp || "-";
+    let p = lastConditions?.main?.pressure || "-";
+    let w = lastConditions?.wind?.speed 
+        ? (lastConditions.wind.speed * 3.6).toFixed(1)
+        : "-";
+    let c = lastConditions?.clouds?.all || "-";
+
+    let advice = generateAICoach(SPI);
+
+    alert(
+`SPI: ${SPI.toFixed(1)}%
+
+WHY:
+• Wind: ${w} km/h → ${w >= 5 && w <= 15 ? "Ideal" : "Suboptimal"} • Pressure: ${p} hPa → ${p > 1015 ? "Stable" : "Unstable"} • Cloud: ${c}% → ${c >= 30 && c <= 80 ? "Good cover" : "Less optimal"} • Temperature: ${t}°C → ${t >= 18 && t <= 24 ? "Optimal" : "Off range"}
+
+WHAT TO DO:
+${advice}`
+    );
+}
+
+function showENVInsight(){
+
+    let t = lastConditions?.main?.temp || "-";
+    let p = lastConditions?.main?.pressure || "-";
+    let c = lastConditions?.clouds?.all || "-";
+    let oxygen = estimateOxygen(t, 0, c).toFixed(1);
+
+    alert(
+`ENV: ${document.getElementById("envScore").innerText}
+
+Environment Conditions:
+
+• Pressure: ${p} hPa → ${p > 1015 ? "Stable" : "Unstable"} • Cloud: ${c}% → ${c >= 30 && c <= 80 ? "Good cover" : "Low cover"} • Oxygen: ${oxygen} mg/L → ${oxygen > 7 ? "Healthy" : "Low"}
+
+Overall environment is ${p > 1015 && c >= 30 ? "favorable" : "moderate"}`
+    );
+}
+
+function showCONFInsight(){
+
+    let env = document.getElementById("envScore").innerText;
+    let spi = SPI.toFixed(1);
+
+    alert(
+`CONF: ${document.getElementById("confScore").innerText}
+
+Confidence Level Analysis:
+
+• SPI: ${spi}% → Fishing potential
+• ENV: ${env} → Environmental support
+
+Confidence is ${
+    SPI > 70 ? "HIGH" :
+    SPI > 50 ? "MODERATE" :
+    "LOW"
+}
+
+Prediction reliability is based on combined conditions`
+    );
+}
 
 window.retryConnection = retryConnection;
 window.startScan = startScan;
