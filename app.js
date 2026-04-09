@@ -1065,11 +1065,18 @@ function feeding(spi) {
     return "Low Activity ❄️";
 }
 
-    // 🌊 HOLD AND COACH
+// 🌊 HOLD AND COACH
 function setupHold(elementId, callback) {
 
     let timer;
     const el = document.getElementById(elementId);
+
+    if (!el) {
+        console.log("❌ Element NOT FOUND:", elementId);
+        return;
+    }
+
+    console.log("✅ HOLD ATTACHED:", elementId);
 
     el.addEventListener("touchstart", () => {
         timer = setTimeout(callback, 600);
