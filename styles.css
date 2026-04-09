@@ -401,9 +401,9 @@ body{
 .scout-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 
-    padding: 14px;
+    padding: 12px;
     border-radius: 16px;
 
     background: rgba(10,20,25,0.45);
@@ -432,18 +432,9 @@ body{
 
 .scout-options {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
 }
-
-.scout-section:first-child .scout-options {
-    grid-template-columns: repeat(2, 1fr); 
-}
-
-.scout-section:first-child .opt:last-child {
-    grid-column: span 2;
-}
-
 
 #scoutScreen {
     position: fixed;
@@ -470,12 +461,29 @@ body{
 
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 14px;
+    padding: 14px;
 
     background: rgba(0,0,0,0.35);
     backdrop-filter: blur(12px);
 
     border-radius: 20px;
+}
+
+.scout-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.scout-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #00ffa6;
+}
+
+.scout-sub {
+    font-size: 13px;
+    opacity: 0.7;
 }
 
 .section {
@@ -506,19 +514,23 @@ body{
 }
 
 .opt {
-    min-height: 52px;
+    padding: 10px 6px;
+    border-radius: 12px;
+
+    font-size: 12px;
+    line-height: 1.2;
+
+    min-height: 40px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 14px;
-    border-radius: 14px;
+    text-align: center;
 
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(0,255,166,0.2);
 
     color: #d8fdf5;
-    font-size: 13px;
-    text-align: center;
 
     transition: all 0.2s ease;
 }
