@@ -398,8 +398,17 @@ body{
 }
 
 .scout-section {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 14px;
+    border-radius: 16px;
+
+    background: rgba(10,20,25,0.45);
+    border: 1px solid rgba(0,255,150,0.08); 
 }
+
 
 .scout-group {
     width: 100%;
@@ -413,18 +422,26 @@ body{
 }
 
 .scout-label {
-    margin-bottom: 10px;
     font-size: 14px;
     font-weight: 600;
-    opacity: 0.8;
+    color: #9fb3b0;
+    letter-spacing: 0.5px;
 }
 
 .scout-options {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    flex-wrap: wrap;
-    justify-content: flex-start;
 }
+
+.scout-section:first-child .scout-options {
+    grid-template-columns: repeat(2, 1fr); 
+}
+
+.scout-section:first-child .opt:last-child {
+    grid-column: span 2;
+}
+
 
 #scoutScreen {
     position: fixed;
@@ -446,11 +463,15 @@ body{
     width: 100%;
     max-width: 420px;
 
-    margin: 20px auto;
-    padding: 20px;
+    margin: 10px auto 120px auto;
+    padding: 16px;
 
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(12px);
 
     border-radius: 20px;
 }
@@ -483,9 +504,7 @@ body{
 }
 
 .opt {
-    flex: 1 1 calc(33% - 10px);
-    min-width: 100px;
-    padding: 12px 16px;
+    padding: 14px;
     border-radius: 14px;
 
     background: rgba(255,255,255,0.03);
@@ -495,11 +514,8 @@ body{
     font-size: 13px;
     text-align: center;
 
-    backdrop-filter: blur(10px);
-
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
 }
-
 
 /* 🔥 Hover */
 .opt:hover {
@@ -511,9 +527,9 @@ body{
     border-color: #00ffa6;
     box-shadow:
         0 0 12px rgba(0,255,166,0.6),
-        inset 0 0 8px rgba(0,255,166,0.15);
+        inset 0 0 6px rgba(0,255,166,0.2);
 
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 .options {
@@ -558,17 +574,18 @@ body{
 }
 
 .scout-btn {
-    margin: 24px 16px;
-    background: #00ff9c;
-    border-radius: 18px;
-    color: black;
+    margin: 20px 16px 40px 16px;
+
     padding: 18px;
-    text-align: center;
-    border-radius: 14px;
-    font-weight: 600;
+    border-radius: 16px;
+
     font-size: 16px;
+    font-weight: 600;
+
+    text-align: center;
+
     background: linear-gradient(135deg, #00ffaa, #00cc88);
-    box-shadow: 0 10px 30px rgba(0,255,150,0.3);
+    box-shadow: 0 10px 30px rgba(0,255,150,0.3); 
 }
 
 @keyframes spin {
