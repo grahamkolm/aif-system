@@ -874,7 +874,8 @@ function showConnectingScreen() {
     </div>
     `;
 
-    checkSensors(); // ✅ call after render }
+    checkSensors();
+}
 
 function checkSensors() {
 
@@ -891,7 +892,7 @@ function checkSensors() {
             `;
         })
         .catch(() => {
-            document.getElementById("sensorStatusList").innerHTML =
+            document.getElementById("sensorStatusList"),innerHTML =
                 "ESP not reachable ❌";
         });
 }
