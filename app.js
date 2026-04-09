@@ -883,7 +883,7 @@ function checkSensors() {
         .then(res => res.json())
         .then(data => {
 
-            document.getElementById("sensorStatusList"),innerHTML = `
+            document.getElementById("sensorStatusList").innerHTML = `
                 <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
                 <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
                 <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
@@ -892,7 +892,7 @@ function checkSensors() {
             `;
         })
         .catch(() => {
-            document.getElementById("sensorStatusList"),innerHTML =
+            document.getElementById("sensorStatusList").innerHTML =
                 "ESP not reachable ❌";
         });
 }
