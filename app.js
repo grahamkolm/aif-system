@@ -891,12 +891,16 @@ function checkSensors() {
                 <div>Battery ${data.battery ? "✅" : "❌"}</div>
             `;
         })
-        .catch(() => {
-            document.getElementById("sensorStatusList").innerHTML =
-                "ESP not reachable ❌";
-        });
-}
+       .catch(() => {
 
+    document.getElementById("sensorStatusList").innerHTML = `
+        <div>Temperature ❌</div>
+        <div>Pressure ❌</div>
+        <div>Oxygen ❌</div>
+        <div>Turbidity ❌</div>
+        <div>Battery ❌</div>
+    `;
+});
 
 function retryConnection() {
     checkSensors();
