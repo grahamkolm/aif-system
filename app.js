@@ -1055,3 +1055,7 @@ function feeding(spi) {
     if (spi >= 40) return "Slow 😐";
     return "Low Activity ❄️";
 }
+
+window.retryConnection = retryConnection;
+window.startScan = startScan;
+window.closeScout = closeScout;
