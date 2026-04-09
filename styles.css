@@ -105,6 +105,7 @@ body{
 .main {
     position: relative;
     z-index: 2;
+    backuround-image: url("background.jpg");
 
     width: 100%;
     max-width: 420px;
@@ -515,6 +516,7 @@ body{
 
 .opt {
     word-break: break-word;
+    flex: 1;
     padding: 10px 4px;
     border-radius: 12px;
 
@@ -577,7 +579,7 @@ body{
 
 .option-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     overflow-x: auto;
     padding-bottom: 5px;
 }
@@ -714,10 +716,14 @@ body{
 .scout-card {
     background: rgba(10,20,20,0.9);
     border-radius: 20px;
-    padding: 25px;
-    margin: 80px 20px;
+    padding: 24px;
+    margin: auto;
     backdrop-filter: blur(12px);
-    box-shadow: 0 0 30px rgba(0,255,150,0.08); }
+    box-shadow: 0 0 30px rgba(0,255,150,0.08);
+    width: 85%;
+    max-width: 420px;
+    
+}
 
 .sensor-list {
     margin-top: 20px;
