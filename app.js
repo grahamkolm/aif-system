@@ -1056,6 +1056,28 @@ function feeding(spi) {
     return "Low Activity ❄️";
 }
 
+const spi = document.getElementById("spiGauge");
+
+let holdTimer;
+
+spi.addEventListener("touchstart", () => {
+    console.log("🟢 touch start");
+
+    holdTimer = setTimeout(() => {
+        console.log("🔥 HOLD TRIGGERED");
+        alert("SPI HOLD WORKING");
+    }, 800); // hold time
+});
+
+spi.addEventListener("touchend", () => {
+    console.log("🔴 touch end");
+    clearTimeout(holdTimer);
+});
+
+spi.addEventListener("touchmove", () => {
+    clearTimeout(holdTimer);
+});
+
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
