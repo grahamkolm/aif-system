@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const splash = document.getElementById("splash");
     const main = document.querySelector(".main");
-    setupHold("spiGauge", showSPIInsight);
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
@@ -152,6 +151,10 @@ function startApp() {
     setInterval(ripple, 3000);
 
     setTimeout(fetchWeatherSafe, 2000);
+    
+    setTimeout(() => {
+        setupHold("spiGauge", showSPIInsight);
+    }, 1500);
 }
 
 function resizeCanvas() {
