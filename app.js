@@ -732,6 +732,7 @@ function openMap() {
         }, 200);
 
     }, 300); // ⬅️ THIS DELAY FIXES BLACK SCREEN }
+}
 
 
 function closeMap() {
