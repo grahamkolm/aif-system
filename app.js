@@ -701,6 +701,7 @@ function openMap() {
 
     let mapScreen = document.getElementById("mapScreen");
     mapScreen.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
 
     if (mapInstance) {
         setTimeout(() => mapInstance.invalidateSize(), 200);
@@ -728,6 +729,7 @@ function openMap() {
 
 function closeMap() {
     document.getElementById("mapScreen").classList.add("hidden");
+    document.body.style.overflow = "auto";
 }
 
 
