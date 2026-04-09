@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const splash = document.getElementById("splash");
     const main = document.querySelector(".main");
+    setupHold("spiGauge", showSPIInsight);
+    setupHold("envScore", showENVInsight);
+    setupHold("confScore", showCONFInsight);
 
     // ✅ SET IT HERE (correct place)
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
@@ -367,6 +370,7 @@ if (moon === "Full") score += 3;
 
 function renderDashboard(data) {
   
+    lastConditions = data;
     const t = data.main.temp;
     const p = data.main.pressure;
     const w = data.wind.speed * 3.6;
@@ -901,6 +905,7 @@ function checkSensors() {
         <div>Battery ❌</div>
     `;
 });
+}
 
 function retryConnection() {
     checkSensors();
@@ -1074,11 +1079,6 @@ function setupHold(elementId, callback) {
         clearTimeout(timer);
     });
 }
-
-// Apply
-setupHold("spiGauge", showSPIInsight);
-setupHold("envScore", showENVInsight);
-setupHold("confScore", showCONFInsight);
 
 function showSPIInsight(){
 
