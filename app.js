@@ -859,22 +859,22 @@ function showConnectingScreen() {
 
     let screen = document.getElementById("scoutScreen");
 
-  screen.innerHTML = `
-<div class="scout-card">
+    screen.innerHTML = `
+    <div class="scout-card">
+        <div class="scout-title">Connecting to AIF Sensor</div>
 
-    <div class="scout-title">Connecting to AIF Sensor</div>
+        <div class="sensor-list" id="sensorStatusList">
+            Checking sensors...
+        </div>
 
-    <div class="sensor-list" id="sensorStatusList">
-        Checking sensors...
+        <div class="scout-actions">
+            <button onclick="retryConnection()" class="btn secondary">Retry</button>
+            <button onclick="startScan()" class="btn primary">Start Scan</button>
+        </div>
     </div>
+    `;
 
-    <div class="scout-actions">
-        <button onclick="retryConnection()" class="btn secondary">Retry</button>
-        <button onclick="startScan()" class="btn primary">Start Scan</button>
-    </div>
-
-</div>
-`;
+    checkSensors(); // ✅ call after render }
 
 function checkSensors() {
 
@@ -882,32 +882,19 @@ function checkSensors() {
         .then(res => res.json())
         .then(data => {
 
-document.getElementById("sensorStatusList").innerHTML = `
-    <div class="sensor-item">
-        <span>Temperature</span>
-        <span>${data.main?.temp ? "✅" : "❌"}</span>
-    </div>
-
-    <div class="sensor-item">
-        <span>Pressure</span>
-        <span>${data.main?.pressure ? "✅" : "❌"}</span>
-    </div>
-
-    <div class="sensor-item">
-        <span>Oxygen</span>
-        <span>${data.oxygen ? "✅" : "❌"}</span>
-    </div>
-
-    <div class="sensor-item">
-        <span>Turbidity</span>
-        <span>${data.turbidity ? "✅" : "❌"}</span>
-    </div>
-
-    <div class="sensor-item">
-        <span>Battery</span>
-        <span>${data.battery ? "✅" : "❌"}</span>
-    </div>
-`;
+            document.getElementById("sensorStatusList").innerHTML = `
+                <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
+                <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
+                <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
+                <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
+                <div>Battery ${data.battery ? "✅" : "❌"}</div>
+            `;
+        })
+        .catch(() => {
+            document.getElementById("sensorStatusList").innerHTML =
+                "ESP not reachable ❌";
+        });
+}
 
 
 function retryConnection() {
@@ -919,42 +906,53 @@ function startScan() {
 
     let screen = document.getElementById("scoutScreen");
 
-   screen.innerHTML = `
-<div class="scout-card">
-
-    <div class="scout-title">Scanning...</div>
-
-    <div class="scan-loader"></div>
-
-    <div class="scan-text">
-        Reading sensors<br>
-        Calculating SPI<br>
-        Analyzing conditions...
+    screen.innerHTML = `
+    <div class="scout-card">
+        <div class="scout-title">Scanning...</div>
+        <div class="scan-loader"></div>
+        <div class="scan-text">
+            Reading sensors<br>
+            Calculating SPI<br>
+            Analyzing conditions...
+        </div>
     </div>
+    `;
 
-</div>
-`;
+    setTimeout(() => {
+
+        fetch("http://192.168.4.1/data")
+            .then(res => res.json())
+            .then(data => {
+                renderDashboard(data);
+                showResults(data);
+            })
+            .catch(() => {
+                showScanFailed();
+            });
+
+    }, 2000);
+}
+
 
 function showScanFailed() {
 
     let screen = document.getElementById("scoutScreen");
 
     screen.innerHTML = `
-<div class="scout-card">
+    <div class="scout-card">
+        <div class="scout-title">Scan Failed</div>
 
-    <div class="scout-title">Scan Failed</div>
+        <div class="error-text">
+            ESP device not reachable
+        </div>
 
-    <div class="error-text">
-        ESP device not reachable
+        <div class="scout-actions">
+            <button onclick="retryConnection()" class="btn secondary">Retry</button>
+            <button onclick="closeScout()" class="btn primary">Exit</button>
+        </div>
     </div>
-
-    <div class="scout-actions">
-        <button onclick="retryConnection()" class="btn secondary">Retry</button>
-        <button onclick="closeScout()" class="btn primary">Exit</button>
-    </div>
-
-</div>
-`;
+    `;
+}
     
 function saveAndScan() {
     localStorage.setItem("scoutData", JSON.stringify(scoutData));
