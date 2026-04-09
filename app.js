@@ -855,57 +855,72 @@ document.querySelectorAll(".opt").forEach(btn => {
     });
 });
 
-function startScan(){
+function showConnectingScreen() {
 
-    scoutData = JSON.parse(localStorage.getItem("scoutData")) || {};
-    console.log("Loaded Scout Data:", scoutData);
+    let screen = document.getElementById("scoutScreen");
+
+    screen.innerHTML = `
+        <div class="scout-title">Connecting to AIF Sensor...</div>
+
+        <div id="sensorStatusList">Checking sensors...</div>
+
+        <div class="scout-btn" onclick="retryConnection()">Retry</div>
+        <div class="scout-btn" onclick="startScan()">Start Scan</div>
+    `;
+
+    checkSensors();
+}
+
+function checkSensors() {
+
+    fetch("http://192.168.4.1/data")
+        .then(res => res.json())
+        .then(data => {
+
+            document.getElementById("sensorStatusList").innerHTML = `
+                Temp: ${data.main?.temp ? "✅" : "❌"}<br>
+                Pressure: ${data.main?.pressure ? "✅" : "❌"}<br>
+                Oxygen: ${data.oxygen ? "✅" : "❌"}<br>
+                Turbidity: ${data.turbidity ? "✅" : "❌"}<br>
+                Battery: ${data.battery ? "✅" : "❌"}
+            `;
+        })
+        .catch(() => {
+            document.getElementById("sensorStatusList").innerText = "ESP not reachable ❌";
+        });
+}
+
+function retryConnection() {
+    checkSensors();
+}
+
+
+function startScan() {
 
     let screen = document.getElementById("scoutScreen");
 
     screen.innerHTML = `
         <div class="scout-title">Scanning...</div>
-        <div style="margin-top:20px;">Connecting to sensors...</div>
+        <div>Reading sensors & calculating...</div>
     `;
 
     setTimeout(() => {
-
         fetch("http://192.168.4.1/data")
             .then(res => res.json())
-            .then(sensorData => {
-
-                if (!sensorData) {
-                    console.warn("No sensor data available");
-                    screen.innerHTML = `
-                        <div class="scout-title">No Sensor Found</div>
-                        <div style="margin-top:20px;">Check connection</div>
-                        <div class="scout-btn" onclick="closeScout()">Back</div>
-                    `;
-                    return;
-                }
-
-                renderDashboard(sensorData);
-                showSummary();
-
+            .then(data => {
+                renderDashboard(data);
+                showResults(data);
             })
             .catch(() => {
-                screen.innerHTML = `
-                    <div class="scout-title">Connection Failed</div>
-                    <div style="margin-top:20px;">ESP not reachable</div>
-                    <div class="scout-btn" onclick="closeScout()">Back</div>
-                `;
+                screen.innerHTML = "Scan failed ❌";
             });
 
-    }, 2000); // ⬅️ THIS WAS MISSING
-
+    }, 2000);
 }
 
 function saveAndScan() {
-
-    console.log("Scout saved:", scoutData);
-
     localStorage.setItem("scoutData", JSON.stringify(scoutData));
-
-    startScan();
+    showConnectingScreen();
 }
 
 function showSummary(){
@@ -920,6 +935,34 @@ function showSummary(){
         <div>Activity: ${scoutData.activity || "-"}</div>
 
         <div style="margin-top:20px;">SPI Updated</div>
+
+        <div class="scout-btn" onclick="closeScout()">Done</div>
+    `;
+}
+
+function showResults(data) {
+
+    let screen = document.getElementById("scoutScreen");
+
+    let scout = JSON.parse(localStorage.getItem("scoutData")) || {};
+
+    screen.innerHTML = `
+        <div class="scout-title">Scan Complete</div>
+
+        <div>SPI: ${SPI}%</div>
+
+        <div style="margin-top:15px;">
+            <b>Scout Inputs:</b><br>
+            Activity: ${scout.activity || "-"}<br>
+            Clarity: ${scout.clarity || "-"}<br>
+            Wind: ${scout.wind || "-"}
+        </div>
+
+        <div style="margin-top:15px;">
+            <b>Sensor Data:</b><br>
+            Temp: ${data.main?.temp || "-"}°C<br>
+            Oxygen: ${data.oxygen || "-"}
+        </div>
 
         <div class="scout-btn" onclick="closeScout()">Done</div>
     `;
