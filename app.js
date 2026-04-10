@@ -1197,7 +1197,7 @@ function openDrop() {
 function showDropFeedback() {
 
     let toast = document.createElement("div");
-    toast.innerText = `Drop saved • SPI ${SPI.toFixed(1)}%`;
+    toast.innerText = `🎯 Drop logged • SPI ${SPI.toFixed(1)}%`;
 
     toast.style.position = "fixed";
     toast.style.bottom = "120px";
