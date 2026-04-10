@@ -580,27 +580,24 @@ document.getElementById("season").innerText = getSeason();
 
 // ================= ENV + CONF =================
 // ================= ENV ================= 
-    let envScore =
-    (100 - Math.abs(p - 1015) * 2) +
-    (c * 0.15) +
-    (estimateOxygen(t, w, c) * 2);
+let envScore = Math.round(
+    (100 - Math.abs(p - 1018) * 2) + (c * 0.2) );
 
-envScore = Math.max(40, Math.min(90, Math.round(envScore)));
+envScore = Math.max(40, Math.min(envScore, 95));
 
 document.getElementById("envScore").innerText = envScore + "%";
+    
+// ================= CONF =================    
+let confScore = Math.round(
+    (SPI * 0.6) + 
+    (envScore * 0.4) +
+    (Math.abs(50 - Math.abs(p - 1015)) * 0.2)
 
+confScore = Math.max(40, Math.min(95, confScore));
 
-// ================= CONF ================= let conf =
-    (envScore * 0.6) +
-    (Math.abs(50 - Math.abs(p - 1015)) * 0.4);
-
-conf = Math.max(40, Math.min(95, Math.round(conf)));
-
-document.getElementById("confScore").innerText = conf + "%";
+document.getElementById("confScore").innerText = confScore + "%";
 
 // ✅ UPDATE UI
-document.getElementById("envScore").innerText = envScore + "%"; 
-document.getElementById("confScore").innerText = conf + "%";
 let bestZoneEl = document.getElementById("bestZone");
     if(bestZoneEl) {
         bestZoneEl.innerText = getBestZone();
