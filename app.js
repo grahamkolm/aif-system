@@ -594,21 +594,33 @@ let insights = [];
 
 // Wind
 if (w >= 5 && w <= 15) {
-    insights.push("Wind pushing food into zone"); }
+    insights.push("Wind pushing food into zone"); 
+}
 
 // Pressure
 if (p > 1015) {
     insights.push("Stable pressure supports feeding"); } else {
-    insights.push("Unstable pressure slows activity"); }
+    insights.push("Unstable pressure slows activity"); 
+}
 
 // Cloud
 if (c >= 30 && c <= 70) {
-    insights.push("Low light increases confidence"); }
+    insights.push("Low light increases confidence"); 
+}
 
 // Temperature
 if (t >= 18 && t <= 24) {
-    insights.push("Fish active in upper layers"); }
+    insights.push("Fish active in upper layers"); 
+}
 
+// Best Zone
+if (zone.includes("Shallow") && w > 10) {
+    insights.push("Strong wind fish tight to windward bank");
+}
+    
+    insights.push("Wind pushing food into zone"); }
+
+    
 // LIMIT TO 3 (important for UX)
 let text = insights.slice(0, 3).join(" • ");
 
