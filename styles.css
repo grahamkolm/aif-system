@@ -208,8 +208,8 @@ body{
     touch-action: manipulation;
     width: 260px;
     height: 260px;
-    position: relative;
-    z-index: 5;
+    position: absolute;
+    z-index: 3;
 }
 
 #spiGauge text {
@@ -217,6 +217,13 @@ body{
     user-select: none;
     -webkit-touch-callout: none;
     pointer-events: none;
+}
+
+.spi-wrapper {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    margin: 0 auto;
 }
 
 .no-select {
@@ -848,10 +855,14 @@ body{
 
 .compass-ring {
   position: absolute;
+  top: 50%;
+  left: 50%;
   width: 260px;
   height: 260px;
   border-radius: 50%;
   pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 2;
 }
 
 .compass-label {
@@ -896,6 +907,6 @@ body{
   transform-origin: bottom center;
   transform: translate(-50%, -100%) rotate(0deg);
 
-  z-index: 5;
+  z-index: 4;
 }
 
