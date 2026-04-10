@@ -560,7 +560,10 @@ let conf = Math.round((SPI + envScore) / 2);
 // ✅ UPDATE UI
 document.getElementById("envScore").innerText = envScore + "%"; 
 document.getElementById("confScore").innerText = conf + "%";
-document.getElementById("bestZone").innerText = getBestZone();
+let bestZoneEl = document.getElementById("bestZone");
+    if(bestZoneEl) {
+        bestZoneEl.innerText = getBestZone();
+    }
 
 
     // ================= TILE GLOW =================
