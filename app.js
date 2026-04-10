@@ -618,7 +618,8 @@ if (zone.includes("Shallow") && w > 10) {
     insights.push("Strong wind fish tight to windward bank");
 }
     
-    insights.push("Wind pushing food into zone"); }
+    insights.push("Wind pushing food into zone"); 
+}
 
     
 // LIMIT TO 3 (important for UX)
