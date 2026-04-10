@@ -284,6 +284,31 @@ Report
     <div id="mapContainer"></div>
 
 </div>
+
+<!-- ================= REPORT ================= -->
+    
+<div id="reportScreen" class="hidden">
+
+    <div class="report-header">
+        <h2>AIF SESSION REPORT</h2>
+        <button onclick="closeReport()">Close</button>
+    </div>
+
+    <div class="report-summary">
+        <div>Scout Points: <span id="repScout">0</span></div>
+        <div>Drops Placed: <span id="repDrops">0</span></div>
+        <div>Best SPI: <span id="repBest">0%</span></div>
+        <div>Average SPI: <span id="repAvg">0%</span></div>
+    </div>
+
+    <h3>Session Map</h3>
+    <div id="reportMap" style="height:250px; border-radius:12px;"></div>
+
+    <h3>Drop Log</h3>
+    <div id="dropLog"></div>
+
+</div>
+
     
 <script src="app.js"></script>
 <script>lucide.createIcons();
