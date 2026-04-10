@@ -328,6 +328,7 @@ body{
 
 .tiles {
     align-items: stretch;
+}
 
 .tile.i {
     width: 26px;
@@ -464,7 +465,7 @@ body{
     
     background: rgba(0,0,0,0.95);
     z-index: 1000;
-    justify-content: center;
+    justify-content: flex-start;
 
     overflow-y: auto;
 }
@@ -472,19 +473,14 @@ body{
 .scout-container {
     width: 100%;
     max-width: 420px;
-    min-height: 100vh;
-    overflow: hidden;
-
-    margin: -10px auto 40px auto;
+    
+    margin: 0;
     padding: 14px;
 
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    height: calc(100vh - 120px);
-    padding: 14px;
-    justify-content: space-between;
-
+    gap: 6px;
+    
     background: rgba(0,0,0,0.35);
     backdrop-filter: blur(12px);
 
