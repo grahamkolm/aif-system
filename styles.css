@@ -468,7 +468,7 @@ body{
     max-width: 420px;
     min-height: 100vh;
 
-    margin: 0 auto;
+    margin: -10px auto 40px auto;
     padding: 14px;
 
     display: flex;
