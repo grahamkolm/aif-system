@@ -453,12 +453,35 @@ function renderDashboard(data) {
     let msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
     
-    let reasonsEl = document.getElementById("aiContent");
-    if (reasonsEl) {
-    reasonsEl.innerText = combineReasons.join("\n"); 
+   let reasonsEl = document.getElementById("aiContent");
+
+if (reasonsEl) {
+
+    let baseText = combineReasons.join("\n");
+
+    let insightText = "";
+
+    if (SPI > 75) {
+        insightText = "🔥 Strong feeding conditions";
+    } else if (SPI > 60) {
+        insightText = "👍 Decent fishing conditions";
+    } else {
+        insightText = "⚠️ Slow fishing conditions";
     }
-   
-    // smooth SPI
+
+    if (light < 30) {
+        insightText += "\nLow light → fish moving shallow";
+    } else {
+        insightText += "\nBright conditions → fish deeper";
+    }
+
+    if (depth >= 2 && depth <= 5) {
+        insightText += "\nIdeal depth zone detected";
+    }
+
+    reasonsEl.innerText = baseText + "\n\n" + insightText; 
+}
+
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
     }
@@ -771,20 +794,6 @@ function getPressureTrend(p){
     if(diff<-1)return "falling";
     return "stable";
 }
-
-function generateStrategy(tempInsights, weatherInsights, spi){
-
-    if(spi >= 75){
-        return "Fish shallow near windward bank. Active feeding likely.";
-    }
-
-    if(spi >= 60){
-        return "Fish mid-depth. Use moderate feeding approach.";
-    }
-
-    return "Fish deeper. Slow presentation recommended."; 
-}
-
 
 // =====================================================
 // 🧭 9. GPS + COMPASS + MAP
@@ -1234,7 +1243,7 @@ function showInsight(SPI, envScore, confScore, light, depth) {
         insight += " Depth not optimal — adjust positioning.";
     }
 
-    const insightEl = document.getElementById("insight");
+    const insightEl = document.getElementById("aiContent");
     if (insightEl) insightEl.innerText = insight; 
 }
 
