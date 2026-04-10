@@ -199,7 +199,7 @@ function animate() {
     if (!ctx || !canvas) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    updateCompass();
     if (Math.random() < bubbleIntensity) spawnBubble();
 
     bubbles.forEach((b, i) => {
