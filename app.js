@@ -598,10 +598,6 @@ let text = insights.slice(0, 3).join(" • ");
 let tactical = document.getElementById("tactical");
     if (tactical) tactical.innerText = text;
 
-
-let tactical = document.getElementById("tactical");
-if(tactical) tactical.innerText = text;
-
 }
     
 // =====================================================
