@@ -308,8 +308,22 @@ function analyzeWeather(w, p, c){
     if(c >= 30 && c <= 70){
         insights.push("Cloud cover improves fish confidence");
     }
-
+  
     return insights;
+}
+
+let zone = getBestZone();
+
+if (zone === "shallow") {
+    insights.push("Target shallow windward zones"); 
+}
+
+if (zone === "mid") {
+    insights.push("Fish mid-depth transition areas"); 
+}
+
+if (zone === "deep") {
+    insights.push("Focus on deeper structure"); 
 }
 
 // =====================================================
@@ -1344,6 +1358,11 @@ function getBestZone() {
     return `Lat ${avgLat.toFixed(3)}, Lon ${avgLon.toFixed(3)}`; 
 }
 
+function getBestZone() {
+    if (SPI >= 75) return "Shallow (Windward)";
+    if (SPI >= 60) return "Mid-depth";
+    return "Deep / Structure";
+}
 
 
 window.retryConnection = retryConnection;
