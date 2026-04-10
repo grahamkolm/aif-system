@@ -312,16 +312,21 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 110px;
     height: 110px;
+    flex-shrink: 0;
     background:rgba(0,0,0,0.4);
     border-radius:18px;
     backdrop-filter: blur(6px);
     padding:14px;
+    overflow: hidden;
     text-align:center;
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     transition: 0.2 ease;
 }
+
+.tiles {
+    align-items: stretch;
 
 .tile.i {
     width: 26px;
