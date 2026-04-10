@@ -589,43 +589,39 @@ let bestZoneEl = document.getElementById("bestZone");
 
 // =========================
 // ✅ TACTICAL BAR
-// =========================
+// =========================l
 let insights = [];
+let zone = getBestZone();
 
 // Wind
 if (w >= 5 && w <= 15) {
-    insights.push("Wind pushing food into zone"); 
-}
+    insights.push("Wind pushing food into zone"); }
 
 // Pressure
 if (p > 1015) {
     insights.push("Stable pressure supports feeding"); } else {
-    insights.push("Unstable pressure slows activity"); 
-}
+    insights.push("Unstable pressure slows activity"); }
 
 // Cloud
 if (c >= 30 && c <= 70) {
-    insights.push("Low light increases confidence"); 
-}
+    insights.push("Low light increases confidence"); }
 
 // Temperature
 if (t >= 18 && t <= 24) {
-    insights.push("Fish active in upper layers"); 
-}
+    insights.push("Fish active in upper layers"); }
 
-// Best Zone
+// Zone logic
 if (zone.includes("Shallow") && w > 10) {
-    insights.push("Strong wind fish tight to windward bank");
-}
-    
-    insights.push("Wind pushing food into zone"); 
-  
-// LIMIT TO 3 (important for UX)
+    insights.push("Strong wind fish tight to windward bank"); }
+
+// LIMIT TO 3
 let text = insights.slice(0, 3).join(" • ");
 
 let tactical = document.getElementById("tactical");
-    if (tactical) tactical.innerText = text;
-    
+if (tactical) tactical.innerText = text;
+
+}
+
 // =====================================================
 // 🧠 8. ENVIRONMENT HELPERS
 // =====================================================
