@@ -1273,13 +1273,13 @@ function buildDropLog() {
         el.className = "drop-card";
 
         el.innerHTML = `
-            <b>Drop ${i + 1}</b><br>
-            Time: ${time}<br>
-            SPI: ${d.spi.toFixed(1)}%<br>
-            Lat: ${d.lat?.toFixed(4) || "-"}<br>
-            Lon: ${d.lon?.toFixed(4) || "-"}
+        <div class="drop-card">
+          <div class="drop-title">🎯 Drop ${i+1}</div>
+          <div>🕒 ${time}</div>
+          <div>📊 SPI: ${d.spi}%</div>
+          <div>📍 ${d.lat.toFixed(4)}, ${d.lon.toFixed(4)}</div> 
+          </div>
         `;
-
         container.appendChild(el);
     });
 }
@@ -1304,6 +1304,14 @@ function buildReportMap() {
                 reportMapInstance.removeLayer(layer);
             }
         });
+    
+        drops.forEach(d => {
+            if (d.lat && d.lon) {
+                L.marker([d.lat, d.lon])
+                    .addTo(mapInstance)
+                    .bindPopup(`SPI: ${d.spi}%`);
+    }
+});
 
         // add drops
         drops.forEach(d => {
