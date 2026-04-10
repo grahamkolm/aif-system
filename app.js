@@ -951,6 +951,12 @@ function showConnectingScreen() {
 
 function checkSensors() {
 
+    let list = document.getElementById("sensorStatusList");
+
+    if(list){
+        list.innerHTML = "Connecting...";
+    }
+
     fetch("http://192.168.4.1/data")
         .then(res => res.json())
         .then(data => {
@@ -963,22 +969,25 @@ function checkSensors() {
                 <div>Battery ${data.battery ? "✅" : "❌"}</div>
             `;
         })
-       .catch(() => {
+        .catch(() => {
 
-    document.getElementById("sensorStatusList").innerHTML = `
-        <div>Temperature ❌</div>
-        <div>Pressure ❌</div>
-        <div>Oxygen ❌</div>
-        <div>Turbidity ❌</div>
-        <div>Battery ❌</div>
-    `;
-});
+            document.getElementById("sensorStatusList").innerHTML = `
+                <div style="color:#ff3b3b;">❌ Connection failed</div>
+                <div style="opacity:0.7; margin-top:6px;">Check WiFi (AIF Sensor)</div>
+            `;
+        });
 }
 
 function retryConnection() {
+
+    let list = document.getElementById("sensorStatusList");
+
+    if(list){
+        list.innerHTML = "Rechecking sensors...";
+    }
+
     checkSensors();
 }
-
 
 function startScan() {
 
