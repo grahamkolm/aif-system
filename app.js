@@ -1218,7 +1218,111 @@ function showDropFeedback() {
         setTimeout(() => toast.remove(), 300);
     }, 1500);
 }
-    
+
+// 🌊 REPORT
+
+function openReport() {
+
+    const screen = document.getElementById("reportScreen");
+    screen.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    buildReport();
+}
+
+function closeReport() {
+    document.getElementById("reportScreen").classList.add("hidden");
+    document.body.style.overflow = "auto"; }
+
+function buildReport() {
+
+    document.getElementById("repDrops").innerText = drops.length;
+
+    // Best SPI
+    let best = drops.length ? Math.max(...drops.map(d => d.spi)) : 0;
+    document.getElementById("repBest").innerText = best.toFixed(1) + "%";
+
+    // Average SPI
+    let avg = drops.length
+        ? drops.reduce((s, d) => s + d.spi, 0) / drops.length
+        : 0;
+
+    document.getElementById("repAvg").innerText = avg.toFixed(1) + "%";
+
+    // Scout points
+    document.getElementById("repScout").innerText =
+        Object.keys(scoutData || {}).length;
+
+    // Build Drop Log
+    buildDropLog();
+
+    // Build Map
+    buildReportMap();
+}
+
+function buildDropLog() {
+
+    let container = document.getElementById("dropLog");
+    container.innerHTML = "";
+
+    drops.forEach((d, i) => {
+
+        let time = new Date(d.time).toLocaleString();
+
+        let el = document.createElement("div");
+        el.className = "drop-card";
+
+        el.innerHTML = `
+            <b>Drop ${i + 1}</b><br>
+            Time: ${time}<br>
+            SPI: ${d.spi.toFixed(1)}%<br>
+            Lat: ${d.lat?.toFixed(4) || "-"}<br>
+            Lon: ${d.lon?.toFixed(4) || "-"}
+        `;
+
+        container.appendChild(el);
+    });
+}
+
+let reportMapInstance;
+
+function buildReportMap() {
+
+    setTimeout(() => {
+
+        if (!reportMapInstance) {
+
+            reportMapInstance = L.map('reportMap').setView([-26.2, 28.0], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+                .addTo(reportMapInstance);
+        }
+
+        // clear old markers
+        reportMapInstance.eachLayer(layer => {
+            if (layer instanceof L.Marker) {
+                reportMapInstance.removeLayer(layer);
+            }
+        });
+
+        // add drops
+        drops.forEach(d => {
+
+            if (!d.lat || !d.lon) return;
+
+            L.marker([d.lat, d.lon])
+                .addTo(reportMapInstance)
+                .bindPopup(`SPI: ${d.spi.toFixed(1)}%`);
+        });
+
+        setTimeout(() => {
+            reportMapInstance.invalidateSize();
+        }, 200);
+
+    }, 300);
+}
+
+
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
