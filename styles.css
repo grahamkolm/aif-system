@@ -92,7 +92,7 @@ html, body {
 
 body{
     margin: 0;
-    backuround: url("background.jpg") center/cover no-repeat;
+    background: url("background.jpg") center/cover no-repeat;
     background-color: #021218;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     color:#e6edf3;
@@ -232,7 +232,7 @@ body{
     height: 80px;
     border-radius: 50%;
     border: 2px solid #00ff9c;
-    box-shadow: 0 0 18px rgba(0,255,156,09);
+    box-shadow: 0 0 18px rgba(0,255,156,0.9);
     bottom: 20px;
 
     display: flex;
