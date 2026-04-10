@@ -1184,7 +1184,7 @@ function openDrop() {
         lat: userLocation?.lat || null,
         lon: userLocation?.lon || null,
         spi: SPI,
-        scout: scoutData
+        scout: scoutData,
         success: false
     };
 
