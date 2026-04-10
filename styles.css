@@ -875,3 +875,7 @@ body{
   left: 50%;
   transform-origin: bottom center;
   transform: translate(-50%, -100%) rotate(0deg); }
+
+#compassNeedle {
+box-shadow: 0 0 8px rgba(255,255,255,0.6);
+}
