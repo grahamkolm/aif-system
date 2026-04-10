@@ -816,6 +816,15 @@ function initCompass(){
     });
 }
 
+function updateCompass() {
+  const needle = document.getElementById("compassNeedle");
+  if (!needle || compassHeading === null) return;
+
+  needle.style.transform =
+    `translate(-50%, -100%) rotate(${compassHeading}deg)`; 
+}
+
+
 let mapInstance;
 
 function openMap() {
