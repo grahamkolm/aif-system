@@ -505,8 +505,10 @@ function renderDashboard(data) {
 // helpers
 document.getElementById("moon").innerText = getMoonPhase(); 
 document.getElementById("season").innerText = getSeason();
-document.getElementById("light").innerText = light + "%"; 
-document.getElementById("depth").innerText = depth.toFixed(1) + " m";
+let lightEl = document.getElementById("light");
+    if (lightEl) lightEl.innerText = light + "%"; 
+let depthEl = document.getElementById("depth");
+    if(depthEl) depthEl.innerText = depth.toFixed(1) + " m";
 
     // ================= HELPER FUNCTION =================
     function setIcon(iconName, value, rules) {
