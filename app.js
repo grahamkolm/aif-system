@@ -19,6 +19,7 @@ let bubbles = [];
 let canvas, ctx;
 let ripples =[];
 let scoutData = {};
+let drops = [];
 
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
