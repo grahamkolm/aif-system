@@ -595,7 +595,8 @@ if (t >= 18 && t <= 24) {
 // LIMIT TO 3 (important for UX)
 let text = insights.slice(0, 3).join(" • ");
 
-document.getElementById("tactical").innerText = text;
+let tactical = document.getElementById("tactical");
+    if (tactical) tactical.innerText = text;
 
 
 let tactical = document.getElementById("tactical");
