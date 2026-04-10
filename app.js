@@ -1170,6 +1170,22 @@ Prediction reliability is based on combined conditions`
 
 // 🌊 DROP
 
+function openDrop() {
+    console.log("DROP CLICKED");
+
+    let dropData = {
+        time: Date.now(),
+        lat: currentLat,
+        lon: currentLon,
+        spi: SPI,
+        scout: scoutScore
+    };
+
+    drops.push(dropData);
+
+    console.log("DROP SAVED:", dropData); 
+}
+
 let drop = {
     time: Date.now(),
     lat: currentLat,
@@ -1189,7 +1205,8 @@ function saveDrop() {
         scout: scoutScore
     });
 
-    console.log("DROP SAVED:", drops[drops.length - 1]); }
+    console.log("DROP SAVED:", drops[drops.length - 1]); 
+}
 
 window.retryConnection = retryConnection;
 window.startScan = startScan;
