@@ -148,7 +148,7 @@ function startApp() {
     setTimeout(fetchWeatherSafe, 2000);
     
     setTimeout(() => {
-        setupHold("spiGauge", showSPIInsight);
+        setupHold("Gauge", showInsight);
     }, 1500);
 }
 
@@ -255,7 +255,7 @@ function generateHotspots() {
 
     hotspots = [];
 
-    for (let i = 0; i < Math.floor(SPI / 25); i++) {
+    for (let i = 0; i < Math.floor( / 25); i++) {
         hotspots.push({
             x: canvas.width * Math.random(), 
             y: canvas.height * 0.7,
@@ -332,48 +332,64 @@ function analyzeWeather(w, p, c){
 
 function calculateSPI(p, w, c, windDir, t){
 
-let score = 50;
-let reasons = [];
-    
-// pressure trend
-let trend = getPressureTrend(p);
-if (trend === "rising") score += 6;
-if (trend === "falling") score -= 6;
+    let score = 0;
+    let reasons = [];
 
- // wind
-    if (w >= 5 && w <= 15){
-        score += 8;
-        reasons.push("Moderate wind improves feeding");
-    }
+    // ================= PRESSURE =================
+    let pressureScore = 0;
+    let trend = getPressureTrend(p);
 
-    // cloud
-    if (c >= 30 && c <= 70){
-        score += 6;
-        reasons.push("Cloud cover reduces light pressure");
-    }
+    if (p >= 1012 && p <= 1020) pressureScore = 15;
+    else if (p >= 1008 && p <= 1024) pressureScore = 10;
+    else pressureScore = 5;
 
- // temp
-    if (t >= 18 && t <= 24){
-        score += 12;
-        reasons.push("Ideal temperature range");
-    } else {
-        score -= 8;
-        reasons.push("Suboptimal temperature");
-    }
+    if (trend === "rising") pressureScore += 5;
+    if (trend === "falling") pressureScore -= 5;
 
-// timing
-score += sunriseWindow() * 0.6;
-score += seasonalWeight() * 0.6;
+    score += pressureScore;
 
-// moon
-let moon = getMoonPhase();
-if (moon === "Full") score += 3;
+    // ================= WIND =================
+    let windScore = 0;
+
+    if (w >= 5 && w <= 15) windScore = 20;
+    else if (w >= 3 && w < 5) windScore = 10;
+    else if (w > 15) windScore = 5;
+    else windScore = 0;
+
+    score += windScore;
+
+    // ================= CLOUD =================
+    let cloudScore = 0;
+
+    if (c >= 30 && c <= 70) cloudScore = 15;
+    else if (c > 70) cloudScore = 10;
+    else cloudScore = 5;
+
+    score += cloudScore;
+
+    // ================= TEMP =================
+    let tempScore = 0;
+
+    if (t >= 18 && t <= 24) tempScore = 25;
+    else if (t >= 15 && t < 18) tempScore = 15;
+    else if (t > 24 && t <= 28) tempScore = 10;
+    else tempScore = 5;
+
+    score += tempScore;
+
+    // ================= TIME WINDOWS =================
+    score += sunriseWindow() * 0.5;
+    score += seasonalWeight() * 0.5;
+
+    // ================= FINAL NORMALIZE =================
+    score = Math.max(20, Math.min(95, score));
 
     return {
-        score: Math.max(20, Math.min(95, score)),
+        score: Math.round(score),
         reasons: reasons
     };
 }
+
 
 function calculateAverageSPI() {
     if (drops.length === 0) return 0;
@@ -403,8 +419,7 @@ function renderDashboard(data) {
     let newSPI = result.score;
     
     let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
-    newSPI += tempAnalysis.score;
-    
+       
     let status = document.getElementById("tactical");
     if (status) status.innerText = "Updating...";
     
@@ -563,13 +578,25 @@ document.getElementById("season").innerText = getSeason();
 
         // ================= CALCULATE SCOUT SCORING FOR SPI =================
 
-    // ================= ENV + CONF =================
-let envScore = Math.round(
-    (100 - Math.abs(p - 1018) * 2) + (c * 0.2) );
+// ================= ENV + CONF =================
+// ================= ENV ================= 
+    let envScore =
+    (100 - Math.abs(p - 1015) * 2) +
+    (c * 0.15) +
+    (estimateOxygen(t, w, c) * 2);
 
-envScore = Math.max(40, Math.min(envScore, 95));
+envScore = Math.max(40, Math.min(90, Math.round(envScore)));
 
-let conf = Math.round((SPI + envScore) / 2);
+document.getElementById("envScore").innerText = envScore + "%";
+
+
+// ================= CONF ================= let conf =
+    (envScore * 0.6) +
+    (Math.abs(50 - Math.abs(p - 1015)) * 0.4);
+
+conf = Math.max(40, Math.min(95, Math.round(conf)));
+
+document.getElementById("confScore").innerText = conf + "%";
 
 // ✅ UPDATE UI
 document.getElementById("envScore").innerText = envScore + "%"; 
