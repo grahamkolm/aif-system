@@ -619,7 +619,6 @@ if (zone.includes("Shallow") && w > 10) {
 }
     
     insights.push("Wind pushing food into zone"); 
-}
   
 // LIMIT TO 3 (important for UX)
 let text = insights.slice(0, 3).join(" • ");
