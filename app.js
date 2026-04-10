@@ -296,7 +296,19 @@ function simulateWeather() {
 function analyzeWeather(w, p, c){
 
     let insights = [];
+    let zone = getBestZone();
 
+    if (zone === "shallow") {
+    insights.push("Target shallow windward zones"); 
+    }
+
+    if (zone === "mid") {
+    insights.push("Fish mid-depth transition areas"); 
+    }
+
+    if (zone === "deep") {
+    insights.push("Focus on deeper structure"); 
+    }
     if(w >= 5 && w <= 15){
         insights.push("Wind pushing food toward bank");
     }
@@ -312,19 +324,7 @@ function analyzeWeather(w, p, c){
     return insights;
 }
 
-let zone = getBestZone();
 
-if (zone === "shallow") {
-    insights.push("Target shallow windward zones"); 
-}
-
-if (zone === "mid") {
-    insights.push("Fish mid-depth transition areas"); 
-}
-
-if (zone === "deep") {
-    insights.push("Focus on deeper structure"); 
-}
 
 // =====================================================
 // 📊 6. SPI ENGINE (UNIFIED)
@@ -1324,7 +1324,7 @@ function buildReportMap() {
         drops.forEach(d => {
             if (d.lat && d.lon) {
                 L.marker([d.lat, d.lon])
-                    .addTo(mapInstance)
+                    .addTo(reportMapInstance)
                     .bindPopup(`SPI: ${d.spi}%`);
     }
 });
@@ -1346,7 +1346,7 @@ function buildReportMap() {
     }, 300);
 }
 
-function getBestZone() {
+function getBestDropZone() {
 
     let highDrops = drops.filter(d => d.spi >= 70);
 
