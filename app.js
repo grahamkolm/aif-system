@@ -148,7 +148,7 @@ function startApp() {
     setTimeout(fetchWeatherSafe, 2000);
     
     setTimeout(() => {
-        setupHold("spiGauge", showSPIInsight);
+        setupHold("Gauge", showInsight);
     }, 1500);
 }
 
@@ -255,7 +255,7 @@ function generateHotspots() {
 
     hotspots = [];
 
-    for (let i = 0; i < Math.floor(SPI / 25); i++) {
+    for (let i = 0; i < Math.floor( / 25); i++) {
         hotspots.push({
             x: canvas.width * Math.random(), 
             y: canvas.height * 0.7,
@@ -361,7 +361,12 @@ if (moon === "Full") score += 3;
     };
 }
 
+function calculateAverageSPI() {
+    if (drops.length === 0) return 0;
 
+    let total = drops.reduce((sum, d) => sum + d.spi, 0);
+    return (total / drops.length).toFixed(1); }
+    
 // =====================================================
 // 📊 7. DASHBOARD
 // =====================================================
