@@ -1175,7 +1175,7 @@ function openDrop() {
 
     let dropData = {
         time: Date.now(),
-        lat: userLocation?,lat || null,
+        lat: userLocation?.lat || null,
         lon: userLocation?.lon || null,
         spi: SPI,
         scout: scoutData
