@@ -784,8 +784,13 @@ body{
 
 .btn.secondary {
     background: rgba(255,255,255,0.08);
-    color: white;
-}
+    color: #fff;
+    border: 1px solid rgba(0,255,166,0.3);
+    opacity: 1; /* 🔥 REMOVE FADED LOOK */ }
+
+.btn.secondary:active {
+    transform: scale(0.96);
+    box-shadow: 0 0 10px rgba(0,255,166,0.3); }
 
 .scan-loader {
     width: 50px;
