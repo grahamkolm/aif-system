@@ -861,21 +861,41 @@ body{
   font-weight: bold;
 }
 
+.dir {
+  position: absolute;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .n { top: 5px; left: 50%; transform: translateX(-50%); } 
 .s { bottom: 5px; left: 50%; transform: translateX(-50%); } 
 .e { right: 5px; top: 50%; transform: translateY(-50%); } 
 .w { left: 5px; top: 50%; transform: translateY(-50%); }
 
-#compassNeedle {
+.compass-ring {
   position: absolute;
-  width: 2px;
-  height: 100px;
-  background: white;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
   top: 50%;
   left: 50%;
-  transform-origin: bottom center;
-  transform: translate(-50%, -100%) rotate(0deg); }
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
 
 #compassNeedle {
-box-shadow: 0 0 8px rgba(255,255,255,0.6);
+  position: absolute;
+  width: 3px;
+  height: 90px;
+  background: white;
+
+  top: 50%;
+  left: 50%;
+
+  transform-origin: bottom center;
+  transform: translate(-50%, -100%) rotate(0deg);
+
+  z-index: 5;
 }
+
