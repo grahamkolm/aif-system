@@ -1175,37 +1175,15 @@ function openDrop() {
 
     let dropData = {
         time: Date.now(),
-        lat: currentLat,
-        lon: currentLon,
+        lat: userLocation?,lat || null,
+        lon: userLocation?.lon || null,
         spi: SPI,
-        scout: scoutScore
+        scout: scoutData
     };
 
     drops.push(dropData);
 
     console.log("DROP SAVED:", dropData); 
-}
-
-let drop = {
-    time: Date.now(),
-    lat: currentLat,
-    lon: currentLon,
-    spi: currentSPI,        // 🔥 CRITICAL
-    scout: scoutScore,
-    depth: depth || null,
-    success: false          // later (catch or not)
-};
-
-function saveDrop() {
-    drops.push({
-        time: Date.now(),
-        lat: currentLat,
-        lon: currentLon,
-        spi: SPI,              // make sure this is REAL SPI
-        scout: scoutScore
-    });
-
-    console.log("DROP SAVED:", drops[drops.length - 1]); 
 }
 
 window.retryConnection = retryConnection;
