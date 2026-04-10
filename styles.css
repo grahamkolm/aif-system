@@ -897,6 +897,8 @@ body{
 
 #compassNeedle {
   position: absolute;
+  top: 50%;
+  left: 50%;
   width: 3px;
   height: 90px;
   background: white;
