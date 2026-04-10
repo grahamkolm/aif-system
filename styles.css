@@ -846,4 +846,23 @@ body{
     margin-bottom: 12px;
 }
 
+.compass-ring {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.compass-label {
+  position: absolute;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.n { top: 5px; left: 50%; transform: translateX(-50%); } 
+.s { bottom: 5px; left: 50%; transform: translateX(-50%); } 
+.e { right: 5px; top: 50%; transform: translateY(-50%); } 
+.w { left: 5px; top: 50%; transform: translateY(-50%); }
 
