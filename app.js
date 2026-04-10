@@ -612,6 +612,9 @@ let envScore = Math.round(
     (light * 0.3) +
     (depth >= 2 && depth <= 5 ? 10 : -5) );
 
+// 🔥 HARD LIMIT (CRITICAL)
+envScore = Math.max(40, Math.min(100, envScore));
+
 document.getElementById("envScore").innerText = envScore + "%";
     
 // ================= CONF =================    
