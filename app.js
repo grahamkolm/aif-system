@@ -560,6 +560,7 @@ let conf = Math.round((SPI + envScore) / 2);
 // ✅ UPDATE UI
 document.getElementById("envScore").innerText = envScore + "%"; 
 document.getElementById("confScore").innerText = conf + "%";
+document.getElementById("bestZone").innerText = getBestZone();
 
 
     // ================= TILE GLOW =================
@@ -1184,6 +1185,7 @@ function openDrop() {
         lon: userLocation?.lon || null,
         spi: SPI,
         scout: scoutData
+        success: false
     };
 
     drops.push(dropData);
@@ -1329,6 +1331,19 @@ function buildReportMap() {
 
     }, 300);
 }
+
+function getBestZone() {
+
+    let highDrops = drops.filter(d => d.spi >= 70);
+
+    if (highDrops.length === 0) return "No strong zone yet";
+
+    let avgLat = highDrops.reduce((sum, d) => sum + d.lat, 0) / highDrops.length;
+    let avgLon = highDrops.reduce((sum, d) => sum + d.lon, 0) / highDrops.length;
+
+    return `Lat ${avgLat.toFixed(3)}, Lon ${avgLon.toFixed(3)}`; 
+}
+
 
 
 window.retryConnection = retryConnection;
