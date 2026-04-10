@@ -610,14 +610,12 @@ let envScore = Math.round(
     (100 - Math.abs(p - 1018) * 1.5) +
     (c * 0.15) +
     (light * 0.2) +
-    (depth >= 2 && depth <= 5 ? 8 : -5) 
+    (depth >= 2 && depth <= 5 ? 8 : -5)
 );
 
-envScore = Math.max(40, Math.min(100, "envScore"));
-
-const envEl = document.getElementById("envScore");
-    if(envEl) envEl.innerText = envScore + "%";
-    
+// 🔥 FIXED CLAMP
+envScore = Math.max(40, Math.min(100, envScore));
+   
 // ================= CONF =================    
 let confScore = Math.round(
     (SPI * 0.5) +
