@@ -1191,6 +1191,7 @@ function openDrop() {
     console.log("DROP SAVED:", dropData); 
 
     showDropFeedback();
+    ripple();
 }
 
 function showDropFeedback() {
