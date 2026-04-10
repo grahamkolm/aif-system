@@ -1187,10 +1187,37 @@ function openDrop() {
     };
 
     drops.push(dropData);
-
+    
     console.log("DROP SAVED:", dropData); 
+
+    showDropFeedback();
 }
 
+function showDropFeedback() {
+
+    let toast = document.createElement("div");
+    toast.innerText = `Drop saved • SPI ${SPI.toFixed(1)}%`;
+
+    toast.style.position = "fixed";
+    toast.style.bottom = "120px";
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%)";
+    toast.style.background = "rgba(0,0,0,0.8)";
+    toast.style.color = "#00ffa6";
+    toast.style.padding = "12px 18px";
+    toast.style.borderRadius = "12px";
+    toast.style.fontSize = "14px";
+    toast.style.zIndex = "9999";
+    toast.style.boxShadow = "0 0 10px rgba(0,255,156,0.3)";
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => toast.remove(), 300);
+    }, 1500);
+}
+    
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
