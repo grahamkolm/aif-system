@@ -592,6 +592,7 @@ let confScore = Math.round(
     (SPI * 0.6) + 
     (envScore * 0.4) +
     (Math.abs(50 - Math.abs(p - 1015)) * 0.2)
+    );
 
 confScore = Math.max(40, Math.min(95, confScore));
 
