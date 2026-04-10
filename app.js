@@ -148,7 +148,7 @@ function startApp() {
     setTimeout(fetchWeatherSafe, 2000);
     
     setTimeout(() => {
-        setupHold("Gauge", showInsight);
+        setupHold("Gauge", showSPIInsight);
     }, 1500);
 }
 
