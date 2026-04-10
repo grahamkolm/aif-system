@@ -866,3 +866,12 @@ body{
 .e { right: 5px; top: 50%; transform: translateY(-50%); } 
 .w { left: 5px; top: 50%; transform: translateY(-50%); }
 
+#compassNeedle {
+  position: absolute;
+  width: 2px;
+  height: 100px;
+  background: white;
+  top: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translate(-50%, -100%) rotate(0deg); }
