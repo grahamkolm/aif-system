@@ -330,7 +330,7 @@ function analyzeWeather(w, p, c){
 // 📊 6. SPI ENGINE (UNIFIED)
 // =====================================================
 
-function calculateSPI(p, w, c, windDir, t){
+function calculateSPI(p, w, c, windDir, t, light, depth){
 
     let score = 0;
     let reasons = [];
@@ -377,6 +377,27 @@ function calculateSPI(p, w, c, windDir, t){
 
     score += tempScore;
 
+    // ================= LIGHT =================
+if (light >= 40 && light <= 70) {
+    score += 8;
+    reasons.push("Optimal light penetration"); } else if (light < 20) {
+    score -= 5;
+    reasons.push("Too dark — reduced visibility"); } else {
+    score -= 3;
+    reasons.push("Too bright — fish cautious"); 
+}
+
+    // ================= DEPTH =================
+if (depth >= 2 && depth <= 5) {
+    score += 10;
+    reasons.push("Ideal feeding depth"); } else if (depth < 1) {
+    score -= 6;
+    reasons.push("Too shallow");
+} else if (depth > 8) {
+    score -= 4;
+    reasons.push("Too deep for active feeding"); 
+}
+
     // ================= TIME WINDOWS =================
     score += sunriseWindow() * 0.5;
     score += seasonalWeight() * 0.5;
@@ -409,13 +430,14 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind.deg;
+    const light = data.light || 50;
+    const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
-    
 
     console.log("SPI INPUT:", t, p, w, c);
     
-    let result = calculateSPI(p, w, c, windDir, t);
+    let result = calculateSPI(p, w, c, windDir, t, light, depth);
     let newSPI = result.score;
     
     let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
@@ -483,6 +505,8 @@ function renderDashboard(data) {
 // helpers
 document.getElementById("moon").innerText = getMoonPhase(); 
 document.getElementById("season").innerText = getSeason();
+document.getElementById("light").innerText = light + "%"; 
+document.getElementById("depth").innerText = depth.toFixed(1) + " m";
 
     // ================= HELPER FUNCTION =================
     function setIcon(iconName, value, rules) {
@@ -581,18 +605,18 @@ document.getElementById("season").innerText = getSeason();
 // ================= ENV + CONF =================
 // ================= ENV ================= 
 let envScore = Math.round(
-    (100 - Math.abs(p - 1018) * 2) + (c * 0.2) );
-
-envScore = Math.max(40, Math.min(envScore, 95));
+    (100 - Math.abs(p - 1018) * 2) +
+    (c * 0.2) +
+    (light * 0.3) +
+    (depth >= 2 && depth <= 5 ? 10 : -5) );
 
 document.getElementById("envScore").innerText = envScore + "%";
     
 // ================= CONF =================    
 let confScore = Math.round(
-    (SPI * 0.6) + 
-    (envScore * 0.4) +
-    (Math.abs(50 - Math.abs(p - 1015)) * 0.2)
-    );
+    (SPI * 0.5) +
+    (envScore * 0.3) +
+    (Math.abs(50 - Math.abs(p - 1015)) * 0.2) );
 
 confScore = Math.max(40, Math.min(95, confScore));
 
@@ -639,6 +663,15 @@ if (t >= 18 && t <= 24) {
 if (zone.includes("Shallow") && w > 10) {
     insights.push("Strong wind fish tight to windward bank"); }
 
+if (light < 30 && depth > 4) {
+    insights.push("Fish likely holding deeper due to low light"); }
+
+if (light > 70 && depth < 2) {
+    insights.push("Bright shallow water — fish spooked"); }
+
+if (depth >= 3 && depth <= 5 && light >= 40) {
+    insights.push("Perfect ambush zone"); }
+    
 // LIMIT TO 3
 let text = insights.slice(0, 3).join(" • ");
 
@@ -961,13 +994,15 @@ function checkSensors() {
         .then(res => res.json())
         .then(data => {
 
-            document.getElementById("sensorStatusList").innerHTML = `
-                <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
-                <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
-                <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
-                <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
-                <div>Battery ${data.battery ? "✅" : "❌"}</div>
-            `;
+    document.getElementById("sensorStatusList").innerHTML = `
+        <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
+        <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
+        <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
+        <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
+        <div>Light ${data.light ? "✅" : "❌"}</div>
+        <div>Depth ${data.depth ? "✅" : "❌"}</div>
+        <div>Battery ${data.battery ? "✅" : "❌"}</div> `;
+
         })
         .catch(() => {
 
@@ -987,6 +1022,24 @@ function retryConnection() {
     }
 
     checkSensors();
+}
+
+let retryCount = 0;
+
+function retryConnection() {
+
+    retryCount++;
+
+    if (retryCount > 5) {
+        document.getElementById("sensorStatusList").innerHTML =
+            "❌ Unable to connect. Check AIF WiFi.";
+        return;
+    }
+
+    document.getElementById("sensorStatusList").innerHTML =
+        `Reconnecting... (${retryCount}/5)`;
+
+    setTimeout(checkSensors, 1000);
 }
 
 function startScan() {
