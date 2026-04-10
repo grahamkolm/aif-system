@@ -681,6 +681,7 @@ let text = insights.slice(0, 3).join(" • ");
 
 let tactical = document.getElementById("tactical");
 if (tactical) tactical.innerText = text;
+showInsight(SPI, envScore, confScore, light, depth);
 
 }
 
@@ -1019,19 +1020,6 @@ function checkSensors() {
 
 function retryConnection() {
 
-    let list = document.getElementById("sensorStatusList");
-
-    if(list){
-        list.innerHTML = "Rechecking sensors...";
-    }
-
-    checkSensors();
-}
-
-let retryCount = 0;
-
-function retryConnection() {
-
     retryCount++;
 
     if (retryCount > 5) {
@@ -1219,6 +1207,35 @@ function setupHold(elementId, callback) {
     el.addEventListener("touchend", () => {
         clearTimeout(timer);
     });
+}
+
+function showInsight(SPI, envScore, confScore, light, depth) {
+    let insight = "";
+
+    if (SPI > 75) {
+        insight = "🔥 Strong feeding conditions — high chance of bites.";
+    } else if (SPI > 60) {
+        insight = "👍 Decent conditions — fish are active.";
+    } else {
+        insight = "⚠️ Slow conditions — consider moving spots.";
+    }
+
+    // Light influence
+    if (light < 30) {
+        insight += " Low light → fish likely in shallow water.";
+    } else {
+        insight += " Bright light → fish may go deeper.";
+    }
+
+    // Depth influence
+    if (depth >= 2 && depth <= 5) {
+        insight += " Ideal depth zone detected.";
+    } else {
+        insight += " Depth not optimal — adjust positioning.";
+    }
+
+    const insightEl = document.getElementById("insight");
+    if (insightEl) insightEl.innerText = insight; 
 }
 
 function showSPIInsight(){
