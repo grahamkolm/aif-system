@@ -875,14 +875,14 @@ body{
 .dir {
   position: absolute;
   color: rgba(255,255,255,0.7);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
 }
 
-.n { top: 5px; left: 50%; transform: translateX(-50%); } 
-.s { bottom: 5px; left: 50%; transform: translateX(-50%); } 
-.e { right: 5px; top: 50%; transform: translateY(-50%); } 
-.w { left: 5px; top: 50%; transform: translateY(-50%); }
+.n { top: -10px; left: 50%; transform: translateX(-50%); } 
+.s { bottom: -10px; left: 50%; transform: translateX(-50%); } 
+.e { right: -10px; top: 50%; transform: translateY(-50%); } 
+.w { left: -10px; top: 50%; transform: translateY(-50%); }
 
 .compass-ring {
   position: absolute;
@@ -899,8 +899,8 @@ body{
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 3px;
-  height: 90px;
+  width: 2px;
+  height: 80px;
   background: white;
 
   top: 50%;
