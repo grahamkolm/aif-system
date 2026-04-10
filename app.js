@@ -566,10 +566,30 @@ document.getElementById("confScore").innerText = conf + "%";
 // =========================
 // ✅ TACTICAL BAR
 // =========================
-let text =
-    "SPI " + finalSPI.toFixed(1)  + "% • " +
-    "Wind " + w.toFixed(0) + " km/h • " +
-    "Pressure " + p + " hPa";
+let insights = [];
+
+// Wind
+if (w >= 5 && w <= 15) {
+    insights.push("Wind pushing food into zone"); }
+
+// Pressure
+if (p > 1015) {
+    insights.push("Stable pressure supports feeding"); } else {
+    insights.push("Unstable pressure slows activity"); }
+
+// Cloud
+if (c >= 30 && c <= 70) {
+    insights.push("Low light increases confidence"); }
+
+// Temperature
+if (t >= 18 && t <= 24) {
+    insights.push("Fish active in upper layers"); }
+
+// LIMIT TO 3 (important for UX)
+let text = insights.slice(0, 3).join(" • ");
+
+document.getElementById("tactical").innerText = text;
+
 
 let tactical = document.getElementById("tactical");
 if(tactical) tactical.innerText = text;
