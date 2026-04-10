@@ -502,7 +502,7 @@ body{
 }
 
 .section {
-    margin: 8px 10px;
+    margin: 6px 10px;
     padding: 10px;
     border-radius: 16px;
     background: rgba(10,20,25,0.50);
@@ -517,7 +517,7 @@ body{
   font-size: 14px;
   color: #e6eddf3;
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   letter-spacing: 0.3px;
 }
 
@@ -531,13 +531,13 @@ body{
 .opt {
     word-break: break-word;
     flex: 1;
-    padding: 8px 4px;
+    padding: 8px 6px;
     border-radius: 10px;
 
     font-size: 11px;
     line-height: 1.2;
 
-    min-height: 36px;
+    min-height: 34px;
 
     display: flex;
     align-items: center;
@@ -611,9 +611,9 @@ body{
 .scout-btn {
     margin-top: auto;
     margin-bottom: 20px;
-    margin: 10px 12px 10px 12px;
+    margin: 8px 12px;
 
-    padding: 16px;
+    padding: 14px;
     border-radius: 16px;
 
     font-size: 16px;
