@@ -443,7 +443,7 @@ body{
 .scout-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 6px;
 }
 
 #scoutScreen {
@@ -467,6 +467,7 @@ body{
     width: 100%;
     max-width: 420px;
     min-height: 100vh;
+    overflow: hidden;
 
     margin: -10px auto 40px auto;
     padding: 14px;
@@ -474,7 +475,7 @@ body{
     display: flex;
     flex-direction: column;
     gap: 4px;
-    height: 100vh;
+    height: calc(100vh - 120px);
     padding: 14px;
     justify-content: space-between;
 
@@ -502,8 +503,8 @@ body{
 }
 
 .section {
-    margin: 6px 10px;
-    padding: 14px;
+    margin: 4px 10px;
+    padding: 12px;
     border-radius: 18px;
     background: rgba(10,20,25,0.55);
     backdrop-filter: blur(12px);
