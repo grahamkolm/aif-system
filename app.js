@@ -1167,6 +1167,29 @@ Prediction reliability is based on combined conditions`
     );
 }
 
+// 🌊 DROP
+
+let drop = {
+    time: Date.now(),
+    lat: currentLat,
+    lon: currentLon,
+    spi: currentSPI,        // 🔥 CRITICAL
+    scout: scoutScore,
+    depth: depth || null,
+    success: false          // later (catch or not)
+};
+
+function saveDrop() {
+    drops.push({
+        time: Date.now(),
+        lat: currentLat,
+        lon: currentLon,
+        spi: SPI,              // make sure this is REAL SPI
+        scout: scoutScore
+    });
+
+    console.log("DROP SAVED:", drops[drops.length - 1]); }
+
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
