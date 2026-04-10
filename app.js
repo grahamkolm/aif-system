@@ -255,7 +255,7 @@ function generateHotspots() {
 
     hotspots = [];
 
-    for (let i = 0; i < Math.floor( / 25); i++) {
+    for (let i = 0; i < Math.floor(SPI / 25); i++) {
         hotspots.push({
             x: canvas.width * Math.random(), 
             y: canvas.height * 0.7,
