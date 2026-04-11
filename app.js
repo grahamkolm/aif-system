@@ -1428,10 +1428,16 @@ function showInsight(SPI, envScore, confScore, light, depth) {
         console.warn("❌ aiContent NOT FOUND");
         return;
     }
+    
+    const panel = document.getElementById("aiPanel");
+    const toggle = document.getElementById("aiToggle");
 
+    if (panel && toggle) {
+    panel.classList.add("active");
+    toggle.innerText = "−";
+}   
     console.log("✅ WRITING:", insight);
 
-    // 🔥 FORCE overwrite properly
     el.innerText = "";
     el.innerText = insight;
 }
