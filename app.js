@@ -559,7 +559,6 @@ function renderDashboard(data) {
     // =========================
     bubbleIntensity = finalSPI / 100;
     document.getElementById("feed").innerText = feeding(finalSPI);
-    showinsight(SPI, envScore, confScore, light, depth);   
 
     // ================= HELPER FUNCTION =================
 
