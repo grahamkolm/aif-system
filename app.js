@@ -3495,52 +3495,6 @@ function buildDropLog() {
     });
 }
 
-let reportMapInstance;
-
-function buildReportMap() {
-
-    setTimeout(() => {
-
-        if (!reportMapInstance) {
-
-            reportMapInstance = L.map('reportMap').setView([-26.2, 28.0], 13);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-                .addTo(reportMapInstance);
-        }
-
-        // clear old markers
-        reportMapInstance.eachLayer(layer => {
-            if (layer instanceof L.Marker) {
-                reportMapInstance.removeLayer(layer);
-            }
-        });
-    
-        drops.forEach(d => {
-            if (d.lat && d.lon) {
-                L.marker([d.lat, d.lon])
-                    .addTo(reportMapInstance)
-                    .bindPopup(`SPI: ${d.spi}%`);
-    }
-});
-
-        // add drops
-        drops.forEach(d => {
-
-            if (!d.lat || !d.lon) return;
-
-            L.marker([d.lat, d.lon])
-                .addTo(reportMapInstance)
-                .bindPopup(`SPI: ${d.spi.toFixed(1)}%`);
-        });
-
-        setTimeout(() => {
-            reportMapInstance.invalidateSize();
-        }, 200);
-
-    }, 300);
-}
-
 function getBestDropZone() {
 
     let highDrops = drops.filter(d => d.spi >= 70);
