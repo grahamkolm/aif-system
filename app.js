@@ -1418,54 +1418,50 @@ function setupHold(elementId, callback) {
 
 function showInsight(SPI, envScore, confScore, light, depth) {
 
+    let insight = "";
     let parts = [];
 
-// CORE CONDITION
-if (SPI > 75) {
-    parts.push("🔥 Strong feeding conditions — high chance of bites."); } else if (SPI > 60) {
-    parts.push("👍 Decent conditions — fish are active."); } else {
-    parts.push("⚠️ Slow conditions — consider changing spots."); }
-
-// 🎯 ADD INTELLIGENCE
-const windDir = lastConditions?.wind?.deg || 0;
-
-parts.push(getCastDirection(windDir));
-parts.push(getDepthStrategy(light, depth)); parts.push(getBaitSuggestion(SPI));
-
-// FINAL OUTPUT
-insight = parts.join(" ");
-
-    // 🌬 WIND
-    if (lastConditions?.wind?.speed * 3.6 >= 5) {
-        parts.push("🌬 Wind is pushing food into key zones.");
+    // ================= CORE =================
+    if (SPI > 75) {
+        parts.push("🔥 Strong feeding conditions — high chance of bites.");
+    } else if (SPI > 60) {
+        parts.push("👍 Decent conditions — fish are active.");
     } else {
-        parts.push("🌊 Calm conditions — less natural feeding movement.");
+        parts.push("⚠️ Slow conditions — consider moving spots.");
     }
 
-    // 🌡 TEMP
-    if (lastConditions?.main?.temp >= 18 && lastConditions?.main?.temp <= 24) {
-        parts.push("🌡 Water temperature is in optimal feeding range.");
+    const windDir = lastConditions?.wind?.deg || 0;
+
+    parts.push(getCastDirection(windDir));
+    parts.push(getDepthStrategy(light, depth));
+    parts.push(getBaitSuggestion(SPI));
+
+    // ================= WIND =================
+    if (lastConditions?.wind?.speed * 3.6 >= 5) {
+        parts.push("🌬 Wind pushing food into feeding zones.");
+    } else {
+        parts.push("🌊 Calm water — less natural feeding movement.");
     }
 
-    // ☁️ CLOUD
-    if (lastConditions?.clouds?.all >= 30) {
+    // ================= LIGHT =================
+    if (light < 30) {
+        parts.push("🌅 Low light — fish moving shallow.");
+    } else if (light > 70) {
+        parts.push("🌞 Bright light — fish holding deeper.");
+    }
+
+    // ================= CLOUD =================
+    if (lastConditions?.clouds?.all >= 30 && lastConditions?.clouds?.all <= 70) {
         parts.push("☁️ Cloud cover improves fish confidence.");
     }
 
-    // 💡 LIGHT
-    if (light < 30) {
-        parts.push("💡 Low light — fish likely moving shallow.");
-    } else {
-        parts.push("💡 Bright conditions — fish may hold deeper.");
+    // ================= TEMP =================
+    if (lastConditions?.main?.temp >= 18 && lastConditions?.main?.temp <= 24) {
+        parts.push("🌡 Optimal temperature for feeding.");
     }
 
-    // 📏 DEPTH
-    if (depth >= 2 && depth <= 5) {
-        parts.push("📏 Ideal depth zone — strong ambush potential.");
-    }
-
-    // 🎯 FINAL BUILD
-    let insight = parts.join(" ");
+    // ================= FINAL BUILD =================
+    insight = parts.join(" ");
 
     const el = document.getElementById("aiContent");
     if (el) el.innerText = insight;
