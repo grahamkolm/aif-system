@@ -1397,6 +1397,7 @@ function setupHold(elementId, callback) {
 }
 
 function showInsight(SPI, envScore, confScore, light, depth) {
+
     let insight = "";
 
     if (SPI > 75) {
@@ -1407,24 +1408,32 @@ function showInsight(SPI, envScore, confScore, light, depth) {
         insight = "⚠️ Slow conditions — consider moving spots.";
     }
 
-    // Light influence
     if (light < 30) {
         insight += " Low light → fish likely in shallow water.";
     } else {
         insight += " Bright light → fish may go deeper.";
     }
 
-    // Depth influence
     if (depth >= 2 && depth <= 5) {
         insight += " Ideal depth zone detected.";
     } else {
         insight += " Depth not optimal — adjust positioning.";
     }
 
-    const insightEl = document.getElementById("aiContent");
-    if (insightEl) insightEl.innerText = insight; 
     console.log("AI UPDATE RUNNING");
-    console.log("Element", document.getElementById("aiContent"));
+
+    const el = document.getElementById("aiContent");
+
+    if (!el) {
+        console.warn("❌ aiContent NOT FOUND");
+        return;
+    }
+
+    console.log("✅ WRITING:", insight);
+
+    // 🔥 FORCE overwrite properly
+    el.innerText = "";
+    el.innerText = insight;
 }
 
 function showSPIInsight(){
