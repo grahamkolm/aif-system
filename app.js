@@ -1250,7 +1250,6 @@ function startScan() {
     }, 2000);
 }
 
-
 function showScanFailed() {
 
     let screen = document.getElementById("scoutScreen");
@@ -1275,6 +1274,15 @@ function saveAndScan() {
     localStorage.setItem("scoutData", JSON.stringify(scoutData));
     showConnectingScreen();
 }
+
+function resetTempModel(){
+    tempModel = {
+        surface: null,
+        bottom: null,
+        source: "forecast"
+    };
+}
+
 
 function showSummary(){
 
