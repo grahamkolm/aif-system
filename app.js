@@ -444,14 +444,20 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind?.deg || 0;
+
+// ✅ ALWAYS define diff
     let diff = 0;
+
     if (compassHeading !== null) {
-        diff = Math.abs(windDir - compassHeading);
-        if(diff > 180) diff = 360 - diff;
-        console.log("Wind vs Heading off:", diff);
-    }
+    diff = Math.abs(windDir - compassHeading);
+    if (diff > 180) diff = 360 - diff;
+
+    console.log("Wind vs Heading off:", diff); }
+
+// ✅ ALWAYS safe now
     let advice = getCastingAdvice(diff);
     console.log("Casting:", advice);
+
     const light = data.light || 50;
     const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
