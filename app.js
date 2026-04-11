@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
+    
     // ✅ SET IT HERE (correct place)
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
@@ -49,6 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         splash.style.opacity = "0";
         main.classList.add("main-visible");
+
+        initGPS();
+        startSplash();
    
         setTimeout(() => splash.remove(), 800);
 
@@ -450,13 +454,10 @@ function renderDashboard(data) {
     
     let result = calculateSPI(p, w, c, windDir, t, light, depth);
     let newSPI = result.score;
+    let finalSPI = newSPI;
 
     newSPI = applyScoutImpact(newSPI);
-
-    if (lastSPI !==null) {
-        newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
-    }
-    
+   
     let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
        
     let status = document.getElementById("tactical");
@@ -504,8 +505,6 @@ if (reasonsEl) {
     }
 
     console.log("base SPI:", newSPI);
-    console.log("Scout Data:", scout);
-    console.log("Scout Impact:", scoutImpact);
     console.log("Final SPI:", finalSPI);
     
     lastSPI = finalSPI;
