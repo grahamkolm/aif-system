@@ -471,6 +471,17 @@ function renderDashboard(data) {
     let result = calculateSPI(p, w, c, windDir, t, light, depth);
     let newSPI = result.score;
     let finalSPI = newSPI;
+    const spiColor = getScoreColor(finalSPI); spiCircle.style.stroke = spiColor; spiText.style.color = spiColor;
+    const envColor = getScoreColor(envScore); document.getElementById("envCircle").style.borderColor = envColor; document.getElementById("envText").style.color = envColor;
+    const confColor = getScoreColor(confScore); document.getElementById("confCircle").style.borderColor = confColor; document.getElementById("confText").style.color = confColor;
+    // SPI
+    document.getElementById("spiValue").style.color = spiColor;
+
+    // ENV
+    document.getElementById("envScore").style.color = envColor;
+
+    // CONF
+    document.getElementById("confScore").style.color = confColor;
 
   let scoutBonus = newSPI - result.score;
 
@@ -667,6 +678,12 @@ let depthEl = document.getElementById("depth");
         { min: 50, max: 69, color: ORANGE },
         { min: 0, max: 49, color: RED }
     ]);
+
+    function getScoreColor(value) {
+    if (value >= 80) return "#00ff9c";   // green
+    if (value >= 60) return "#ffd700";   // yellow
+    return "#ff4d4d";                    // red
+}
 
         // ================= CALCULATE SCOUT SCORING FOR SPI =================
 
