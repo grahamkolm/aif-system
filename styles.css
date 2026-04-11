@@ -266,7 +266,7 @@ body{
     left:-40px;
     top: 75%;
     transform: translateY(-50%);
-    border: 2px solid #ffc400;
+    border: 3px solid #ffc400;
     box-shadow: 0 0 12px rgba(0,255,156,0.4);
 }
 
@@ -274,7 +274,7 @@ body{
     right:-40px;
     top: 75%;
     transform: translateY(-50%);
-    border: 2px solid #4da6ff;
+    border: 3px solid #4da6ff;
     box-shadow: 0 0 12px rgba(77,166,255,0.4);
 }
 
