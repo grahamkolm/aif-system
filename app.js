@@ -876,7 +876,7 @@ function enableCompass() {
 }
 
 window.addEventListener("deviceorientation", e => {
-    console.log("alpha:", e.alpha;
+    console.log("alpha:", e.alpha);
     
     if (e.alpha !== null && e.alpha !== undefined) {
         compassHeading = 360 - e.alpha;
