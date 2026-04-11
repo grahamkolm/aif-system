@@ -565,8 +565,7 @@ function renderDashboard(data) {
 // =========================
 
 // helpers
-document.getElementById("moon").innerText = getMoonPhase(); 
-document.getElementById("season").innerText = getSeason();
+
 let lightEl = document.getElementById("light");
     if (lightEl) lightEl.innerText = light + "%"; 
 let depthEl = document.getElementById("depth");
@@ -786,7 +785,7 @@ function getBestSPITrend() {
 
 // =========================
 // ✅ TACTICAL BAR
-// =========================l
+// =========================
 let insights = [];
 let zone = getBestZone();
 
@@ -835,7 +834,7 @@ if (tactical) {
     light,
     depth
     );
-
+    
 }
 
 // =====================================================
@@ -930,9 +929,6 @@ function getCastingAdvice(diff) {
     if (diff > 135) return "Perfect windward 🔥";
     return "Crosswind ⚠️";
 }
-
-let advice = getCastingAdvice(diff);
-console.log("Casting:", advice);
 
 // =====================================================
 // 🧭 9. GPS + COMPASS + MAP
@@ -1436,6 +1432,8 @@ function setupHold(elementId, callback) {
     });
 }
 
+updateAIInsight(SPI, diff, light, depth);
+
 function showInsight(SPI, envScore, confScore, light, depth) {
     let insight = "";
 
@@ -1827,308 +1825,3 @@ window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
 
-function showSPIInsight(){
-
-    let t = lastConditions?.main?.temp || "-";
-    let p = lastConditions?.main?.pressure || "-";
-    let w = lastConditions?.wind?.speed 
-        ? (lastConditions.wind.speed * 3.6).toFixed(1)
-        : "-";
-    let c = lastConditions?.clouds?.all || "-";
-
-    let advice = generateAICoach(SPI);
-
-    alert(
-`SPI: ${SPI.toFixed(1)}%
-
-WHY:
-• Wind: ${w} km/h → ${w >= 5 && w <= 15 ? "Ideal" : "Suboptimal"} • Pressure: ${p} hPa → ${p > 1015 ? "Stable" : "Unstable"} • Cloud: ${c}% → ${c >= 30 && c <= 80 ? "Good cover" : "Less optimal"} • Temperature: ${t}°C → ${t >= 18 && t <= 24 ? "Optimal" : "Off range"}
-
-WHAT TO DO:
-${advice}`
-    );
-}
-
-function showENVInsight(){
-
-    let t = lastConditions?.main?.temp || "-";
-    let p = lastConditions?.main?.pressure || "-";
-    let c = lastConditions?.clouds?.all || "-";
-    let oxygen = estimateOxygen(t, 0, c).toFixed(1);
-
-    alert(
-`ENV: ${document.getElementById("envScore").innerText}
-
-Environment Conditions:
-
-• Pressure: ${p} hPa → ${p > 1015 ? "Stable" : "Unstable"} • Cloud: ${c}% → ${c >= 30 && c <= 80 ? "Good cover" : "Low cover"} • Oxygen: ${oxygen} mg/L → ${oxygen > 7 ? "Healthy" : "Low"}
-
-Overall environment is ${p > 1015 && c >= 30 ? "favorable" : "moderate"}`
-    );
-}
-
-function showCONFInsight(){
-
-    let env = document.getElementById("envScore").innerText;
-    let spi = SPI.toFixed(1);
-
-    alert(
-`CONF: ${document.getElementById("confScore").innerText}
-
-Confidence Level Analysis:
-
-• SPI: ${spi}% → Fishing potential
-• ENV: ${env} → Environmental support
-
-Confidence is ${
-    SPI > 70 ? "HIGH" :
-    SPI > 50 ? "MODERATE" :
-    "LOW"
-}
-
-Prediction reliability is based on combined conditions`
-    );
-}
-
-// 🌊 DROP
-
-function openDrop() {
-    console.log("DROP CLICKED");
-
-    let dropData = {
-        time: Date.now(),
-        lat: userLocation?.lat || null,
-        lon: userLocation?.lon || null,
-        spi: SPI,
-        scout: scoutData,
-        success: false
-    };
-
-    drops.push(dropData);
-    
-    console.log("DROP SAVED:", dropData); 
-
-    showDropFeedback();
-    ripple();
-}
-
-function showDropFeedback() {
-
-    let toast = document.createElement("div");
-    toast.innerText = `🎯 Drop logged • SPI ${SPI.toFixed(1)}%`;
-
-    toast.style.position = "fixed";
-    toast.style.bottom = "120px";
-    toast.style.left = "50%";
-    toast.style.transform = "translateX(-50%)";
-    toast.style.background = "rgba(0,0,0,0.8)";
-    toast.style.color = "#00ffa6";
-    toast.style.padding = "12px 18px";
-    toast.style.borderRadius = "12px";
-    toast.style.fontSize = "14px";
-    toast.style.zIndex = "9999";
-    toast.style.boxShadow = "0 0 10px rgba(0,255,156,0.3)";
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.opacity = "0";
-        setTimeout(() => toast.remove(), 300);
-    }, 1500);
-}
-
-// 🌊 REPORT
-
-function openReport() {
-
-    const screen = document.getElementById("reportScreen");
-    screen.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-
-    buildReport();
-}
-
-function closeReport() {
-    document.getElementById("reportScreen").classList.add("hidden");
-    document.body.style.overflow = "auto"; }
-
-function buildReport() {
-
-    document.getElementById("repDrops").innerText = drops.length;
-
-    // Best SPI
-    let best = drops.length ? Math.max(...drops.map(d => d.spi)) : 0;
-    document.getElementById("repBest").innerText = best.toFixed(1) + "%";
-
-    // Average SPI
-    let avg = drops.length
-        ? drops.reduce((s, d) => s + d.spi, 0) / drops.length
-        : 0;
-
-    document.getElementById("repAvg").innerText = avg.toFixed(1) + "%";
-
-    // Scout points
-    document.getElementById("repScout").innerText =
-        Object.keys(scoutData || {}).length;
-
-    // Build Drop Log
-    buildDropLog();
-
-    // Build Map
-    buildReportMap();
-}
-
-function buildDropLog() {
-
-    let container = document.getElementById("dropLog");
-    container.innerHTML = "";
-
-    drops.forEach((d, i) => {
-
-        let time = new Date(d.time).toLocaleString();
-
-        let el = document.createElement("div");
-        el.className = "drop-card";
-
-        el.innerHTML = `
-        <div class="drop-card">
-          <div class="drop-title">🎯 Drop ${i+1}</div>
-          <div>🕒 ${time}</div>
-          <div>📊 SPI: ${d.spi}%</div>
-          <div>📍 ${d.lat.toFixed(4)}, ${d.lon.toFixed(4)}</div> 
-          </div>
-        `;
-        container.appendChild(el);
-    });
-}
-
-function getBestDropZone() {
-
-    let highDrops = drops.filter(d => d.spi >= 70);
-
-    if (highDrops.length === 0) return "No strong zone yet";
-
-    let avgLat = highDrops.reduce((sum, d) => sum + d.lat, 0) / highDrops.length;
-    let avgLon = highDrops.reduce((sum, d) => sum + d.lon, 0) / highDrops.length;
-
-    return `Lat ${avgLat.toFixed(3)}, Lon ${avgLon.toFixed(3)}`; 
-}
-
-function getBestZone() {
-    if (SPI >= 75) return "Shallow (Windward)";
-    if (SPI >= 60) return "Mid-depth";
-    return "Deep / Structure";
-}
-
-function saveDamData(data){
-    localStorage.setItem("damData", JSON.stringify(data)); }
-
-function loadDamData(){
-    return JSON.parse(localStorage.getItem("damData")) || {}; }
-
-function openDam(){
-
-    let screen = document.getElementById("damScreen");
-    if (!screen) return;
-
-    screen.classList.remove("hidden");   // 🔥 IMPORTANT
-    document.body.style.overflow = "hidden";
-
-    screen.innerHTML = `
-        <div class="scout-card">
-
-            <div class="scout-title">Dam Setup</div>
-
-            <input placeholder="Dam Name" id="damName">
-
-            <select id="damType">
-                <option value="dam">Dam</option>
-                <option value="lake">Lake</option>
-                <option value="river">River</option>
-            </select>
-
-            <input placeholder="Avg Depth (m)" id="damDepth">
-
-            <select id="damClarity">
-                <option value="clear">Clear</option>
-                <option value="stained">Stained</option>
-                <option value="murky">Murky</option>
-            </select>
-
-            <div class="scout-actions">
-                <button onclick="saveDam()" class="btn primary">Save</button>
-                <button onclick="closeDam()" class="btn secondary">Close</button>
-            </div>
-
-        </div>
-    `;
-}
-
-function saveDam(){
-
-    let data = {
-        name: document.getElementById("damName").value,
-        type: document.getElementById("damType").value,
-        avgDepth: parseFloat(document.getElementById("damDepth").value),
-        clarity: document.getElementById("damClarity").value
-    };
-
-    localStorage.setItem("damData", JSON.stringify(data));
-
-    alert("Dam saved ✔");
-}
-
-function closeDam(){
-    let screen = document.getElementById("damScreen");
-    if (screen) {
-        screen.classList.add("hidden");
-    }
-    document.body.style.overflow = "auto"; 
-}
-
-
-// 🌊 PLAN
-function openPlan(){
-
-    let dam = loadDamData();
-
-    let plan = [];
-
-    if (SPI > 70){
-        plan.push("Fish shallow windward bank");
-    } else if (SPI > 50){
-        plan.push("Target mid-depth transitions");
-    } else {
-        plan.push("Focus deeper structure");
-    }
-
-    if (dam.avgDepth > 5){
-        plan.push("Look for drop-offs");
-    }
-
-    if (dam.clarity === "clear"){
-        plan.push("Use natural bait, fish cautious");
-    }
-
-    document.getElementById("planScreen").innerHTML = `
-        <div class="scout-card">
-            <div class="scout-title">Fishing Plan 🎯</div>
-            <div>${plan.join("<br>")}</div>
-            <button onclick="closePlan()" class="btn primary">Close</button>
-        </div>
-    `;
-
-    document.getElementById("planScreen").classList.remove("hidden");
-}
-
-function closePlan(){
-    let screen = document.getElementById("planScreen");
-    if (screen) {
-        screen.classList.add("hidden");
-    }
-    document.body.style.overflow = "auto"; 
-} 
-
-window.retryConnection = retryConnection;
-window.startScan = startScan;
-window.closeScout = closeScout;
