@@ -1458,8 +1458,6 @@ let compassHeading = null;
 
 let bubbleIntensity = 0.7;
 let hotspots = [];
-let SPI = 50;
-
 let bubbles = [];
 let canvas, ctx;
 let ripples =[];
