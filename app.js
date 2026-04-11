@@ -560,18 +560,14 @@ function renderDashboard(data) {
     bubbleIntensity = finalSPI / 100;
     document.getElementById("feed").innerText = feeding(finalSPI);
     
-// =========================
-// ✅ UPDATE TILES
-// =========================
 
-// helpers
+    // ================= HELPER FUNCTION =================
 
 let lightEl = document.getElementById("light");
     if (lightEl) lightEl.innerText = light + "%"; 
 let depthEl = document.getElementById("depth");
     if(depthEl) depthEl.innerText = depth.toFixed(1) + " m";
 
-    // ================= HELPER FUNCTION =================
     function setIcon(iconName, value, rules) {
         let icon = document.querySelector(`[data-lucide="${iconName}"]`);
         if (!icon) return;
@@ -803,7 +799,7 @@ if (tactical) {
     light,
     depth
     );
-    
+    showinsight(SPI, envScore, confScore, light, depth):
 }
 
 // =====================================================
