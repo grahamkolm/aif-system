@@ -683,12 +683,17 @@ body{
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease;
-    padding: 0 14px;
+    padding: 0 12px;
     color: #e6fff3;
     line-height: 1.6;
     font-size: 13px;
     line-height: 1.5;
     display: none;
+    white-space: pre-line;
+}
+
+.ai-panel:not(.collapsed) .ai-content {
+    display: block;
 }
 
 .ai-panel.active .ai-content {
