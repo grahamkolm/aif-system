@@ -1107,12 +1107,24 @@ function refreshDashboard(){
 
 function toggleAI() {
     const panel = document.getElementById("aiPanel");
+    const content = document.getElementById("aiContent");
     const toggle = document.getElementById("aiToggle");
+
+    if (!panel || !content) return;
 
     panel.classList.toggle("active");
 
     if (panel.classList.contains("active")) {
         toggle.innerText = "−";
+
+        // 🔥 FORCE refresh when opened
+        showInsight(SPI, 
+            parseInt(document.getElementById("envScore")?.innerText || 0),
+            parseInt(document.getElementById("confScore")?.innerText || 0),
+            parseInt(document.getElementById("light")?.innerText || 50),
+            parseFloat(document.getElementById("depth")?.innerText || 3)
+        );
+
     } else {
         toggle.innerText = "+";
     }
