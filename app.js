@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
     needle = document.getElementById("compassNeedle");
-
+    document.body.addEventListener("click", enableCompass, { once: true });
     
     setTimeout(() => {
 
@@ -444,6 +444,13 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind?.deg || 0;
+    if (compassHeading !== null) {
+        let diff = Math.abs(windDir - compassHeading);
+        if(diff > 180) diff = 360 - diff;
+        console.log("Wind vs Heading off:", diff);
+    }
+    let advice = getCastingAdvice(diff);
+    console.log("Casting:" advice);
     const light = data.light || 50;
     const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
@@ -735,7 +742,9 @@ if (depth >= 3 && depth <= 5 && light >= 40) {
 let text = insights.slice(0, 3).join(" • ");
 
 let tactical = document.getElementById("tactical");
-if (tactical) tactical.innerText = text;
+if (tactical) {
+    tactical.innerText = text + " • " + advice;
+}
 showInsight(SPI, envScore, confScore, light, depth);
 
 }
@@ -827,6 +836,15 @@ function getPressureTrend(p){
     return "stable";
 }
 
+function getCastingAdvice(diff) {
+    if (diff < 45) return "Into wind ❌";
+    if (diff > 135) return "Perfect windward 🔥";
+    return "Crosswind ⚠️";
+}
+
+let advice = getCastingAdvice(diff);
+console.log("Casting:", advice);
+
 // =====================================================
 // 🧭 9. GPS + COMPASS + MAP
 // =====================================================
@@ -857,14 +875,19 @@ function enableCompass() {
 }
 
 window.addEventListener("deviceorientation", e => {
+    console.log("alpha:", e.alpha;
+    
     if (e.alpha !== null && e.alpha !== undefined) {
         compassHeading = 360 - e.alpha;
     } else {
         compassHeading = 0; // fallback
     }
+    console.log("Heading:", compassHeading);
 });
 
 function updateCompass(deg) {
+const dirText = getDirection(deg);
+console.log("Facing:", dirText);
 
     if (!needle) {
         console.log("❌ compassNeedle NOT FOUND");
@@ -1243,6 +1266,17 @@ function calculateScoutImpact(scout){
     if(scout.structure === "dropoff") score += 10;
 
     return Math.max(-20, Math.min(20, score)); 
+}
+
+function getDirection(deg) {
+    if (deg >= 337 || deg < 23) return "N";
+    if (deg < 68) return "NE";
+    if (deg < 113) return "E";
+    if (deg < 158) return "SE";
+    if (deg < 203) return "S";
+    if (deg < 248) return "SW";
+    if (deg < 293) return "W";
+    return "NW";
 }
 
 function closeScout(){
