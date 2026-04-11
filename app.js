@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const splash = document.getElementById("splash");
     const main = document.querySelector(".main");
+    const windDir = data.wind?.deg || 0;
+    updateCompass(windDir);
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
@@ -816,14 +818,20 @@ function initCompass(){
     });
 }
 
-function updateCompass() {
-  const needle = document.getElementById("compassNeedle");
+function updateCompass(deg) {
 
-  if (!needle || compassHeading === null) return;
+    const needle = document.getElementById("compassNeedle");
 
-  needle.style.transform =
-    `translate(-50%, -100%) rotate(${compassHeading}deg)`; 
-}
+    if (!needle) {
+        console.log("❌ compassNeedle NOT FOUND");
+        return;
+    }
+
+    console.log("🧭 Rotating to:", deg);
+
+    needle.style.transform =
+        `translate(-50%, -100%) rotate(${deg}deg)`; }
+
 
 let mapInstance;
 
