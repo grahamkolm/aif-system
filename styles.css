@@ -886,25 +886,25 @@ body{
 }
 
 .dir.n { 
-    top: -12px; 
+    top: -10px; 
     left: 50%; 
     transform: translateX(-50%); 
 }
 
 .dir.s { 
-    bottom: -12px; 
+    bottom: -10px; 
     left: 50%; 
     transform: translateX(-50%); 
 }
 
 .dir.e { 
-    top: -12px; 
+    top: -10px; 
     right: 50%; 
     transform: translateY(-50%); 
 }
 
 .dir.w { 
-    top: -12px; 
+    top: -10px; 
     left: 50%; 
     transform: translateY(-50%); 
 }
