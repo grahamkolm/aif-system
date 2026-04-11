@@ -1424,7 +1424,7 @@ function showInsight(SPI, envScore, confScore, light, depth) {
     const insightEl = document.getElementById("aiContent");
     if (insightEl) insightEl.innerText = insight; 
     console.log("AI UPDATE RUNNING");
-    console.log("Element", document.elementById("aiContent"));
+    console.log("Element", document.getElementById("aiContent"));
 }
 
 function showSPIInsight(){
