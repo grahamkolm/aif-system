@@ -1652,17 +1652,16 @@ let damData = {
 function saveDamData(data){
     localStorage.setItem("damData", JSON.stringify(data)); }
 
-
-
 function loadDamData(){
     return JSON.parse(localStorage.getItem("damData")) || {}; }
 
-
-
 function openDam(){
-    let screen = document.getElementById("damScreen");
 
-    screen.classList.remove("hidden");
+    let screen = document.getElementById("damScreen");
+    if (!screen) return;
+
+    screen.classList.remove("hidden");   // 🔥 IMPORTANT
+    document.body.style.overflow = "hidden";
 
     screen.innerHTML = `
         <div class="scout-card">
