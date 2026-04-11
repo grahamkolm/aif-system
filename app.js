@@ -449,6 +449,7 @@ function renderDashboard(data) {
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
     updateCompass(windDir);
+    let dam = loadDamData();
 
     console.log("SPI INPUT:", t, p, w, c);
     
@@ -1539,6 +1540,109 @@ function getBestZone() {
     if (SPI >= 75) return "Shallow (Windward)";
     if (SPI >= 60) return "Mid-depth";
     return "Deep / Structure";
+}
+
+// 🌊 DAM
+let damData = {
+    name: "",
+    type: "",        // lake, river, dam
+    avgDepth: 0,
+    clarity: "",
+    structure: [],   // weed, rocks, dropoffs
+    notes: ""
+};
+
+function saveDamData(data){
+    localStorage.setItem("damData", JSON.stringify(data)); }
+
+
+
+function loadDamData(){
+    return JSON.parse(localStorage.getItem("damData")) || {}; }
+
+
+
+function openDam(){
+    let screen = document.getElementById("damScreen");
+
+    screen.classList.remove("hidden");
+
+    screen.innerHTML = `
+        <div class="scout-card">
+
+            <div class="scout-title">Dam Setup</div>
+
+            <input placeholder="Dam Name" id="damName">
+
+            <select id="damType">
+                <option value="dam">Dam</option>
+                <option value="lake">Lake</option>
+                <option value="river">River</option>
+            </select>
+
+            <input placeholder="Avg Depth (m)" id="damDepth">
+
+            <select id="damClarity">
+                <option value="clear">Clear</option>
+                <option value="stained">Stained</option>
+                <option value="murky">Murky</option>
+            </select>
+
+            <div class="scout-actions">
+                <button onclick="saveDam()" class="btn primary">Save</button>
+                <button onclick="closeDam()" class="btn secondary">Close</button>
+            </div>
+
+        </div>
+    `;
+}
+
+function saveDam(){
+
+    let data = {
+        name: document.getElementById("damName").value,
+        type: document.getElementById("damType").value,
+        avgDepth: parseFloat(document.getElementById("damDepth").value),
+        clarity: document.getElementById("damClarity").value
+    };
+
+    localStorage.setItem("damData", JSON.stringify(data));
+
+    alert("Dam saved ✔");
+}
+
+// 🌊 PLAN
+function openPlan(){
+
+    let dam = loadDamData();
+
+    let plan = [];
+
+    if (SPI > 70){
+        plan.push("Fish shallow windward bank");
+    } else if (SPI > 50){
+        plan.push("Target mid-depth transitions");
+    } else {
+        plan.push("Focus deeper structure");
+    }
+
+    if (dam.avgDepth > 5){
+        plan.push("Look for drop-offs");
+    }
+
+    if (dam.clarity === "clear"){
+        plan.push("Use natural bait, fish cautious");
+    }
+
+    document.getElementById("planScreen").innerHTML = `
+        <div class="scout-card">
+            <div class="scout-title">Fishing Plan 🎯</div>
+            <div>${plan.join("<br>")}</div>
+            <button onclick="closePlan()" class="btn primary">Close</button>
+        </div>
+    `;
+
+    document.getElementById("planScreen").classList.remove("hidden");
 }
 
 
