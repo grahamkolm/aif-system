@@ -705,7 +705,36 @@ let depthEl = document.getElementById("depth");
     if (value >= 60) return "#ffd700";   // yellow
     return "#ff4d4d";                    // red
 }
-    
+
+function updateAIInsight(SPI, diff, light, depth) {
+
+    const aiEl = document.getElementById("aiContent");
+
+    if (!aiEl) {
+        console.error("❌ aiContent NOT FOUND");
+        return;
+    }
+
+    let insight = [];
+
+    if (SPI > 75) insight.push("🔥 Strong feeding — fish active");
+    else if (SPI > 60) insight.push("👍 Good conditions");
+    else insight.push("⚠️ Slow conditions");
+
+    if (diff > 135) insight.push("🎯 Fish windward bank");
+    else if (diff < 45) insight.push("❌ Avoid into wind");
+    else insight.push("⚠️ Crosswind");
+
+    if (light < 30) insight.push("🌑 Fish shallow");
+    else if (light > 70) insight.push("☀️ Fish deeper");
+
+    if (depth >= 2 && depth <= 5) insight.push("📍 Ideal depth");
+
+    aiEl.innerText = insight.join("\n");
+
+    console.log("✅ AI UPDATED");
+}
+
         // ================= CALCULATE SCOUT SCORING FOR SPI =================
 
 // ================= ENV + CONF =================
@@ -862,6 +891,7 @@ if (aiEl) {
 
     aiEl.innerText = insight.join("\n"); }
 console.log("AI ELEMENT:", document.getElementById("aiContent"));
+updateAIInsight(SPI, diff, light, depth);
 }
 
 // =====================================================
