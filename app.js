@@ -444,8 +444,9 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind?.deg || 0;
+    let diff = 0;
     if (compassHeading !== null) {
-        let diff = Math.abs(windDir - compassHeading);
+        diff = Math.abs(windDir - compassHeading);
         if(diff > 180) diff = 360 - diff;
         console.log("Wind vs Heading off:", diff);
     }
