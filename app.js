@@ -456,7 +456,14 @@ function renderDashboard(data) {
     let newSPI = result.score;
     let finalSPI = newSPI;
 
-    newSPI = applyScoutImpact(newSPI);
+  let scoutBonus = newSPI - result.score;
+
+    let scoutEl = document.getElementById("scoutBonus");
+    if (scoutEl) {
+    scoutEl.innerText = scoutBonus >= 0
+        ? `+${scoutBonus} Scout`
+        : `${scoutBonus} Scout`;
+}
    
     let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
        
@@ -601,6 +608,13 @@ let depthEl = document.getElementById("depth");
         { min: 12, max: 19, color: ORANGE }
     ]);
 
+    function getWindDirectionText(deg){
+    if (deg >= 45 && deg < 135) return "Wind → East bank";
+    if (deg >= 135 && deg < 225) return "Wind → South bank";
+    if (deg >= 225 && deg < 315) return "Wind → West bank";
+    return "Wind → North bank";
+}
+
     // ================= CLOUD =================
     document.getElementById("cloud").innerText = c + "%";
 
@@ -668,6 +682,10 @@ let bestZoneEl = document.getElementById("bestZone");
         bestZoneEl.innerText = getBestZone();
     }
 
+function getBestSPITrend() {
+    let good = drops.filter(d => d.spi > 70);
+    return good.length;
+}
 
     // ================= TILE GLOW =================
     document.querySelectorAll(".tile").forEach(tile => {
@@ -838,7 +856,9 @@ function updateCompass(deg) {
         return;
     }
 
+    if (deg !==0) {
     console.log("🧭 Rotating to:", deg);
+    }
 
     needle.style.transform =
         `translate(-50%, -100%) rotate(${deg}deg)`; }
@@ -896,6 +916,13 @@ function updateSPI(v){
 
     let arc = document.getElementById("spiArc");
     if(!arc) return;
+
+    let color = GREEN;
+
+    if (v < 50) color = RED;
+    else if (v < 70) color = ORANGE;
+
+    arc.style.stroke = color;
 
     let r = 110;
     let C = 2 * Math.PI * r;
