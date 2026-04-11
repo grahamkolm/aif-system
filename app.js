@@ -1232,10 +1232,14 @@ function startScan() {
         fetch("http://192.168.4.1/data")
             .then(res => res.json())
             .then(data => {
-     let temps = calculateWaterTemps(t);
-     if (tempModel.source === "sensor") {
-    temps = tempModel;
-}
+            if (data.surfaceTemp && data.bottomTemp) {
+                tempModel = {
+                surface: data.surfaceTemp,
+                bottom: data.bottomTemp,
+                source: "sensor"
+        };
+    }
+
                 renderDashboard(data);
                 showResults(data);
             })
