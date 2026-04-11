@@ -445,8 +445,19 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind?.deg || 0;
+    // 🎯 GET ELEMENTS FIRST
+    const spiCircle = document.getElementById("spiCircle");
+    const envCircle = document.getElementById("envCircle");
+    const confCircle = document.getElementById("confCircle");
 
-// ✅ ALWAYS define diff
+    // 🎨 COLORS
+    const spiColor = getScoreColor(finalSPI); const envColor = getScoreColor(envScore); const confColor = getScoreColor(confScore);
+
+    // APPLY COLORS
+    if (spiCircle) spiCircle.style.stroke = spiColor; if (envCircle) envCircle.style.borderColor = envColor; if (confCircle) confCircle.style.borderColor = confColor;
+
+
+    // ✅ ALWAYS define diff
     diff = 0;
 
     if (compassHeading !== null) {
