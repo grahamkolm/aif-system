@@ -861,7 +861,7 @@ if (aiEl) {
     }
 
     aiEl.innerText = insight.join("\n"); }
-
+console.log("AI ELEMENT:", document.getElementById("aiContent"));
 }
 
 // =====================================================
