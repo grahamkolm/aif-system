@@ -448,13 +448,18 @@ function renderDashboard(data) {
     const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
-    let newSPI = calculateSPI(p, w, c, WindDir, t);
     updateCompass(windDir);
 
     console.log("SPI INPUT:", t, p, w, c);
     
     let result = calculateSPI(p, w, c, windDir, t, light, depth);
     let newSPI = result.score;
+
+    newSPI = applyScoutImpact(newSPI);
+
+    if (lastSPI !==null) {
+        newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
+    }
     
     let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
        
@@ -501,10 +506,6 @@ if (reasonsEl) {
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
     }
-
-    let scout = JSON.parse(localStorage.getItem("scoutData")) || {};
-    let scoutImpact = calculateScoutImpact(scout);
-    let finalSPI = Math.max(0, Math.min(100, newSPI + scoutImpact));
 
     console.log("base SPI:", newSPI);
     console.log("Scout Data:", scout);
