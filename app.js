@@ -482,9 +482,9 @@ function renderDashboard(data) {
     let result = calculateSPI(p, w, c, windDir, t, light, depth);
     let newSPI = result.score;
     let finalSPI = newSPI;
-    const spiColor = getScoreColor(finalSPI); spiCircle.style.stroke = spiColor; spiText.style.color = spiColor;
-    const envColor = getScoreColor(envScore); document.getElementById("envCircle").style.borderColor = envColor; document.getElementById("envText").style.color = envColor;
-    const confColor = getScoreColor(confScore); document.getElementById("confCircle").style.borderColor = confColor; document.getElementById("confText").style.color = confColor;
+    spiColor = getScoreColor(finalSPI); spiCircle.style.stroke = spiColor; spiText.style.color = spiColor;
+    envColor = getScoreColor(envScore); document.getElementById("envCircle").style.borderColor = envColor; document.getElementById("envText").style.color = envColor;
+    confColor = getScoreColor(confScore); document.getElementById("confCircle").style.borderColor = confColor; document.getElementById("confText").style.color = confColor;
     // SPI
     document.getElementById("spiValue").style.color = spiColor;
 
