@@ -2,6 +2,7 @@
 // 🌍 0. GLOBAL BASE
 // =====================================================
 
+let diff = 0;
 let splashActive = true; 
 let pressureHistory = [];
 let needle;
@@ -446,7 +447,7 @@ function renderDashboard(data) {
     const windDir = data.wind?.deg || 0;
 
 // ✅ ALWAYS define diff
-    let diff = 0;
+    diff = 0;
 
     if (compassHeading !== null) {
     diff = Math.abs(windDir - compassHeading);
@@ -836,7 +837,7 @@ function getPressureTrend(p){
     if(pressureHistory.length>6) pressureHistory.shift();
     if(pressureHistory.length<2) return "stable";
 
-    let diff = pressureHistory[pressureHistory.length-1] - pressureHistory[0];
+    diff = pressureHistory[pressureHistory.length-1] - pressureHistory[0];
 
     if(diff>1)return "rising";
     if(diff<-1)return "falling";
