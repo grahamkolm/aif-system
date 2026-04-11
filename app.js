@@ -3513,16 +3513,6 @@ function getBestZone() {
     return "Deep / Structure";
 }
 
-// 🌊 DAM
-let damData = {
-    name: "",
-    type: "",        // lake, river, dam
-    avgDepth: 0,
-    clarity: "",
-    structure: [],   // weed, rocks, dropoffs
-    notes: ""
-};
-
 function saveDamData(data){
     localStorage.setItem("damData", JSON.stringify(data)); }
 
