@@ -414,6 +414,17 @@ if (depth >= 2 && depth <= 5) {
     };
 }
 
+function applyScoutImpact(spi) {
+
+    let bonus = 0;
+
+    if (scoutData.activity === "bubbles") bonus += 10;
+    if (scoutData.activity === "rolling") bonus += 15;
+
+    if (scoutData.wind === "windblown") bonus += 8;
+    if (scoutData.wind === "calm") bonus -= 5;
+
+    return Math.max(0, Math.min(100, spi + bonus)); }
 
 function calculateAverageSPI() {
     if (drops.length === 0) return 0;
@@ -437,6 +448,7 @@ function renderDashboard(data) {
     const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
+    let newSPI = calculateSPI(p, w, c, WindDir, t);
     updateCompass(windDir);
 
     console.log("SPI INPUT:", t, p, w, c);
@@ -501,6 +513,7 @@ if (reasonsEl) {
     
     lastSPI = finalSPI;
     SPI = finalSPI;
+    newSPI = applyScoutImpact(newSPI);
 
     // =========================
     // ✅ UPDATE SPI RING 
@@ -812,13 +825,13 @@ function initGPS(){
     });
 }
 
-function initCompass(){
-    window.addEventListener("deviceorientation", e=>{
-        if(e.alpha !== null){
-            compassHeading = 360 - e.alpha;
-        }
-    });
-}
+window.addEventListener("deviceorientation", e => {
+    if (e.alpha !== null && e.alpha !== undefined) {
+        compassHeading = 360 - e.alpha;
+    } else {
+        compassHeading = 0; // fallback
+    }
+});
 
 function updateCompass(deg) {
 
