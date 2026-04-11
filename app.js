@@ -675,15 +675,6 @@ let depthEl = document.getElementById("depth");
     if (value >= 60) return "#ffd700";   // yellow
     return "#ff4d4d";                    // red
 }
-
-function closePlan(){
-    let screen = document.getElementById("planScreen");
-    if (screen) {
-        screen.classList.add("hidden");
-    }
-    document.body.style.overflow = "auto"; 
-} 
-
     
         // ================= CALCULATE SCOUT SCORING FOR SPI =================
 
@@ -1716,6 +1707,15 @@ function saveDam(){
     alert("Dam saved ✔");
 }
 
+function closeDam(){
+    let screen = document.getElementById("damScreen");
+    if (screen) {
+        screen.classList.add("hidden");
+    }
+    document.body.style.overflow = "auto"; 
+}
+
+
 // 🌊 PLAN
 function openPlan(){
 
@@ -1750,6 +1750,13 @@ function openPlan(){
     document.getElementById("planScreen").classList.remove("hidden");
 }
 
+function closePlan(){
+    let screen = document.getElementById("planScreen");
+    if (screen) {
+        screen.classList.add("hidden");
+    }
+    document.body.style.overflow = "auto"; 
+} 
 
 window.retryConnection = retryConnection;
 window.startScan = startScan;
