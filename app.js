@@ -6,7 +6,11 @@ let diff = 0;
 let splashActive = true; 
 let pressureHistory = [];
 let needle;
-
+let tempModel = {
+    surface: null,
+    bottom: null,
+    source: "forecast"
+};
 let currentSession = null;
 let lastSPI = null;
 let lastConditions = {};
@@ -487,8 +491,8 @@ function renderDashboard(data) {
     if (tempModel.source === "sensor") {
     temps = tempModel;
 }
-    let surfaceTemp = temps.surface;
-    let bottomTemp = temps.bottom;
+    let surfaceTemp = tempModel.surface ?? (t - 0.5);
+    let bottomTemp = tempModel.bottom ?? (t - 1.5);
     updateCompass(windDir);
     let dam = loadDamData();
 
