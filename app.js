@@ -4,6 +4,7 @@
 
 let splashActive = true; 
 let pressureHistory = [];
+let needle;
 
 let currentSession = null;
 let lastSPI = null;
@@ -41,7 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ SET IT HERE (correct place)
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
-        
+    document.getElementById("compassNeedle");
+
+    
     setTimeout(() => {
 
         splash.style.opacity = "0";
