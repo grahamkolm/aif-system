@@ -451,7 +451,7 @@ function renderDashboard(data) {
         console.log("Wind vs Heading off:", diff);
     }
     let advice = getCastingAdvice(diff);
-    console.log("Casting:" advice);
+    console.log("Casting:", advice);
     const light = data.light || 50;
     const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
