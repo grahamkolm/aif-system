@@ -827,9 +827,40 @@ let tactical = document.getElementById("tactical");
 if (tactical) {
     tactical.innerText = text + " • " + advice;
 }
-setTimeout(() => {
-    showInsight(SPI, envScore, confScore, light, depth);
-}, 100);
+// 🔥 FORCE AI UPDATE (FINAL FIX)
+let aiEl = document.getElementById("aiContent");
+
+if (aiEl) {
+
+    let insight = [];
+
+    if (SPI > 75) {
+        insight.push("🔥 Strong feeding — fish actively hunting");
+    } else if (SPI > 60) {
+        insight.push("👍 Good conditions — fish moving");
+    } else {
+        insight.push("⚠️ Slow conditions — adjust strategy");
+    }
+
+    if (diff > 135) {
+        insight.push("🎯 Target windward bank");
+    } else if (diff < 45) {
+        insight.push("❌ Avoid casting into wind");
+    } else {
+        insight.push("⚠️ Crosswind — control presentation");
+    }
+
+    if (light < 30) {
+        insight.push("🌑 Fish moving shallow (low light)");
+    } else if (light > 70) {
+        insight.push("☀️ Fish holding deeper");
+    }
+
+    if (depth >= 2 && depth <= 5) {
+        insight.push("📍 Ideal feeding depth");
+    }
+
+    aiEl.innerText = insight.join("\n"); }
 
 }
 
