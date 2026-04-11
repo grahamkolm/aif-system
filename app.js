@@ -670,7 +670,7 @@ let depthEl = document.getElementById("depth");
     if (value >= 60) return "#ffd700";   // yellow
     return "#ff4d4d";                    // red
 }
-
+   
 // ================= ENV + CONF =================
 // ================= ENV ================= 
 let envScore = Math.round(
@@ -739,27 +739,6 @@ function getBestSPITrend() {
     let good = drops.filter(d => d.spi > 70);
     return good.length;
 }
-
-// =========================
-// 🎯 CASTING INTELLIGENCE
-// =========================
-
-function getCastDirection(windDir) {
-    if (windDir >= 45 && windDir < 135) return "🎯 Target EAST bank (wind pushing bait)";
-    if (windDir >= 135 && windDir < 225) return "🎯 Target SOUTH bank (wind pushing bait)";
-    if (windDir >= 225 && windDir < 315) return "🎯 Target WEST bank (wind pushing bait)";
-    return "🎯 Target NORTH bank (wind pushing bait)"; }
-
-function getDepthStrategy(light, depth) {
-    if (light > 70) return "💡 Bright conditions — fish holding deeper";
-    if (light < 30) return "💡 Low light — fish moving shallow";
-    return "📏 Mid-depth transition zones best"; }
-
-function getBaitSuggestion(SPI) {
-    if (SPI > 75) return "🔥 Use strong attractants (boilies, sweet baits)";
-    if (SPI > 60) return "👍 Use balanced bait (maize + flavor)";
-    return "⚠️ Use subtle natural bait (worms, small rigs)"; }
-
     
     // ================= TILE GLOW =================
     document.querySelectorAll(".tile").forEach(tile => {
@@ -894,6 +873,26 @@ function seasonalWeight(){
     if(m<=8)return -4;
     return 6;
 }
+
+// =========================
+// 🎯 CASTING INTELLIGENCE
+// =========================
+
+function getCastDirection(windDir) {
+    if (windDir >= 45 && windDir < 135) return "🎯 Target EAST bank (wind pushing bait)";
+    if (windDir >= 135 && windDir < 225) return "🎯 Target SOUTH bank (wind pushing bait)";
+    if (windDir >= 225 && windDir < 315) return "🎯 Target WEST bank (wind pushing bait)";
+    return "🎯 Target NORTH bank (wind pushing bait)"; }
+
+function getDepthStrategy(light, depth) {
+    if (light > 70) return "💡 Bright conditions — fish holding deeper";
+    if (light < 30) return "💡 Low light — fish moving shallow";
+    return "📏 Mid-depth transition zones best"; }
+
+function getBaitSuggestion(SPI) {
+    if (SPI > 75) return "🔥 Use strong attractants (boilies, sweet baits)";
+    if (SPI > 60) return "👍 Use balanced bait (maize + flavor)";
+    return "⚠️ Use subtle natural bait (worms, small rigs)"; }
 
 function getPressureTrend(p){
 
