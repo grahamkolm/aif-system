@@ -1434,7 +1434,7 @@ parts.push(getCastDirection(windDir));
 parts.push(getDepthStrategy(light, depth)); parts.push(getBaitSuggestion(SPI));
 
 // FINAL OUTPUT
-let insight = parts.join(" ");
+insight = parts.join(" ");
 
     // 🌬 WIND
     if (lastConditions?.wind?.speed * 3.6 >= 5) {
