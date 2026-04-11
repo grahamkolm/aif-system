@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const splash = document.getElementById("splash");
     const main = document.querySelector(".main");
-    updateCompass(windDir);
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
@@ -435,6 +434,7 @@ function renderDashboard(data) {
     const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
     let bottomTemp = t - 1.5;
+    updateCompass(windDir);
 
     console.log("SPI INPUT:", t, p, w, c);
     
