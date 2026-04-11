@@ -445,19 +445,7 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind?.deg || 0;
-    let finalSPI = newSPI;
-    // 🎯 GET ELEMENTS FIRST
-    const spiCircle = document.getElementById("spiCircle");
-    const envCircle = document.getElementById("envCircle");
-    const confCircle = document.getElementById("confCircle");
-
-    // 🎨 COLORS
-    const spiColor = getScoreColor(finalSPI); const envColor = getScoreColor(envScore); const confColor = getScoreColor(confScore);
-
-    // APPLY COLORS
-    if (spiCircle) spiCircle.style.stroke = spiColor; if (envCircle) envCircle.style.borderColor = envColor; if (confCircle) confCircle.style.borderColor = confColor;
-
-
+    
     // ✅ ALWAYS define diff
     diff = 0;
 
@@ -480,19 +468,39 @@ function renderDashboard(data) {
 
     console.log("SPI INPUT:", t, p, w, c);
     
-    let result = calculateSPI(p, w, c, windDir, t, light, depth);
-    let newSPI = result.score;
-    spiColor = getScoreColor(finalSPI); spiCircle.style.stroke = spiColor; spiText.style.color = spiColor;
-    envColor = getScoreColor(envScore); document.getElementById("envCircle").style.borderColor = envColor; document.getElementById("envText").style.color = envColor;
-    confColor = getScoreColor(confScore); document.getElementById("confCircle").style.borderColor = confColor; document.getElementById("confText").style.color = confColor;
-    // SPI
-    document.getElementById("spiValue").style.color = spiColor;
+    let result = calculateSPI(p, w, c, windDir, t, light, depth); let newSPI = result.score;
 
-    // ENV
-    document.getElementById("envScore").style.color = envColor;
+    // smoothing
+    if (lastSPI !== null) {
+    newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3)); }
 
-    // CONF
-    document.getElementById("confScore").style.color = confColor;
+    // scout impact
+    newSPI = applyScoutImpact(newSPI);
+
+    // FINAL VALUE
+    let finalSPI = newSPI;
+
+    // store
+    lastSPI = finalSPI;
+    SPI = finalSPI;
+
+// 🎯 GET ELEMENTS (ONLY ONCE)
+const spiCircle = document.getElementById("spiCircle");
+const envCircle = document.getElementById("envCircle");
+const confCircle = document.getElementById("confCircle");
+
+// 🎨 COLORS (ONLY ONCE)
+const spiColor = getScoreColor(finalSPI); const envColor = getScoreColor(envScore); const confColor = getScoreColor(confScore);
+
+// ✅ APPLY COLORS
+if (spiCircle) spiCircle.style.stroke = spiColor; if (envCircle) envCircle.style.borderColor = envColor; if (confCircle) confCircle.style.borderColor = confColor;
+
+// ✅ TEXT COLORS
+const spiText = document.getElementById("spiValue");
+const envText = document.getElementById("envScore");
+const confText = document.getElementById("confScore");
+
+if (spiText) spiText.style.color = spiColor; if (envText) envText.style.color = envColor; if (confText) confText.style.color = confColor;
 
   let scoutBonus = newSPI - result.score;
 
