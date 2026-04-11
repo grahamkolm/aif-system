@@ -425,13 +425,12 @@ function calculateAverageSPI() {
 
 function renderDashboard(data) {
 
-    const windDir = data.wind?.deg || 0;
     lastConditions = data;
     const t = data.main.temp;
     const p = data.main.pressure;
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
-    const windDir = data.wind.deg;
+    const windDir = data.wind?.deg || 0;
     const light = data.light || 50;
     const depth = data.depth || 3;
     let surfaceTemp = t - 0.5;
