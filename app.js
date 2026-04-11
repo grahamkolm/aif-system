@@ -711,9 +711,21 @@ const envColor = getScoreColor(envScore);
 const confColor = getScoreColor(confScore);
 
 // ✅ APPLY COLORS
-if (spiCircle) spiCircle.style.stroke = spiColor; 
-if (envCircle) envCircle.style.borderColor = envColor; 
-if (confCircle) confCircle.style.borderColor = confColor;
+// ✅ SPI (SVG stroke — correct)
+if (spiCircle) {
+    spiCircle.style.stroke = spiColor;
+}
+
+// ✅ ENV + CONF (USE BOX-SHADOW GLOW INSTEAD) 
+    if (envCircle) {
+    envCircle.style.borderColor = envColor;
+    envCircle.style.boxShadow = `0 0 10px ${envColor}`; 
+    }
+
+if (confCircle) {
+    confCircle.style.borderColor = confColor;
+    confCircle.style.boxShadow = `0 0 10px ${confColor}`; 
+}
 
 // ✅ TEXT COLORS
 const spiText = document.getElementById("spiValue");
