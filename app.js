@@ -1398,48 +1398,51 @@ function setupHold(elementId, callback) {
 
 function showInsight(SPI, envScore, confScore, light, depth) {
 
-    let insight = "";
+    let parts = [];
 
+    // 🎯 CORE SPI MESSAGE
     if (SPI > 75) {
-        insight = "🔥 Strong feeding conditions — high chance of bites.";
+        parts.push("🔥 Strong feeding conditions — high probability of action.");
     } else if (SPI > 60) {
-        insight = "👍 Decent conditions — fish are active.";
+        parts.push("👍 Decent conditions — fish are active but selective.");
     } else {
-        insight = "⚠️ Slow conditions — consider moving spots.";
+        parts.push("⚠️ Slower conditions — fish may be inactive or pressured.");
     }
 
+    // 🌬 WIND
+    if (lastConditions?.wind?.speed * 3.6 >= 5) {
+        parts.push("🌬 Wind is pushing food into key zones.");
+    } else {
+        parts.push("🌊 Calm conditions — less natural feeding movement.");
+    }
+
+    // 🌡 TEMP
+    if (lastConditions?.main?.temp >= 18 && lastConditions?.main?.temp <= 24) {
+        parts.push("🌡 Water temperature is in optimal feeding range.");
+    }
+
+    // ☁️ CLOUD
+    if (lastConditions?.clouds?.all >= 30) {
+        parts.push("☁️ Cloud cover improves fish confidence.");
+    }
+
+    // 💡 LIGHT
     if (light < 30) {
-        insight += " Low light → fish likely in shallow water.";
+        parts.push("💡 Low light — fish likely moving shallow.");
     } else {
-        insight += " Bright light → fish may go deeper.";
+        parts.push("💡 Bright conditions — fish may hold deeper.");
     }
 
+    // 📏 DEPTH
     if (depth >= 2 && depth <= 5) {
-        insight += " Ideal depth zone detected.";
-    } else {
-        insight += " Depth not optimal — adjust positioning.";
+        parts.push("📏 Ideal depth zone — strong ambush potential.");
     }
 
-    console.log("AI UPDATE RUNNING");
+    // 🎯 FINAL BUILD
+    let insight = parts.join(" ");
 
     const el = document.getElementById("aiContent");
-
-    if (!el) {
-        console.warn("❌ aiContent NOT FOUND");
-        return;
-    }
-    
-    const panel = document.getElementById("aiPanel");
-    const toggle = document.getElementById("aiToggle");
-
-    if (panel && toggle) {
-    panel.classList.add("active");
-    toggle.innerText = "−";
-}   
-    console.log("✅ WRITING:", insight);
-
-    el.innerText = "";
-    el.innerText = insight;
+    if (el) el.innerText = insight;
 }
 
 function showSPIInsight(){
