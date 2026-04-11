@@ -676,6 +676,15 @@ let depthEl = document.getElementById("depth");
     return "#ff4d4d";                    // red
 }
 
+function closePlan(){
+    let screen = document.getElementById("planScreen");
+    if (screen) {
+        screen.classList.add("hidden");
+    }
+    document.body.style.overflow = "auto"; 
+} 
+
+    
         // ================= CALCULATE SCOUT SCORING FOR SPI =================
 
 // ================= ENV + CONF =================
