@@ -445,6 +445,7 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     const windDir = data.wind?.deg || 0;
+    let finalSPI = newSPI;
     // 🎯 GET ELEMENTS FIRST
     const spiCircle = document.getElementById("spiCircle");
     const envCircle = document.getElementById("envCircle");
@@ -481,7 +482,6 @@ function renderDashboard(data) {
     
     let result = calculateSPI(p, w, c, windDir, t, light, depth);
     let newSPI = result.score;
-    let finalSPI = newSPI;
     spiColor = getScoreColor(finalSPI); spiCircle.style.stroke = spiColor; spiText.style.color = spiColor;
     envColor = getScoreColor(envScore); document.getElementById("envCircle").style.borderColor = envColor; document.getElementById("envText").style.color = envColor;
     confColor = getScoreColor(confScore); document.getElementById("confCircle").style.borderColor = confColor; document.getElementById("confText").style.color = confColor;
