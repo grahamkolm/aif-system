@@ -873,9 +873,10 @@ body{
 
 .compass-label {
   position: absolute;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.95);
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(0,255,160,0.4);
 }
 
 .dir {
