@@ -879,20 +879,55 @@ function seasonalWeight(){
 // =========================
 
 function getCastDirection(windDir) {
-    if (windDir >= 45 && windDir < 135) return "🎯 Target EAST bank (wind pushing bait)";
-    if (windDir >= 135 && windDir < 225) return "🎯 Target SOUTH bank (wind pushing bait)";
-    if (windDir >= 225 && windDir < 315) return "🎯 Target WEST bank (wind pushing bait)";
-    return "🎯 Target NORTH bank (wind pushing bait)"; }
+
+    if (compassHeading === null) {
+        return "📍 Enable compass for casting direction";
+    }
+
+    let diff = Math.abs(windDir - compassHeading);
+    if (diff > 180) diff = 360 - diff;
+
+    if (diff > 135) {
+        return "🔥 Cast into wind — focus on windward bank";
+    }
+
+    if (diff < 45) {
+        return "❌ Avoid downwind — low feeding pressure";
+    }
+
+    return "⚠️ Crosswind — fish edges of wind lanes"; 
+}
+
 
 function getDepthStrategy(light, depth) {
-    if (light > 70) return "💡 Bright conditions — fish holding deeper";
-    if (light < 30) return "💡 Low light — fish moving shallow";
-    return "📏 Mid-depth transition zones best"; }
+
+    if (light < 30) {
+        return "🌅 Fish shallow margins — low light feeding window";
+    }
+
+    if (light > 70) {
+        return "🌞 Fish deeper or near structure — fish avoiding light";
+    }
+
+    if (depth >= 2 && depth <= 5) {
+        return "🎯 Target patrol routes (2–5m zone)";
+    }
+
+    return "🔍 Adjust depth — locate feeding zones"; 
+}
 
 function getBaitSuggestion(SPI) {
-    if (SPI > 75) return "🔥 Use strong attractants (boilies, sweet baits)";
-    if (SPI > 60) return "👍 Use balanced bait (maize + flavor)";
-    return "⚠️ Use subtle natural bait (worms, small rigs)"; }
+
+    if (SPI > 75) {
+        return "🍬 High-attract hookbait (pop-up, wafters, strong scent)";
+    }
+
+    if (SPI > 60) {
+        return "🎣 Balanced boilie approach (bottom bait + matching free feed)";
+    }
+
+    return "🧪 Slow presentation — single hookbait or high visual pop-up"; 
+}
 
 function getPressureTrend(p){
 
