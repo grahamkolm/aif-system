@@ -1496,7 +1496,7 @@ function showInsight(SPI, envScore, confScore, light, depth) {
     }
 
     // ================= FINAL BUILD =================
-    insight = parts.join(" ");
+    insight = parts.join("\n");
 
     const el = document.getElementById("aiContent");
     if (el) el.innerText = insight;
