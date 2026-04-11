@@ -1401,8 +1401,6 @@ function setupHold(elementId, callback) {
     });
 }
 
-showInsight(SPI, envSCore, confScore, light, depth);
-
 function showInsight(SPI, envScore, confScore, light, depth) {
     let insight = "";
 
