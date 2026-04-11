@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ SET IT HERE (correct place)
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
-    document.getElementById("compassNeedle");
+    needle = document.getElementById("compassNeedle");
 
     
     setTimeout(() => {
@@ -840,6 +840,22 @@ function initGPS(){
     });
 }
 
+function enableCompass() {
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        DeviceOrientationEvent.requestPermission()
+            .then(response => {
+                if (response === "granted") {
+                    console.log("✅ Compass enabled");
+                } else {
+                    console.log("❌ Permission denied");
+                }
+            })
+            .catch(console.error);
+    } else {
+        console.log("✅ Compass auto-enabled (Android)");
+    }
+}
+
 window.addEventListener("deviceorientation", e => {
     if (e.alpha !== null && e.alpha !== undefined) {
         compassHeading = 360 - e.alpha;
@@ -850,20 +866,15 @@ window.addEventListener("deviceorientation", e => {
 
 function updateCompass(deg) {
 
-    const needle = document.getElementById("compassNeedle");
-
     if (!needle) {
         console.log("❌ compassNeedle NOT FOUND");
         return;
     }
 
-    if (deg !==0) {
-    console.log("🧭 Rotating to:", deg);
-    }
+    if (typeof deg !== "number") return;
 
     needle.style.transform =
         `translate(-50%, -100%) rotate(${deg}deg)`; }
-
 
 let mapInstance;
 
