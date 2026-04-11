@@ -827,7 +827,9 @@ let tactical = document.getElementById("tactical");
 if (tactical) {
     tactical.innerText = text + " • " + advice;
 }
-showInsight(SPI, envScore, confScore, light, depth);
+setTimeout(() => {
+    showInsight(SPI, envScore, confScore, light, depth);
+}, 100);
 
 }
 
