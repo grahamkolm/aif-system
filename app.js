@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const splash = document.getElementById("splash");
     const main = document.querySelector(".main");
-    const windDir = data.wind?.deg || 0;
     updateCompass(windDir);
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
@@ -425,7 +424,8 @@ function calculateAverageSPI() {
 // =====================================================
 
 function renderDashboard(data) {
-  
+
+    const windDir = data.wind?.deg || 0;
     lastConditions = data;
     const t = data.main.temp;
     const p = data.main.pressure;
