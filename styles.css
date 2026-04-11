@@ -198,7 +198,7 @@ body{
 }
 
 .spi-container{
-    position:relative;
+    position: relative;
     width:300px;
     height:300px;
     display:flex;
@@ -861,13 +861,11 @@ body{
 }
 
 .compass-ring {
-    position: relative;
+    position: absolute;
     width: 200px;   /* 🔥 MATCH SPI SIZE */
     height: 200px;
     border-radius: 50%;
     pointer-events: none;
-    margin: 0 auto;
-    display: block;
     z-index: 2;
 }
 
