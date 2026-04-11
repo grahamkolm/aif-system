@@ -474,14 +474,17 @@ function renderDashboard(data) {
     if (lastSPI !== null) {
         newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
     }
-
+    
+    newSPI = applyScoutImpact(newSPI);
+    
+    let finalSPI = newSPI;
+    
     console.log("base SPI:", newSPI);
     console.log("Final SPI:", finalSPI);
     
     lastSPI = finalSPI;
     SPI = finalSPI;
-    newSPI = applyScoutImpact(newSPI);
-
+    
   let scoutBonus = newSPI - result.score;
 
     let scoutEl = document.getElementById("scoutBonus");
