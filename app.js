@@ -1437,4 +1437,32 @@ function setupHold(elementId, callback) {
 }
 
 function showInsight(SPI, envScore, confScore, light, depth) {
+    let insight = "";
+
+    if (SPI > 75) {
+        insight = "🔥 Strong feeding conditions — high chance of bites.";
+    } else if (SPI > 60) {
+        insight = "👍 Decent conditions — fish are active.";
+    } else {
+        insight = "⚠️ Slow conditions — consider moving spots.";
+    }
+
+    // Light influence
+    if (light < 30) {
+        insight += " Low light → fish likely in shallow water.";
+    } else {
+        insight += " Bright light → fish may go deeper.";
+    }
+
+    // Depth influence
+    if (depth >= 2 && depth <= 5) {
+        insight += " Ideal depth zone detected.";
+    } else {
+        insight += " Depth not optimal — adjust positioning.";
+    }
+
+    const insightEl = document.getElementById("aiContent");
+    if (insightEl) insightEl.innerText = insight; 
+}
+
 
