@@ -740,6 +740,27 @@ function getBestSPITrend() {
     return good.length;
 }
 
+// =========================
+// 🎯 CASTING INTELLIGENCE
+// =========================
+
+function getCastDirection(windDir) {
+    if (windDir >= 45 && windDir < 135) return "🎯 Target EAST bank (wind pushing bait)";
+    if (windDir >= 135 && windDir < 225) return "🎯 Target SOUTH bank (wind pushing bait)";
+    if (windDir >= 225 && windDir < 315) return "🎯 Target WEST bank (wind pushing bait)";
+    return "🎯 Target NORTH bank (wind pushing bait)"; }
+
+function getDepthStrategy(light, depth) {
+    if (light > 70) return "💡 Bright conditions — fish holding deeper";
+    if (light < 30) return "💡 Low light — fish moving shallow";
+    return "📏 Mid-depth transition zones best"; }
+
+function getBaitSuggestion(SPI) {
+    if (SPI > 75) return "🔥 Use strong attractants (boilies, sweet baits)";
+    if (SPI > 60) return "👍 Use balanced bait (maize + flavor)";
+    return "⚠️ Use subtle natural bait (worms, small rigs)"; }
+
+    
     // ================= TILE GLOW =================
     document.querySelectorAll(".tile").forEach(tile => {
         tile.style.boxShadow = SPI >= 80
@@ -1400,14 +1421,20 @@ function showInsight(SPI, envScore, confScore, light, depth) {
 
     let parts = [];
 
-    // 🎯 CORE SPI MESSAGE
-    if (SPI > 75) {
-        parts.push("🔥 Strong feeding conditions — high probability of action.");
-    } else if (SPI > 60) {
-        parts.push("👍 Decent conditions — fish are active but selective.");
-    } else {
-        parts.push("⚠️ Slower conditions — fish may be inactive or pressured.");
-    }
+// CORE CONDITION
+if (SPI > 75) {
+    parts.push("🔥 Strong feeding conditions — high chance of bites."); } else if (SPI > 60) {
+    parts.push("👍 Decent conditions — fish are active."); } else {
+    parts.push("⚠️ Slow conditions — consider changing spots."); }
+
+// 🎯 ADD INTELLIGENCE
+const windDir = lastConditions?.wind?.deg || 0;
+
+parts.push(getCastDirection(windDir));
+parts.push(getDepthStrategy(light, depth)); parts.push(getBaitSuggestion(SPI));
+
+// FINAL OUTPUT
+let insight = parts.join(" ");
 
     // 🌬 WIND
     if (lastConditions?.wind?.speed * 3.6 >= 5) {
