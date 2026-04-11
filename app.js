@@ -328,6 +328,28 @@ function analyzeWeather(w, p, c){
     return insights;
 }
 
+function calculateWaterTemps(airTemp) {
+
+    // Surface (0–3m)
+    let surface;
+
+    if (airTemp >= 25) surface = airTemp - 0.5;
+    else if (airTemp >= 20) surface = airTemp - 1;
+    else surface = airTemp - 1.5;
+
+    // Bottom (~7m average)
+    let bottom;
+
+    if (airTemp >= 25) bottom = surface - 3.5;
+    else if (airTemp >= 20) bottom = surface - 3;
+    else bottom = surface - 2;
+
+    return {
+        surface: parseFloat(surface.toFixed(1)),
+        bottom: parseFloat(bottom.toFixed(1)),
+        source: "forecast"
+    };
+}
 
 
 // =====================================================
@@ -461,8 +483,12 @@ function renderDashboard(data) {
 
     const light = data.light || 50;
     const depth = data.depth || 3;
-    let surfaceTemp = t - 0.5;
-    let bottomTemp = t - 1.5;
+    let temps = calculateWaterTemps(t);
+    if (tempModel.source === "sensor") {
+    temps = tempModel;
+}
+    let surfaceTemp = temps.surface;
+    let bottomTemp = temps.bottom;
     updateCompass(windDir);
     let dam = loadDamData();
 
@@ -1206,6 +1232,10 @@ function startScan() {
         fetch("http://192.168.4.1/data")
             .then(res => res.json())
             .then(data => {
+     let temps = calculateWaterTemps(t);
+     if (tempModel.source === "sensor") {
+    temps = tempModel;
+}
                 renderDashboard(data);
                 showResults(data);
             })
