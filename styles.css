@@ -369,7 +369,6 @@ html, body {
 
 
 .tactical-bar {
-  position: relative;
   width: calc(100% - 24px);
   max-width: 360px;
   
@@ -380,8 +379,6 @@ html, body {
   border: 1px solid #00ff9c;
   
   text-align: center;
-  left: auto;
-  transform: none;
 }
 
 /* ================= TILES ================= */ 
