@@ -3,7 +3,7 @@
 // =====================================================
 
 let diff = 0;
-let splashActive = true; 
+let splashActive = true;
 let pressureHistory = [];
 let needle;
 let tempModel = {
