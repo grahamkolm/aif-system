@@ -39,68 +39,75 @@
    
     <!-- ================= SPI ================= -->
 <div class="instrument">
-    <div class="spi-container">
+  <div class="spi-container">
 
-        <div class="spi-wrapper">
+    <div class="spi-wrapper">
 
-            <!-- REAL GAUGE -->
-            <svg id="spiGauge" viewBox="0 0 300 300">
-                <circle cx="150" cy="150" r="110"
-                    stroke="#2f4f4f"
-                    stroke-width="10"
-                    fill="none"
-                    stroke-dasharray="8 12"/>
+      <!-- REAL GAUGE -->
+      <svg id="spiGauge" viewBox="0 0 300 300">
+        <circle cx="150" cy="150" r="110"
+          stroke="#2f4f4f"
+          stroke-width="10"
+          fill="none"
+          stroke-dasharray="8 12"/>
 
-                <circle id="spiArc"
-                    cx="150"
-                    cy="150"
-                    r="110"
-                    stroke="#00ff9c"
-                    stroke-width="14"
-                    fill="none"
-                    stroke-linecap="round"
-                    transform="rotate(-90 150 150)"/>
+        <circle id="spiArc"
+          cx="150"
+          cy="150"
+          r="110"
+          stroke="#00ff9c"
+          stroke-width="14"
+          fill="none"
+          stroke-linecap="round"
+          transform="rotate(-90 150 150)"/>
 
-                <text x="150" y="145" text-anchor="middle"
-                    class="spi-number"
-                    id="spiValue">--%</text>
+        <text x="150" y="145" text-anchor="middle"
+          class="spi-number"
+          id="spiValue">--%</text>
 
-                <text x="150" y="175"
-                    text-anchor="middle"
-                    class="spi-label">SPI</text>
-            </svg>
+        <text x="150" y="175"
+          text-anchor="middle"
+          class="spi-label">SPI</text>
+      </svg>
 
-            <!-- COMPASS -->
-            <div class="compass-ring">
-                <span class="dir n">N</span>
-                <span class="dir e">E</span>
-                <span class="dir s">S</span>
-                <span class="dir w">W</span>
-            </div>
+      <!-- COMPASS -->
+      <div class="compass-ring">
+        <span class="dir n">N</span>
+        <span class="dir e">E</span>
+        <span class="dir s">S</span>
+        <span class="dir w">W</span>
+      </div>
 
-        <!-- SIDE CIRCLES -->
-  <div class="env-circle">
-  <svg viewBox="0 0 100 100" class="mini-ring">
-    <circle cx="50" cy="50" r="42" class="ring-bg"/>
-    <circle cx="50" cy="50" r="42" class="ring-progress env-progress"/>
-  </svg>
+    </div> <!-- ✅ spi-wrapper CLOSED HERE -->
 
-  <div class="mini-value" id="envScore">95%</div>
-  <div class="mini-label">ENV</div>
-</div>
 
-<div class="conf-circle">
-  <svg viewBox="0 0 100 100" class="mini-ring">
-    <circle cx="50" cy="50" r="42" class="ring-bg"/>
-    <circle cx="50" cy="50" r="42" class="ring-progress conf-progress"/>
-  </svg>
+    <!-- SIDE CIRCLES (OUTSIDE WRAPPER, INSIDE CONTAINER) -->
+    <div class="env-circle">
+      <svg viewBox="0 0 100 100" class="mini-ring">
+        <circle cx="50" cy="50" r="42" class="ring-bg"/>
+        <circle cx="50" cy="50" r="42" class="ring-progress env-progress"/>
+      </svg>
 
-  <div class="mini-value" id="confScore">83%</div>
-  <div class="mini-label">CONF</div>
-</div>
+      <div class="mini-value" id="envScore">95%</div>
+      <div class="mini-label">ENV</div>
+    </div>
+
+    <div class="conf-circle">
+      <svg viewBox="0 0 100 100" class="mini-ring">
+        <circle cx="50" cy="50" r="42" class="ring-bg"/>
+        <circle cx="50" cy="50" r="42" class="ring-progress conf-progress"/>
+      </svg>
+
+      <div class="mini-value" id="confScore">83%</div>
+      <div class="mini-label">CONF</div>
+    </div>
+
 
     <!-- NEEDLE -->
     <div id="compassNeedle"></div>
+
+  </div> <!-- ✅ spi-container -->
+</div> <!-- ✅ instrument -->
 
     <!-- ================= TACTICAL ================= -->
     <div class="tactical-bar" id="tactical">
