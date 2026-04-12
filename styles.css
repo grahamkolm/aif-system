@@ -130,6 +130,7 @@ html, body {
     position: relative;
     width: 100%;
     height: 100%;
+    transform: translateY(-20px);
 }
 
 .spi-number {
@@ -137,7 +138,7 @@ html, body {
     font-size: 42px;
     font-weight: 700;
     text-anchor: middle;
-    dominent-baseline: middle;
+    dominant-baseline: middle;
     filter: drop-shadow(0 0 6px rgba(0,255,156,0.6));
 }
 
@@ -145,7 +146,6 @@ html, body {
     fill: rgba(255,255,255,0.85);
     font-size: 14px;
     font-weight: 500;
-    transform: translateY(-20px);
 }
 
 #spiGauge {
@@ -262,9 +262,6 @@ html, body {
   50% { box-shadow: 0 0 14px var(--gold-glow); }
   100% { box-shadow: 0 0 8px var(--gold-glow); } }
 
-.env-circle {
-  animation: pulseGlow 3s infinite ease-in-out; }
-
 .env-circle { 
   left: -40px; 
   border: 8px solid var(--gold-main);
@@ -273,6 +270,7 @@ html, body {
   box-shadow:
     0 0 8px var(--gold-glow),
     0 0 25px rgba(200, 168, 90, 0.3);
+    animation: pulseGlow 3s infinite ease-in-out;  
 } 
 
 .conf-circle::before {
@@ -288,6 +286,7 @@ html, body {
     box-shadow:
       0 0 15px var(--blue-glow),
       0 0 30px rgba(58, 160, 255, 0.3);
+      animation: pulseGlow 4s infinite ease-in-out;
 }
 
 .mini-ring {
