@@ -445,6 +445,8 @@ html, body {
 
   transition: max-height 0.3s ease;
   padding: 0 12px;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.9);
 }
 
 .ai-panel.active .ai-content {
