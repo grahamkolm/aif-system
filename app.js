@@ -720,6 +720,26 @@ if (confCircle) {
     confCircle.style.boxShadow = `0 0 10px ${confColor}`; 
 }
 
+function setRingProgress(selector, value) {
+  const circle = document.querySelector(selector);
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+
+  const offset = circumference - (value / 100) * circumference;
+  circle.style.strokeDashoffset = offset; 
+}
+
+window.onload = () => {
+  setTimeout(() => {
+    setRingProgress('.env-progress', 95);
+    setRingProgress('.conf-progress', 83);
+  }, 300);
+};
+    
+// Set values
+setRingProgress('.env-progress', 95);
+setRingProgress('.conf-progress', 83);
+    
 // ✅ TEXT COLORS
 const spiText = document.getElementById("spiValue");
 const envText = document.getElementById("envScore");
