@@ -239,7 +239,6 @@ html, body {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    overflow: hidden;
 
     display: flex;
     flex-direction: column;
@@ -264,10 +263,10 @@ html, body {
 }
 
 .env-circle { 
-  left: 0; 
+  left: -30px; 
   border: 8px solid var(--gold-main);
   border-radius: 50%;
-  transform: translate(-160px, -50%);
+  transform: translate(-50%);
 
   box-shadow:
     0 0 8px var(--gold-glow),
@@ -280,9 +279,9 @@ html, body {
 }
 
 .conf-circle { 
-    right: 0; 
+    right: -30px; 
     border-radius: 50%;
-    transform: translate(80px, -50%);
+    transform: translate(-50%);
     border: 8px solid var(--blue-main);
 
     box-shadow:
