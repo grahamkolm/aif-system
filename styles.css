@@ -194,6 +194,7 @@ body{
     display:flex;
     justify-content:center;
     align-items: center;
+    margin-top: 20px;
 }
 
 .spi-container {
@@ -250,13 +251,13 @@ body{
 
 /* LEFT */
 .env-circle {
-    left: -60px;
+    left: -70px;
     border: 3px solid #ffc400;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: -60px;
+    right: -70px;
     border: 3px solid #4da6ff;
 }
 
@@ -868,30 +869,30 @@ body{
 
 /* TOP */
 .dir.n {
-    top: -10px;
+    top: 0;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%, -140%);
 }
 
 /* BOTTOM */
 .dir.s {
-    bottom: -10px;
+    bottom: 0;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%, 140%);
 }
 
 /* RIGHT */
 .dir.e {
-    right: -10px;
+    right: 0;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(140%, -50%);
 }
 
 /* LEFT */
 .dir.w {
-    left: -10px;
+    left: 0;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-140%, -50%);
 }
 
 #compassNeedle {
