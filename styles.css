@@ -143,9 +143,10 @@ html, body {
     z-index: 5;
 }
 
-/* ================= MINI CIRCLES ================= */ .env-circle, .conf-circle {
+/* ================= MINI CIRCLES ================= */ 
+.env-circle, .conf-circle {
     position: absolute;
-    top: 50%;
+    top: 620%;
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -159,7 +160,15 @@ html, body {
 }
 
 /* 🔥 POSITION (EDIT THESE ONLY) */
-.env-circle { left: -85px; border: 3px solid #ffc400; } .conf-circle { right: -85px; border: 3px solid #4da6ff; }
+.env-circle { 
+    left: -60px; 
+    border: 3px 
+    solid #ffc400; 
+} 
+.conf-circle { 
+    right: -60px; 
+    border: 3px solid #4da6ff; 
+}
 
 .mini-value {
     font-size: 20px;
