@@ -200,8 +200,8 @@ body{
 
 .spi-container{
     position: relative;
-    width:300px;
-    height:300px;
+    width:260px;
+    height:260px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -266,17 +266,17 @@ body{
 
 .env-circle{
     position: absolute;
-    left: 25px;
+    left: 50%;
     top: 75%;
-    transform: translateY(-50%);
+    transform: translate(-160px, -50%);
     border: 3px solid #ffc400;
     box-shadow: 0 0 12px rgba(0,255,156,0.4);
 }
 
 .conf-circle{
-    right: 25px;
+    right: 50%;
     top: 75%;
-    transform: translateY(-50%);
+    transform: translate(80px, -50%);
     border: 3px solid #4da6ff;
     box-shadow: 0 0 12px rgba(77,166,255,0.4);
 }
