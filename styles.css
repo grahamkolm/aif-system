@@ -222,11 +222,11 @@ body{
 }
 
 .spi-wrapper {
+    top: -50px;
     position: relative;
     width: 260px;
     height: 260px;
     margin: 0 auto;
-    transform: translateY(-12px);
 }
 
 .no-select {
