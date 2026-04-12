@@ -90,6 +90,21 @@ html, body {
     width: 100%;
     height: 100%;
 
+.spi-number {
+    fill: #ffffff;
+    font-size: 42px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominent-baseline: middle;
+    filter: drop-shadow(0 0 6px rgba(0,255,156,0.6));
+}
+
+.spi-label {
+    fill: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-weight: 500;
+}
+    
     /* 🔥 MOVE WHOLE GAUGE HERE */
     transform: translateY(-20px);
 }
