@@ -190,18 +190,17 @@ body{
 
 /* SPI */
 .instrument{
-    margin-top:18px;
+    margin-top: 40px;
     width: 100%;
     display:flex;
     justify-content:center;
-    margin-top: 10px;
+    align-items: center;
 }
 
 .spi-container {
     position: relative;
     width: 260px;
     height: 260px;
-    margin: 20px auto;
 }
 
 #spiGauge {
