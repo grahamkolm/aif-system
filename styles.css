@@ -11,7 +11,10 @@ html, body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #05080d;
     overflow-y: auto !important;
+    overflow-x: hidden;
     color: white;
+    margin: 0;
+    padding: 0;
 }
 
 /* 🌊 BACKGROUND */
@@ -92,7 +95,7 @@ html, body {
 
 body{
     margin: 0;
-    backuround: url("background.jpg") center/cover no-repeat;
+    background: url("background.jpg") center/cover no-repeat;
     background-color: #021218;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     color:#e6edf3;
@@ -109,14 +112,17 @@ body{
     z-index: 2;
 
     width: 100%;
-    max-width: 420px;
+    max-width: 100%;
+    overflow-x: hidden;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
 
     min-height: 100vh;
     height: auto;
+    margin: 0 auto;
 
     padding-top: 40px;
     padding-bottom: 140px;
@@ -192,12 +198,14 @@ body{
 }
 
 .spi-container{
-    position:relative;
-    width:260px;
-    height:260px;
+    position: relative;
+    width:300px;
+    height:300px;
     display:flex;
     justify-content:center;
     align-items:center;
+    z-index: 3;
+    maring: auto;
 }
 
 #spiGauge {
@@ -207,8 +215,8 @@ body{
     touch-action: manipulation;
     width: 260px;
     height: 260px;
-    position: relative;
-    z-index: 5;
+    position: absolute;
+    z-index: 3;
 }
 
 #spiGauge text {
@@ -216,6 +224,13 @@ body{
     user-select: none;
     -webkit-touch-callout: none;
     pointer-events: none;
+}
+
+.spi-wrapper {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    margin: 0 auto;
 }
 
 .no-select {
@@ -232,7 +247,7 @@ body{
     height: 80px;
     border-radius: 50%;
     border: 2px solid #00ff9c;
-    box-shadow: 0 0 18px rgba(0,255,156,09);
+    box-shadow: 0 0 18px rgba(0,255,156,0.9);
     bottom: 20px;
 
     display: flex;
@@ -252,7 +267,7 @@ body{
     left:-40px;
     top: 75%;
     transform: translateY(-50%);
-    border: 2px solid #ffc400;
+    border: 3px solid #ffc400;
     box-shadow: 0 0 12px rgba(0,255,156,0.4);
 }
 
@@ -260,7 +275,7 @@ body{
     right:-40px;
     top: 75%;
     transform: translateY(-50%);
-    border: 2px solid #4da6ff;
+    border: 3px solid #4da6ff;
     box-shadow: 0 0 12px rgba(77,166,255,0.4);
 }
 
@@ -314,23 +329,19 @@ body{
     align-items: center;
     width: 110px;
     height: 110px;
+    flex-shrink: 0;
     background:rgba(0,0,0,0.4);
     border-radius:18px;
     backdrop-filter: blur(6px);
     padding:14px;
+    overflow: hidden;
     text-align:center;
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     transition: 0.2 ease;
 }
 
 .tiles {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-    position: relative;
-    z-index: 1;
-    margin-bottom: 80px;
+    align-items: stretch;
 }
 
 .tile.i {
@@ -400,7 +411,7 @@ body{
     z-index: 20;
 
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
     align-items: flex-start;
     padding: 20px;
@@ -453,7 +464,7 @@ body{
 .scout-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 6px;
 }
 
 #scoutScreen {
@@ -468,6 +479,7 @@ body{
     
     background: rgba(0,0,0,0.95);
     z-index: 1000;
+    justify-content: flex-start;
 
     overflow-y: auto;
 }
@@ -475,15 +487,14 @@ body{
 .scout-container {
     width: 100%;
     max-width: 420px;
-
-    margin: 10px auto 120px auto;
-    padding: 16px;
+    
+    margin: 0;
+    padding: 14px;
 
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 14px;
-
+    gap: 8px;
+    
     background: rgba(0,0,0,0.35);
     backdrop-filter: blur(12px);
 
@@ -492,11 +503,15 @@ body{
 
 .scout-header {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 12px
 }
 
 .scout-title {
-    font-size: 24px;
+    text-align: center;
+    font-size: 22px;
     font-weight: 700;
     color: #00ffa6;
 }
@@ -504,25 +519,26 @@ body{
 .scout-sub {
     font-size: 13px;
     opacity: 0.7;
+    text-align: left;
 }
 
 .section {
-    margin: 20px 16px;
-    padding: 16px;
+    margin: 0;
+    width: 100%;
+    padding: 12px;
     border-radius: 18px;
     background: rgba(10,20,25,0.55);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(0,255,150,0.08);
-    margin-bottom: 20px;
-    text-align: left;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .section-title {
-  font-size: 15px;
+  font-size: 14px;
   color: #e6eddf3;
   font-weight: 500;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   letter-spacing: 0.3px;
 }
 
@@ -536,13 +552,13 @@ body{
 .opt {
     word-break: break-word;
     flex: 1;
-    padding: 10px 4px;
-    border-radius: 12px;
+    padding: 8px 6px;
+    border-radius: 10px;
 
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.2;
 
-    min-height: 40px;
+    min-height: 34px;
 
     display: flex;
     align-items: center;
@@ -568,6 +584,7 @@ body{
     box-shadow:
         0 0 10px rgba(0,255,166,0.5),
         inset 0 0 6px rgba(0,255,166,0.15);
+    background: rgba(0,255,166,0.12);
 
     transform: scale(0.97);
 }
@@ -614,9 +631,11 @@ body{
 }
 
 .scout-btn {
-    margin: 20px 16px 40px 16px;
+    margin-top: auto;
+    margin-bottom: 20px;
+    margin: 8px 12px;
 
-    padding: 18px;
+    padding: 14px;
     border-radius: 16px;
 
     font-size: 16px;
@@ -625,7 +644,9 @@ body{
     text-align: center;
 
     background: linear-gradient(135deg, #00ffaa, #00cc88);
-    box-shadow: 0 10px 30px rgba(0,255,150,0.3); 
+    color: black; /* 🔥 FIX readability */
+
+    box-shadow: 0 6px 20px rgba(0,255,150,0.25); 
 }
 
 @keyframes spin {
@@ -663,12 +684,12 @@ body{
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease;
-    padding: 0 14px;
+    padding: 0 12px;
     color: #e6fff3;
     line-height: 1.6;
     font-size: 13px;
     line-height: 1.5;
-    display: none;
+    white-space: pre-line;
 }
 
 .ai-panel.active .ai-content {
@@ -777,8 +798,13 @@ body{
 
 .btn.secondary {
     background: rgba(255,255,255,0.08);
-    color: white;
-}
+    color: #fff;
+    border: 1px solid rgba(0,255,166,0.3);
+    opacity: 1; /* 🔥 REMOVE FADED LOOK */ }
+
+.btn.secondary:active {
+    transform: scale(0.96);
+    box-shadow: 0 0 10px rgba(0,255,166,0.3); }
 
 .scan-loader {
     width: 50px;
@@ -834,4 +860,84 @@ body{
     margin-bottom: 12px;
 }
 
+.compass-ring {
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    }
 
+.compass-label {
+  position: absolute;
+  color: rgba(255,255,255,0.95);
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(0,255,160,0.4);
+  transform: translate(-50%, -50%);
+}
+
+.dir {
+  position: absolute;
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dir.n { 
+    top: 0px; 
+    left: 50%; 
+    transform: translateX(-50%, -120%); 
+}
+
+.dir.s { 
+    bottom: 0px; 
+    left: 50%; 
+    transform: translateX(-50%, -120%); 
+}
+
+.dir.e { 
+    top: 0px; 
+    right: 50%; 
+    transform: translateY(120%, -50%); 
+}
+
+.dir.w { 
+    top: 0px; 
+    left: 50%; 
+    transform: translateY(-120%,-50%); 
+}
+
+#compassNeedle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 90px; /* 🔥 shorter = inside circle */
+    background: white;
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+    z-index: 3;
+}
+
+.overlay-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(6px);
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none;
+}
