@@ -110,7 +110,6 @@ body{
 .main {
     position: relative;
     z-index: 2;
-    margin-top: -40px;
 
     width: 100%;
     max-width: 100%;
@@ -193,6 +192,7 @@ body{
 .instrument{
     width: 100%;
     display:flex;
+    margin-top: -40px;
     justify-content:center;
     align-items: center;
     margin-top: 0;
