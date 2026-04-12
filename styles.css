@@ -205,7 +205,7 @@ body{
     justify-content:center;
     align-items:center;
     z-index: 3;
-    maring: auto;
+    margin: 0 auto;
 }
 
 #spiGauge {
@@ -264,7 +264,7 @@ body{
 
 .env-circle{
     position: absolute;
-    left:-40px;
+    left:-25px;
     top: 75%;
     transform: translateY(-50%);
     border: 3px solid #ffc400;
@@ -272,7 +272,7 @@ body{
 }
 
 .conf-circle{
-    right:-40px;
+    right:-25px;
     top: 75%;
     transform: translateY(-50%);
     border: 3px solid #4da6ff;
@@ -864,9 +864,10 @@ body{
     position: absolute;
     width: 260px;
     height: 260px;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
     pointer-events: none;
+    transform: translate(-50%, -50%);
     }
 
 .compass-label {
