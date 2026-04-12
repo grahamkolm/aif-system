@@ -412,6 +412,14 @@ html, body {
     0 0 15px rgba(0,0,0,0.3);
 }
 
+/* ================= AI ================= */ 
+
+.ai-content {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
 /* ================= DOCK ================= */ 
 .dock {
     position: fixed;
