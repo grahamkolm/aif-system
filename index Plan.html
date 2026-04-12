@@ -80,17 +80,27 @@
         </div>
 
         <!-- SIDE CIRCLES -->
-        <div class="env-circle">
-            <div class="mini-value" id="envScore"></div>
-            <div class="mini-label">ENV</div>
-        </div>
+  <div class="env-circle">
+  <svg viewBox="0 0 100 100" class="mini-ring">
+    <circle cx="50" cy="50" r="42" class="ring-bg"/>
+    <circle cx="50" cy="50" r="42" class="ring-progress env-progress"/>
+  </svg>
 
-        <div class="conf-circle">
-            <div class="mini-value" id="confScore"></div>
-            <div class="mini-label">CONF</div>
-        </div>
+  <div class="mini-value" id="envScore">95%</div>
+  <div class="mini-label">ENV</div>
+</div>
 
-    </div>
+
+
+
+<div class="conf-circle">
+  <svg viewBox="0 0 100 100" class="mini-ring">
+    <circle cx="50" cy="50" r="42" class="ring-bg"/>
+    <circle cx="50" cy="50" r="42" class="ring-progress conf-progress"/>
+  </svg>
+
+  <div class="mini-value" id="confScore">83%</div>
+  <div class="mini-label">CONF</div>
 </div>
 
     <!-- NEEDLE -->
