@@ -266,7 +266,7 @@ body{
 
 .env-circle{
     position: absolute;
-    left:-25px;
+    left: 25px;
     top: 75%;
     transform: translateY(-50%);
     border: 3px solid #ffc400;
@@ -274,7 +274,7 @@ body{
 }
 
 .conf-circle{
-    right:-25px;
+    right: 25px;
     top: 75%;
     transform: translateY(-50%);
     border: 3px solid #4da6ff;
