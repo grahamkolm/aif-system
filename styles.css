@@ -208,11 +208,12 @@ body{
 #spiGauge {
     width: 260px;
     height: 260px;
-    position: static;
+    position: relative !important;
     top: auto;
     left: auto;
     transform: none;
     pointer-events: none;
+    margin: 0 auto;
 }
 
 #spiGauge text {
@@ -223,7 +224,6 @@ body{
 }
 
 .spi-wrapper {
-    top: -50px;
     position: relative;
     width: 260px;
     height: 260px;
