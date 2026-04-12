@@ -202,7 +202,6 @@ body{
     position: relative;
     width: 260px;
     height: 260px;
-    transform: translateY(-10px);
 }
 
 #spiGauge {
@@ -227,6 +226,7 @@ body{
     width: 260px;
     height: 260px;
     margin: 0 auto;
+    transform: translateY(-12px);
 }
 
 .no-select {
