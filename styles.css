@@ -7,14 +7,13 @@
 
 html, body {
     height: 100%;
-    overflow-x: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #05080d;
-    overflow-y: auto !important;
-    overflow-x: hidden;
     color: white;
     margin: 0;
     padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* 🌊 BACKGROUND */
