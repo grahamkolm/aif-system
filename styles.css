@@ -233,7 +233,7 @@ body{
    -webkit-touch-callout: none;  
 }
 
-/* MINI CIRCLES */
+/* MINI CIRCLES */ 
 .env-circle,
 .conf-circle {
     position: absolute;
