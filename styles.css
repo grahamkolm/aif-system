@@ -110,6 +110,7 @@ body{
 .main {
     position: relative;
     z-index: 2;
+    margin-top: -40px;
 
     width: 100%;
     max-width: 100%;
@@ -207,10 +208,10 @@ body{
 #spiGauge {
     width: 260px;
     height: 260px;
-    position: absolute;
-    top: -30px !important;
-    left: 50%;
-    transform: translateX(-50%);
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
     pointer-events: none;
 }
 
