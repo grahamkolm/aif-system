@@ -245,7 +245,7 @@ html, body {
     flex-direction: column;
     justify-content: center;
 
-    transform: translateY(-40px);
+    transform: translateY(-55px);
 }
 
 .env-circle::before {
