@@ -414,10 +414,42 @@ html, body {
 
 /* ================= AI ================= */ 
 
+.ai-panel {
+  width: calc(100% - 24px);
+  max-width: 360px;
+  margin: 20px auto;
+
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+
+  border-radius: 14px;
+  border: 1px solid rgba(0,255,156,0.2);
+
+  overflow: hidden;
+}
+
+.ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px;
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
 .ai-content {
+  max-height: 0;
+  overflow: hidden;
+
+  transition: max-height 0.3s ease;
+  padding: 0 12px;
+}
+
+.ai-panel.active .ai-content {
   max-height: 300px;
-  overflow-y: auto;
-  padding: 10px;
+  padding: 12px;
 }
 
 /* ================= DOCK ================= */ 
