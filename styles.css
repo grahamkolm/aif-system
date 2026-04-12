@@ -124,7 +124,7 @@ body{
     height: auto;
     margin: 0 auto;
 
-    padding-top: 40px;
+    padding-top: 20px;
     padding-bottom: 140px;
     
     opacity: 0;
@@ -190,7 +190,7 @@ body{
 
 /* SPI */
 .instrument{
-    margin-top: 40px;
+    margin-top: 80px;
     width: 100%;
     display:flex;
     justify-content:center;
@@ -250,13 +250,13 @@ body{
 
 /* LEFT */
 .env-circle {
-    left: -90px;
+    left: -60px;
     border: 3px solid #ffc400;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: -90px;
+    right: -60px;
     border: 3px solid #4da6ff;
 }
 
