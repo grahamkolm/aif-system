@@ -369,14 +369,19 @@ html, body {
 
 
 .tactical-bar {
-  width: 100%;
+  position: relative;
+  width: calc(100% - 24px);
   max-width: 360px;
   
-  margin: 20px 20px;
+  margin: 20px auto;
+  
   padding: 12px;
   border-radius: 14px;
   border: 1px solid #00ff9c;
+  
   text-align: center;
+  left: auto;
+  transform: none;
 }
 
 /* ================= TILES ================= */ 
