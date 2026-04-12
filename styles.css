@@ -124,7 +124,7 @@ body{
     height: auto;
     margin: 0 auto;
 
-    padding-top: 10px;
+    padding-top: 30px;
     padding-bottom: 140px;
     
     opacity: 0;
@@ -194,7 +194,8 @@ body{
     display:flex;
     justify-content:center;
     align-items: center;
-    margin-top: -10px;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 .spi-container {
@@ -252,13 +253,13 @@ body{
 
 /* LEFT */
 .env-circle {
-    left: -60px;
+    left: -50px;
     border: 3px solid #ffc400;
 }
 
 /* RIGHT */
 .conf-circle {
-    right: -60px;
+    right: -50px;
     border: 3px solid #4da6ff;
 }
 
