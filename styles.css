@@ -363,8 +363,11 @@ html, body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin: 18px 0;
-    padding: 0 12px;
+
+    width: 100%;
+    max-width: 360px;  
+    margin: 18px auto;
+    padding: 0;
 }
 
 .tile {
