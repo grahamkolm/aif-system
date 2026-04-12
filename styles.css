@@ -351,11 +351,14 @@ html, body {
 
 
 .tactical-bar {
-    margin: 10px 20px;
-    padding: 12px;
-    border-radius: 14px;
-    border: 1px solid #00ff9c;
-    text-align: center;
+  width: 100%;
+  max-width: 360px;
+  
+  margin: 15px auto;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid #00ff9c;
+  text-align: center;
 }
 
 /* ================= TILES ================= */ 
@@ -366,7 +369,7 @@ html, body {
 
     width: 100%;
     max-width: 360px;  
-    margin: 18px auto;
+    margin: 20px auto;
     padding: 0;
 }
 
