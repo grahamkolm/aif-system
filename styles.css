@@ -1,935 +1,318 @@
-/* RESET */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html>
+<head>
 
-html, body {
-    height: 100%;
-    overflow-x: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #05080d;
-    overflow-y: auto !important;
-    overflow-x: hidden;
-    color: white;
-    margin: 0;
-    padding: 0;
-}
+<meta name="viewport" content="width=device-width, initial-scale=1"> <title>AIF Dashboard</title>
 
-/* 🌊 BACKGROUND */
-.bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    inset: 0;
-    background: url("background.jpg") center / cover no-repeat;
-    filter: brightness(0.7);
-    z-index: 0;
-}
+<link rel="stylesheet" href="styles.css">
 
-#waterGraph {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-#main {
-    position: relative;
-    z-index: 2;
-    min-height: 100vh;
-}
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div id="splash">
+    <div class="splash-content">
+        <div class="loader">
+            <div class ="bar"></div>
+        </div>
+    </div>
+</div>
     
-/* 🚀 SPLASH */
-#splash {
-    position: fixed;
-    inset: 0;
+<div id="main" class="main">
 
-    background: url("splash.jpg") center / cover no-repeat;
+<canvas id="waterGraph"></canvas>    
+
+    <!-- ================= HEADER ================= -->
+    <div class="header">
+        <div class="brand">AIF™</div>
+        <div class="subtitle1">Artificial Intelligence Fishing</div>
+        <div class="subtitle2">Drop • Scan • Strike</div>
+    </div>
+
+    <!-- ================= SPI ================= -->
+    <div class="instrument">
+        <div class="spi-container">
+
+            <div class="env-circle">
+                <div class="mini-value" id="envScore">--</div>
+                <div class="mini-label">ENV</div>
+            </div>
+
+            <div class="conf-circle">
+                <div class="mini-value" id="confScore">--</div>
+                <div class="mini-label">CONF</div>
+            </div>
+
+            <svg id="spiGauge" viewBox="0 0 300 300">
+
+                <circle cx="150" cy="150" r="110"
+                    stroke="#2f4f4f"
+                    stroke-width="10"
+                    fill="none"
+                    stroke-dasharray="8 12"/>
+
+                <circle id="spiArc"
+                    cx="150"
+                    cy="150"
+                    r="110"
+                    stroke="#00ff9c"
+                    stroke-width="14"
+                    fill="none"
+                    stroke-linecap="round"
+                    transform="rotate(-90 150 150)"/>
+
+                <text x="150" y="145" text-anchor="middle"
+                    class="spi-number"
+                    id="spiValue">--%</text>
+
+                <text x="150" y="175"
+                    text-anchor="middle"
+                    class="spi-label">SPI</text>
+
+            </svg>
+
+        </div>
+    </div>
+
+    <!-- ================= TACTICAL ================= -->
+    <div class="tactical-bar" id="tactical">
+        Waiting for environmental data...
+    </div>
+
+    <!-- ================= TILES ================= -->
+    <div class="tile-grid">
+
+    <div class="tile">
+    <i data-lucide="sun"></i>
+    <div class="tile-title">air</div>
+    <div class="tile-value" id="air">--</div>
+    </div>
     
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    z-index: 10;
-}
-
-.splash-content {
-    text-align: center;
-}
-
-.logo {
-    font-size: 48px;
-    color: #00ffa6;
-    margin-bottom: 20px;
-    display: none;
-}
-
-/* LOADER */
-.loader {
-    width: 200px;
-    height: 4px;
-    background: rgba(255,255,255,0.1);
-    overflow: hidden;
-    border-radius: 2px;
-}
-
-.bar {
-    height: 100%;
-    width: 0%;
-    background: #00ffa6;
-    animation: load 2s linear forwards;
-}
-
-@keyframes load {
-    from { width: 0%; }
-    to { width: 100%; }
-}
-
-body{
-    margin: 0;
-    background: url("background.jpg") center/cover no-repeat;
-    background-color: #021218;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    color:#e6edf3;
+    <div class="tile">
+    <i data-lucide="waves"></i>
+    <div class="tile-title">Surface</div>
+    <div class="tile-value" id="surface">--</div>
+    </div>
         
-    overflow-x:hidden; 
-    overflow-y: auto;
+    <div class="tile">
+    <i data-lucide="arrow-down"></i>
+    <div class="tile-title">Bottom</div>
+    <div class="tile-value" id="bottom">--</div>
+    </div>
+
+    <div class="tile">
+    <i data-lucide="gauge"></i>
+    <div class="tile-title">Pressure</div>
+    <div class="tile-value" id="pressure">--</div>
+    </div>
+        
+    <div class="tile">
+    <i data-lucide="wind"></i>
+    <div class="tile-title">Wind</div>
+    <div class="tile-value" id="wind">--</div>
+    </div>
     
-    padding-bottom: 120px;
-}
+    <div class="tile">
+    <i data-lucide="cloud"></i>
+    <div class="tile-title">Cloud</div>
+    <div class="tile-value" id="cloud">--</div>
+    </div>
 
-/* 🧠 MAIN SCREEN */
-.main {
-    position: relative;
-    z-index: 2;
-
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-
-    min-height: 100vh;
-    height: auto;
-    margin: 0 auto;
-
-    padding-top: 30px;
-    padding-bottom: 140px;
+    <div class="tile">
+    <i data-lucide="moon"></i>
+    <div class="tile-title">Moon</div>
+    <div class="tile-value" id="moon">--</div>
+    </div>
+        
+    <div class="tile">
+    <i data-lucide="leaf"></i>
+    <div class="tile-title">Season</div>
+    <div class="tile-value" id="season">--</div>
+    </div>
+        
+    <div class="tile">
+    <i data-lucide="fish"></i>
+    <div class="tile-title">Feed</div>
+    <div class="tile-value" id="feed">--</div>
+    </div>
+        
+    <div class="tile">
+    <i data-lucide="droplets"></i>
+    <div class="tile-title">Oxygen</div>
+    <div class="tile-value" id="oxygen">--</div>
+    </div>  
     
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s ease;
-}
+    <div class="tile" id="compassTile">
+    <i data-lucide="compass"></i>
+    <div class="tile-title">compass</div>
+    <div class="tile-value" id="compassDir">Tap</div>
+    </div>
 
-.main-visible {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.6s ease;
-}
+    </div>
 
-/* HIDDEN STATE */
-.hidden {
-    display: none !important;
-}
+    <!-- ================= AI ================= -->
+    <div class="ai-box" onclick="toggleAI()">
+        <b>AI Tactical Analysis</b>
+        <div id="aiContent" class="ai-content"></div>
+    </div>
 
-/* HEADER */
-.header {
-    width: 100%;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    max-width: 320px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-}
-
-.brand {
-    font-size: 42px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #00ffa6;
-    margin: 0;
-    width: 100%;
-    text-align: center;
-}
-
-.subtitle1 {
-    font-size: 18px;
-    color: rgba(255,255,255,0.85);
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    opacity: 0.9;
-}
-
-.subtitle2 {
-    font-size: 14px;
-    font-weight: 700;
-    color: #00ff9c;
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    text-shadow: 0 0 6px rgba(0,255,156,0.6), 0 0 12px rgba(0,255,156,0.4);
-}
-
-.subtitle1{font-size:20px;color:#b9c3cc;}
-.subtitle2{font-size:15px;color:#7fffb2;margin-top:6px;margin-bottom:10px;}
-
-/* SPI */
-.instrument{
-    width: 100%;
-    display:flex;
-    margin-top: -10px;
-    justify-content:center;
-    align-items: center;
-    margin-top: -40;
-    padding-top: 0;
-}
-
-.spi-container {
-    position: relative;
-    width: 260px;
-    height: 260px;
-}
-
-#spiGauge {
-    width: 260px;
-    height: 260px;
-    position: relative !important;
-    top: auto;
-    left: auto;
-    transform: none;
-    pointer-events: none;
-    margin: 0 auto;
-}
-
-#spiGauge text {
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    pointer-events: none;
-}
-
-.spi-wrapper {
-    position: relative;
-    width: 260px;
-    height: 260px;
-    margin: 0 auto;
-}
-
-.no-select {
-   -webkit-user-select: none;
-    user-select: none;
-   -webkit-touch-callout: none;  
-}
-
-/* MINI CIRCLES */ 
-.env-circle,
-.conf-circle {
-    position: absolute;
-    top: 66%;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    transform: translateY(-50%);
-    z-index: 5;
-}
-
-/* LEFT */
-.env-circle {
-    left: -50px;
-    border: 3px solid #ffc400;
-}
-
-/* RIGHT */
-.conf-circle {
-    right: -50px;
-    border: 3px solid #4da6ff;
-}
-
-.mini-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(0,0,0,0.8); }
-
-.mini-label {
-    font-size: 12px;
-    color: #ffffff;
-    opacity: 0.9;
-}
-
-
-/* SPI TEXT */
-.spi-number{
-    font-size:46px;
-    fill:white;
-    font-weight:700;
-}
-
-.spi-label {
-    fill: #ffffff;
-    opacity: 0.9;
-}
-
-/* TACTICAL */
-.tactical-bar{
-    margin:10px 20px;
-    padding:12px;
-    border-radius:14px;
-    border:1px solid #00ff9c;
-    text-align:center;
-}
-
-/* TILES */
-.tile-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    margin:18px;
-    z-index: 3;
-}
-
-.tile{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 110px;
-    height: 110px;
-    flex-shrink: 0;
-    background:rgba(0,0,0,0.4);
-    border-radius:18px;
-    backdrop-filter: blur(6px);
-    padding:14px;
-    overflow: hidden;
-    text-align:center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    transition: 0.2 ease;
-}
-
-.tiles {
-    align-items: stretch;
-}
-
-.tile.i {
-    width: 26px;
-    height: 26px;
-    margin-bottom: 6px;
-}
-
-.tile-title {
-    font-size: 13px;
-    opacity: 0.8;
-}
-
-.tile.hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 rgba(0,255,156,0.4);
-}
-
-/* DOCK */
-.dock {
-    position: fixed;
-    bottom: 10px; /* 🔥 lift it slightly */
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: calc(100% - 20px);
-    max-width: 420px;
-
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(10px);
-
-    border-radius: 16px;
-    padding: 10px 0;
-
-    display: flex;
-    justify-content: space-evenly;
-
-    z-index: 10;
-}
-
-.dock-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    font-size: 12px;
-    flex: 1;
-    text-align: center;
-    font-size: 12px;
-    color: white;
-
-    padding: 10px 0; /* 🔥 bigger tap zone */ 
-}
-
-.dock=btn i {
-    width: 22px;
-    height: 22px;
-}
-
-/* SCOUT */
-
-.scout {
-    position: fixed;
-    inset: 0;
-    background: rgba(5,10,15,0.95);
-    z-index: 20;
-
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 20px;
-}
-
-.scout-title {
-    color: #00ff9c;
-    font-size: 26px;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.scout-sub {
-    opacity: 0.7;
-    margin-bottom: 20px;
-}
-
-.scout-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    padding: 10px;
-    border-radius: 16px;
-
-    background: rgba(10,20,25,0.45);
-    border: 1px solid rgba(0,255,150,0.08);
-    backdrop-filter: blur(14px);
-}
-
-
-.scout-group {
-    width: 100%;
-    max-width: 320px;
-    margin-bottom: 22px;
-}
-
-.scout-group h3 {
-    text-align: left;
-    margin-bottom: 12px;
-}
-
-.scout-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #9fb3b0;
-    letter-spacing: 0.5px;
-}
-
-.scout-options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-}
-
-#scoutScreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+<div id="aiPanel" class="ai-panel collapsed">
     
-    display: flex;
-    flex-direction: column;
+    <div class="ai-header" onclick="toggleAI()">
+        <span>AI Tactical Insight</span>
+        <span id="aiToggle">+</span>
+    </div>
+
+</div>
     
-    background: rgba(0,0,0,0.95);
-    z-index: 1000;
-    justify-content: flex-start;
+<!-- ================= DOCK ================= --> 
+<div class="dock">
 
-    overflow-y: auto;
-}
+<div class="dock-btn" onclick="refreshDashboard()"> 
+<i id="refreshIcon" data-lucide="refresh-cw"></i> 
+Refresh 
+</div>
 
-.scout-container {
-    width: 100%;
-    max-width: 420px;
+<div class="dock-btn" onclick="openScout()">
+<i data-lucide="crosshair"></i> 
+Scout 
+</div>
+
+<div class="dock-btn" onclick="openDrop()">
+<i data-lucide="target"></i>
+Drop
+</div>
+
+<div class="dock-btn" onclick="openMap()"> 
+<i data-lucide="fish"></i> 
+Map 
+</div>
+
+<div class="dock-btn" onclick="openPlan()"> 
+<i data-lucide="compass"></i> 
+Plan 
+</div>  
+  
+<div class="dock-btn" onclick="openSetup()">
+<i data-lucide="settings"></i>
+Setup
+</div>
+
+<div class="dock-btn" onclick="openReport()">
+<i data-lucide="bar-chart-3"></i>
+Report
+</div>
+</div>
+
+<div id="scoutScreen" class="scout hidden">
+
+    <div class="scout-header">
+        <div class="scout-title">Scout Mode</div>
+        <div class="scout-sub">Quickly log activity & scan water</div>
+    </div>
+
+    <!-- FISH ACTIVITY -->
+<div class="scout-container">
+    <div class="scout-section section">
+        <div class="scout-label section-title">Fish Activity</div>
+        <div class="option-row option-group">
+            <div class="opt option" data-type="activity" data-value="bubbles">Bubbles</div>
+            <div class="opt option" data-type="activity" data-value="rolling">Rolling Fish</div>
+            <div class="opt option" data-type="activity" data-value="none">No Activity</div>
+        </div>
+    </div>
+
+    <!-- WATER -->
+    <div class="scout-section">
+        <div class="scout-label">Water Clarity</div>
+        <div class="scout-options">
+            <div class="opt" data-type="clarity" data-value="clear">Clear</div>
+            <div class="opt" data-type="clarity" data-value="stained">Slightly Stained</div>
+            <div class="opt" data-type="clarity" data-value="murky">Murky</div>
+        </div>
+    </div>
+
+    <!-- LIFE -->
+    <div class="scout-section">
+        <div class="scout-label">Life Signs</div>
+        <div class="scout-options">
+            <div class="opt" data-type="life" data-value="birds">Birds Active</div>
+            <div class="opt" data-type="life" data-value="none">No Birds</div>
+        </div>
+    </div>
+
+    <!-- STRUCTURE -->
+    <div class="scout-section">
+        <div class="scout-label">Structure</div>
+        <div class="scout-options">
+            <div class="opt" data-type="structure" data-value="weed">Weed</div>
+            <div class="opt" data-type="structure" data-value="dropoff">Drop-off</div>
+            <div class="opt" data-type="structure" data-value="flat">Flat</div>
+        </div>
+    </div>
+
+    <!-- WIND -->
+    <div class="scout-section">
+        <div class="scout-label">Wind Effect</div> 
+        <div class="scout-options">
+            <div class="opt" data-type="wind" data-value="bank">Windblown Bank</div>
+            <div class="opt" data-type="wind" data-value="calm">Calm Water</div>
+        </div>
+    </div>
+</div>
     
-    margin: 0;
-    padding: 14px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    <!-- BUTTON -->
+    <div class="scout-btn" onclick="saveAndScan()">Save & Continue</div>
     
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(12px);
+    </div>
+</div>
 
-    border-radius: 20px;
-}
-
-.scout-header {
-    text-align: center;
-    margin-bottom: 4px;
-    width: 100%;
-    max-width: 420px;
-    padding: 0 12px
-}
-
-.scout-title {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 700;
-    color: #00ffa6;
-}
-
-.scout-sub {
-    font-size: 13px;
-    opacity: 0.7;
-    text-align: left;
-}
-
-.section {
-    margin: 0;
-    width: 100%;
-    padding: 12px;
-    border-radius: 18px;
-    background: rgba(10,20,25,0.55);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(0,255,150,0.08);
-
-    box-shadow: 0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
-}
-
-.section-title {
-  font-size: 14px;
-  color: #e6eddf3;
-  font-weight: 500;
-  margin-bottom: 6px;
-  letter-spacing: 0.3px;
-}
-
-.label {
-    font-size: 14px;
-    color: #9fb3b0;
-    margin-bottom: 8px;
-    padding-left: 4px;
-}
-
-.opt {
-    word-break: break-word;
-    flex: 1;
-    padding: 8px 6px;
-    border-radius: 10px;
-
-    font-size: 11px;
-    line-height: 1.2;
-
-    min-height: 34px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(0,255,166,0.2);
-
-    color: #d8fdf5;
-
-    transition: all 0.2s ease;
-}
-
-/* 🔥 Hover */
-.opt:hover {
-    border-color: rgba(0,255,166,0.5);
-}
-
-/* 🔥 ACTIVE (THIS IS THE PREMIUM PART) */ 
-.opt.active {
-    border-color: #00ffa6;
-    box-shadow:
-        0 0 10px rgba(0,255,166,0.5),
-        inset 0 0 6px rgba(0,255,166,0.15);
-    background: rgba(0,255,166,0.12);
-
-    transform: scale(0.97);
-}
-
-.options {
-  display: flex;
-  flex: 1;
-  min-width: 30%;
-  gap: 10px;
-  flex: 1;
-  text-align: center;
-  padding: 14px 16px;
-  font-size: 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,255,150,0.2);
-  color: #d0d7de;
-  transition: all 0.25s ease;
-  background: rgba(0,0,0,0.25);
-
-}
-
-.option.active {
-  background: rgba(0,255,150,0.12);
-  border: 1px solid rgba(0,255,150,0.25);
-  box-shadow: 0 0 10px rgba(0,255,150,0.25);
-  transform: scale(1.03);
-}
-
-.option-row {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 5px;
-}
-
-.option-row::-webkit-scrollbar {
-    display: none;
-}
-
-.option-group {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.scout-btn {
-    margin-top: auto;
-    margin-bottom: 20px;
-    margin: 8px 12px;
-
-    padding: 14px;
-    border-radius: 16px;
-
-    font-size: 16px;
-    font-weight: 600;
-
-    text-align: center;
-
-    background: linear-gradient(135deg, #00ffaa, #00cc88);
-    color: black; /* 🔥 FIX readability */
-
-    box-shadow: 0 6px 20px rgba(0,255,150,0.25); 
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* 🔥 AI */
-
-.ai-panel {
-    position: relative;
-    width: 100%;
-    max-height: 0;
-    margin: 20px 15px 100px 15px;
-    margin-top: 20px;
-    border-radius: 16px;
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(6px);
-    overflow: visible;
-    transition: all 0.3s ease;
-    z-index: 5;
-    padding: 12px;
-}
-
-.ai-header {
-    padding: 14px;
-    font-weight: bold;
-    color: #00ffa6;
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-}
-
-.ai-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-    padding: 0 12px;
-    color: #e6fff3;
-    line-height: 1.6;
-    font-size: 13px;
-    line-height: 1.5;
-    white-space: pre-line;
-}
-
-.ai-panel.active .ai-content {
-    display: block;
-}
-
-/* Expanded state */
-.ai-panel.active .ai-content {
-    max-height: 300px;
-    padding: 10px 14px 15px 14px;
-}
-
-.ai-title {
-    color: #00ffa6;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-
-#mapScreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    background: rgba(0,0,0,0.95);
-
-    z-index: 9999;
-
-    display: flex;
-    flex-direction: column;
-}
-
-#mapContainer {
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,0.05);
-}
-
-.map-header {
-    position: relative;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 16px;
-    font-size: 16px;
-    color: white;
-    z-index: 10000;
-}
-
-.map-close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    z-index: 10001;
-}
-
-.scout-card {
-    background: rgba(10,20,20,0.9);
-    border-radius: 20px;
-    padding: 24px;
-    margin: auto;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 0 30px rgba(0,255,150,0.08);
-    width: 85%;
-    max-width: 420px;
+<!-- ================= MAP ================= -->
+<div id="mapScreen" class="hidden">
     
-}
+    <div class="map-header">
+        <span>Map View</span>
+        <button onclick="closeMap()" class="map-close">✕</button>
+    </div>
 
-.sensor-list {
-    margin-top: 20px;
-}
+    <div id="mapContainer"></div>
 
-.sensor-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: #cfe;
-}
+</div>
 
-.scout-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 25px;
-}
+<!-- ================= REPORT ================= -->
+    
+<div id="reportScreen" class="hidden">
 
-.btn {
-    flex: 1;
-    padding: 14px;
-    border-radius: 14px;
-    border: none;
-    font-weight: 600;
-}
+    <div class="report-header">
+        <h2>AIF SESSION REPORT</h2>
+        <button onclick="closeReport()">Close</button>
+    </div>
 
-.btn.primary {
-    background: #00ffa6;
-    color: black;
-}
+    <div class="report-summary">
+        <div>Scout Points: <span id="repScout">0</span></div>
+        <div>Drops Placed: <span id="repDrops">0</span></div>
+        <div>Best SPI: <span id="repBest">0%</span></div>
+        <div>Average SPI: <span id="repAvg">0%</span></div>
+    </div>
 
-.btn.secondary {
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border: 1px solid rgba(0,255,166,0.3);
-    opacity: 1; /* 🔥 REMOVE FADED LOOK */ }
+    <h3>Session Map</h3>
+    <div id="reportMap" style="height:250px; border-radius:12px;"></div>
 
-.btn.secondary:active {
-    transform: scale(0.96);
-    box-shadow: 0 0 10px rgba(0,255,166,0.3); }
+    <h3>Drop Log</h3>
+    <div id="dropLog"></div>
 
-.scan-loader {
-    width: 50px;
-    height: 50px;
-    border: 3px solid rgba(0,255,150,0.2);
-    border-top: 3px solid #00ffa6;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-}
+</div>
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.scan-text {
-    text-align: center;
-    color: #9fb;
-    line-height: 1.6;
-}
-
-.error-text {
-    text-align: center;
-    color: #ff6b6b;
-    margin-top: 10px;
-}
-
-#reportScreen {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    color: #fff;
-    z-index: 9999;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.report-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.report-summary div {
-    margin: 6px 0;
-    font-size: 16px;
-}
-
-.drop-card {
-    background: #111;
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-}
-
-.compass-ring {
-    position: absolute;
-    width: 260px;
-    height: 260px;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    }
-
-.compass-label {
-  position: absolute;
-  color: rgba(255,255,255,0.95);
-  font-size: 14px;
-  font-weight: 700;
-  text-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(0,255,160,0.4);
-  transform: translate(-50%, -50%);
-}
-
-.dir {
-    position: absolute;
-    color: rgba(255,255,255,0.9);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-/* TOP */
-.dir.n {
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%, -120%);
-}
-
-/* BOTTOM */
-.dir.s {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%, 120%);
-}
-
-/* RIGHT */
-.dir.e {
-    right: 0;
-    top: 50%;
-    transform: translateY(120%, -50%);
-}
-
-/* LEFT */
-.dir.w {
-    left: 0;
-    top: 50%;
-    transform: translateY(-120%, -50%);
-}
-
-#compassNeedle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 2px;
-    height: 90px;
-    background: white;
-
-    transform-origin: center center;
-    transform: translate(-50%, -50%) rotate(0deg);
-
-    z-index: 4;
-}
-
-.overlay-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(6px);
-
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hidden {
-    display: none;
-}
+    
+<script src="app.js"></script>
+<script>lucide.createIcons();
+</script>
+    
+</body>
+</html>
