@@ -57,6 +57,10 @@ html, body {
     padding-top: 20px;
     padding-bottom: 120px;
 
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+
     opacity: 0;
     visibility: hidden;
 }
