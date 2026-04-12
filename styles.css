@@ -242,45 +242,36 @@ body{
 }
 
 /* MINI CIRCLES */
-.env-circle, .conf-circle {
+.env-circle,
+.conf-circle {
     position: absolute;
     top: 50%;
+    transform: translateY(-50%);
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    border: 2px solid #00ff9c;
-    box-shadow: 0 0 18px rgba(0,255,156,0.9);
-    bottom: 20px;
-    transform: translateY(-50%);
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    background: transparent; /* 🔥 removed dark fill */
-
-    border: 2px solid rgba(255,255,255,0.9); /* bright white ring */
-
-    backdrop-filter: blur(4px); /* optional premium glass look */ 
+    background: transparent;
+    border: 3px solid white;
 }
 
-.env-circle{
-    position: absolute;
-    left: -60px;
-    top: 75%;
-    transform: translate(-160px, -50%);
-    border: 3px solid #ffc400;
-    box-shadow: 0 0 12px rgba(0,255,156,0.4);
+
+
+.env-circle {
+    left: -20px;   /* 🔥 SAFE VALUE */
+    border-color: #ffc400;
 }
 
-.conf-circle{
-    right: -60px;
-    top: 75%;
-    transform: translate(80px, -50%);
-    border: 3px solid #4da6ff;
-    box-shadow: 0 0 12px rgba(77,166,255,0.4);
+.conf-circle {
+    right: -20px;  /* 🔥 SAFE VALUE */
+    border-color: #4da6ff;
 }
+
 
 .mini-value {
     font-size: 20px;
