@@ -263,7 +263,8 @@ html, body {
 }
 
 .env-circle { 
-  left: -40px; 
+  left: 0;
+  bottom: -40px;
   border: 8px solid var(--gold-main);
   border-radius: 50%;
   transform: translate(-50%);
