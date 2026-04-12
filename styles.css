@@ -46,7 +46,7 @@ html, body {
     position: fixed;
     inset: 0;
     background: url("background.jpg") center / cover no-repeat;
-    filter: brightness(0.7);
+    filter: brightness(0.5) contrast(1.1);
     z-index: 0;
 }
 
@@ -356,6 +356,8 @@ html, body {
     font-weight: 700;
     text-align: center;
     line-height: 1;
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(0,0,0,0.6);
 }
 
 .mini-label {
@@ -363,6 +365,8 @@ html, body {
     opacity: 0.8;
     text-align: center;
     line-height: 1;
+    color: #ffffff;
+    opacity: 0.9;
 }
 
 /* ================= TACTICAL ================= */ 
