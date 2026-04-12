@@ -1,318 +1,231 @@
-<!DOCTYPE html>
-<html>
-<head>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-<meta name="viewport" content="width=device-width, initial-scale=1"> <title>AIF Dashboard</title>
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #05080d;
+    color: white;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 
-<link rel="stylesheet" href="styles.css">
+/* ================= BACKGROUND ================= */ .bg {
+    position: fixed;
+    inset: 0;
+    background: url("background.jpg") center / cover no-repeat;
+    filter: brightness(0.7);
+    z-index: 0;
+}
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
+#waterGraph {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
 
-</head>
+/* ================= MAIN ================= */ .main {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
 
-<body>
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-<div class="bg"></div>
+    padding-top: 20px;
+    padding-bottom: 120px;
 
-<div id="splash">
-    <div class="splash-content">
-        <div class="loader">
-            <div class ="bar"></div>
-        </div>
-    </div>
-</div>
-    
-<div id="main" class="main">
+    opacity: 0;
+    visibility: hidden;
+}
 
-<canvas id="waterGraph"></canvas>    
+.main-visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.6s ease;
+}
 
-    <!-- ================= HEADER ================= -->
-    <div class="header">
-        <div class="brand">AIF™</div>
-        <div class="subtitle1">Artificial Intelligence Fishing</div>
-        <div class="subtitle2">Drop • Scan • Strike</div>
-    </div>
+/* ================= HEADER ================= */ .header {
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-    <!-- ================= SPI ================= -->
-    <div class="instrument">
-        <div class="spi-container">
+.brand {
+    font-size: 40px;
+    font-weight: 700;
+    color: #00ffa6;
+}
 
-            <div class="env-circle">
-                <div class="mini-value" id="envScore">--</div>
-                <div class="mini-label">ENV</div>
-            </div>
+.subtitle1 {
+    font-size: 18px;
+    opacity: 0.85;
+}
 
-            <div class="conf-circle">
-                <div class="mini-value" id="confScore">--</div>
-                <div class="mini-label">CONF</div>
-            </div>
+.subtitle2 {
+    font-size: 14px;
+    color: #00ff9c;
+}
 
-            <svg id="spiGauge" viewBox="0 0 300 300">
+/* ================= SPI ================= */ .instrument {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
 
-                <circle cx="150" cy="150" r="110"
-                    stroke="#2f4f4f"
-                    stroke-width="10"
-                    fill="none"
-                    stroke-dasharray="8 12"/>
+.spi-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
 
-                <circle id="spiArc"
-                    cx="150"
-                    cy="150"
-                    r="110"
-                    stroke="#00ff9c"
-                    stroke-width="14"
-                    fill="none"
-                    stroke-linecap="round"
-                    transform="rotate(-90 150 150)"/>
+.spi-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
 
-                <text x="150" y="145" text-anchor="middle"
-                    class="spi-number"
-                    id="spiValue">--%</text>
+    /* 🔥 MOVE WHOLE GAUGE HERE */
+    transform: translateY(-20px);
+}
 
-                <text x="150" y="175"
-                    text-anchor="middle"
-                    class="spi-label">SPI</text>
+#spiGauge {
+    width: 100%;
+    height: 100%;
+}
 
-            </svg>
+/* ================= COMPASS ================= */ .compass-ring {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
 
-        </div>
-    </div>
+.dir {
+    position: absolute;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+}
 
-    <!-- ================= TACTICAL ================= -->
-    <div class="tactical-bar" id="tactical">
-        Waiting for environmental data...
-    </div>
+.dir.n { top: -10px; left: 50%; transform: translateX(-50%); } .dir.s { bottom: -10px; left: 50%; transform: translateX(-50%); } .dir.e { right: -10px; top: 50%; transform: translateY(-50%); } .dir.w { left: -10px; top: 50%; transform: translateY(-50%); }
 
-    <!-- ================= TILES ================= -->
-    <div class="tile-grid">
+#compassNeedle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 90px;
+    background: white;
 
-    <div class="tile">
-    <i data-lucide="sun"></i>
-    <div class="tile-title">air</div>
-    <div class="tile-value" id="air">--</div>
-    </div>
-    
-    <div class="tile">
-    <i data-lucide="waves"></i>
-    <div class="tile-title">Surface</div>
-    <div class="tile-value" id="surface">--</div>
-    </div>
-        
-    <div class="tile">
-    <i data-lucide="arrow-down"></i>
-    <div class="tile-title">Bottom</div>
-    <div class="tile-value" id="bottom">--</div>
-    </div>
+    transform-origin: center center;
+    transform: translate(-50%, -50%) rotate(0deg);
 
-    <div class="tile">
-    <i data-lucide="gauge"></i>
-    <div class="tile-title">Pressure</div>
-    <div class="tile-value" id="pressure">--</div>
-    </div>
-        
-    <div class="tile">
-    <i data-lucide="wind"></i>
-    <div class="tile-title">Wind</div>
-    <div class="tile-value" id="wind">--</div>
-    </div>
-    
-    <div class="tile">
-    <i data-lucide="cloud"></i>
-    <div class="tile-title">Cloud</div>
-    <div class="tile-value" id="cloud">--</div>
-    </div>
+    z-index: 5;
+}
 
-    <div class="tile">
-    <i data-lucide="moon"></i>
-    <div class="tile-title">Moon</div>
-    <div class="tile-value" id="moon">--</div>
-    </div>
-        
-    <div class="tile">
-    <i data-lucide="leaf"></i>
-    <div class="tile-title">Season</div>
-    <div class="tile-value" id="season">--</div>
-    </div>
-        
-    <div class="tile">
-    <i data-lucide="fish"></i>
-    <div class="tile-title">Feed</div>
-    <div class="tile-value" id="feed">--</div>
-    </div>
-        
-    <div class="tile">
-    <i data-lucide="droplets"></i>
-    <div class="tile-title">Oxygen</div>
-    <div class="tile-value" id="oxygen">--</div>
-    </div>  
-    
-    <div class="tile" id="compassTile">
-    <i data-lucide="compass"></i>
-    <div class="tile-title">compass</div>
-    <div class="tile-value" id="compassDir">Tap</div>
-    </div>
+/* ================= MINI CIRCLES ================= */ .env-circle, .conf-circle {
+    position: absolute;
+    top: 50%;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
 
-    </div>
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-    <!-- ================= AI ================= -->
-    <div class="ai-box" onclick="toggleAI()">
-        <b>AI Tactical Analysis</b>
-        <div id="aiContent" class="ai-content"></div>
-    </div>
+    transform: translateY(-50%);
+}
 
-<div id="aiPanel" class="ai-panel collapsed">
-    
-    <div class="ai-header" onclick="toggleAI()">
-        <span>AI Tactical Insight</span>
-        <span id="aiToggle">+</span>
-    </div>
+/* 🔥 POSITION (EDIT THESE ONLY) */
+.env-circle { left: -85px; border: 3px solid #ffc400; } .conf-circle { right: -85px; border: 3px solid #4da6ff; }
 
-</div>
-    
-<!-- ================= DOCK ================= --> 
-<div class="dock">
+.mini-value {
+    font-size: 20px;
+    font-weight: 700;
+}
 
-<div class="dock-btn" onclick="refreshDashboard()"> 
-<i id="refreshIcon" data-lucide="refresh-cw"></i> 
-Refresh 
-</div>
+.mini-label {
+    font-size: 11px;
+    opacity: 0.8;
+}
 
-<div class="dock-btn" onclick="openScout()">
-<i data-lucide="crosshair"></i> 
-Scout 
-</div>
+/* ================= TACTICAL ================= */ .tactical-bar {
+    margin: 10px 20px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid #00ff9c;
+    text-align: center;
+}
 
-<div class="dock-btn" onclick="openDrop()">
-<i data-lucide="target"></i>
-Drop
-</div>
+/* ================= TILES ================= */ .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 18px;
+}
 
-<div class="dock-btn" onclick="openMap()"> 
-<i data-lucide="fish"></i> 
-Map 
-</div>
+.tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-<div class="dock-btn" onclick="openPlan()"> 
-<i data-lucide="compass"></i> 
-Plan 
-</div>  
-  
-<div class="dock-btn" onclick="openSetup()">
-<i data-lucide="settings"></i>
-Setup
-</div>
+    width: 110px;
+    height: 110px;
 
-<div class="dock-btn" onclick="openReport()">
-<i data-lucide="bar-chart-3"></i>
-Report
-</div>
-</div>
+    background: rgba(0,0,0,0.4);
+    border-radius: 18px;
+    backdrop-filter: blur(6px);
 
-<div id="scoutScreen" class="scout hidden">
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
 
-    <div class="scout-header">
-        <div class="scout-title">Scout Mode</div>
-        <div class="scout-sub">Quickly log activity & scan water</div>
-    </div>
+/* ================= DOCK ================= */ .dock {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
 
-    <!-- FISH ACTIVITY -->
-<div class="scout-container">
-    <div class="scout-section section">
-        <div class="scout-label section-title">Fish Activity</div>
-        <div class="option-row option-group">
-            <div class="opt option" data-type="activity" data-value="bubbles">Bubbles</div>
-            <div class="opt option" data-type="activity" data-value="rolling">Rolling Fish</div>
-            <div class="opt option" data-type="activity" data-value="none">No Activity</div>
-        </div>
-    </div>
+    width: calc(100% - 20px);
+    max-width: 420px;
 
-    <!-- WATER -->
-    <div class="scout-section">
-        <div class="scout-label">Water Clarity</div>
-        <div class="scout-options">
-            <div class="opt" data-type="clarity" data-value="clear">Clear</div>
-            <div class="opt" data-type="clarity" data-value="stained">Slightly Stained</div>
-            <div class="opt" data-type="clarity" data-value="murky">Murky</div>
-        </div>
-    </div>
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
 
-    <!-- LIFE -->
-    <div class="scout-section">
-        <div class="scout-label">Life Signs</div>
-        <div class="scout-options">
-            <div class="opt" data-type="life" data-value="birds">Birds Active</div>
-            <div class="opt" data-type="life" data-value="none">No Birds</div>
-        </div>
-    </div>
+    border-radius: 16px;
+    padding: 10px 0;
 
-    <!-- STRUCTURE -->
-    <div class="scout-section">
-        <div class="scout-label">Structure</div>
-        <div class="scout-options">
-            <div class="opt" data-type="structure" data-value="weed">Weed</div>
-            <div class="opt" data-type="structure" data-value="dropoff">Drop-off</div>
-            <div class="opt" data-type="structure" data-value="flat">Flat</div>
-        </div>
-    </div>
+    display: flex;
+    justify-content: space-evenly;
 
-    <!-- WIND -->
-    <div class="scout-section">
-        <div class="scout-label">Wind Effect</div> 
-        <div class="scout-options">
-            <div class="opt" data-type="wind" data-value="bank">Windblown Bank</div>
-            <div class="opt" data-type="wind" data-value="calm">Calm Water</div>
-        </div>
-    </div>
-</div>
-    
-    <!-- BUTTON -->
-    <div class="scout-btn" onclick="saveAndScan()">Save & Continue</div>
-    
-    </div>
-</div>
+    z-index: 10;
+}
 
-<!-- ================= MAP ================= -->
-<div id="mapScreen" class="hidden">
-    
-    <div class="map-header">
-        <span>Map View</span>
-        <button onclick="closeMap()" class="map-close">✕</button>
-    </div>
+.dock-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    flex: 1;
+}
 
-    <div id="mapContainer"></div>
+/* ================= SCREENS ================= */ .hidden {
+    display: none !important;
+}
 
-</div>
+.overlay-screen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 9999;
 
-<!-- ================= REPORT ================= -->
-    
-<div id="reportScreen" class="hidden">
-
-    <div class="report-header">
-        <h2>AIF SESSION REPORT</h2>
-        <button onclick="closeReport()">Close</button>
-    </div>
-
-    <div class="report-summary">
-        <div>Scout Points: <span id="repScout">0</span></div>
-        <div>Drops Placed: <span id="repDrops">0</span></div>
-        <div>Best SPI: <span id="repBest">0%</span></div>
-        <div>Average SPI: <span id="repAvg">0%</span></div>
-    </div>
-
-    <h3>Session Map</h3>
-    <div id="reportMap" style="height:250px; border-radius:12px;"></div>
-
-    <h3>Drop Log</h3>
-    <div id="dropLog"></div>
-
-</div>
-
-    
-<script src="app.js"></script>
-<script>lucide.createIcons();
-</script>
-    
-</body>
-</html>
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
