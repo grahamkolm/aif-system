@@ -146,7 +146,7 @@ html, body {
 /* ================= MINI CIRCLES ================= */ 
 .env-circle, .conf-circle {
     position: absolute;
-    top: 620%;
+    top: 62%;
     width: 80px;
     height: 80px;
     border-radius: 50%;
