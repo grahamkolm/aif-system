@@ -1152,9 +1152,9 @@ function toggleAI() {
     const content = document.getElementById("aiContent");
     const toggle = document.getElementById("aiToggle");
 
-    if (!panel || !content) return;
+    if (!panel || !content || !toggle) return;
 
-    panel.classList.toggle("active");
+    panel.classList.toggle("collapsed");
 
     if (panel.classList.contains("active")) {
         toggle.innerText = "−";
