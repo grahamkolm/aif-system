@@ -208,7 +208,7 @@ body{
     width: 260px;
     height: 260px;
     position: absolute;
-    top: 50%;
+    top: -80px;
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
