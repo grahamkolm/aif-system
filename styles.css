@@ -263,10 +263,10 @@ html, body {
 }
 
 .env-circle { 
-  left: -30px; 
+  left: -40px; 
   border: 8px solid var(--gold-main);
   border-radius: 50%;
-  transform: translate(-50%);
+  transform: translate(-50%, -50%);
 
   box-shadow:
     0 0 8px var(--gold-glow),
@@ -279,9 +279,9 @@ html, body {
 }
 
 .conf-circle { 
-    right: -30px; 
+    right: -40px; 
     border-radius: 50%;
-    transform: translate(-50%);
+    transform: translate(-50%, -50%);
     border: 8px solid var(--blue-main);
 
     box-shadow:
