@@ -243,10 +243,9 @@ html, body {
 
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
 
-    transform: translateY(-50%);
+    transform: translateY(-40px);
 }
 
 .env-circle::before {
@@ -264,13 +263,10 @@ html, body {
 }
 
 .env-circle { 
-  position: absolute;
-  left: 15%;
-  bottom: -35px;
+  left: -40px;
   border: 8px solid var(--gold-main);
   border-radius: 50%;
-  transform: translateY(-40px);
-
+  
   box-shadow:
     0 0 8px var(--gold-glow),
     0 0 18px rgba(200, 168, 90, 0.3);
@@ -282,11 +278,9 @@ html, body {
 }
 
 .conf-circle { 
-  position: absolute;  
-  right: 15%;
-  bottom: -35px;
+    right: -40px;
     border-radius: 50%;
-    transform: translateY(-40px);
+    
     border: 8px solid var(--blue-main);
 
     box-shadow:
