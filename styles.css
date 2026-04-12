@@ -7,10 +7,10 @@
   --blue-glow: rgba(58, 160, 255, 0.5);
 
   /* NEW GOLD (replaces orange) */
-  --gold-main: #C8A85A;
-  --gold-light: #E6C97A;
-  --gold-dark: #8F7435;
-  --gold-glow: rgba(200, 168, 90, 0.45); 
+  --gold-main: #FFD166;
+  --gold-light: #FFE29A;
+  --gold-dark: #B8962E;
+  --gold-glow: rgba(255, 209, 182, 0.5); 
 }
 
 * {
@@ -154,6 +154,7 @@ html, body {
 
 .spi-number {
     fill: #ffffff;
+    opacity: 1;
     font-size: 42px;
     font-weight: 700;
     text-anchor: middle;
@@ -162,7 +163,8 @@ html, body {
 }
 
 .spi-label {
-    fill: rgba(255,255,255,0.85);
+    fill: #ffffff;
+    opacity: 0.9;
     font-size: 14px;
     font-weight: 500;
 }
@@ -292,8 +294,8 @@ html, body {
   transform: translateY(-50%);
   
   box-shadow:
-    0 0 8px var(--gold-glow),
-    0 0 18px rgba(200, 168, 90, 0.3);
+    0 0 12px var(--gold-glow),
+    0 0 25px rgba(255, 209, 102, 0.3);
     animation: pulseGlow 3s infinite ease-in-out;  
 } 
 
