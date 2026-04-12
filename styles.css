@@ -161,12 +161,12 @@ html, body {
 
 /* 🔥 POSITION (EDIT THESE ONLY) */
 .env-circle { 
-    left: -70px; 
+    left: -55px; 
     border: 3px 
     solid #ffc400; 
 } 
 .conf-circle { 
-    right: -70px; 
+    right: -55px; 
     border: 3px solid #4da6ff; 
 }
 
