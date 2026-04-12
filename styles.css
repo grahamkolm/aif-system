@@ -257,6 +257,7 @@ html, body {
 .env-circle, .conf-circle {
     position: absolute;
     top: 83%;
+    gap: 2px;
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -351,13 +352,17 @@ html, body {
 }
 
 .mini-value {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
+    text-align: center;
+    line-height: 1;
 }
 
 .mini-label {
-    font-size: 9px;
+    font-size: 10px;
     opacity: 0.8;
+    text-align: center;
+    line-height: 1;
 }
 
 /* ================= TACTICAL ================= */ 
