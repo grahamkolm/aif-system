@@ -52,16 +52,20 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", enableCompass, { once: true });
     
     setTimeout(() => {
+    splashActive = false;
 
-        splash.style.opacity = "0";
-        main.classList.add("main-visible");
+    // ✅ FETCH DATA IMMEDIATELY
+    fetchWeatherSafe();
 
-        initGPS();
-        startSplash();
-   
-        setTimeout(() => splash.remove(), 800);
+    startApp();
 
-}, 2000);
+    canvas = document.getElementById("waterGraph");
+    ctx = canvas ? canvas.getContext("2d") : null;
+
+    // ✅ THEN KEEP UPDATING
+    setInterval(fetchWeatherSafe, 30000);
+
+}, 3500);
 
 });
 
