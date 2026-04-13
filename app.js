@@ -97,6 +97,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
+    function enableCompass() {
+    console.log("Compass enabled");
+
+    // Placeholder for now
+}
+    
     // Store scout screen
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
