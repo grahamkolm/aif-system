@@ -2030,7 +2030,7 @@ document.addEventListener("DOMContentLoaded", () => {
     svg.appendChild(line);
   }
 
-}
+});
 
 
 window.retryConnection = retryConnection;
