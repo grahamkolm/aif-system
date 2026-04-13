@@ -627,8 +627,13 @@ function renderDashboard(data) {
     const windDir = data.wind?.deg || 0;
     
     // ✅ ALWAYS define diff
-    diff = 0;
+    let diff = 0;
 
+    if (typeof compassHeading !== "undefined" &&compassHeading !== null) {
+        diff = Math.abs(windDir - compassHeading);
+        if(diff > > 180) diff = 360 - diff;
+    }
+    console.log("Wind vs heading off:", diff);
     if (compassHeading !== null) {
     diff = Math.abs(windDir - compassHeading);
     if (diff > 180) diff = 360 - diff;
