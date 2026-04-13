@@ -102,6 +102,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Placeholder for now
 }
+
+function updateCompass(heading) {
+    // Temporary safe fallback
+    // Later we will rotate compass properly
+    console.log("Compass heading:", heading); 
+}
+
     
     // Store scout screen
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
@@ -611,7 +618,7 @@ function calculateAverageSPI() {
 // =====================================================
 
 function renderDashboard(data) {
-
+    console.log("Dashboard render placeholder");
     lastConditions = data;
     const t = data.main.temp;
     const p = data.main.pressure;
