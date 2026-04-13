@@ -377,9 +377,9 @@ bubbles.forEach((b, i) => {
     );
 
 
-    gradient.addColorStop(0, `rgba(255,255,255,${alpha})`);
-    gradient.addColorStop(0.4, `rgba(200,230,255,${alpha * 0.5})`);
-    gradient.addColorStop(1, `rgba(180,220,255,0)`);
+    gradient.addColorStop(0, 'rgba(255,255,255,${alpha})'); 
+    gradient.addColorStop(0.4, 'rgba(200,230,255,${alpha * 0.5})'); 
+    gradient.addColorStop(1, 'rgba(180,220,255,0)');
 
     ctx.fillStyle = gradient;
     ctx.beginPath();
