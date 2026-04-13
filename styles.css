@@ -100,7 +100,7 @@ html, body {
 /* ================= MAIN ================= */ 
 .main {
     position: relative;
-    z-index: 2;
+    z-index: 10;
     min-height: 100vh;
 
     display: flex;
