@@ -454,7 +454,7 @@ if (typeof renderDashboard === "function") {
 } else {
     console.warn("renderDashboard not ready yet"); 
 }
-
+}
 function analyzeWeather(w, p, c){
 
     let insights = [];
