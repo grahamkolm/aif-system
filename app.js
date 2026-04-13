@@ -4,6 +4,7 @@
 
 let diff = 0;
 let splashActive = true;
+let tempHistory = [];
 let pressureHistory = [];
 let needle;
 let tempModel = {
@@ -122,20 +123,6 @@ function animateSplash() {
     requestAnimationFrame(animateSplash);
 }
 
-function startSplash() {
-
-    animateSplash();
-
-    setTimeout(() => {
-        splashActive = false;
-        startApp();
-        canvas = document.getElementById("waterGraph");
-        ctx = canvas ? canvas.getContext("2d") : null;
-        setInterval(fetchWeatherSafe, 30000);
-        
-    }, 3500);
-}
-
 // =====================================================
 // 🚀 3. MAIN APP
 // =====================================================
@@ -156,9 +143,7 @@ function startApp() {
     generateHotspots();
     setInterval(generateHotspots, 10000);
     setInterval(ripple, 3000);
-
-    setTimeout(fetchWeatherSafe, 2000);
-    
+   
     setTimeout(() => {
     //    setupHold("Gauge", showSPIInsight);
     }, 1500);
@@ -546,78 +531,7 @@ function renderDashboard(data) {
     // =========================
     updateSPI(finalSPI);
 
-    // =========================
-    // ✅ ENV CALCULATION
-    // =========================
-function calculateENV(p, c, w, light, airTemp) {
-
-    let score = 50; // neutral baseline
-
-    // ================= PRESSURE =================
-    let trend = getPressureTrend(p);
-
-    if (p >= 1012 && p <= 1020) score += 8;
-    else if (p < 1008 || p > 1025) score -= 8;
-
-    if (trend === "rising") score += 10;
-    if (trend === "falling") score -= 12;
-
-    // ================= WIND =================
-    if (w >= 5 && w <= 15) score += 12;
-    else if (w < 2) score -= 10;
-    else if (w > 20) score -= 6;
-
-    // ================= CLOUD =================
-    if (c >= 30 && c <= 70) score += 10;
-    else if (c < 10) score -= 6;
-    else if (c > 90) score -= 4;
-
-    // ================= LIGHT =================
-    if (light >= 40 && light <= 70) score += 10;
-    else if (light < 20) score -= 6;
-    else if (light > 85) score -= 8;
-
-    // ================= TEMP TREND =================
-    let tempTrend = getTempTrend(airTemp);
-
-    if (tempTrend === "warming") score += 8;
-    if (tempTrend === "cooling_fast") score -= 10;
-
-    // ================= TIME WINDOWS =================
-    let hour = new Date().getHours();
-
-    if (hour >= 5 && hour <= 9) score += 12;
-    if (hour >= 17 && hour <= 20) score += 14;
-    if (hour >= 11 && hour <= 15) score -= 6;
-
-    // ================= MOON =================
-    let moon = getMoonPhase();
-
-    if (moon === "Full") score += 5;
-    if (moon === "New") score += 4;
-
-    // ================= FINAL =================
-    return Math.max(20, Math.min(95, Math.round(score))); }
-
-    // ================= CALCULATE TEMP HISTORY FOR ENV========
-
-let tempHistory = [];
-
-function getTempTrend(t) {
-
-    tempHistory.push(t);
-    if (tempHistory.length > 6) tempHistory.shift();
-
-    if (tempHistory.length < 2) return "stable";
-
-    let diff = tempHistory[tempHistory.length - 1] - tempHistory[0];
-
-    if (diff > 1) return "warming";
-    if (diff < -1) return "cooling_fast";
-
-    return "stable";
-}
-    
+ 
     // =========================
     // ✅ VISUAL LINK (important)
     // =========================
@@ -790,14 +704,10 @@ function setRingProgress(selector, value) {
 
 window.onload = () => {
   setTimeout(() => {
-    setRingProgress('.env-progress', 95);
-    setRingProgress('.conf-progress', 83);
+    setRingProgress('.env-progress', envScore);
+    setRingProgress('.conf-progress', confScore);
   }, 300);
 };
-    
-// Set values
-setRingProgress('.env-progress', 95);
-setRingProgress('.conf-progress', 83);
     
 // ✅ TEXT COLORS
 const spiText = document.getElementById("spiValue");
@@ -883,6 +793,77 @@ if (tactical) {
 // =====================================================
 // 🧠 8. ENVIRONMENT HELPERS
 // =====================================================
+
+   // =========================
+    // ✅ ENV CALCULATION
+    // =========================
+function calculateENV(p, c, w, light, airTemp) {
+
+    let score = 50; // neutral baseline
+
+    // ================= PRESSURE =================
+    let trend = getPressureTrend(p);
+
+    if (p >= 1012 && p <= 1020) score += 8;
+    else if (p < 1008 || p > 1025) score -= 8;
+
+    if (trend === "rising") score += 10;
+    if (trend === "falling") score -= 12;
+
+    // ================= WIND =================
+    if (w >= 5 && w <= 15) score += 12;
+    else if (w < 2) score -= 10;
+    else if (w > 20) score -= 6;
+
+    // ================= CLOUD =================
+    if (c >= 30 && c <= 70) score += 10;
+    else if (c < 10) score -= 6;
+    else if (c > 90) score -= 4;
+
+    // ================= LIGHT =================
+    if (light >= 40 && light <= 70) score += 10;
+    else if (light < 20) score -= 6;
+    else if (light > 85) score -= 8;
+
+    // ================= TEMP TREND =================
+    let tempTrend = getTempTrend(airTemp);
+
+    if (tempTrend === "warming") score += 8;
+    if (tempTrend === "cooling_fast") score -= 10;
+
+    // ================= TIME WINDOWS =================
+    let hour = new Date().getHours();
+
+    if (hour >= 5 && hour <= 9) score += 12;
+    if (hour >= 17 && hour <= 20) score += 14;
+    if (hour >= 11 && hour <= 15) score -= 6;
+
+    // ================= MOON =================
+    let moon = getMoonPhase();
+
+    if (moon === "Full") score += 5;
+    if (moon === "New") score += 4;
+
+    // ================= FINAL =================
+    return Math.max(20, Math.min(95, Math.round(score))); }
+
+    // ================= CALCULATE TEMP HISTORY FOR ENV========
+
+function getTempTrend(t) {
+
+    tempHistory.push(t);
+    if (tempHistory.length > 6) tempHistory.shift();
+
+    if (tempHistory.length < 2) return "stable";
+
+    let diff = tempHistory[tempHistory.length - 1] - tempHistory[0];
+
+    if (diff > 1) return "warming";
+    if (diff < -1) return "cooling_fast";
+
+    return "stable";
+}
+    
 
 function getMoonPhase(){
     let d=new Date();
