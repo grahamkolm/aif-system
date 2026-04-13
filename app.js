@@ -444,7 +444,7 @@ function fetchWeatherSafe() {
 }
 
 function simulateWeather() {
-
+setTimeout(() => {
 if (typeof renderDashboard === "function") {
     renderDashboard({
         main: { temp: 22, pressure: 1018 },
@@ -454,7 +454,9 @@ if (typeof renderDashboard === "function") {
 } else {
     console.warn("renderDashboard not ready yet"); 
 }
+},100);
 }
+
 function analyzeWeather(w, p, c){
 
     let insights = [];
