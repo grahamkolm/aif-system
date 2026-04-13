@@ -185,6 +185,21 @@ function initSplashBubbles() {
   }
 }
 
+function updateCompass(deg) {
+const dirText = getDirection(deg);
+console.log("Facing:", dirText);
+
+    if (!needle) {
+        console.log("❌ compassNeedle NOT FOUND");
+        return;
+    }
+
+    if (typeof deg !== "number") return;
+
+    needle.style.transform =
+        `translate(-50%, -100%) rotate(${deg}deg)`; 
+}
+
 function animateSplash() {
 
   if (!splashCtx) return;
@@ -1257,20 +1272,6 @@ window.addEventListener("deviceorientation", e => {
     }
     console.log("Heading:", compassHeading);
 });
-
-function updateCompass(deg) {
-const dirText = getDirection(deg);
-console.log("Facing:", dirText);
-
-    if (!needle) {
-        console.log("❌ compassNeedle NOT FOUND");
-        return;
-    }
-
-    if (typeof deg !== "number") return;
-
-    needle.style.transform =
-        `translate(-50%, -100%) rotate(${deg}deg)`; }
 
 let mapInstance;
 
