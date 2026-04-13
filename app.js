@@ -434,7 +434,7 @@ function fetchWeatherSafe() {
             if(typeof renderDashboard === "function") {
                 renderDashboard(data);
             } else {
-                console.error("renderDashboard NOTfound");
+
             }
         })
         .catch(simulateWeather);
