@@ -2173,10 +2173,8 @@ document.addEventListener("DOMContentLoaded", () => {
     svg.appendChild(line);
   }
 
-});
+}
 
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
-
-}
