@@ -704,8 +704,13 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     // ================= FINAL =================
     return Math.max(40, Math.min(95, Math.round(score))); }
 
-document.getElementById("confScore").innerText = confScore + "%";
+    let confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+    let confEl = document.getElementById("confScore");
 
+    if (confEl) {
+        confEl.innerText = confScoreValue = "%";
+    }
+    
 // 🎯 GET ELEMENTS (ONLY ONCE)
 const spiCircle = document.getElementById("spiCircle");
 const envCircle = document.getElementById("envCircle");
@@ -714,7 +719,7 @@ const confCircle = document.getElementById("confCircle");
 // 🎨 COLORS (ONLY ONCE)
 const spiColor = getScoreColor(finalSPI); 
 const envColor = getScoreColor(envScore); 
-const confColor = getScoreColor(confScore);
+const confColor = getScoreColor(confScoreValue);
 setRingProgress(`env-progress`, envScore);
 setRingProgress(`conf-progress`, confScore);
     
