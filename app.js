@@ -438,8 +438,7 @@ function fetchWeatherSafe() {
     } else {
         console.warn("Invalid weather data", data);
     }
-})
-
+});
         .catch(() => {
     console.warn("Using simulated weather");
 
