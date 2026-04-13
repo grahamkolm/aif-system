@@ -370,7 +370,6 @@ function animate() {
         b.y,
         size
     );
-);
 
 gradient.addColorStop(0, `rgba(255,255,255,${b.alpha})`);       // bright core
 gradient.addColorStop(0.4, `rgba(200,230,255,${b.alpha * 0.5})`); // soft blue glow
