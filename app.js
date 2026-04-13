@@ -702,7 +702,7 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     if(SPI > 80 && envScore > 80) score +=5;
     if(SPI < 40 && envScore < 40) score +=5;
 
-    if (isNan(score)) score = 50;
+    if (isNaN(score)) score = 50;
     return Math.max(40, Math.min(95, Math.round(score)));
     
     // ================= FINAL =================
