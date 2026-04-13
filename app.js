@@ -445,11 +445,14 @@ function fetchWeatherSafe() {
 
 function simulateWeather() {
 
+if (typeof renderDashboard === "function") {
     renderDashboard({
         main: { temp: 22, pressure: 1018 },
         wind: { speed: 3, deg: 180 },
         clouds: { all: 40 }
     });
+} else {
+    console.warn("renderDashboard not ready yet"); 
 }
 
 function analyzeWeather(w, p, c){
