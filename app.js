@@ -2154,25 +2154,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const svg = document.getElementById("spiGauge");
   if (!svg) return;
 
-  for (let i = 0; i < 360; i += 15) {
+for (let i = 0; i < 360; i += 15) {
 
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
-    line.setAttribute("x1", 150);
-    line.setAttribute("y1", 15);
-    line.setAttribute("x2", 150);
-    line.setAttribute("y2", 30);
+    line.setAttribute("x1", "150");
+    line.setAttribute("y1", "15");
+    line.setAttribute("x2", "150");
+    line.setAttribute("y2", "30");
 
     line.setAttribute("stroke", "white");
-    line.setAttribute("stroke-width", (i % 90 === 0 ? 3 : 1).tostring());
+    line.setAttribute("stroke-width", (i % 90 === 0 ? 3 : 1).toString());
     line.setAttribute("opacity", "0.3");
 
-    // ✅ FIXED
     line.setAttribute("transform", "rotate(" + i + " 150 150)");
 
     svg.appendChild(line);
-  }
-
 }
 
 window.retryConnection = retryConnection;
