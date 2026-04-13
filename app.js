@@ -832,6 +832,10 @@ function calculateENV(p, c, w, light, airTemp) {
     if (tempTrend === "warming") score += 8;
     if (tempTrend === "cooling_fast") score -= 10;
 
+    if(airTemp < 15) {
+        score -= 8;
+    }
+
     // ================= TIME WINDOWS =================
     let hour = new Date().getHours();
 
