@@ -127,6 +127,7 @@ function createSplashRipple() {
 }
 
 function animateSplash() {
+
   if (!splashActive || !splashCtx) return;
 
   splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
@@ -134,28 +135,55 @@ function animateSplash() {
   let w = splashCanvas.width;
   let h = splashCanvas.height;
 
-  // 🌊 Subtle bubbles (VERY light)
-  for (let i = 0; i < 10; i++) {
-    let x = Math.random() * w;
-    let y = Math.random() * h;
+  let t = Date.now() * 0.002;
+
+  // 🌊 MULTI SONAR RINGS
+  for (let i = 0; i < 3; i++) {
+
+    let radius = ((Math.sin(t + i) + 1) * 60) + (i * 40);
 
     splashCtx.beginPath();
-    splashCtx.arc(x, y, 1.5, 0, Math.PI * 2);
-    splashCtx.fillStyle = "rgba(255,255,255,0.05)";
-    splashCtx.fill();
+    splashCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
+
+    splashCtx.strokeStyle = `rgba(0,255,156,${0.25 - i * 0.07})`;
+    splashCtx.lineWidth = 2;
+    splashCtx.stroke();
   }
 
-  // 🎯 Sonar pulse
-  let t = Date.now() * 0.002;
-  let radius = (Math.sin(t) + 1) * 60;
+  // 💨 FLOATING BUBBLES (SMOOTH, NOT RANDOM)
+  if (Math.random() < 0.3) {
+    splashRipples.push({
+      x: Math.random() * w,
+      y: h,
+      size: Math.random() * 3 + 1,
+      speed: Math.random() * 1 + 0.5,
+      alpha: 0.2
+    });
+  }
 
-  splashCtx.beginPath();
-  splashCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
-  splashCtx.strokeStyle = "rgba(0,255,156,0.25)";
-  splashCtx.lineWidth = 2;
-  splashCtx.stroke();
-  splashCtx.shadowBlur = 15;
-  splashCtx.shadowColor = "rgba(0,255,156,0.3)";
+  splashRipples.forEach((b, i) => {
+    b.y -= b.speed;
+    b.alpha *= 0.98;
+
+    splashCtx.beginPath();
+    splashCtx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+    splashCtx.fillStyle = `rgba(255,255,255,${b.alpha})`;
+    splashCtx.fill();
+
+    if (b.alpha < 0.02) splashRipples.splice(i, 1);
+  });
+
+  // 🌫️ DEPTH GLOW CENTER
+  let glow = splashCtx.createRadialGradient(
+    w / 2, h / 2, 10,
+    w / 2, h / 2, 200
+  );
+
+  glow.addColorStop(0, "rgba(0,255,156,0.15)");
+  glow.addColorStop(1, "rgba(0,0,0,0)");
+
+  splashCtx.fillStyle = glow;
+  splashCtx.fillRect(0, 0, w, h);
 
   requestAnimationFrame(animateSplash);
 }
