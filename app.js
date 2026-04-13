@@ -695,19 +695,13 @@ if (confCircle) {
 
 function setRingProgress(selector, value) {
   const circle = document.querySelector(selector);
+    if (!circle) return;
   const radius = 42;
   const circumference = 2 * Math.PI * radius;
 
   const offset = circumference - (value / 100) * circumference;
   circle.style.strokeDashoffset = offset; 
 }
-
-window.onload = () => {
-  setTimeout(() => {
-    setRingProgress('.env-progress', envScore);
-    setRingProgress('.conf-progress', confScore);
-  }, 300);
-};
     
 // ✅ TEXT COLORS
 const spiText = document.getElementById("spiValue");
@@ -864,6 +858,8 @@ function getTempTrend(t) {
     return "stable";
 }
     
+setRingProgress(`env-progress`, envScore);
+setRingProgress(`conf-progress`, confScore);
 
 function getMoonPhase(){
     let d=new Date();
