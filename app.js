@@ -2164,7 +2164,7 @@ document.addEventListener("DOMContentLoaded", () => {
     line.setAttribute("y2", 30);
 
     line.setAttribute("stroke", "white");
-    line.setAttribute("stroke-width", i % 90 === 0 ? 3 : 1);
+    line.setAttribute("stroke-width", (i % 90 === 0 ? 3 : 1).tostring());
     line.setAttribute("opacity", "0.3");
 
     // ✅ FIXED
