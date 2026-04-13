@@ -103,13 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Placeholder for now
 }
 
-function updateCompass(heading) {
-    // Temporary safe fallback
-    // Later we will rotate compass properly
-    console.log("Compass heading:", heading); 
-}
-
-    
+   
     // Store scout screen
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
