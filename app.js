@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const main = document.querySelector(".main");
 
     if (splash) splash.style.display = "none";
-    if (main) main.classList.remove("hidden");
+    if (main) main.classList.add("main-visible");
     
     fetchWeatherSafe();
     startApp();
