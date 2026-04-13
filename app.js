@@ -126,9 +126,10 @@ function createSplashRipple() {
     });
 }
 
+if (!splashCtx) return;
 function animateSplash() {
 
-  if (!splashActive || !splashCtx) return;
+  if (!splashCtx || !splashCtx) return;
 
   splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
