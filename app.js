@@ -536,7 +536,6 @@ if (depth >= 2 && depth <= 5) {
 } else if (depth > 8) {
     score -= 4;
     reasons.push("Too deep for active feeding"); 
-}
 
     // ================= TIME WINDOWS =================
     score += sunriseWindow() * 0.5;
