@@ -2149,7 +2149,7 @@ function closePlan(){
     document.body.style.overflow = "auto"; 
 } 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function() {
 
   const svg = document.getElementById("spiGauge");
   if (!svg) return;
@@ -2175,4 +2175,4 @@ for (let i = 0; i < 360; i += 15) {
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
-}
+});
