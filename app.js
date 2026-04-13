@@ -17,6 +17,7 @@ let lastSPI = null;
 let lastConditions = {};
 let userLocation = null;
 let compassHeading = null;
+let splashBubbles = [];
 
 let bubbleIntensity = 0.7;
 let hotspots = [];
@@ -50,7 +51,16 @@ document.addEventListener("DOMContentLoaded", () => {
     splashCtx = splashCanvas?.getContext("2d");
 
     resizeSplash();
-    animateSplash();
+
+    for (let i = 0; i < 40; i++) {
+  splashBubbles.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 3 + 1,
+    speed: Math.random() * 0.5 + 0.2
+  });
+}
+    animateSplash();  
 
     // =============================
     // 🎯 UI SETUP
