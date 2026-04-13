@@ -631,14 +631,9 @@ function renderDashboard(data) {
 
     if (typeof compassHeading !== "undefined" &&compassHeading !== null) {
         diff = Math.abs(windDir - compassHeading);
-        if(diff > > 180) diff = 360 - diff;
+        if(diff > 180) diff = 360 - diff;
     }
     console.log("Wind vs heading off:", diff);
-    if (compassHeading !== null) {
-    diff = Math.abs(windDir - compassHeading);
-    if (diff > 180) diff = 360 - diff;
-
-    console.log("Wind vs Heading off:", diff); }
 
 // ✅ ALWAYS safe now
     let advice = getCastingAdvice(diff);
