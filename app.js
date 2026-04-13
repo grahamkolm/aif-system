@@ -706,13 +706,13 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     return Math.max(40, Math.min(95, Math.round(score)));
     
     // ================= FINAL =================
-    return Math.max(40, Math.min(95, Math.round(score))); }
+    
     console.log("CONF INPUT:", SPI, envScore, p, w, c, t);
     let confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
     let confEl = document.getElementById("confScore");
 
     if (confEl) {
-        confEl.innerText = confScoreValue = + "%";
+        confEl.innerText = confScoreValue + "%";
     }
     
 // 🎯 GET ELEMENTS (ONLY ONCE)
