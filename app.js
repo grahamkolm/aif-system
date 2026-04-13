@@ -127,7 +127,7 @@ function createSplashRipple() {
 }
 
 function animateSplash() {
-  if (!splashRunning || !splashCtx) return;
+  if (!splashActive || !splashCtx) return;
 
   splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
@@ -2025,7 +2025,7 @@ document.addEventListener("DOMContentLoaded", () => {
     line.setAttribute("stroke-width", i % 90 === 0 ? 3 : 1); // bold at N/E/S/W
     line.setAttribute("opacity", "0.3");
 
-    line.setAttribute("transform", `rotate(${i} 150 150`);
+    line.setAttribute("transform", `rotate(${i} 150 150)`);
 
     svg.appendChild(line);
   }
