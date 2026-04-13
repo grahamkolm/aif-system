@@ -60,7 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
     speed: Math.random() * 0.5 + 0.2
   });
 }
-    animateSplash();  
+    animateSplash();
+    initSplashBubbles();
 
     // =============================
     // 🎯 UI SETUP
@@ -135,6 +136,23 @@ function createSplashRipple() {
         alpha: 0.5
     });
 }
+
+function initSplashBubbles() {
+  bubbles = [];
+
+  bubbles.forEach(b => {
+  b.y -= b.speed;
+
+  if (b.y < 0) {
+    b.y = splashCanvas.height;
+    b.x = Math.random() * splashCanvas.width;
+  }
+
+  splashCtx.beginPath();
+  splashCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+  splashCtx.fillStyle = "rgba(255,255,255,0.08)";
+  splashCtx.fill();
+});
 
 function animateSplash() {
 
