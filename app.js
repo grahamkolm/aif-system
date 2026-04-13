@@ -440,22 +440,21 @@ function fetchWeatherSafe() {
     }
 })
 
-        .catch(simulateWeather);
-}
+        .catch(() => {
+    console.warn("Using simulated weather");
 
-function simulateWeather() {
-setTimeout(() => {
-if (typeof renderDashboard === "function") {
-    renderDashboard({
-        main: { temp: 22, pressure: 1018 },
-        wind: { speed: 3, deg: 180 },
-        clouds: { all: 40 }
-    });
-} else {
-    console.warn("renderDashboard not ready yet"); 
-}
-},100);
-}
+    setTimeout(() => {
+        if (typeof renderDashboard === "function") {
+            renderDashboard({
+                main: { temp: 22, pressure: 1018 },
+                wind: { speed: 3, deg: 180 },
+                clouds: { all: 40 }
+            });
+        } else {
+            console.error("renderDashboard STILL not available");
+        }
+    }, 500); // ⬅️ longer delay
+});
 
 function analyzeWeather(w, p, c){
 
