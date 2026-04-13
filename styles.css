@@ -378,7 +378,7 @@ html, body {
   stroke-dasharray: 264; /* circumference */
   stroke-dashoffset: 264;
 
-  transition: stroke-dashoffset 1s ease; 
+  transition: stroke-dashoffset 0.6s ease; 
 }
 
 .env-progress {
