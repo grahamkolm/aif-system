@@ -140,19 +140,14 @@ function createSplashRipple() {
 function initSplashBubbles() {
   bubbles = [];
 
-  bubbles.forEach(b => {
-  b.y -= b.speed;
-
-  if (b.y < 0) {
-    b.y = splashCanvas.height;
-    b.x = Math.random() * splashCanvas.width;
+  for (let i = 0; i < 40; i++) {
+    bubbles.push({
+      x: Math.random() * splashCanvas.width,
+      y: Math.random() * splashCanvas.height,
+      r: Math.random() * 3 + 1,
+      speed: Math.random() * 0.5 + 0.2
+    });
   }
-
-  splashCtx.beginPath();
-  splashCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-  splashCtx.fillStyle = "rgba(255,255,255,0.08)";
-  splashCtx.fill();
-});
 }
 
 function animateSplash() {
@@ -466,6 +461,23 @@ function calculateSPI(p, w, c, windDir, t, light, depth){
 
     score += pressureScore;
 
+    // ================= COMBINATION BOOST =================
+
+// Wind + Cloud synergy (VERY powerful)
+if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
+    score += 10;
+    reasons.push("Wind + cloud combo → aggressive feeding"); }
+
+// Pressure + Temp stability
+if (p > 1015 && t >= 18 && t <= 24) {
+    score += 8;
+    reasons.push("Stable pressure + temp → consistent feeding"); }
+
+// Bad combo penalty
+if (w < 2 && c < 20) {
+    score -= 10;
+    reasons.push("Flat calm + bright → fish inactive"); }
+   
     // ================= WIND =================
     let windScore = 0;
 
@@ -476,6 +488,16 @@ function calculateSPI(p, w, c, windDir, t, light, depth){
 
     score += windScore;
 
+// ================= WIND DIRECTION ================= if (diff !== undefined) {
+    if (diff > 135) {
+        score += 10;
+        reasons.push("Wind blowing into zone (prime feeding)");
+    } else if (diff < 45) {
+        score -= 8;
+        reasons.push("Downwind zone (low activity)");
+    }
+}
+    
     // ================= CLOUD =================
     let cloudScore = 0;
 
@@ -520,8 +542,13 @@ if (depth >= 2 && depth <= 5) {
     score += sunriseWindow() * 0.5;
     score += seasonalWeight() * 0.5;
 
-    // ================= FINAL NORMALIZE =================
-    score = Math.max(20, Math.min(95, score));
+// ================= FINAL NORMALIZE ===============
+
+// Amplify extremes
+    if (score > 75) score += 5;
+    if (score < 40) score -= 5;
+
+    score = Math.max(15, Math.min(98, score));
 
     return {
         score: Math.round(score),
@@ -834,6 +861,15 @@ if (spiCircle) {
 if (confCircle) {
     confCircle.style.borderColor = confColor;
     confCircle.style.boxShadow = `0 0 10px ${confColor}`; 
+}
+
+// ================= CONF FEEDBACK ================= 
+if (typeof confScoreValue === "number") {
+    if (confScoreValue > 80) {
+        score += 3;
+    } else if (confScoreValue < 50) {
+        score -= 3;
+    }
 }
 
 function setRingProgress(selector, value) {
