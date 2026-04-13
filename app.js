@@ -543,17 +543,77 @@ function renderDashboard(data) {
     updateSPI(finalSPI);
 
     // =========================
-    // ✅ ENV SCORE
+    // ✅ ENV CALCULATION
     // =========================
-    let env = Math.round(
-        (100 - Math.abs(p - 1018) * 2) + (c * 0.2)
-    );
+function calculateENV(p, c, w, light, airTemp) {
 
-    env = Math.max(40, Math.min(env, 95));
+    let score = 50; // neutral baseline
 
-    let envEl = document.getElementById("envScore");
-    if (envEl) envEl.innerText = env + "%";
+    // ================= PRESSURE =================
+    let trend = getPressureTrend(p);
 
+    if (p >= 1012 && p <= 1020) score += 8;
+    else if (p < 1008 || p > 1025) score -= 8;
+
+    if (trend === "rising") score += 10;
+    if (trend === "falling") score -= 12;
+
+    // ================= WIND =================
+    if (w >= 5 && w <= 15) score += 12;
+    else if (w < 2) score -= 10;
+    else if (w > 20) score -= 6;
+
+    // ================= CLOUD =================
+    if (c >= 30 && c <= 70) score += 10;
+    else if (c < 10) score -= 6;
+    else if (c > 90) score -= 4;
+
+    // ================= LIGHT =================
+    if (light >= 40 && light <= 70) score += 10;
+    else if (light < 20) score -= 6;
+    else if (light > 85) score -= 8;
+
+    // ================= TEMP TREND =================
+    let tempTrend = getTempTrend(airTemp);
+
+    if (tempTrend === "warming") score += 8;
+    if (tempTrend === "cooling_fast") score -= 10;
+
+    // ================= TIME WINDOWS =================
+    let hour = new Date().getHours();
+
+    if (hour >= 5 && hour <= 9) score += 12;
+    if (hour >= 17 && hour <= 20) score += 14;
+    if (hour >= 11 && hour <= 15) score -= 6;
+
+    // ================= MOON =================
+    let moon = getMoonPhase();
+
+    if (moon === "Full") score += 5;
+    if (moon === "New") score += 4;
+
+    // ================= FINAL =================
+    return Math.max(20, Math.min(95, Math.round(score))); }
+
+    // ================= CALCULATE TEMP HISTORY FOR ENV========
+
+let tempHistory = [];
+
+function getTempTrend(t) {
+
+    tempHistory.push(t);
+    if (tempHistory.length > 6) tempHistory.shift();
+
+    if (tempHistory.length < 2) return "stable";
+
+    let diff = tempHistory[tempHistory.length - 1] - tempHistory[0];
+
+    if (diff > 1) return "warming";
+    if (diff < -1) return "cooling_fast";
+
+    return "stable";
+}
+    
     // =========================
     // ✅ VISUAL LINK (important)
     // =========================
@@ -673,15 +733,10 @@ let depthEl = document.getElementById("depth");
    
 // ================= ENV + CONF =================
 // ================= ENV ================= 
-let envScore = Math.round(
-    (100 - Math.abs(p - 1018) * 1.5) +
-    (c * 0.15) +
-    (light * 0.2) +
-    (depth >= 2 && depth <= 5 ? 8 : -5)
-);
+let envScore = calculateENV(p, c, w, light, t);
 
-// 🔥 FIXED CLAMP
-envScore = Math.max(40, Math.min(100, envScore));
+let envEl = document.getElementById("envScore");
+if (envEl) envEl.innerText = envScore + "%";
    
 // ================= CONF =================    
 let confScore = Math.round(
