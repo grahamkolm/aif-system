@@ -1188,8 +1188,18 @@ function updateSPI(v){
             : "drop-shadow(0 0 6px rgba(0,255,156,0.15))";
     }
 
-    let envCircle = document.querySelector(".env-circle");
-    let confCircle = document.querySelector(".conf-circle");
+let envCircle = document.querySelector(".env-circle");
+let confCircle = document.querySelector(".conf-circle");
+
+if (envCircle && confCircle) {
+    if (v >= 70) {
+        envCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
+        confCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
+    } else {
+        envCircle.style.boxShadow = "none";
+        confCircle.style.boxShadow = "none";
+    }
+}
 
     if(v >= 70){
         envCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
