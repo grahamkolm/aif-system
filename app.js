@@ -356,8 +356,6 @@ function animate() {
 
     bubbles.forEach((b, i) => {
 
-bubbles.forEach((b, i) => {
-
     if (b.x == null || b.y == null) return;
 
     b.y -= b.speed;
@@ -368,20 +366,19 @@ bubbles.forEach((b, i) => {
     if (!isFinite(b.x) || !isFinite(b.y) || !isFinite(size)) return;
 
     let gradient = ctx.createRadialGradient(
-        b.x - size * 0.3,
-        b.y - size * 0.3,
-        0,
-        b.x,
-        b.y,
-        size
-    );
+    b.x - size * 0.3,
+    b.y - size * 0.3,
+    0,
+    b.x,
+    b.y,
+    size
+);
 
+    gradient.addColorStop(0, `rgba(255,255,255,${b.alpha})`);
+    gradient.addColorStop(0.4, `rgba(200,230,255,${b.alpha * 0.5})`); 
+    gradient.addColorStop(1, `rgba(180,220,255,0)`);
 
-    gradient.addColorStop(0, 'rgba(255,255,255,${alpha})'); 
-    gradient.addColorStop(0.4, 'rgba(200,230,255,${alpha * 0.5})'); 
-    gradient.addColorStop(1, 'rgba(180,220,255,0)');
-
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = "rgba(255,255,255,0.3)";
     ctx.beginPath();
     ctx.arc(b.x, b.y, size, 0, Math.PI * 2);
     ctx.fill();
