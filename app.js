@@ -1362,14 +1362,14 @@ function checkSensors() {
         .then(res => res.json())
         .then(data => {
 
-    document.getElementById("sensorStatusList").innerHTML = `
-        <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
-        <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
-        <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
-        <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
-        <div>Light ${data.light ? "✅" : "❌"}</div>
-        <div>Depth ${data.depth ? "✅" : "❌"}</div>
-        <div>Battery ${data.battery ? "✅" : "❌"}</div> `;
+   document.getElementById("sensorStatusList").innerHTML = `
+    <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
+    <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
+    <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
+    <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
+    <div>Light ${data.light ? "✅" : "❌"}</div>
+    <div>Depth ${data.depth ? "✅" : "❌"}</div>
+    <div>Battery ${data.battery ? "✅" : "❌"}</div> `;
 
         })
         .catch(() => {
