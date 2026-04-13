@@ -531,9 +531,6 @@ function renderDashboard(data) {
     // =========================
     updateSPI(finalSPI);
 
-    setRingProgress(`env-progress`, envScore);
-    setRingProgress(`conf-progress`, confScore);
-
     // =========================
     // ✅ VISUAL LINK (important)
     // =========================
@@ -677,7 +674,9 @@ const confCircle = document.getElementById("confCircle");
 const spiColor = getScoreColor(finalSPI); 
 const envColor = getScoreColor(envScore); 
 const confColor = getScoreColor(confScore);
-
+setRingProgress(`env-progress`, envScore);
+setRingProgress(`conf-progress`, confScore);
+    
 // ✅ APPLY COLORS
 // ✅ SPI (SVG stroke — correct)
 if (spiCircle) {
