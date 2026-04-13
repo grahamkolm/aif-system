@@ -43,40 +43,63 @@ let originalScoutHTML;
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    // =============================
+    // 🌊 SPLASH INIT
+    // =============================
     splashCanvas = document.getElementById("splashCanvas");
     splashCtx = splashCanvas?.getContext("2d");
 
     resizeSplash();
     animateSplash();
 
+    // =============================
+    // 🎯 UI SETUP
+    // =============================
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
-    
-    // ✅ SET IT HERE (correct place)
+
+    // Store scout screen
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
+
+    // Compass
     needle = document.getElementById("compassNeedle");
     document.body.addEventListener("click", enableCompass, { once: true });
-    
+
+    // =============================
+    // ⏳ SPLASH TIMEOUT (MAIN CONTROL)
+    // =============================
     setTimeout(() => {
-    splashActive = false;
 
-    const splash = document.getElementById("splash");
-    const main = document.querySelector(".main");
+        splashActive = false;
 
-    if (splash) splash.style.display = "none";
-    if (main) main.classList.add("main-visible");
-    
-    fetchWeatherSafe();
-    startApp();
+        const splash = document.getElementById("splash");
+        const main = document.querySelector(".main");
 
-    canvas = document.getElementById("waterGraph");
-    ctx = canvas ? canvas.getContext("2d") : null;
+        // Fade out splash
+        if (splash) splash.style.opacity = "0";
 
-    // ✅ THEN KEEP UPDATING
-    setInterval(fetchWeatherSafe, 30000);
+        // Wait for fade animation
+        setTimeout(() => {
 
-}, 3500);
+            if (splash) splash.style.display = "none";
+            if (main) main.classList.add("main-visible");
+
+            // =============================
+            // 🚀 START APP (ONLY AFTER SPLASH)
+            // =============================
+            fetchWeatherSafe();
+            startApp();
+
+            canvas = document.getElementById("waterGraph");
+            ctx = canvas ? canvas.getContext("2d") : null;
+
+            // 🔁 KEEP UPDATING
+            setInterval(fetchWeatherSafe, 30000);
+
+        }, 400); // match CSS transition
+
+    }, 2500); // splash duration
 
 });
 
@@ -104,30 +127,37 @@ function createSplashRipple() {
 }
 
 function animateSplash() {
+  if (!splashRunning || !splashCtx) return;
 
-    if (!splashActive || !splashCtx) return;
+  splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
-    splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
+  let w = splashCanvas.width;
+  let h = splashCanvas.height;
 
-    if (splashRipples.length < 20) createSplashRipple();
+  // 🌊 Subtle bubbles (VERY light)
+  for (let i = 0; i < 10; i++) {
+    let x = Math.random() * w;
+    let y = Math.random() * h;
 
-    splashRipples.forEach(r => {
+    splashCtx.beginPath();
+    splashCtx.arc(x, y, 1.5, 0, Math.PI * 2);
+    splashCtx.fillStyle = "rgba(255,255,255,0.05)";
+    splashCtx.fill();
+  }
 
-        r.r += 0.3;
-        r.alpha *= 0.98;
+  // 🎯 Sonar pulse
+  let t = Date.now() * 0.002;
+  let radius = (Math.sin(t) + 1) * 60;
 
-        splashCtx.beginPath();
-        splashCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-        splashCtx.strokeStyle = `rgba(0,255,163,${r.alpha})`;
-        splashCtx.stroke();
+  splashCtx.beginPath();
+  splashCtx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
+  splashCtx.strokeStyle = "rgba(0,255,156,0.25)";
+  splashCtx.lineWidth = 2;
+  splashCtx.stroke();
+  splashCtx.shadowBlur = 15;
+  splashCtx.shadowColor = "rgba(0,255,156,0.3)";
 
-        if (r.alpha < 0.05) {
-            r.r = 0;
-            r.alpha = 0.5;
-        }
-    });
-
-    requestAnimationFrame(animateSplash);
+  requestAnimationFrame(animateSplash);
 }
 
 // =====================================================
