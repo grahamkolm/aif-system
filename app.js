@@ -255,7 +255,7 @@ for (let i = splashRipples.length - 1; i >= 0; i--) {
 
   splashCtx.beginPath();
   splashCtx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
-  splashCtx.fillStyle = `rgba(255,255,255,${b.alpha})`;
+  splashCtx.fillStyle = `rgba(255,255,255,${r.alpha})`;
   splashCtx.fill();
 
   if (b.alpha < 0.02) {
