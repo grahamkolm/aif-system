@@ -431,12 +431,15 @@ function fetchWeatherSafe() {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY}`)
         .then(r => r.json())
         .then(data => {
-            if(typeof renderDashboard === "function") {
-                renderDashboard(data);
-            } else {
+    console.log("Weather data received:", data);
 
-            }
-        })
+    if (data && data.main) {
+        renderDashboard(data);
+    } else {
+        console.warn("Invalid weather data", data);
+    }
+})
+
         .catch(simulateWeather);
 }
 
