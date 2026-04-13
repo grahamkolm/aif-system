@@ -1177,7 +1177,7 @@ function updateSPI(v){
     arc.style.strokeDasharray = C;
     arc.style.strokeDashoffset = C - (v/100) * C;
 
-    document.getElementById("spiValue").textContent = v.toFixed(1) + "%";
+    document.getElementById("spiValue").textContent = Math.round(v) + "%";
 
     // 🔥 ADD YOUR GLOW HERE
     let gauge = document.getElementById("spiGauge");
