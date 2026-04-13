@@ -66,6 +66,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // =============================
     // 🎯 UI SETUP
     // =============================
+    
+    function setupHold(elementId, callback) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    let timer;
+
+    el.addEventListener("mousedown", () => {
+        timer = setTimeout(callback, 600);
+    });
+
+    el.addEventListener("mouseup", () => {
+        clearTimeout(timer);
+    });
+
+    el.addEventListener("mouseleave", () => {
+        clearTimeout(timer);
+    });
+}
+    
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
