@@ -42,8 +42,8 @@ let originalScoutHTML;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const splashCanvas = document.getElementById("splashCanvas");
-    const splashCtx = splashCanvas?.getContext("2d");
+    splashCanvas = document.getElementById("splashCanvas");
+    splashCtx = splashCanvas?.getContext("2d");
 
     resizeSplash();
     animateSplash();
