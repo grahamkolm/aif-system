@@ -185,6 +185,17 @@ function initSplashBubbles() {
   }
 }
 
+function getDirection(deg) {
+    if (deg >= 337 || deg < 23) return "N";
+    if (deg < 68) return "NE";
+    if (deg < 113) return "E";
+    if (deg < 158) return "SE";
+    if (deg < 203) return "S";
+    if (deg < 248) return "SW";
+    if (deg < 293) return "W";
+    return "NW";
+}
+
 function updateCompass(deg) {
 const dirText = getDirection(deg);
 console.log("Facing:", dirText);
@@ -1678,17 +1689,6 @@ function calculateScoutImpact(scout){
     if(scout.structure === "dropoff") score += 10;
 
     return Math.max(-20, Math.min(20, score)); 
-}
-
-function getDirection(deg) {
-    if (deg >= 337 || deg < 23) return "N";
-    if (deg < 68) return "NE";
-    if (deg < 113) return "E";
-    if (deg < 158) return "SE";
-    if (deg < 203) return "S";
-    if (deg < 248) return "SW";
-    if (deg < 293) return "W";
-    return "NW";
 }
 
 function closeScout(){
