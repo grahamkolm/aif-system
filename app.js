@@ -161,17 +161,22 @@ function animateSplash() {
     });
   }
 
-  splashRipples.forEach((b, i) => {
-    b.y -= b.speed;
-    b.alpha *= 0.98;
+for (let i = splashRipples.length - 1; i >= 0; i--) {
 
-    splashCtx.beginPath();
-    splashCtx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
-    splashCtx.fillStyle = `rgba(255,255,255,${b.alpha})`;
-    splashCtx.fill();
+  let b = splashRipples[i];
 
-    if (b.alpha < 0.02) splashRipples.splice(i, 1);
-  });
+  b.y -= b.speed;
+  b.alpha *= 0.98;
+
+  splashCtx.beginPath();
+  splashCtx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+  splashCtx.fillStyle = `rgba(255,255,255,${b.alpha})`;
+  splashCtx.fill();
+
+  if (b.alpha < 0.02) {
+    splashRipples.splice(i, 1);
+  }
+}
 
   // 🌫️ DEPTH GLOW CENTER
   let glow = splashCtx.createRadialGradient(
