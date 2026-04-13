@@ -2168,7 +2168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     line.setAttribute("opacity", "0.3");
 
     // ✅ FIXED
-    line.setAttribute("transform", `rotate(${i} 150 150)`);
+    line.setAttribute("transform", "rotate(" + i + " 150 150)");
 
     svg.appendChild(line);
   }
