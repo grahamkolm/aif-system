@@ -907,7 +907,7 @@ function calculateENV(p, c, w, light, airTemp) {
     if (tempTrend === "cooling_fast") score -= 10;
 
     if(airTemp < 15) {
-        score -= 8;
+        score -= 5;
     }
 
     // ================= TIME WINDOWS =================
