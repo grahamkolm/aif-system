@@ -29,6 +29,7 @@ let scoutData = {};
 let drops = [];
 let splashCanvas;
 let splashCtx;
+let score = 50;
 
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
@@ -693,7 +694,7 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     else if (t < 12 || t > 30) score -= 10;
 
     // ================= RANDOM NOISE REDUCTION =================
-    let variability = Math.abs(SPI - lastSPI || SPI);
+    let variability = Math.abs(SPI - (lastSPI !== undefined ? lastSPI : SPI));
 
     if (variability < 5) score += 10;
     else if (variability > 15) score -= 10;
@@ -701,6 +702,9 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     if(SPI > 80 && envScore > 80) score +=5;
     if(SPI < 40 && envScore < 40) score +=5;
 
+    if (isNan(score)) score = 50;
+    return Math.max(40, Math.min(95, Math.round(score)));
+    
     // ================= FINAL =================
     return Math.max(40, Math.min(95, Math.round(score))); }
     console.log("CONF INPUT:", SPI, envScore, p, w, c, t);
