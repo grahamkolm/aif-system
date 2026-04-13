@@ -85,7 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
         clearTimeout(timer);
     });
 }
-    
+
+    function showENVInsight() {
+    alert("ENV Insight coming soon..."); 
+    }
+
+    function showCONFInsight() {
+    alert("Confidence Insight coming soon..."); 
+    }
+
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
