@@ -153,6 +153,7 @@ function initSplashBubbles() {
   splashCtx.fillStyle = "rgba(255,255,255,0.08)";
   splashCtx.fill();
 });
+}
 
 function animateSplash() {
 
