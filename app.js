@@ -393,7 +393,7 @@ bubbles.forEach((b, i) => {
         r.r += 2;
         r.alpha *= 0.95;
 
-        ctx.strokeStyle = `rgba(0,255,160,${r.alpha})`;
+        ctx.strokeStyle = `rgba(255,255,255,${b.alpha})`
 
         ctx.beginPath();
         ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
