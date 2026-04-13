@@ -373,6 +373,7 @@ html, body {
   fill: none;
   stroke: rgba(255,255,255,0.08);
   stroke-width: 6;
+  opacity: 0.2;
 }
 
 .ring-progress {
