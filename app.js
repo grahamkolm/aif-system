@@ -355,18 +355,21 @@ function animate() {
     if (Math.random() < bubbleIntensity) spawnBubble();
 
     bubbles.forEach((b, i) => {
-
+    if(!b.x || !b.y) return;
+        
         b.y -= b.speed;
         b.x += b.drift;
 
-const size = b.size || 6;
-let gradient = ctx.createRadialGradient(
-    b.x - size * 0.3,  // light offset (top-left highlight)
-    b.y - size * 0.3,
-    0,
-    b.x,
-    b.y,
-    size
+    const size = b.size || 6;
+        
+    let gradient = ctx.createRadialGradient(
+        b.x - size * 0.3,  // light offset (top-left highlight)
+        b.y - size * 0.3,
+        0,
+        b.x,
+        b.y,
+        size
+    );
 );
 
 gradient.addColorStop(0, `rgba(255,255,255,${b.alpha})`);       // bright core
