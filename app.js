@@ -355,15 +355,20 @@ function animate() {
     if (Math.random() < bubbleIntensity) spawnBubble();
 
     bubbles.forEach((b, i) => {
-    if(!b.x || !b.y) return;
-        
-        b.y -= b.speed;
-        b.x += b.drift;
 
-    const size = b.size || 6;
-        
+    if (!b.x || !b.y) return;
+
+    // 🔥 normalize bubble data
+    const size = b.size || b.r || 6;
+    const alpha = b.alpha ?? 0.3;
+    const speed = b.speed ?? 0.5;
+    const drift = b.drift ?? 0;
+
+    b.y -= speed;
+    b.x += drift;
+
     let gradient = ctx.createRadialGradient(
-        b.x - size * 0.3,  // light offset (top-left highlight)
+        b.x - size * 0.3,
         b.y - size * 0.3,
         0,
         b.x,
@@ -371,18 +376,16 @@ function animate() {
         size
     );
 
-gradient.addColorStop(0, `rgba(255,255,255,${b.alpha})`);       // bright core
-gradient.addColorStop(0.4, `rgba(200,230,255,${b.alpha * 0.5})`); // soft blue glow
-gradient.addColorStop(1, `rgba(180,220,255,0)`);                // fade out
+    gradient.addColorStop(0, `rgba(255,255,255,${alpha})`);
+    gradient.addColorStop(0.4, `rgba(200,230,255,${alpha * 0.5})`);
+    gradient.addColorStop(1, `rgba(180,220,255,0)`);
 
-ctx.fillStyle = gradient;
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, size, 0, Math.PI * 2);
+    ctx.fill();
 
-ctx.beginPath();
-ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2); ctx.fill();
-
-
-        if (b.y < 0) bubbles.splice(i, 1);
-    });
+});
 
     ripples.forEach((r, i) => {
 
