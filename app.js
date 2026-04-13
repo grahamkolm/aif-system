@@ -126,10 +126,9 @@ function createSplashRipple() {
     });
 }
 
-if (!splashCtx) return;
 function animateSplash() {
 
-  if (!splashCtx || !splashCtx) return;
+  if (!splashCtx) return;
 
   splashCtx.clearRect(0, 0, splashCanvas.width, splashCanvas.height);
 
