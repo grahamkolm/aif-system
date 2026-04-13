@@ -527,11 +527,13 @@ function renderDashboard(data) {
     if (msg) msg.innerText = "Conditions optimal";
     
     // =========================
-    // ✅ UPDATE SPI RING 
+    // ✅ UPDATE RINGS 
     // =========================
     updateSPI(finalSPI);
 
- 
+    setRingProgress(`env-progress`, envScore);
+    setRingProgress(`conf-progress`, confScore);
+
     // =========================
     // ✅ VISUAL LINK (important)
     // =========================
@@ -858,9 +860,6 @@ function getTempTrend(t) {
     return "stable";
 }
     
-setRingProgress(`env-progress`, envScore);
-setRingProgress(`conf-progress`, confScore);
-
 function getMoonPhase(){
     let d=new Date();
     let lp=2551443;
