@@ -356,16 +356,16 @@ function animate() {
 
     bubbles.forEach((b, i) => {
 
-    if (!b.x || !b.y) return;
+bubbles.forEach((b, i) => {
 
-    // 🔥 normalize bubble data
-    const size = b.size || b.r || 6;
-    const alpha = b.alpha ?? 0.3;
-    const speed = b.speed ?? 0.5;
-    const drift = b.drift ?? 0;
+    if (b.x == null || b.y == null) return;
 
-    b.y -= speed;
-    b.x += drift;
+    b.y -= b.speed;
+    b.x += b.drift;
+
+    const size = b.size || 6;
+
+    if (!isFinite(b.x) || !isFinite(b.y) || !isFinite(size)) return;
 
     let gradient = ctx.createRadialGradient(
         b.x - size * 0.3,
@@ -375,6 +375,7 @@ function animate() {
         b.y,
         size
     );
+
 
     gradient.addColorStop(0, `rgba(255,255,255,${alpha})`);
     gradient.addColorStop(0.4, `rgba(200,230,255,${alpha * 0.5})`);
