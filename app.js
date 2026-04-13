@@ -708,7 +708,7 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     let confEl = document.getElementById("confScore");
 
     if (confEl) {
-        confEl.innerText = confScoreValue = "%";
+        confEl.innerText = confScoreValue = + "%";
     }
     
 // 🎯 GET ELEMENTS (ONLY ONCE)
@@ -721,7 +721,7 @@ const spiColor = getScoreColor(finalSPI);
 const envColor = getScoreColor(envScore); 
 const confColor = getScoreColor(confScoreValue);
 setRingProgress(`env-progress`, envScore);
-setRingProgress(`conf-progress`, confScore);
+setRingProgress(`conf-progress`, confScoreValue);
     
 // ✅ APPLY COLORS
 // ✅ SPI (SVG stroke — correct)
