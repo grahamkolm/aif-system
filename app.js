@@ -496,7 +496,6 @@ if (w < 2 && c < 20) {
         score -= 8;
         reasons.push("Downwind zone (low activity)");
     }
-}
     
     // ================= CLOUD =================
     let cloudScore = 0;
@@ -525,7 +524,7 @@ if (light >= 40 && light <= 70) {
     reasons.push("Too dark — reduced visibility"); } else {
     score -= 3;
     reasons.push("Too bright — fish cautious"); 
-}
+    }
 
     // ================= DEPTH =================
 if (depth >= 2 && depth <= 5) {
@@ -533,11 +532,11 @@ if (depth >= 2 && depth <= 5) {
     reasons.push("Ideal feeding depth"); } else if (depth < 1) {
     score -= 6;
     reasons.push("Too shallow");
-} else if (depth > 8) {
+    } else if (depth > 8) {
     score -= 4;
     reasons.push("Too deep for active feeding"); 
 
-    // ================= TIME WINDOWS =================
+// ================= TIME WINDOWS =================
     score += sunriseWindow() * 0.5;
     score += seasonalWeight() * 0.5;
 
