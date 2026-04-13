@@ -27,6 +27,8 @@ let canvas, ctx;
 let ripples =[];
 let scoutData = {};
 let drops = [];
+let splashCanvas;
+let splashCtx;
 
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
@@ -40,11 +42,14 @@ let originalScoutHTML;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const splash = document.getElementById("splash");
-    const main = document.querySelector(".main");
+    const splashCanvas = document.getElementById("splashCanvas");
+    const splashCtx = splashCanvas?.getContext("2d");
+
+    resizeSplash();
+    animateSplash();
+
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
-
     
     // ✅ SET IT HERE (correct place)
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
@@ -55,9 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
     splashActive = false;
 
-    // ✅ FETCH DATA IMMEDIATELY
-    fetchWeatherSafe();
+    const splash = document.getElementById("splash");
+    const main = document.querySelector(".main");
 
+    if (splash) splash.style.display = "none";
+    if (main) main.classList.remove("hidden");
+    
+    fetchWeatherSafe();
     startApp();
 
     canvas = document.getElementById("waterGraph");
@@ -73,9 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // =====================================================
 // 💧 2. SPLASH SYSTEM
 // =====================================================
-
-const splashCanvas = document.getElementById("splashCanvas");
-const splashCtx = splashCanvas?.getContext("2d");
 
 let splashRipples = [];
 
