@@ -302,7 +302,7 @@ function updateCompass(heading) {
 
     // Optional: set fishing zone based on wind vs heading
     if (typeof windDir !== "undefined") {
-        setFishingZone((windDir);
+        setFishingZone(windDir);
     }
 }
 
