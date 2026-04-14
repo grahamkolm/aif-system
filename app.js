@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
 }
     animateSplash();
     initSplashBubbles();
-
+    createTicks();
+    
     // =============================
     // 🎯 UI SETUP
     // =============================
@@ -119,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (splash) splash.style.display = "none";
             if (main) main.classList.add("main-visible");
-
+            
             // =============================
             // 🚀 START APP (ONLY AFTER SPLASH)
             // =============================
@@ -339,6 +340,24 @@ function animateSplash() {
     }
 }
 
+function createTicks() {
+
+    const container = document.getElementById("compassTicks");
+    if (!container) return;
+
+    for (let i = 0; i < 360; i += 15) {
+
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.dataset.angle = i;
+
+        tick.style.transform = `rotate(${i}deg) translateY(-120px)`;
+
+        container.appendChild(tick);
+    }
+}
+
+    
 for (let i = splashRipples.length - 1; i >= 0; i--) {
 
   let b = splashRipples[i];
@@ -445,6 +464,8 @@ function animate() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateCompass(compassHeading || 0);
+    updateDirectionTicks(compassHeading || 0 );
+    
     if (Math.random() < bubbleIntensity) spawnBubble();
 
     bubbles.forEach((b, i) => {
@@ -782,6 +803,7 @@ let surfaceTemp = temps.surface;
 let bottomTemp = temps.bottom;
     
     updateCompass(windDir);
+    setFishingZone(windDir);
     let dam = loadDamData();
 
     console.log("SPI INPUT:", t, p, w, c);
