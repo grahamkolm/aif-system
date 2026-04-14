@@ -66,6 +66,7 @@ function createTicks() {
     if (!container) return;
 
     for (let i = 0; i < 360; i += 15) {
+        let angle = i;
 
         const tick = document.createElement("div");
         tick.className = "tick";
