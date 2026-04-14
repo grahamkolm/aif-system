@@ -101,11 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
 
-    // Compass
-        
-    document.body.addEventListener("touchstart", enableCompass, { once: true }); 
-    document.body.addEventListener("click", enableCompass, { once: true });
-
     // =============================
     // ⏳ SPLASH TIMEOUT (MAIN CONTROL)
     // =============================
@@ -268,6 +263,12 @@ function enableCompass() {
     }
 }
 
+    // Compass
+    document.addEventListener("DOMContentLoaded", () => {
+        
+    document.body.addEventListener("touchstart", enableCompass, { once: true }); 
+    document.body.addEventListener("click", enableCompass, { once: true });
+    });
 
 function animateSplash() {
 
