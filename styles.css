@@ -484,6 +484,23 @@ html, body {
   fill: none;
 }
 
+.mini-ring .ring-progress {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke: #00ff9c;
+}
+
+.env-circle .ring-progress{
+  stroke: #ffd54f;
+}
+
+.conf-circle .ring-progress {
+  stroke: #4fc3f7;
+}
+
+.conf-circle 
+
 .ring-bg {
   fill: none;
   stroke: rgba(255,255,255,0.08);
@@ -495,6 +512,7 @@ html, body {
   fill: none;
   stroke-width: 6;
   stroke-linecap: round;
+  stroke: #00ff9c;
 
   stroke-dasharray: 264; /* circumference */
   stroke-dashoffset: 264;
