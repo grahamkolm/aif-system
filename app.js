@@ -34,7 +34,24 @@ let score = 50;
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
 const RED = "#ff3b3b";
-    
+
+function createTicks() {
+
+    const container = document.getElementById("compassTicks");
+    if (!container) return;
+
+    for (let i = 0; i < 360; i += 15) {
+
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.dataset.angle = i;
+
+        tick.style.transform = `rotate(${i}deg) translateY(-120px)`;
+
+        container.appendChild(tick);
+    }
+}
+
 // =====================================================
 // 🚀 1. APP BOOT
 // =====================================================
@@ -339,24 +356,6 @@ function animateSplash() {
         };
     }
 }
-
-function createTicks() {
-
-    const container = document.getElementById("compassTicks");
-    if (!container) return;
-
-    for (let i = 0; i < 360; i += 15) {
-
-        const tick = document.createElement("div");
-        tick.className = "tick";
-        tick.dataset.angle = i;
-
-        tick.style.transform = `rotate(${i}deg) translateY(-120px)`;
-
-        container.appendChild(tick);
-    }
-}
-
     
 for (let i = splashRipples.length - 1; i >= 0; i--) {
 
