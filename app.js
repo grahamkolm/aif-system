@@ -665,7 +665,7 @@ function renderDashboard(data) {
     const windDir = data.wind?.deg || 0;
     
     // ✅ ALWAYS define diff
-    let diff = 0;
+    diff = 0;
 
     if (typeof compassHeading !== "undefined" &&compassHeading !== null) {
         diff = Math.abs(windDir - compassHeading);
@@ -1026,7 +1026,7 @@ if (tactical) {
     showInsight(
     SPI, 
     envScore,
-    confScore,
+    confScoreValue,
     light,
     depth
     );
@@ -2178,4 +2178,3 @@ for (let i = 0; i < 360; i += 15) {
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
-
