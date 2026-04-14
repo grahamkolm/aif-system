@@ -2141,10 +2141,37 @@ function getBestDropZone() {
 }
 
 function getBestZone() {
-    if (SPI >= 75) return "Shallow (Windward)";
-    if (SPI >= 60) return "Mid-depth";
-    return "Deep / Structure";
+    if (SPI >= 75) {
+    return "strong";
+} else {
+    return "normal";
 }
+}
+
+function setFishingZone(targetAngle) {
+  const ticks = document.querySelectorAll(".tick");
+  const zoneStrength = getBestZone();
+
+  ticks.forEach(tick => {
+    const angle = parseInt(tick.dataset.angle);
+
+    let diff = Math.abs(angle - targetAngle);
+    if (diff > 180) diff = 360 - diff;
+
+    // ✅ CLEAR OLD STATE
+    tick.classList.remove("active-zone", "active-zone-strong");
+
+    const zoneWidth = SPI >= 75 ? 30 : 20;
+    if (diff < zoneWidth) {
+      if (zoneStrength === "strong") {
+        tick.classList.add("active-zone-strong");
+      } else {
+        tick.classList.add("active-zone");
+      }
+    }
+  });
+}
+
 
 // 🌊 DAM
 let damData = {
