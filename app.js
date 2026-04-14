@@ -1479,6 +1479,23 @@ function updateFromSensor(data) {
   }
 }
 
+function setTileColor(tileId, color) {
+
+  const tile = document.getElementById(tileId);
+  if (!tile) return;
+
+  const icon = tile.querySelector("i");
+  const value = tile.querySelector(".tile-value");
+
+  if (icon) icon.style.color = color;
+  if (value) value.style.color = color;
+
+  // 🔥 IMPORTANT: REMOVE OLD STYLING
+  tile.style.border = "none";
+  tile.style.boxShadow = "none";
+}
+
+
    // =========================
     // ✅ ENV CALCULATION
     // =========================
