@@ -6,7 +6,6 @@ let diff = 0;
 let splashActive = true;
 let tempHistory = [];
 let pressureHistory = [];
-let needle;
 let tempModel = {
     surface: null,
     bottom: null,
@@ -109,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("scoutScreen").classList.add("hidden");
 
     // Compass
-    needle = document.getElementById("compassNeedle");
+    
     document.body.addEventListener("click", enableCompass, { once: true });
 
     // =============================
@@ -197,19 +196,16 @@ function getDirection(deg) {
 }
 
 function updateCompass(deg) {
-const dirText = getDirection(deg);
-console.log("Facing:", dirText);
-
-    if (!needle) {
-        console.log("❌ compassNeedle NOT FOUND");
-        return;
-    }
 
     if (typeof deg !== "number") return;
 
-    needle.style.transform =
-        `translate(-50%, -100%) rotate(${deg}deg)`; 
+    // Just store heading (for logic)
+    compassHeading = deg;
+
+    // Optional: log only
+    console.log("Facing:", getDirection(deg)); 
 }
+
 
 function animateSplash() {
 
