@@ -795,7 +795,166 @@ function calculateAverageSPI() {
 
     let total = drops.reduce((sum, d) => sum + d.spi, 0);
     return (total / drops.length).toFixed(1); }
-    
+
+
+// =====================================================
+// 🎣 AIF TILE ENGINE (CARP OPTIMISED)
+// =====================================================
+
+// 🎯 MAIN UPDATE FUNCTION
+function updateAllTiles(data) {
+
+  applyTileColor("airTile", getAirStatus(data.air));
+  applyTileColor("surfaceTile", getSurfaceStatus(data.surface));
+  applyTileColor("bottomTile", getBottomStatus(data.bottom));
+  applyTileColor("depthTile", getDepthStatus(data.surface, data.bottom));
+  applyTileColor("pressureTile", getPressureStatus(data.pressure));
+  applyTileColor("windTile", getWindStatus(data.wind));
+  applyTileColor("cloudTile", getCloudStatus(data.cloud));
+  applyTileColor("oxygenTile", getOxygenStatus(data.oxygen, data.surface));
+  applyTileColor("lightTile", getLightStatus(data.cloud, data.time)); }
+
+
+// =====================================================
+// 🌬️ AIR TEMP
+// =====================================================
+function getAirStatus(temp) {
+  if (temp >= 15 && temp <= 24) return "green";
+  if (temp >= 10 && temp <= 28) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// 🌊 SURFACE TEMP
+// =====================================================
+function getSurfaceStatus(temp) {
+  if (temp >= 16 && temp <= 22) return "green";
+  if (temp >= 12 && temp <= 26) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// ⬇️ BOTTOM TEMP
+// =====================================================
+function getBottomStatus(temp) {
+  if (temp >= 14 && temp <= 20) return "green";
+  if (temp >= 10 && temp <= 24) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// 🌡️ DEPTH / MIXING
+// =====================================================
+function getDepthStatus(surface, bottom) {
+  const diff = Math.abs(surface - bottom);
+
+  if (diff <= 2) return "green";
+  if (diff <= 5) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// 🌬️ PRESSURE
+// =====================================================
+function getPressureStatus(p) {
+  if (p >= 1012 && p <= 1022) return "green";
+  if (p >= 1005 && p <= 1028) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// 💨 WIND
+// =====================================================
+function getWindStatus(wind) {
+  if (wind >= 5 && wind <= 15) return "green";
+  if (wind >= 2 && wind <= 20) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// ☁️ CLOUD
+// =====================================================
+function getCloudStatus(cloud) {
+  if (cloud >= 30 && cloud <= 70) return "green";
+  if (cloud >= 10 && cloud <= 90) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// 🫧 OXYGEN (VERY IMPORTANT)
+// =====================================================
+function getOxygenStatus(oxygen, temp) {
+
+  // fallback if oxygen not available
+  if (!oxygen) {
+    // estimate based on temp
+    if (temp >= 16 && temp <= 22) return "green";
+    if (temp >= 12 && temp <= 26) return "orange";
+    return "red";
+  }
+
+  if (oxygen >= 7) return "green";
+  if (oxygen >= 5) return "orange";
+  return "red";
+}
+
+
+// =====================================================
+// ☀️ LIGHT (TIME + CLOUD COMBO)
+// =====================================================
+function getLightStatus(cloud, time) {
+
+  // assume time = hour (0–23)
+  if (time >= 6 && time <= 10) return "green";     // morning
+  if (time >= 17 && time <= 20) return "green";    // evening
+
+  if (cloud >= 40 && cloud <= 80) return "green";  // diffused light
+
+  if (time >= 10 && time <= 16) return "orange";   // midday
+
+  return "red"; // night / extreme
+}
+
+
+// =====================================================
+// 🎨 APPLY COLOR ENGINE
+// =====================================================
+function applyTileColor(tileId, status) {
+
+  const tile = document.getElementById(tileId);
+  if (!tile) return;
+
+  // reset
+  tile.style.borderColor = "";
+  tile.style.boxShadow = "";
+  tile.style.background = "";
+
+  if (status === "green") {
+    tile.style.borderColor = "#00ff9c";
+    tile.style.boxShadow = "0 0 15px rgba(0,255,156,0.45)";
+    tile.style.background = "rgba(0,255,156,0.05)";
+  }
+
+  else if (status === "orange") {
+    tile.style.borderColor = "#ffaa00";
+    tile.style.boxShadow = "0 0 12px rgba(255,170,0,0.35)";
+    tile.style.background = "rgba(255,170,0,0.05)";
+  }
+
+  else {
+    tile.style.borderColor = "#ff3b3b";
+    tile.style.boxShadow = "0 0 12px rgba(255,59,59,0.35)";
+    tile.style.background = "rgba(255,59,59,0.05)";
+  }
+}
+
 // =====================================================
 // 📊 7. DASHBOARD
 // =====================================================
