@@ -558,7 +558,8 @@ if (w < 2 && c < 20) {
 
     score += windScore;
 
-// ================= WIND DIRECTION ================= if (diff !== undefined) {
+// ================= WIND DIRECTION ================= 
+    if (diff !== undefined) {
     if (diff > 135) {
         score += 10;
         reasons.push("Wind blowing into zone (prime feeding)");
@@ -605,6 +606,7 @@ if (depth >= 2 && depth <= 5) {
     } else if (depth > 8) {
     score -= 4;
     reasons.push("Too deep for active feeding"); 
+}
 
 // ================= TIME WINDOWS =================
     score += sunriseWindow() * 0.5;
