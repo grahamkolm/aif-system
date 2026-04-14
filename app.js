@@ -62,7 +62,7 @@ const SOURCE = {
 
 function createTicks() {
 
-  const container = document.getElementById("tickContainer");
+  const container = document.getElementById("compassTicks");
 
   if (!container) {
     console.error("❌ tickContainer not found");
