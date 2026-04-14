@@ -199,25 +199,6 @@ function updateDirectionTicks(heading) {
     });
 }
 
-function setFishingZone(targetAngle) {
-
-    const ticks = document.querySelectorAll(".tick");
-
-    ticks.forEach(tick => {
-        const angle = parseInt(tick.dataset.angle);
-
-        let diff = Math.abs(angle - targetAngle);
-        if (diff > 180) diff = 360 - diff;
-
-        if (diff < 25) {
-            tick.classList.add("active-zone");
-        } else {
-            tick.classList.remove("active-zone");
-        }
-    });
-}
-
-
 // =====================================================
 // 💧 2. SPLASH SYSTEM
 // =====================================================
@@ -1155,6 +1136,29 @@ let bottomTemp = temps.bottom;
     bubbleIntensity = finalSPI / 100;
     document.getElementById("feed").innerText = feeding(finalSPI);
 
+    // ================= OXYGEN =================
+        let oxygen = estimateOxygen(t, w, c);
+
+    document.getElementById("oxygen").innerText =
+        oxygen.toFixed(1) + " mg/L";
+
+    setIcon("droplets", oxygen, [
+        { min: 9, max: 20, color: GREEN },
+        { min: 7, max: 8.9, color: ORANGE },
+        { min: 0, max: 6.9, color: RED }
+    ]);
+    
+    updateAllTiles({
+        air: t,
+        surface: surfaceTemp,
+        bottom: bottomTemp,
+        pressure: p,
+        wind: w,
+        cloud: c,
+        oxygen: oxygen,
+        time: new Date().getHours()
+    });
+
     // ================= HELPER FUNCTION =================
 
 let lightEl = document.getElementById("light");
@@ -1239,17 +1243,7 @@ let depthEl = document.getElementById("depth");
     document.getElementById("season").innerText = getSeason();
     setIcon("leaf", 1, [{ min: 0, max: 10, color: GREEN }]);
 
-    // ================= OXYGEN =================
-        let oxygen = estimateOxygen(t, w, c);
 
-    document.getElementById("oxygen").innerText =
-        oxygen.toFixed(1) + " mg/L";
-
-    setIcon("droplets", oxygen, [
-        { min: 9, max: 20, color: GREEN },
-        { min: 7, max: 8.9, color: ORANGE },
-        { min: 0, max: 6.9, color: RED }
-    ]);
 
     // ================= FEED =================
     document.getElementById("feed").innerText = feeding(SPI);
@@ -2458,11 +2452,11 @@ function setFishingZone(targetAngle) {
     let diff = Math.abs(angle - targetAngle);
     if (diff > 180) diff = 360 - diff;
 
-    // ✅ CLEAR OLD STATE
-    tick.classList.remove("active-zone", "active-zone-strong");
-
     const zoneWidth = SPI >= 75 ? 30 : 20;
-    if (diff < zoneWidth) {
+      
+    tick.classList.remove("active-zone", "active-zone-strong");
+      
+      if (diff < zoneWidth) {
       if (zoneStrength === "strong") {
         tick.classList.add("active-zone-strong");
       } else {
