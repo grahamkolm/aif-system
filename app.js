@@ -1018,6 +1018,15 @@ function applyTileColor(tileId, status) {
   const tile = document.getElementById(tileId);
   if (!tile) return;
 
+  const icon = tile.querySelector("i");
+  if (status === "red") {
+      icon.style.color = "#ff3b3b";
+      icon.style.opacity = 1;
+} else {
+      icon.style.color = "#ffffff";
+      icon.style.opacity = 0.6;
+}
+
   // reset
   tile.style.borderColor = "";
   tile.style.boxShadow = "";
