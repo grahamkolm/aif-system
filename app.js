@@ -60,26 +60,33 @@ const SOURCE = {
 };
 
 
-function createTicks() {
-    const step = 10;
+function createTicks(container) {
 
-    const container = document.getElementById("compassTicks");
-    if (!container) return;
+  const step = 5;
 
-for (let i = 0; i < 360; i += step) {
+  for (let i = 0; i < 360; i += step) {
 
-  let angle = i;
+    let angle = i;
 
-  const tick = document.createElement("div");
-  tick.className = "tick";
-  tick.dataset.angle = angle;
+    const tick = document.createElement("div");
+    tick.className = "tick";
 
-  tick.style.transform =
-    `translate(-50%, -50%) rotate(${angle}deg) translateY(-125px)`;
+    // 🧭 DIFFERENT LENGTHS
+    if (i % 90 === 0) {
+      tick.classList.add("tick-major");   // N E S W
+    } else if (i % 15 === 0) {
+      tick.classList.add("tick-medium");  // medium
+    } else {
+      tick.classList.add("tick-small");   // small
+    }
 
-  container.appendChild(tick);
-}
+    tick.dataset.angle = angle;
 
+    tick.style.transform =
+      `translate(-50%, -50%) rotate(${angle}deg) translateY(-125px)`;
+
+    container.appendChild(tick);
+  }
 }
 
 // =====================================================
