@@ -96,13 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
-    function enableCompass() {
-    console.log("Compass enabled");
-
-    // Placeholder for now
-}
-
-   
+ 
     // Store scout screen
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
@@ -233,47 +227,29 @@ function getDirection(deg) {
     return "NW";
 }
 
-function enableCompass() {
+function updateCompass(deg) {
 
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    if (typeof deg !== "number") return;
 
-        DeviceOrientationEvent.requestPermission()
-            .then(response => {
+    compassHeading = deg;
 
-                if (response === "granted") {
-
-                    console.log("✅ Compass enabled");
-
-                    window.addEventListener("deviceorientation", e => {
-
-                        if (e.alpha !== null) {
-                            compassHeading = 360 - e.alpha;
-                        }
-
-                    });
-
-                } else {
-                    console.log("❌ Permission denied");
-                }
-
-            })
-            .catch(console.error);
-
-    } else {
-
-        // Android (no permission needed)
-        window.addEventListener("deviceorientation", e => {
-
-            if (e.alpha !== null) {
-                compassHeading = 360 - e.alpha;
-            }
-
-        });
-
-        console.log("✅ Compass auto-enabled");
+    // 🔥 Rotate compass ring (if you have one)
+    const compass = document.querySelector(".compass-ring");
+    if (compass) {
+        compass.style.transform = `rotate(${deg}deg)`;
     }
-}
 
+    // 🎯 Update ticks
+    updateDirectionTicks(deg);
+
+    // 🎯 Fishing zone
+    if (typeof diff === "number") {
+        let target = (deg + diff) % 360;
+        setFishingZone(target);
+    }
+
+    console.log("Facing:", getDirection(deg)); 
+}
 
 function animateSplash() {
 
@@ -1346,33 +1322,6 @@ function initGPS(){
         };
     });
 }
-
-function enableCompass() {
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
-        DeviceOrientationEvent.requestPermission()
-            .then(response => {
-                if (response === "granted") {
-                    console.log("✅ Compass enabled");
-                } else {
-                    console.log("❌ Permission denied");
-                }
-            })
-            .catch(console.error);
-    } else {
-        console.log("✅ Compass auto-enabled (Android)");
-    }
-}
-
-window.addEventListener("deviceorientation", e => {
-    console.log("alpha:", e.alpha);
-    
-    if (e.alpha !== null && e.alpha !== undefined) {
-        compassHeading = 360 - e.alpha;
-    } else {
-        compassHeading = 0; // fallback
-    }
-    console.log("Heading:", compassHeading);
-});
 
 let mapInstance;
 
