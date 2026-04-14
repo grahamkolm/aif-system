@@ -236,15 +236,26 @@ function animateSplash() {
   }
 
   // 💨 FLOATING BUBBLES (SMOOTH, NOT RANDOM)
-  if (Math.random() < 0.3) {
-    splashRipples.push({
-      x: Math.random() * w,
-      y: h,
-      size: Math.random() * 3 + 1,
-      speed: Math.random() * 1 + 0.5,
-      alpha: 0.2
-    });
-  }
+  for (let i = splashBubbles.length - 1; i >= 0; i--) {
+
+    let b = splashBubbles[i];
+
+    b.y -= b.speed;
+
+    splashCtx.beginPath();
+    splashCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    splashCtx.fillStyle = "rgba(255,255,255,0.3)";
+    splashCtx.fill();
+
+    if (b.y < 0) {
+        splashBubbles[i] = {
+            x: Math.random() * splashCanvas.width,
+            y: splashCanvas.height,
+            r: Math.random() * 3 + 1,
+            speed: Math.random() * 0.5 + 0.2
+        };
+    }
+}
 
 for (let i = splashRipples.length - 1; i >= 0; i--) {
 
