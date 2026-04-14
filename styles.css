@@ -316,15 +316,19 @@ html, body {
 }
 
 .tick.active-zone {
-    background: #ffc400;
-    height: 20px;
-    box-shadow: 0 0 10px #ffc400,
-                0 0 20px rgba(255,196,0,0.5);
+    background: #00ffa6;
+    height: 22px;
+    box-shadow: 0 0 10px #00ffa6,
+                0 0 20px rgba(255,196,0,0.6);
 }
 
 .tick.active {
   opacity: 1;
   background: #ffffff;
+}
+
+.tick.active-zone-strong {
+    background: #00ffa6;
 }
 
 #compassTicks::after {
