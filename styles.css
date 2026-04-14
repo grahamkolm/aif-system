@@ -230,6 +230,20 @@ html, body {
     height: 100%;
 }
 
+#spiArc {
+    stroke: #ffffff; /* was grey */
+    stroke-width: 10; /* slightly thicker */
+    stroke-linecap: round;
+    opacity: 0.9;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); 
+}
+
+arc.style.filter = `
+    drop-shadow(0 0 8px ${color})
+    drop-shadow(0 0 14px ${color})
+`;
+
+
 /* ================= COMPASS ================= */ 
 .compass-ring {
     position: absolute;
@@ -266,23 +280,56 @@ html, body {
     transform: translateY(-50%); 
 }
 
-/* default tick */
+#compassTicks {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
 .tick {
-    background: rgba(255,255,255,0.25);
-    transition: all 0.2s ease;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3px;
+    height: 16px;
+    background: rgba(255,255,255,0.7);
+    transform-origin: center -120px;
+    border-radius: 2px;
+    box-shadow: 0 0 6px rgba(255,255,255,0.7);
 }
 
-/* 🔵 your direction */
 .tick.active-direction {
-    background: #4da6ff;
-    box-shadow: 0 0 8px #4da6ff;
-    z-index: 2;
+    background: #00ffa6;
+    height: 22px;
+    box-shadow: 0 0 10px #00ffa6
+                0 0 20px rgba(0,255,166,0.6);
 }
 
-/* 🟢 fishing zone */
 .tick.active-zone {
-    background: #00ffa6;
-    box-shadow: 0 0 10px #00ffa6;
+    background: #ffc400;
+    height: 20px;
+    box-shadow: 0 0 10px #0ffc400
+                0 0 20px rgba(255,196,0,0.5);
+}
+
+#compassTicks::after {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(0,255,156,0.08),
+        transparent 70%
+    );
 }
 
 
