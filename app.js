@@ -440,22 +440,19 @@ function spawnBubble() {
 
     const h = hotspots[Math.floor(Math.random() * hotspots.length)];
 
+    let spiFactor = SPI / 100;
+
     bubbles.push({
         x: h.x,
         y: canvas.height,
-        size: Math.random() * 3 + 2,
-        speed: Math.random() + 0.5,
-        drift: (Math.random() - 0.5),
-        alpha: 0.4
-    });
-}
 
-function ripple() {
-    ripples.push({
-        r: 0,
-        alpha: 0.3,
-        x: canvas.width / 2,
-        y: canvas.height * 0.7
+        size: (Math.random() * 4 + 2) * (0.6 + spiFactor),
+
+        speed: (Math.random() * 0.8 + 0.3) * (0.5 + spiFactor),
+
+        drift: (Math.random() - 0.5) * 0.6,
+
+        alpha: 0.25 + (spiFactor * 0.3)
     });
 }
 
@@ -466,37 +463,60 @@ function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateDirectionTicks(compassHeading || 0 );
     
-    if (Math.random() < bubbleIntensity) spawnBubble();
+    let spawnRate = 0.02 + (bubbleIntensity * 0.08);
+    if (Math.random() < spawnRate) {
+        spawnBubble();
+    }
 
-    bubbles.forEach((b, i) => {
+bubbles.forEach((b, i) => {
 
     if (b.x == null || b.y == null) return;
 
+    // 🌊 Movement
     b.y -= b.speed;
     b.x += b.drift;
+
+    // 🌊 Natural wobble (buoyancy effect)
+    b.x += Math.sin(b.y * 0.02) * 0.3;
 
     const size = b.size || 6;
 
     if (!isFinite(b.x) || !isFinite(b.y) || !isFinite(size)) return;
 
+    // 🎯 REALISTIC BUBBLE GRADIENT
     let gradient = ctx.createRadialGradient(
-    b.x - size * 0.3,
-    b.y - size * 0.3,
-    0,
-    b.x,
-    b.y,
-    size
-);
+        b.x - size * 0.4,
+        b.y - size * 0.4,
+        0,
+        b.x,
+        b.y,
+        size
+    );
 
     gradient.addColorStop(0, `rgba(255,255,255,${b.alpha})`);
-    gradient.addColorStop(0.4, `rgba(200,230,255,${b.alpha * 0.5})`); 
+    gradient.addColorStop(0.3, `rgba(200,230,255,${b.alpha * 0.6})`);
+    gradient.addColorStop(0.7, `rgba(180,220,255,${b.alpha * 0.2})`);
     gradient.addColorStop(1, `rgba(180,220,255,0)`);
 
-    ctx.fillStyle = "rgba(255,255,255,0.3)";
+    ctx.fillStyle = gradient;
+
+    // 🔥 HIGH-END TOUCH (ELLIPSE = REAL BUBBLE SHAPE)
     ctx.beginPath();
-    ctx.arc(b.x, b.y, size, 0, Math.PI * 2);
+    ctx.ellipse(
+        b.x,
+        b.y,
+        size * 0.9,
+        size * 1.1,
+        0,
+        0,
+        Math.PI * 2
+    );
     ctx.fill();
 
+    // ❌ Remove bubble if off screen
+    if (b.y < -20) {
+        bubbles.splice(i, 1);
+    }
 });
 
     ripples.forEach((r, i) => {
