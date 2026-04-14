@@ -309,9 +309,9 @@ html, body {
 }
 
 .tick.active-direction {
-    background: #00ffa6;
+    background: red;
     height: 22px;
-    box-shadow: 0 0 10px #00ffa6
+    box-shadow: 0 0 10px red,
                 0 0 20px rgba(0,255,166,0.6);
 }
 
