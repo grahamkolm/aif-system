@@ -291,14 +291,17 @@ arc.style.filter = `
 
 .tick {
     position: absolute;
-    left: 50%;
     top: 50%;
-    width: 3px;
-    height: 16px;
-    background: rgba(255,255,255,0.7);
+    left: 50%;
+
+    width: 2px;
+    height: 14px;
+    background: white;
+    opacity: 0.6;
+
     transform-origin: center -120px;
-    border-radius: 2px;
-    box-shadow: 0 0 6px rgba(255,255,255,0.7);
+
+    box-shadow: 0 0 6px rgba(255,255,255,0.6); 
 }
 
 .tick.active-direction {
