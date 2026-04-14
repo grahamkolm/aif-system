@@ -1474,6 +1474,7 @@ if (envCircle && confCircle) {
         confCircle.style.boxShadow = "none";
     }
 }
+}
 
 function estimateOxygen(temp, wind, cloud) {
 
