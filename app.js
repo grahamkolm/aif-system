@@ -61,6 +61,7 @@ const SOURCE = {
 
 
 function createTicks() {
+    const step = 10;
 
     const container = document.getElementById("compassTicks");
     if (!container) return;
