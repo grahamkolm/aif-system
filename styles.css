@@ -304,10 +304,10 @@ arc.style.filter = `
 
     width: 2px;
     height: 14px;
-    background: white;
+    background: rgba(255,255,255,0.7);
     opacity: 0.6;
 
-    transform-origin: center 120px;
+    transform-origin: center;
 
     box-shadow: 0 0 6px rgba(255,255,255,0.6); 
 }
