@@ -308,6 +308,29 @@ html, body {
     box-shadow: 0 0 6px rgba(255,255,255,0.6); 
 }
 
+/* small ticks */
+.tick-small {
+  width: 2px;
+  height: 8px;
+  opacity: 0.4;
+}
+
+/* medium ticks */
+.tick-medium {
+  width: 2px;
+  height: 14px;
+  opacity: 0.7;
+}
+
+/* major ticks (N E S W) */
+.tick-major {
+  width: 3px;
+  height: 22px;
+  background: #00ff9c;
+  opacity: 1;
+}
+
+
 .tick.active-direction {
     background: red;
     height: 22px;
