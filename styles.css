@@ -240,7 +240,7 @@ html, body {
 
 /* ================= COMPASS ================= */ 
 .compass-ring {
-    position: absolute;
+    position: relative;
     inset: 0;
     pointer-events: none;
 }
