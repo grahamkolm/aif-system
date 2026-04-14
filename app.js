@@ -499,19 +499,18 @@ function analyzeWeather(w, p, c){
 
 function calculateWaterTemps(airTemp) {
 
-    // Surface (0–3m)
-    let surface;
+    // 🌞 Surface reacts fast (but not 1:1)
+    let surface = airTemp - 1;
 
-    if (airTemp >= 25) surface = airTemp - 0.5;
-    else if (airTemp >= 20) surface = airTemp - 1;
-    else surface = airTemp - 1.5;
+    // 🌊 Add realism: warm air doesn't fully transfer
+    if (airTemp > 25) surface -= 1;
+    if (airTemp < 15) surface += 0.5;
 
-    // Bottom (~7m average)
-    let bottom;
+    // 🧊 Bottom is slower + more stable
+    let bottom = surface - 2.5;
 
-    if (airTemp >= 25) bottom = surface - 3.5;
-    else if (airTemp >= 20) bottom = surface - 3;
-    else bottom = surface - 2;
+    // Stabilize bottom (never extreme swings)
+    if (bottom < 8) bottom = 8 + (airTemp * 0.1);
 
     return {
         surface: parseFloat(surface.toFixed(1)),
@@ -519,6 +518,7 @@ function calculateWaterTemps(airTemp) {
         source: "forecast"
     };
 }
+
 
 
 // =====================================================
@@ -695,8 +695,15 @@ function renderDashboard(data) {
     if (tempModel.source === "sensor") {
     temps = tempModel;
 }
-    let surfaceTemp = tempModel.surface ?? (t - 0.5);
-    let bottomTemp = tempModel.bottom ?? (t - 1.5);
+let temps = calculateWaterTemps(t);
+
+// 🔥 SENSOR OVERRIDE
+if (tempModel.source === "sensor") {
+    temps = tempModel;
+}
+
+let surfaceTemp = temps.surface;
+let bottomTemp = temps.bottom;
     updateCompass(windDir);
     let dam = loadDamData();
 
