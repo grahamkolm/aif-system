@@ -1061,40 +1061,6 @@ function applyTileColor(tileId, status) {
   }
 }
 
-// =====================================================
-// 🎨 COLOR LOGIC
-// =====================================================
-
-function getTempColor(t) {
-  if (t >= 18 && t <= 24) return "#00ff88"; // optimal
-  if (t >= 15 && t < 18) return "#ffaa00"; // okay
-  return "#ff4444"; // poor
-}
-
-function getPressureColor(p) {
-  if (p >= 1015 && p <= 1025) return "#00ff88";
-  if (p >= 1005 && p < 1015) return "#ffaa00";
-  return "#ff4444";
-}
-
-function getWindColor(w) {
-  if (w >= 5 && w <= 15) return "#00ff88";
-  if (w >= 3 && w < 5) return "#ffaa00";
-  return "#ff4444";
-}
-
-function getCloudColor(c) {
-  if (c >= 30 && c <= 70) return "#00ff88";
-  if (c > 70) return "#ffaa00";
-  return "#ff4444";
-}
-
-function getOxygenColor(o) {
-  if (o >= 8) return "#00ff88";
-  if (o >= 6) return "#ffaa00";
-  return "#ff4444";
-}
-
 
 // =====================================================
 // 📊 7. DASHBOARD
@@ -1293,24 +1259,6 @@ let depthEl = document.getElementById("depth");
         { min: 50, max: 69, color: ORANGE },
         { min: 0, max: 49, color: RED }
     ]);
-
-// =====================================================
-// 🎯 APPLY AUTO TILE COLORS
-// =====================================================
-
-setTileColor("airTile", 
-getTempColor(t)); 
-setTileColor("surfaceTile",
-getTempColor(surfaceTemp)); 
-setTileColor("bottomTile", 
-getTempColor(bottomTemp));
-
-setTileColor("pressureTile",
-getPressureColor(p)); 
-setTileColor("windTile", 
-getWindColor(w)); 
-setTileColor("cloudTile", 
-getCloudColor(c));
 
 const oxygen = estimateOxygen(t, w, c);
 setTileColor("oxygenTile", getOxygenColor(oxygen));
@@ -1537,23 +1485,6 @@ function updateFromSensor(data) {
     SOURCE.depth = "sensor";
   }
 }
-
-function setTileColor(tileId, color) {
-
-  const tile = document.getElementById(tileId);
-  if (!tile) return;
-
-  const icon = tile.querySelector("i");
-  const value = tile.querySelector(".tile-value");
-
-  if (icon) icon.style.color = color;
-  if (value) value.style.color = color;
-
-  // 🔥 IMPORTANT: REMOVE OLD STYLING
-  tile.style.border = "none";
-  tile.style.boxShadow = "none";
-}
-
 
    // =========================
     // ✅ ENV CALCULATION
