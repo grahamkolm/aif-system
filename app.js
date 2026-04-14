@@ -690,7 +690,8 @@ function renderDashboard(data) {
 
     console.log("SPI INPUT:", t, p, w, c);
     
-    let result = calculateSPI(p, w, c, windDir, t, light, depth); let newSPI = result.score;
+    let result = calculateSPI(p, w, c, windDir, t, light, depth); 
+    let newSPI = result.score;
 
     // smoothing
     if (lastSPI !== null) {
