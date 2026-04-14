@@ -301,7 +301,7 @@ html, body {
     background: rgba(255,255,255,0.8);
     opacity: 0.6;
 
-    transform-origin: center 50% -138px;
+    transform-origin: center center;
 
     border-radius: 2px;
 
