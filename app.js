@@ -2173,8 +2173,9 @@ for (let i = 0; i < 360; i += 15) {
 
     svg.appendChild(line);
 }
+});
 
 window.retryConnection = retryConnection;
 window.startScan = startScan;
 window.closeScout = closeScout;
-}
+
