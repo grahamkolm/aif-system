@@ -1156,10 +1156,10 @@ function getTempTrend(t) {
 
     if (tempHistory.length < 2) return "stable";
 
-    let diff = tempHistory[tempHistory.length - 1] - tempHistory[0];
+    let tempDiff = tempHistory[tempHistory.length - 1] - tempHistory[0];
 
-    if (diff > 1) return "warming";
-    if (diff < -1) return "cooling_fast";
+    if (tempDiff > 1) return "warming";
+    if (tempDiff < -1) return "cooling_fast";
 
     return "stable";
 }
