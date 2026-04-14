@@ -453,6 +453,7 @@ function fetchWeatherSafe() {
         }
     }, 500); // ⬅️ longer delay
 });
+}
 
 function analyzeWeather(w, p, c){
 
