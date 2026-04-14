@@ -331,6 +331,11 @@ html, body {
     background: #00ffa6;
 }
 
+.tick[data-angle="0"] {
+  background: red;
+  height: 18px;
+}
+
 #compassTicks::after {
     content: "";
     position: absolute;
