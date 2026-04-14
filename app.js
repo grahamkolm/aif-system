@@ -148,6 +148,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+function updateDirectionTicks(heading) {
+
+    const ticks = document.querySelectorAll(".tick");
+
+    ticks.forEach(tick => {
+        const angle = parseInt(tick.dataset.angle);
+
+        let diff = Math.abs(angle - heading);
+        if (diff > 180) diff = 360 - diff;
+
+        if (diff < 10) {
+            tick.classList.add("active-direction");
+        } else {
+            tick.classList.remove("active-direction");
+        }
+    });
+}
+
+function setFishingZone(targetAngle) {
+
+    const ticks = document.querySelectorAll(".tick");
+
+    ticks.forEach(tick => {
+        const angle = parseInt(tick.dataset.angle);
+
+        let diff = Math.abs(angle - targetAngle);
+        if (diff > 180) diff = 360 - diff;
+
+        if (diff < 25) {
+            tick.classList.add("active-zone");
+        } else {
+            tick.classList.remove("active-zone");
+        }
+    });
+}
+
+
 // =====================================================
 // 💧 2. SPLASH SYSTEM
 // =====================================================
