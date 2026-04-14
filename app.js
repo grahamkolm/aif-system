@@ -35,6 +35,30 @@ let windDir = 0;
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
 const RED = "#ff3b3b";
+const ENV = {
+  air: null,
+  surface: null,
+  bottom: null,
+  pressure: null,
+  wind: null,
+  cloud: null,
+  light: null,
+  depth: null,
+  oxygen: null
+};
+
+const SOURCE = {
+  air: "none",
+  surface: "none",
+  bottom: "none",
+  pressure: "none",
+  wind: "none",
+  cloud: "none",
+  light: "none",
+  depth: "none",
+  oxygen: "none"
+};
+
 
 function createTicks() {
 
@@ -466,6 +490,20 @@ function spawnBubble() {
     });
 }
 
+calculateDerivedValues();
+
+updateAllTiles({
+  air: ENV.air,
+  surface: ENV.surface,
+  bottom: ENV.bottom,
+  pressure: ENV.pressure,
+  wind: ENV.wind,
+  cloud: ENV.cloud,
+  oxygen: ENV.oxygen,
+  time: new Date().getHours()
+});
+
+
 function animate() {
 
     if (!ctx || !canvas) return;
@@ -598,6 +636,74 @@ function fetchWeatherSafe() {
     }, 500); // ⬅️ longer delay
 });
 }
+
+function updateFromWeather(data) {
+
+  if (!ENV.air) {
+    ENV.air = data.main.temp;
+    SOURCE.air = "weather";
+  }
+
+  if (!ENV.pressure) {
+    ENV.pressure = data.main.pressure;
+    SOURCE.pressure = "weather";
+  }
+
+  if (!ENV.wind) {
+    ENV.wind = data.wind.speed * 3.6;
+    SOURCE.wind = "weather";
+  }
+
+  if (!ENV.cloud) {
+    ENV.cloud = data.clouds.all;
+    SOURCE.cloud = "weather";
+  }
+}
+
+
+function calculateDerivedValues() {
+
+  // Water temps fallback
+  if (!ENV.surface || !ENV.bottom) {
+    const surface = ENV.air - 1;
+    const bottom = surface - 2.5;
+
+    if (!ENV.surface) {
+      ENV.surface = surface;
+      SOURCE.surface = "model";
+    }
+
+    if (!ENV.bottom) {
+      ENV.bottom = bottom;
+      SOURCE.bottom = "model";
+    }
+  }
+
+  // Oxygen calculation
+  const temp = ENV.surface;
+  const wind = ENV.wind || 0;
+  const cloud = ENV.cloud || 50;
+
+  let oxygen = 14.6 - (temp * 0.4);
+  oxygen += wind * 0.1;
+  oxygen += cloud * 0.02;
+
+  ENV.oxygen = Math.max(5, Math.min(14, oxygen));
+  SOURCE.oxygen = "calculated";
+
+  // Light fallback
+  if (!ENV.light) {
+    const hour = new Date().getHours();
+
+    if (hour >= 6 && hour <= 10) ENV.light = 60;
+    else if (hour >= 17 && hour <= 20) ENV.light = 65;
+    else if (hour >= 10 && hour <= 16) ENV.light = 85;
+    else ENV.light = 20;
+
+    SOURCE.light = "calculated";
+  }
+}
+
 
 function analyzeWeather(w, p, c){
 
@@ -1344,6 +1450,34 @@ if (tactical) {
 // =====================================================
 // 🧠 8. ENVIRONMENT HELPERS
 // =====================================================
+
+function updateFromSensor(data) {
+
+  if (data.surfaceTemp) {
+    ENV.surface = data.surfaceTemp;
+    SOURCE.surface = "sensor";
+  }
+
+  if (data.bottomTemp) {
+    ENV.bottom = data.bottomTemp;
+    SOURCE.bottom = "sensor";
+  }
+
+  if (data.pressure) {
+    ENV.pressure = data.pressure;
+    SOURCE.pressure = "sensor";
+  }
+
+  if (data.light) {
+    ENV.light = data.light;
+    SOURCE.light = "sensor";
+  }
+
+  if (data.depth) {
+    ENV.depth = data.depth;
+    SOURCE.depth = "sensor";
+  }
+}
 
    // =========================
     // ✅ ENV CALCULATION
