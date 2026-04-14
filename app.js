@@ -227,29 +227,47 @@ function getDirection(deg) {
     return "NW";
 }
 
-function updateCompass(deg) {
+function enableCompass() {
 
-    if (typeof deg !== "number") return;
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
 
-    compassHeading = deg;
+        DeviceOrientationEvent.requestPermission()
+            .then(response => {
 
-    // 🔥 Rotate compass ring (if you have one)
-    const compass = document.querySelector(".compass-ring");
-    if (compass) {
-        compass.style.transform = `rotate(${deg}deg)`;
+                if (response === "granted") {
+
+                    console.log("✅ Compass enabled");
+
+                    window.addEventListener("deviceorientation", e => {
+
+                        if (e.alpha !== null) {
+                            compassHeading = 360 - e.alpha;
+                        }
+
+                    });
+
+                } else {
+                    console.log("❌ Permission denied");
+                }
+
+            })
+            .catch(console.error);
+
+    } else {
+
+        // Android
+        window.addEventListener("deviceorientation", e => {
+
+            if (e.alpha !== null) {
+                compassHeading = 360 - e.alpha;
+            }
+
+        });
+
+        console.log("✅ Compass auto-enabled");
     }
-
-    // 🎯 Update ticks
-    updateDirectionTicks(deg);
-
-    // 🎯 Fishing zone
-    if (typeof diff === "number") {
-        let target = (deg + diff) % 360;
-        setFishingZone(target);
-    }
-
-    console.log("Facing:", getDirection(deg)); 
 }
+
 
 function animateSplash() {
 
