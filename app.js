@@ -108,7 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("scoutScreen").classList.add("hidden");
 
     // Compass
-    
+        
+    document.body.addEventListener("touchstart", enableCompass, { once: true }); 
     document.body.addEventListener("click", enableCompass, { once: true });
 
     // =============================
@@ -232,22 +233,47 @@ function getDirection(deg) {
     return "NW";
 }
 
-function updateCompass(deg) {
+function enableCompass() {
 
-    if (typeof deg !== "number") return;
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
 
-    compassHeading = deg;
+        DeviceOrientationEvent.requestPermission()
+            .then(response => {
 
-    // 🔥 ADD THESE
-    updateDirectionTicks(deg);
+                if (response === "granted") {
 
-    if (typeof diff === "number") {
-        let target = (deg + diff) % 360;
-        setFishingZone(target);
+                    console.log("✅ Compass enabled");
+
+                    window.addEventListener("deviceorientation", e => {
+
+                        if (e.alpha !== null) {
+                            compassHeading = 360 - e.alpha;
+                        }
+
+                    });
+
+                } else {
+                    console.log("❌ Permission denied");
+                }
+
+            })
+            .catch(console.error);
+
+    } else {
+
+        // Android (no permission needed)
+        window.addEventListener("deviceorientation", e => {
+
+            if (e.alpha !== null) {
+                compassHeading = 360 - e.alpha;
+            }
+
+        });
+
+        console.log("✅ Compass auto-enabled");
     }
-
-    console.log("Facing:", getDirection(deg)); 
 }
+
 
 function animateSplash() {
 
