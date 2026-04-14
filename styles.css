@@ -40,17 +40,6 @@ html, body {
   margin: 0 auto;
 }
 
-updateAllTiles({
-  air: airTemp,
-  surface: surfaceTemp,
-  bottom: bottomTemp,
-  pressure: pressure,
-  wind: windSpeed,
-  cloud: cloudCover,
-  oxygen: oxygenLevel,   // can be null
-  time: new Date().getHours()
-});
-
 /* ================= SPLASH ================= */
 
 #splash {
@@ -62,7 +51,7 @@ updateAllTiles({
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hiden;
+    overflow: hidden;
     
   transition: opacity 0.6s ease;
 
@@ -323,7 +312,7 @@ updateAllTiles({
     background: red;
     height: 22px;
     box-shadow: 0 0 10px red,
-                0 0 20px rgba(0,255,166,0.6);
+                0 0 20px rgba(0,255,166,0.9);
 }
 
 .tick.active-zone {
@@ -568,6 +557,10 @@ updateAllTiles({
   border: 1px solid rgba(255,255,255,0.08);
   box-shadow:
     0 0 15px rgba(0,0,0,0.3);
+}
+
+.tile:active {
+  transform: scale(0.97);
 }
 
 /* ================= AI ================= */ 
