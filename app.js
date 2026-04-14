@@ -65,17 +65,20 @@ function createTicks() {
     const container = document.getElementById("compassTicks");
     if (!container) return;
 
-    for (let i = 0; i < 360; i += 15) {
-        let angle = i;
+for (let i = 0; i < 360; i += step) {
 
-        const tick = document.createElement("div");
-        tick.className = "tick";
-        tick.dataset.angle = i;
+  let angle = i;
 
-        tick.style.transform = `rotate(${angle}deg) translateY(-122px)`;
+  const tick = document.createElement("div");
+  tick.className = "tick";
+  tick.dataset.angle = angle;
 
-        container.appendChild(tick);
-    }
+  tick.style.transform =
+    `translate(-50%, -50%) rotate(${angle}deg) translateY(-125px)`;
+
+  container.appendChild(tick);
+}
+
 }
 
 // =====================================================
