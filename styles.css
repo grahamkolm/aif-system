@@ -238,12 +238,6 @@ html, body {
   filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); 
 }
 
-arc.style.filter = `
-    drop-shadow(0 0 8px ${color})
-    drop-shadow(0 0 14px ${color})
-`;
-
-
 /* ================= COMPASS ================= */ 
 .compass-ring {
     position: absolute;
@@ -307,7 +301,7 @@ arc.style.filter = `
     background: rgba(255,255,255,0.8);
     opacity: 0.6;
 
-    transform-origin: center;
+    transform-origin: center 50% 150px;
 
     border-radius: 2px;
 
@@ -324,7 +318,7 @@ arc.style.filter = `
 .tick.active-zone {
     background: #ffc400;
     height: 20px;
-    box-shadow: 0 0 10px #0ffc400
+    box-shadow: 0 0 10px #ffc400,
                 0 0 20px rgba(255,196,0,0.5);
 }
 
