@@ -512,7 +512,7 @@ html, body {
   fill: none;
   stroke-width: 6;
   stroke-linecap: round;
-  stroke: #00ff9c;
+  stroke: red !important;
 
   stroke-dasharray: 264; /* circumference */
   stroke-dashoffset: 264;
