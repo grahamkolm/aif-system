@@ -263,6 +263,29 @@ function enableCompass() {
     }
 }
 
+
+// =====================================================
+// 🧭 COMPASS UI UPDATE (MISSING FUNCTION FIX) // =====================================================
+
+function updateCompass(heading) {
+
+    if (heading == null) return;
+
+    // Rotate compass ring (if exists)
+    const compass = document.getElementById("compassRing");
+    if (compass) {
+        compass.style.transform = `rotate(${heading}deg)`;
+    }
+
+    // Update active tick (direction highlight)
+    updateDirectionTicks(heading);
+
+    // Optional: set fishing zone based on wind vs heading
+    if (typeof diff !== "undefined") {
+        setFishingZone((heading + diff) % 360);
+    }
+}
+
     // Compass
     document.addEventListener("DOMContentLoaded", () => {
         
