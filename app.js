@@ -236,13 +236,18 @@ function updateCompass(deg) {
 
     if (typeof deg !== "number") return;
 
-    // Just store heading (for logic)
     compassHeading = deg;
 
-    // Optional: log only
+    // 🔥 ADD THESE
+    updateDirectionTicks(deg);
+
+    if (typeof diff === "number") {
+        let target = (deg + diff) % 360;
+        setFishingZone(target);
+    }
+
     console.log("Facing:", getDirection(deg)); 
 }
-
 
 function animateSplash() {
 
