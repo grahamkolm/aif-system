@@ -1021,13 +1021,16 @@ function applyTileColor(tileId, status) {
     return;
 }
 
-  const icon = tile.querySelector("i");
-  if (status === "red") {
-      icon.style.color = "#ff3b3b";
-      icon.style.opacity = 1;
-} else {
-      icon.style.color = "#ffffff";
-      icon.style.opacity = 0.6;
+ const icon = tile.querySelector("i");
+
+    if (icon) {
+    if (status === "red") {
+        icon.style.color = "#ff3b3b";
+        icon.style.opacity = 1;
+    } else {
+        icon.style.color = "#ffffff";
+        icon.style.opacity = 0.6;
+    }
 }
 
   // reset
