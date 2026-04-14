@@ -280,6 +280,14 @@ arc.style.filter = `
     transform: translateY(-50%); 
 }
 
+#compassCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+
 #compassTicks {
     position: absolute;
     width: 100%;
@@ -299,7 +307,7 @@ arc.style.filter = `
     background: white;
     opacity: 0.6;
 
-    transform-origin: center -120px;
+    transform-origin: center 120px;
 
     box-shadow: 0 0 6px rgba(255,255,255,0.6); 
 }
