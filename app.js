@@ -1062,6 +1062,41 @@ function applyTileColor(tileId, status) {
 }
 
 // =====================================================
+// 🎨 COLOR LOGIC
+// =====================================================
+
+function getTempColor(t) {
+  if (t >= 18 && t <= 24) return "#00ff88"; // optimal
+  if (t >= 15 && t < 18) return "#ffaa00"; // okay
+  return "#ff4444"; // poor
+}
+
+function getPressureColor(p) {
+  if (p >= 1015 && p <= 1025) return "#00ff88";
+  if (p >= 1005 && p < 1015) return "#ffaa00";
+  return "#ff4444";
+}
+
+function getWindColor(w) {
+  if (w >= 5 && w <= 15) return "#00ff88";
+  if (w >= 3 && w < 5) return "#ffaa00";
+  return "#ff4444";
+}
+
+function getCloudColor(c) {
+  if (c >= 30 && c <= 70) return "#00ff88";
+  if (c > 70) return "#ffaa00";
+  return "#ff4444";
+}
+
+function getOxygenColor(o) {
+  if (o >= 8) return "#00ff88";
+  if (o >= 6) return "#ffaa00";
+  return "#ff4444";
+}
+
+
+// =====================================================
 // 📊 7. DASHBOARD
 // =====================================================
 
@@ -1259,12 +1294,36 @@ let depthEl = document.getElementById("depth");
         { min: 0, max: 49, color: RED }
     ]);
 
+// =====================================================
+// 🎯 APPLY AUTO TILE COLORS
+// =====================================================
+
+setTileColor("airTile", 
+getTempColor(t)); 
+setTileColor("surfaceTile",
+getTempColor(surfaceTemp)); 
+setTileColor("bottomTile", 
+getTempColor(bottomTemp));
+
+setTileColor("pressureTile",
+getPressureColor(p)); 
+setTileColor("windTile", 
+getWindColor(w)); 
+setTileColor("cloudTile", 
+getCloudColor(c));
+
+const oxygen = estimateOxygen(t, w, c);
+setTileColor("oxygenTile", getOxygenColor(oxygen));
+
+    
     function getScoreColor(value) {
     if (value >= 80) return "#00ff9c";   // green
     if (value >= 60) return "#ffd700";   // yellow
     return "#ff4d4d";                    // red
 }
-   
+
+
+    
 // ================= ENV + CONF =================
 // ================= ENV ================= 
 let envScore = calculateENV(p, c, w, light, t);
