@@ -462,7 +462,6 @@ function animate() {
     if (!ctx || !canvas) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    updateCompass(compassHeading || 0);
     updateDirectionTicks(compassHeading || 0 );
     
     if (Math.random() < bubbleIntensity) spawnBubble();
@@ -1468,15 +1467,6 @@ let confCircle = document.querySelector(".conf-circle");
 
 if (envCircle && confCircle) {
     if (v >= 70) {
-        envCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
-        confCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
-    } else {
-        envCircle.style.boxShadow = "none";
-        confCircle.style.boxShadow = "none";
-    }
-}
-
-    if(v >= 70){
         envCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
         confCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
     } else {
