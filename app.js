@@ -60,7 +60,14 @@ const SOURCE = {
 };
 
 
-function createTicks(container) {
+function createTicks() {
+
+  const container = document.getElementById("tickContainer");
+
+  if (!container) {
+    console.error("❌ tickContainer not found");
+    return;
+  }
 
   const step = 5;
 
@@ -71,13 +78,12 @@ function createTicks(container) {
     const tick = document.createElement("div");
     tick.className = "tick";
 
-    // 🧭 DIFFERENT LENGTHS
     if (i % 90 === 0) {
-      tick.classList.add("tick-major");   // N E S W
+      tick.classList.add("tick-major");
     } else if (i % 15 === 0) {
-      tick.classList.add("tick-medium");  // medium
+      tick.classList.add("tick-medium");
     } else {
-      tick.classList.add("tick-small");   // small
+      tick.classList.add("tick-small");
     }
 
     tick.dataset.angle = angle;
