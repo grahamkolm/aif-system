@@ -40,6 +40,17 @@ html, body {
   margin: 0 auto;
 }
 
+updateAllTiles({
+  air: airTemp,
+  surface: surfaceTemp,
+  bottom: bottomTemp,
+  pressure: pressure,
+  wind: windSpeed,
+  cloud: cloudCover,
+  oxygen: oxygenLevel,   // can be null
+  time: new Date().getHours()
+});
+
 /* ================= SPLASH ================= */
 
 #splash {
