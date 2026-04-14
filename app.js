@@ -30,6 +30,7 @@ let drops = [];
 let splashCanvas;
 let splashCtx;
 let score = 50;
+let windDir = 0;
 
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
@@ -283,7 +284,8 @@ function enableCompass() {
 
 
 // =====================================================
-// 🧭 COMPASS UI UPDATE (MISSING FUNCTION FIX) // =====================================================
+// 🧭 COMPASS UI UPDATE (MISSING FUNCTION FIX) 
+// =====================================================
 
 function updateCompass(heading) {
 
@@ -299,8 +301,8 @@ function updateCompass(heading) {
     updateDirectionTicks(heading);
 
     // Optional: set fishing zone based on wind vs heading
-    if (typeof diff !== "undefined") {
-        setFishingZone((heading + diff) % 360);
+    if (typeof windDir !== "undefined") {
+        setFishingZone((windDir);
     }
 }
 
@@ -775,7 +777,7 @@ function renderDashboard(data) {
     const p = data.main.pressure;
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
-    const windDir = data.wind?.deg || 0;
+    windDir = data.wind?.deg || 0;
     
     // ✅ ALWAYS define diff
     diff = 0;
