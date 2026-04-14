@@ -395,6 +395,16 @@ for (let i = splashRipples.length - 1; i >= 0; i--) {
 // 🚀 3. MAIN APP
 // =====================================================
 
+function ripple() {
+    ripples.push({
+        r: 0,
+        alpha: 0.3,
+        x: canvas.width / 2,
+        y: canvas.height * 0.7
+    });
+}
+
+
 function startApp() {
 
     canvas = document.getElementById("waterGraph");
