@@ -1016,7 +1016,10 @@ function getLightStatus(cloud, time) {
 function applyTileColor(tileId, status) {
 
   const tile = document.getElementById(tileId);
-  if (!tile) return;
+  if (!tile) {
+    console.warn("Missing Tile:", tileId);
+    return;
+}
 
   const icon = tile.querySelector("i");
   if (status === "red") {
