@@ -47,7 +47,7 @@ function createTicks() {
         tick.className = "tick";
         tick.dataset.angle = i;
 
-        tick.style.transform = `rotate(${i}deg) translateY(-140px)`;
+        tick.style.transform = `rotate(${i}deg) translateY(-130px)`;
 
         container.appendChild(tick);
     }
