@@ -1254,10 +1254,7 @@ let depthEl = document.getElementById("depth");
         { min: 0, max: 49, color: RED }
     ]);
 
-const oxygen = estimateOxygen(t, w, c);
-setTileColor("oxygenTile", getOxygenColor(oxygen));
-
-    
+   
     function getScoreColor(value) {
     if (value >= 80) return "#00ff9c";   // green
     if (value >= 60) return "#ffd700";   // yellow
