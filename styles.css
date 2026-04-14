@@ -303,13 +303,15 @@ arc.style.filter = `
     left: 50%;
 
     width: 2px;
-    height: 14px;
-    background: rgba(255,255,255,0.7);
+    height: 18px;
+    background: rgba(255,255,255,0.85);
     opacity: 0.6;
 
-    transform-origin: center -135px;
+    transform-origin: center -150px;
 
-    box-shadow: 0 0 6px rgba(255,255,255,0.6); 
+    border-radius: 2px;
+
+    box-shadow: 0 0 8px rgba(255,255,255,0.7); 
 }
 
 .tick.active-direction {
@@ -324,6 +326,11 @@ arc.style.filter = `
     height: 20px;
     box-shadow: 0 0 10px #0ffc400
                 0 0 20px rgba(255,196,0,0.5);
+}
+
+.tick.active {
+  opacity: 1;
+  background: #ffffff;
 }
 
 #compassTicks::after {
