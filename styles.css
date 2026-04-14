@@ -266,19 +266,25 @@ html, body {
     transform: translateY(-50%); 
 }
 
-#compassNeedle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 2px;
-    height: 90px;
-    background: white;
-
-    transform-origin: center center;
-    transform: translate(-50%, -50%) rotate(0deg);
-
-    z-index: 5;
+/* default tick */
+.tick {
+    background: rgba(255,255,255,0.25);
+    transition: all 0.2s ease;
 }
+
+/* 🔵 your direction */
+.tick.active-direction {
+    background: #4da6ff;
+    box-shadow: 0 0 8px #4da6ff;
+    z-index: 2;
+}
+
+/* 🟢 fishing zone */
+.tick.active-zone {
+    background: #00ffa6;
+    box-shadow: 0 0 10px #00ffa6;
+}
+
 
 /* ================= MINI CIRCLES ================= */ 
 .circle {
