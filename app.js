@@ -533,20 +533,23 @@ function calculateSPI(p, w, c, windDir, t, light, depth){
 
     // ================= COMBINATION BOOST =================
 
-// Wind + Cloud synergy (VERY powerful)
-if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
+    // Wind + Cloud synergy (VERY powerful)
+    if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
     score += 10;
-    reasons.push("Wind + cloud combo → aggressive feeding"); }
+    reasons.push("Wind + cloud combo → aggressive feeding"); 
+    }
 
-// Pressure + Temp stability
-if (p > 1015 && t >= 18 && t <= 24) {
+    // Pressure + Temp stability
+    if (p > 1015 && t >= 18 && t <= 24) {
     score += 8;
-    reasons.push("Stable pressure + temp → consistent feeding"); }
+    reasons.push("Stable pressure + temp → consistent feeding"); 
+    }
 
-// Bad combo penalty
-if (w < 2 && c < 20) {
+    // Bad combo penalty
+    if (w < 2 && c < 20) {
     score -= 10;
-    reasons.push("Flat calm + bright → fish inactive"); }
+    reasons.push("Flat calm + bright → fish inactive"); 
+    }
    
     // ================= WIND =================
     let windScore = 0;
@@ -566,6 +569,7 @@ if (w < 2 && c < 20) {
     } else if (diff < 45) {
         score -= 8;
         reasons.push("Downwind zone (low activity)");
+    }
     }
     
     // ================= CLOUD =================
@@ -588,19 +592,22 @@ if (w < 2 && c < 20) {
     score += tempScore;
 
     // ================= LIGHT =================
-if (light >= 40 && light <= 70) {
+    if (light >= 40 && light <= 70) {
     score += 8;
-    reasons.push("Optimal light penetration"); } else if (light < 20) {
+    reasons.push("Optimal light penetration"); 
+    } else if (light < 20) {
     score -= 5;
-    reasons.push("Too dark — reduced visibility"); } else {
+    reasons.push("Too dark — reduced visibility"); 
+    } else {
     score -= 3;
     reasons.push("Too bright — fish cautious"); 
     }
 
     // ================= DEPTH =================
-if (depth >= 2 && depth <= 5) {
+    if (depth >= 2 && depth <= 5) {
     score += 10;
-    reasons.push("Ideal feeding depth"); } else if (depth < 1) {
+    reasons.push("Ideal feeding depth"); 
+    } else if (depth < 1) {
     score -= 6;
     reasons.push("Too shallow");
     } else if (depth > 8) {
