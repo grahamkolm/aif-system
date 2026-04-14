@@ -695,15 +695,10 @@ function renderDashboard(data) {
     if (tempModel.source === "sensor") {
     temps = tempModel;
 }
-let temps = calculateWaterTemps(t);
-
-// 🔥 SENSOR OVERRIDE
-if (tempModel.source === "sensor") {
-    temps = tempModel;
-}
 
 let surfaceTemp = temps.surface;
 let bottomTemp = temps.bottom;
+    
     updateCompass(windDir);
     let dam = loadDamData();
 
