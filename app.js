@@ -852,55 +852,48 @@ if (envEl) envEl.innerText = envScore + "%";
 // ================= CONF =================    
 function calculateCONF(SPI, envScore, p, w, c, t) {
 
-    let score = 50; // base confidence
+    let score = 50;
 
-    // ================= CORE ALIGNMENT =================
     let alignment = Math.abs(SPI - envScore);
 
     if (alignment < 10) score += 20;
     else if (alignment < 20) score += 10;
     else score -= 10;
 
-    // ================= PRESSURE STABILITY =================
     let trend = getPressureTrend(p);
 
     if (trend === "stable") score += 10;
     if (trend === "rising") score += 5;
     if (trend === "falling") score -= 10;
 
-    // ================= WIND CONSISTENCY =================
     if (w >= 5 && w <= 15) score += 8;
     else if (w < 2 || w > 20) score -= 8;
 
-    // ================= CLOUD STABILITY =================
     if (c >= 30 && c <= 70) score += 6;
     else if (c > 90 || c < 10) score -= 6;
 
-    // ================= TEMP RANGE =================
     if (t >= 18 && t <= 24) score += 10;
     else if (t < 12 || t > 30) score -= 10;
 
-    // ================= RANDOM NOISE REDUCTION =================
     let variability = Math.abs(SPI - (lastSPI !== undefined ? lastSPI : SPI));
 
     if (variability < 5) score += 10;
     else if (variability > 15) score -= 10;
 
-    if(SPI > 80 && envScore > 80) score +=5;
-    if(SPI < 40 && envScore < 40) score +=5;
+    if (SPI > 80 && envScore > 80) score += 5;
+    if (SPI < 40 && envScore < 40) score += 5;
 
     if (isNaN(score)) score = 50;
-    return Math.max(40, Math.min(95, Math.round(score)));
-    
-}
 
- // ================= FINAL =================
-    
-    let confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
-    let confEl = document.getElementById("confScore");
-    if (confEl) {
-        confEl.innerText = confScoreValue + "%";
-    }
+    return Math.max(40, Math.min(95, Math.round(score))); }
+
+
+let confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
+let confEl = document.getElementById("confScore");
+if (confEl) {
+    confEl.innerText = confScoreValue + "%"; }
+
 
 // 🎯 GET ELEMENTS (ONLY ONCE)
 const spiCircle = document.getElementById("spiCircle");
