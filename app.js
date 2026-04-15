@@ -406,6 +406,11 @@ function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData)
 
 function getBestFishingWindow(forecastData) {
 
+  // 🛑 SAFETY CHECK
+  if (!forecastData || forecastData.length < 3) {
+    return null;
+  }
+
   let bestScore = 0;
   let bestWindow = null;
 
