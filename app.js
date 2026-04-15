@@ -1810,7 +1810,7 @@ function getPressureTrend(p){
 }
 
 function getCastingAdvice(diff) {
-    if (diff < 45) return "Into wind ❌";
+    if (diff < 45) return "Into wind ⚠️";
     if (diff > 135) return "Perfect windward 🔥";
     return "Crosswind ⚠️";
 }
