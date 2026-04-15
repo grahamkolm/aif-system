@@ -1481,6 +1481,20 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
 
 let confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
 
+const ENVdata = {
+    light: light, 
+    depth: depth,
+    wind: w
+};
+
+updateTacticalBar(
+    SPI,
+    envScore,
+    confScoreValue, 
+    ENVdata,
+    lastSPI
+    );
+
 let confEl = document.getElementById("confScore");
 if (confEl) {
     confEl.innerText = confScoreValue + "%"; }
@@ -1564,56 +1578,6 @@ function getBestSPITrend() {
 // =========================
 // ✅ TACTICAL BAR
 // =========================
-let insights = [];
-let zone = getBestZone();
-
-// Wind
-if (w >= 5 && w <= 15) {
-    insights.push("Wind pushing food into zone"); }
-
-// Pressure
-if (p > 1015) {
-    insights.push("Stable pressure supports feeding"); } else {
-    insights.push("Unstable pressure slows activity"); }
-
-// Cloud
-if (c >= 30 && c <= 70) {
-    insights.push("Low light increases confidence"); }
-
-// Temperature
-if (t >= 18 && t <= 24) {
-    insights.push("Fish active in upper layers"); }
-
-// Zone logic
-if (zone.includes("Shallow") && w > 10) {
-    insights.push("Strong wind fish tight to windward bank"); }
-
-if (light < 30 && depth > 4) {
-    insights.push("Fish likely holding deeper due to low light"); }
-
-if (light > 70 && depth < 2) {
-    insights.push("Bright shallow water — fish spooked"); }
-
-if (depth >= 3 && depth <= 5 && light >= 40) {
-    insights.push("Perfect ambush zone"); }
-    
-// LIMIT TO 3
-let text = insights.slice(0, 3).join(" • ");
-
-let tactical = document.getElementById("tactical");
-if (tactical) {
-    tactical.innerText = text + " • " + advice;
-}
-
-    showInsight(
-    SPI, 
-    envScore,
-    confScoreValue,
-    light,
-    depth
-    );
-
-}
 
 // =====================================================
 // 🧠 8. ENVIRONMENT HELPERS
@@ -2317,119 +2281,6 @@ function setupHold(elementId, callback) {
     });
 }
 
-function showInsight(SPI, envScore, confScore, light, depth) {
-
-    let insight = "";
-    let parts = [];
-
-    // ================= CORE =================
-    if (SPI > 75) {
-        parts.push("🔥 Strong feeding conditions — high chance of bites.");
-    } else if (SPI > 60) {
-        parts.push("👍 Decent conditions — fish are active.");
-    } else {
-        parts.push("⚠️ Slow conditions — consider moving spots.");
-    }
-
-    const windDir = lastConditions?.wind?.deg || 0;
-
-    parts.push(getCastDirection(windDir));
-    parts.push(getDepthStrategy(light, depth));
-    parts.push(getBaitSuggestion(SPI));
-
-    // ================= WIND =================
-    if (lastConditions?.wind?.speed * 3.6 >= 5) {
-        parts.push("🌬 Wind pushing food into feeding zones.");
-    } else {
-        parts.push("🌊 Calm water — less natural feeding movement.");
-    }
-
-    // ================= LIGHT =================
-    if (light < 30) {
-        parts.push("🌅 Low light — fish moving shallow.");
-    } else if (light > 70) {
-        parts.push("🌞 Bright light — fish holding deeper.");
-    }
-
-    // ================= CLOUD =================
-    if (lastConditions?.clouds?.all >= 30 && lastConditions?.clouds?.all <= 70) {
-        parts.push("☁️ Cloud cover improves fish confidence.");
-    }
-
-    // ================= TEMP =================
-    if (lastConditions?.main?.temp >= 18 && lastConditions?.main?.temp <= 24) {
-        parts.push("🌡 Optimal temperature for feeding.");
-    }
-
-    // ================= FINAL BUILD =================
-    insight = parts.join("\n");
-
-    const el = document.getElementById("aiContent");
-    if (el) el.innerText = insight;
-}
-
-function showSPIInsight(){
-
-    let t = lastConditions?.main?.temp || "-";
-    let p = lastConditions?.main?.pressure || "-";
-    let w = lastConditions?.wind?.speed 
-        ? (lastConditions.wind.speed * 3.6).toFixed(1)
-        : "-";
-    let c = lastConditions?.clouds?.all || "-";
-
-    let advice = generateAICoach(SPI);
-
-    alert(
-`SPI: ${SPI.toFixed(1)}%
-
-WHY:
-• Wind: ${w} km/h → ${w >= 5 && w <= 15 ? "Ideal" : "Suboptimal"} • Pressure: ${p} hPa → ${p > 1015 ? "Stable" : "Unstable"} • Cloud: ${c}% → ${c >= 30 && c <= 80 ? "Good cover" : "Less optimal"} • Temperature: ${t}°C → ${t >= 18 && t <= 24 ? "Optimal" : "Off range"}
-
-WHAT TO DO:
-${advice}`
-    );
-}
-
-function showENVInsight(){
-
-    let t = lastConditions?.main?.temp || "-";
-    let p = lastConditions?.main?.pressure || "-";
-    let c = lastConditions?.clouds?.all || "-";
-    let oxygen = estimateOxygen(t, 0, c).toFixed(1);
-
-    alert(
-`ENV: ${document.getElementById("envScore").innerText}
-
-Environment Conditions:
-
-• Pressure: ${p} hPa → ${p > 1015 ? "Stable" : "Unstable"} • Cloud: ${c}% → ${c >= 30 && c <= 80 ? "Good cover" : "Low cover"} • Oxygen: ${oxygen} mg/L → ${oxygen > 7 ? "Healthy" : "Low"}
-
-Overall environment is ${p > 1015 && c >= 30 ? "favorable" : "moderate"}`
-    );
-}
-
-function showCONFInsight(){
-
-    let env = document.getElementById("envScore").innerText;
-    let spi = SPI.toFixed(1);
-
-    alert(
-`CONF: ${document.getElementById("confScore").innerText}
-
-Confidence Level Analysis:
-
-• SPI: ${spi}% → Fishing potential
-• ENV: ${env} → Environmental support
-
-Confidence is ${
-    SPI > 70 ? "HIGH" :
-    SPI > 50 ? "MODERATE" :
-    "LOW"
-}
-
-Prediction reliability is based on combined conditions`
-    );
-}
 
 // 🌊 DROP
 
