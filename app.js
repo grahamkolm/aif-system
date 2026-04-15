@@ -1557,8 +1557,6 @@ const confCircle = document.getElementById("confCircle");
 const spiColor = getScoreColor(finalSPI); 
 const envColor = getScoreColor(envScore); 
 const confColor = getScoreColor(confScoreValue);
-setRingProgress(`.env-progress`, envScore);
-setRingProgress(`.conf-progress`, confScoreValue);
     
 // ✅ APPLY COLORS
 // ✅ TEXT COLORS
