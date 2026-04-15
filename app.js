@@ -438,6 +438,9 @@ let storedWindow = localStorage.getItem("bestWindow");
 
 function getStableWindow(forecastData) {
 
+  // 🔥 MOVE IT HERE (inside function)
+  let storedWindow = localStorage.getItem("bestWindow");
+
   if (storedWindow) {
     return JSON.parse(storedWindow);
   }
