@@ -1227,10 +1227,6 @@ function renderDashboard(data) {
 
     const light = data.light || 50;
     const depth = data.depth || 3;
-    const t = data.main.temp;
-    const p = data.main.pressure;
-    const w = data.wind.speed * 3.6;
-    const c = data.clouds.all;
     
     let temps = calculateWaterTemps(t);
     if (tempModel.source === "sensor") {
