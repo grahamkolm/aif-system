@@ -1958,11 +1958,12 @@ function updateSPI(v){
 
     arc.style.stroke = color;
 
-    let r = 110;
+    let r = arc.r.baseVal.value;
     let C = 2 * Math.PI * r;
 
     arc.style.strokeDasharray = C;
-    arc.style.strokeDashoffset += 2;
+    arc.style.strokeDashoffset = C;
+    arc.style.stokeDashoffset = C - (v / 100) * C;
 
     document.getElementById("spiValue").textContent = Math.round(v) + "%";
 
