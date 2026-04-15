@@ -1609,8 +1609,8 @@ const confCircle = document.getElementById("confCircle");
 const spiColor = getScoreColor(finalSPI); 
 const envColor = getScoreColor(envScore); 
 const confColor = getScoreColor(confScoreValue);
-setRingProgress(`env-progress`, envScore);
-setRingProgress(`conf-progress`, confScoreValue);
+setRingProgress(`.env-progress`, envScore);
+setRingProgress(`.conf-progress`, confScoreValue);
     
 // ✅ APPLY COLORS
 // ✅ TEXT COLORS
@@ -2023,7 +2023,7 @@ function updateSPI(v){
     let C = 2 * Math.PI * r;
 
     arc.style.strokeDasharray = C;
-    arc.style.stokeDashoffset = C - (v / 100) * C;
+    arc.style.strokeDashoffset = C - (v / 100) * C;
 
     document.getElementById("spiValue").textContent = Math.round(v) + "%";
 
