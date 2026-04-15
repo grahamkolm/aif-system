@@ -887,7 +887,7 @@ function calculateWaterTemps(airTemp) {
 // 📊 6. SPI ENGINE (UNIFIED)
 // =====================================================
 
-function calculateSPI(p, w, c, windDir, data.main.temp, light, depth){
+function calculateSPI(p, w, c, windDir, t, light, depth){
 
     let score = 0;
     let reasons = [];
