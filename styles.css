@@ -20,7 +20,6 @@
 }
 
 body {
-  display: flex;
   flex-direction: column;
   justify-content: center;
   padding-bottom: 100px;
@@ -686,7 +685,7 @@ html, body {
 
     display: flex;
     justify-content: space-evenly;
-    pointer-events: none;
+    pointer-events: auto;
     z-index: 10;
 }
 
