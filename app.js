@@ -377,7 +377,7 @@ function getXFactor(SPI, prevSPI) {
   return null;
 }
 
-function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI) {
+function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData) {
 
   const lines = [
     getConditionText(SPI, envScore),
@@ -385,36 +385,19 @@ function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI) {
     getConfidenceText(SPI, confScore)
   ];
 
+  // 🔥 ADD THIS BLOCK
+  const window = getStableWindow(forecastData);
+  const windowText = getWindowText(window);
+
+  if (windowText) {
+    lines.splice(1, 0, windowText); // inserts as 2nd line
+  }
+
   const extra = getXFactor(SPI, prevSPI);
 
   if (extra) lines.push(extra);
 
-  document.getElementById("tactical").innerText = lines.join("\n");
-}
-
-function getBestFishingWindow(forecastData) {
-
-  let bestScore = 0;
-  let bestWindow = null;
-
-  for (let i = 0; i < forecastData.length - 2; i++) {
-
-    let avg =
-      (forecastData[i].spi +
-       forecastData[i+1].spi +
-       forecastData[i+2].spi) / 3;
-
-    if (avg > bestScore) {
-      bestScore = avg;
-      bestWindow = [
-        forecastData[i].date,
-        forecastData[i+2].date
-      ];
-    }
-  }
-
-  return bestWindow;
-}
+  document.getElementById("tactical").innerText = lines.join("\n"); }
 
 
 //--------------------------------------------------
