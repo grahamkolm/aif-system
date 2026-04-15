@@ -1233,7 +1233,6 @@ function renderDashboard(data) {
     let surfaceTemp = temps.surface;
     let bottomTemp = temps.bottom;
 
-   
     updateCompass(windDir);
     setFishingZone(windDir);
     let dam = loadDamData();
@@ -1521,6 +1520,7 @@ if (typeof confScoreValue === "number") {
     } else if (confScoreValue < 50) {
         score -= 3;
     }
+}
 }
 
 function setRingProgress(selector, value) {
