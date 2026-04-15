@@ -404,6 +404,30 @@ function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData)
 //LOCKING SYSTEM (VERY IMPORTANT)
 //--------------------------------------------------
 
+function getBestFishingWindow(forecastData) {
+
+  let bestScore = 0;
+  let bestWindow = null;
+
+  for (let i = 0; i < forecastData.length - 2; i++) {
+
+    let avg =
+      (forecastData[i].spi +
+       forecastData[i+1].spi +
+       forecastData[i+2].spi) / 3;
+
+    if (avg > bestScore) {
+      bestScore = avg;
+      bestWindow = [
+        forecastData[i].date,
+        forecastData[i+2].date
+      ];
+    }
+  }
+
+  return bestWindow;
+}
+
 let storedWindow = localStorage.getItem("bestWindow");
 
 function getStableWindow(forecastData) {
