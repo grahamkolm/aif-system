@@ -1569,8 +1569,8 @@ const envText = document.getElementById("envScore");
 const confText = document.getElementById("confScore");
 
 if (spiText) spiText.style.color = spiColor; 
-if (envText) envText.style.color = envColor; 
-if (confText) confText.style.color = confColor;
+if (envText) envText.style.color = "#ffffff"; 
+if (confText) confText.style.color = "#ffffff";
     
 // ✅ SPI (SVG stroke — correct)
 if (spiCircle) {
@@ -1585,7 +1585,7 @@ if (spiCircle) {
 
 if (confCircle) {
     confCircle.style.borderColor = confColor;
-    confCircle.style.boxShadow = `0 0 10px ${confColor}`; 
+    confCircle.style.boxShadow = `0 0 6px ${confColor}`; 
 }
 
 // ================= CONF FEEDBACK ================= 
