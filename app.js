@@ -219,7 +219,7 @@ function updateDirectionTicks(heading) {
 }
 
 function positionDirections() {
-  const radius = 150; // bigger than your ticks (~125)
+  const radius = 180; // bigger than your ticks (~125)
 
   setDir(".dir.n", 0);
   setDir(".dir.e", 90);
@@ -231,7 +231,7 @@ function positionDirections() {
     if (!el) return;
 
     el.style.transform =
-      `translate(-50%, -45%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
+      `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
   }
 }
 
