@@ -2096,6 +2096,7 @@ if (panel.classList.contains("active")) {
 } else {
     toggle.innerText = "+";
 }
+}
 
 // =====================================================
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
