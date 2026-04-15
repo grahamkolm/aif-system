@@ -734,20 +734,6 @@ function spawnBubble() {
     });
 }
 
-calculateDerivedValues();
-
-updateAllTiles({
-  air: ENV.air,
-  surface: ENV.surface,
-  bottom: ENV.bottom,
-  pressure: ENV.pressure,
-  wind: ENV.wind,
-  cloud: ENV.cloud,
-  oxygen: ENV.oxygen,
-  time: new Date().getHours()
-});
-
-
 function animate() {
 
     if (!ctx || !canvas) return;
