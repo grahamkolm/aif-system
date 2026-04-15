@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     animateSplash();
     initSplashBubbles();
     createTicks();
+    positionDirection();
     
     // =============================
     // 🎯 UI SETUP
@@ -215,6 +216,23 @@ function updateDirectionTicks(heading) {
             tick.classList.remove("active-direction");
         }
     });
+}
+
+function positionDirections() {
+  const radius = 170; // bigger than your ticks (~125)
+
+  setDir(".dir.n", 0);
+  setDir(".dir.e", 90);
+  setDir(".dir.s", 180);
+  setDir(".dir.w", 270);
+
+  function setDir(selector, angle) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+
+    el.style.transform =
+      `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
+  }
 }
 
 // =====================================================
