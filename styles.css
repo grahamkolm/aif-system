@@ -241,7 +241,7 @@ html, body {
     stroke-width: 10; /* slightly thicker */
     stroke-linecap: round;
     opacity: 0.9;
-  filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); 
+    filter: drop-shadow(0 0 6px rgba(255,255,255,0.5)); 
 }
 
 /* ================= COMPASS ================= */ 
