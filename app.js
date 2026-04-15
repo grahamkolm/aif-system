@@ -179,6 +179,11 @@ function showInsight(SPI, env, conf, light, depth) {
 
     let tips = [];
 
+    if (!SPI || SPI === 0) {
+        el.innerHTML = "Loading conditions....";
+        return;
+    }
+    
     // 🎯 SPI BASED
     if (SPI > 75) {
         tips.push("🔥 High feeding activity expected");
