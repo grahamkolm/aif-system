@@ -456,7 +456,7 @@ html, body {
 
 .env-circle { 
   position: absolute;
-  left: -20px;
+  left: -40px;
   
   border: 8px solid var(--gold-main);
   border-radius: 50%;
@@ -475,7 +475,7 @@ html, body {
 
 .conf-circle { 
     position: absolute;
-    right: -50px;
+    right: -40px;
     border-radius: 50%;
     
     border: 8px solid var(--blue-main);
