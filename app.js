@@ -437,20 +437,28 @@ function getStableWindow(forecastData) {
 
   const stored = localStorage.getItem("bestWindow");
 
-  // Only use stored if it's valid
-  if (stored && stored !== "null") {
-    return JSON.parse(stored);
+  // ✅ Only use stored if it's a REAL array
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+
+      if (Array.isArray(parsed) && parsed.length === 2) {
+        return parsed;
+      }
+    } catch (e) {
+      console.warn("Bad stored window, recalculating...");
+    }
   }
 
   const window = getBestFishingWindow(forecastData);
 
-  // Only save if valid
   if (window) {
     localStorage.setItem("bestWindow", JSON.stringify(window));
   }
 
   return window;
 }
+
 
 //--------------------------------------------------
 // BEST FISHING WINDOW
