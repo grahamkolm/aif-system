@@ -451,7 +451,7 @@ html, body {
 
 .env-circle { 
   position: absolute;
-  left: -40px;
+  left: -20px;
   
   border: 8px solid var(--gold-main);
   border-radius: 50%;
