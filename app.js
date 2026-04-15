@@ -1233,7 +1233,6 @@ function renderDashboard(data) {
     let surfaceTemp = temps.surface;
     let bottomTemp = temps.bottom;
 
-}
    
     updateCompass(windDir);
     setFishingZone(windDir);
