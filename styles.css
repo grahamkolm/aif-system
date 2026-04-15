@@ -356,7 +356,7 @@ html, body {
 }
 
 .tick.active-zone {
-    background: #00ffa6;
+    background: rgba(0.255,156,0.3);
     height: 22px;
     box-shadow: 0 0 10px #00ffa6,
                 0 0 20px rgba(255,196,0,0.6);
