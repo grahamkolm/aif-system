@@ -1235,10 +1235,7 @@ function renderDashboard(data) {
     let bottomTemp = temps.bottom;
     }
 }
-
-let surfaceTemp = temps.surface;
-let bottomTemp = temps.bottom;
-    
+   
     updateCompass(windDir);
     setFishingZone(windDir);
     let dam = loadDamData();
