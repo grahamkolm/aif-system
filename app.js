@@ -434,8 +434,6 @@ function getBestFishingWindow(forecastData) {
   return bestWindow;
 }
 
-let storedWindow = localStorage.getItem("bestWindow");
-
 function getStableWindow(forecastData) {
 
   // 🔥 MOVE IT HERE (inside function)
