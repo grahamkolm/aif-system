@@ -1667,7 +1667,20 @@ function setRingProgress(selector, value) {
   circle.style.strokeDashoffset = offset; 
 }
     
-    
+// 🔥 AUTO AI UPDATE
+const panel = document.getElementById("aiPanel");
+
+if (panel && panel.classList.contains("active")) {
+    showInsight(
+        SPI,
+        envScore,
+        confScoreValue,
+        ENV.light || 50,
+        ENV.depth || 3
+    );
+}
+
+
 // ✅ UPDATE UI
 let bestZoneEl = document.getElementById("bestZone");
     if(bestZoneEl) {
@@ -2003,6 +2016,8 @@ function closeMap() {
 
 function updateSPI(v){
 
+    if (!v || isNaN(v)) return;
+    
     let arc = document.getElementById("spiArc");
     if(!arc) return;
 
@@ -2017,7 +2032,6 @@ function updateSPI(v){
     let C = 2 * Math.PI * r;
 
     arc.style.strokeDasharray = C;
-    arc.style.strokeDashoffset = C;
     arc.style.stokeDashoffset = C - (v / 100) * C;
 
     document.getElementById("spiValue").textContent = Math.round(v) + "%";
