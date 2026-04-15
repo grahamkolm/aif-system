@@ -562,7 +562,11 @@ function animateSplash() {
 
     splashCtx.beginPath();
     splashCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    splashCtx.fillStyle = "rgba(255,255,255,0.3)";
+    splashCtx.fillStyle = "rgba(255,255,255,0.18)";
+    splashCtx.shadowBlur = 10;
+    splashCtx.shadowColor = "rgba(180, 240, 255, 0.25)";
+    splashCtx.strokeStyle = "rgba(255,255,255,0.1)";
+    splashCtx.stroke();
     splashCtx.fill();
 
     if (b.y < 0) {
