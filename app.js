@@ -2037,9 +2037,7 @@ if (envCircle && confCircle) {
 }
 
 // 🔥 AUTO AI UPDATE
-const panel = document.getElementById("aiPanel");
 
-if (panel && panel.classList.contains("active")) {
     showInsight(
         SPI,
         envScore,
@@ -2047,7 +2045,6 @@ if (panel && panel.classList.contains("active")) {
         ENV.light || 50,
         ENV.depth || 3
     );
-}
 
 function estimateOxygen(temp, wind, cloud) {
 
