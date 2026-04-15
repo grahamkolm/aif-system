@@ -1599,7 +1599,7 @@ if (typeof confScoreValue === "number") {
 function setRingProgress(selector, value) {
   const circle = document.querySelector(selector);
     if (!circle) return;
-  const radius = 42;
+  const radius = 110;
   const circumference = 2 * Math.PI * radius;
 
   const offset = circumference - (value / 100) * circumference;
