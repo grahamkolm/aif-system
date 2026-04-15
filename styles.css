@@ -470,7 +470,7 @@ html, body {
 
 .conf-circle { 
     position: absolute;
-    right: -20px;
+    right: -60px;
     border-radius: 50%;
     
     border: 8px solid var(--blue-main);
