@@ -510,7 +510,7 @@ function updateCompass(heading) {
     // Rotate compass ring (if exists)
     const compass = document.getElementById("compassRing");
     if (compass) {
-        compass.style.transform = `rotate(${heading}deg)`;
+        compass.style.transform = `rotate(${-heading}deg)`;
     }
 
     // Update active tick (direction highlight)
