@@ -305,9 +305,133 @@ function enableCompass() {
     }
 }
 
+//--------------------------------------------------
+// TACTICAL BAR (FINAL DESIGN)
+//--------------------------------------------------
+
+function getConditionText(SPI, envScore) {
+
+  let score = (SPI + envScore) / 2;
+
+  if (score > 85) return "🔥 Conditions are excellent — fish should feed";
+  if (score > 70) return "👍 Conditions are good — fish active";
+  if (score > 55) return "👌 Conditions are fair — some movement";
+  if (score > 40) return "⚠️ Conditions are slow — bites limited";
+
+  return "❄️ Tough conditions — very quiet";
+}
+
+
+function getZoneText(SPI, light, depth, wind) {
+
+  if (SPI > 75 && wind > 5) return "📍 Focus shallow windward zones";
+  if (light > 70) return "📍 Fish deeper cooler water";
+  if (depth >= 2 && depth <= 5) return "📍 Target mid-depth transitions";
+
+  return "📍 Search structure and edges";
+}
+
+
+function getConfidenceText(SPI, confScore) {
+
+  if (SPI > 75 && confScore > 75)
+    return "🧠 Stay on your spots — be patient";
+
+  if (SPI > 60)
+    return "🧠 Give it time before changing";
+
+  if (SPI < 50)
+    return "🧠 Consider changing approach";
+
+  return "🧠 Monitor and adjust if needed";
+}
+
+
+function getXFactor(SPI, prevSPI) {
+
+  if (!prevSPI) return null;
+
+  let diff = SPI - prevSPI;
+
+  if (diff > 8) return "⚡ Conditions improving — get ready";
+  if (SPI > 85) return "🚀 Prime feeding window now";
+
+  return null;
+}
+
+function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI) {
+
+  const lines = [
+    getConditionText(SPI, envScore),
+    getZoneText(SPI, ENV.light, ENV.depth, ENV.wind),
+    getConfidenceText(SPI, confScore)
+  ];
+
+  const extra = getXFactor(SPI, prevSPI);
+
+  if (extra) lines.push(extra);
+
+  document.getElementById("tactical").innerText = lines.join("\n");
+}
+
+function getBestFishingWindow(forecastData) {
+
+  let bestScore = 0;
+  let bestWindow = null;
+
+  for (let i = 0; i < forecastData.length - 2; i++) {
+
+    let avg =
+      (forecastData[i].spi +
+       forecastData[i+1].spi +
+       forecastData[i+2].spi) / 3;
+
+    if (avg > bestScore) {
+      bestScore = avg;
+      bestWindow = [
+        forecastData[i].date,
+        forecastData[i+2].date
+      ];
+    }
+  }
+
+  return bestWindow;
+}
+
+
+//--------------------------------------------------
+//LOCKING SYSTEM (VERY IMPORTANT)
+//--------------------------------------------------
+
+let storedWindow = localStorage.getItem("bestWindow");
+
+function getStableWindow(forecastData) {
+
+  if (storedWindow) {
+    return JSON.parse(storedWindow);
+  }
+
+  const window = getBestFishingWindow(forecastData);
+
+  localStorage.setItem("bestWindow", JSON.stringify(window));
+
+  return window;
+}
+
+
+//--------------------------------------------------
+// BEST FISHING WINDOW
+//--------------------------------------------------
+
+function getWindowText(window) {
+
+  if (!window) return "No window yet";
+
+  return `🎯 Best fishing window: ${window[0]} → ${window[1]}`;
+}
 
 // =====================================================
-// 🧭 COMPASS UI UPDATE (MISSING FUNCTION FIX) 
+// 🧭 COMPASS UI UPDATE 
 // =====================================================
 
 function updateCompass(heading) {
