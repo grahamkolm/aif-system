@@ -1962,7 +1962,7 @@ function updateSPI(v){
     let C = 2 * Math.PI * r;
 
     arc.style.strokeDasharray = C;
-    arc.style.strokeDashoffset += 1;
+    arc.style.strokeDashoffset += 2;
 
     document.getElementById("spiValue").textContent = Math.round(v) + "%";
 
