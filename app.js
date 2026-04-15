@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     animateSplash();
     initSplashBubbles();
     createTicks();
-    positionDirection();
+    positionDirections();
     
     // =============================
     // 🎯 UI SETUP
