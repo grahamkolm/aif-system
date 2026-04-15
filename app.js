@@ -1597,14 +1597,16 @@ if (typeof confScoreValue === "number") {
 }
 
 function setRingProgress(selector, value) {
-  const circle = document.querySelector(selector);
+    const circle = document.querySelector(selector);
     if (!circle) return;
-  const radius = 110;
-  const circumference = 2 * Math.PI * radius;
 
-  const offset = circumference - (value / 100) * circumference;
-  circle.style.strokeDashoffset = offset; 
+    const radius = 110;
+    const circumference = 2 * Math.PI * radius;
+
+    circle.style.strokeDasharray = circumference;
+    circle.style.strokeDashoffset = circumference * (1 - value / 100); 
 }
+
 
 // ✅ UPDATE UI
 let bestZoneEl = document.getElementById("bestZone");
