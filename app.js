@@ -1263,13 +1263,7 @@ function renderDashboard(data) {
     }
     let surfaceTemp = temps.surface;
     let bottomTemp = temps.bottom;
-    const forecastData = [
-        {date: "16 Apr", spi: 65},
-        {date: "17 Apr", spi: 78},
-        {date: "18 Apr", spi: 88},
-        {date: "19 Apr", spi: 82},
-        {date: "20 Apr", spi: 70}
-];
+    
     updateCompass(windDir);
     setFishingZone(windDir);
     let dam = loadDamData();
@@ -1508,6 +1502,14 @@ const ENVdata = {
     wind: w
 };
 
+const forecastData = [
+        {date: "16 Apr", spi: 65},
+        {date: "17 Apr", spi: 78},
+        {date: "18 Apr", spi: 88},
+        {date: "19 Apr", spi: 82},
+        {date: "20 Apr", spi: 70}
+];
+    
 updateTacticalBar(
     SPI,
     envScore,
