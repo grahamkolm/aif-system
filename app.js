@@ -31,6 +31,8 @@ let splashCanvas;
 let splashCtx;
 let score = 50;
 let windDir = 0;
+let envScore = 0;
+let confScoreValue = 0;
 
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
@@ -1533,7 +1535,7 @@ let depthEl = document.getElementById("depth");
     
 // ================= ENV + CONF =================
 // ================= ENV ================= 
-let envScore = calculateENV(p, c, w, light, t);
+envScore = calculateENV(p, c, w, light, t);
 
 let envEl = document.getElementById("envScore");
 if (envEl) envEl.innerText = envScore + "%";
@@ -1577,7 +1579,7 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     return Math.max(40, Math.min(95, Math.round(score))); }
 
 
-let confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
 
 const ENVdata = {
     light: light, 
@@ -2086,24 +2088,24 @@ function toggleAI() {
 
     panel.classList.toggle("active");
 
-if (panel.classList.contains("active")) {
-    toggle.innerText = "−";
+    if (panel.classList.contains("active")) {
+        toggle.innerText = "−";
 
-    // 🔒 SAFE CALL (prevents crash)
-    if (typeof showInsight === "function") {
-        showInsight(
-            SPI,
-            parseInt(document.getElementById("envScore")?.innerText || 0),
-            parseInt(document.getElementById("confScore")?.innerText || 0),
-            parseInt(document.getElementById("light")?.innerText || 50),
-            parseFloat(document.getElementById("depth")?.innerText || 3)
-        );
+        if (typeof showInsight === "function") {
+            showInsight(
+                SPI,
+                envScore,          // ✅ REAL VALUE
+                confScoreValue,   // ✅ REAL VALUE
+                ENV.light || 50,
+                ENV.depth || 3
+            );
+        }
+
+    } else {
+        toggle.innerText = "+";
     }
+}
 
-} else {
-    toggle.innerText = "+";
-}
-}
 
 // =====================================================
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
