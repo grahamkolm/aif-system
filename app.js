@@ -1657,20 +1657,6 @@ function setRingProgress(selector, value) {
   const offset = circumference - (value / 100) * circumference;
   circle.style.strokeDashoffset = offset; 
 }
-    
-// 🔥 AUTO AI UPDATE
-const panel = document.getElementById("aiPanel");
-
-if (panel && panel.classList.contains("active")) {
-    showInsight(
-        SPI,
-        envScore,
-        confScoreValue,
-        ENV.light || 50,
-        ENV.depth || 3
-    );
-}
-
 
 // ✅ UPDATE UI
 let bestZoneEl = document.getElementById("bestZone");
@@ -2048,6 +2034,19 @@ if (envCircle && confCircle) {
         confCircle.style.boxShadow = "none";
     }
 }
+}
+
+// 🔥 AUTO AI UPDATE
+const panel = document.getElementById("aiPanel");
+
+if (panel && panel.classList.contains("active")) {
+    showInsight(
+        SPI,
+        envScore,
+        confScoreValue,
+        ENV.light || 50,
+        ENV.depth || 3
+    );
 }
 
 function estimateOxygen(temp, wind, cloud) {
