@@ -1212,8 +1212,6 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
     windDir = data.wind?.deg || 0;
-    
-    // ✅ ALWAYS define diff
     diff = 0;
 
     if (typeof compassHeading !== "undefined" &&compassHeading !== null) {
@@ -1231,9 +1229,10 @@ function renderDashboard(data) {
     let temps = calculateWaterTemps(t);
     if (tempModel.source === "sensor") {
     temps = tempModel;
+    }
     let surfaceTemp = temps.surface;
     let bottomTemp = temps.bottom;
-    }
+
 }
    
     updateCompass(windDir);
