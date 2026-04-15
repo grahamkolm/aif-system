@@ -206,16 +206,7 @@ function showInsight(SPI, env, conf, light, depth) {
     el.innerHTML = tips.map(t => `<div class="ai-tip">${t}</div>`).join("");
 }
     
-    let originalScoutHTML = "";
-    function storeScoutScreen() {
-        const el = document.getElementById("scoutScreen");
-        if (!el) return;
-            originalScoutHTML = el.innerHTML;
-        el.classList.add("hidden");
-    }
-
-
-    // =============================
+        // =============================
     // ⏳ SPLASH TIMEOUT (MAIN CONTROL)
     // =============================
     setTimeout(() => {
