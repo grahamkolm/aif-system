@@ -231,7 +231,7 @@ function positionDirections() {
     if (!el) return;
 
     el.style.transform =
-      `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
+      `translate(-50%, -55%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
   }
 }
 
