@@ -1509,7 +1509,7 @@ const forecastData = [
         {date: "19 Apr", spi: 82},
         {date: "20 Apr", spi: 70}
 ];
-console.log("Forecast check"), forecastData);    
+console.log("Forecast check", forecastData);    
 updateTacticalBar(
     SPI,
     envScore,
