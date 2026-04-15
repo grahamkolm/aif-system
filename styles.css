@@ -245,6 +245,7 @@ html, body {
   left: 50%;
   pointer-events: none;
   transform: translate(-50%, -50%);
+  margin-top: 20px;
 }
 
 .dir {
