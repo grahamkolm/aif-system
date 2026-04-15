@@ -59,6 +59,18 @@ const SOURCE = {
   oxygen: "none"
 };
 
+let originalScoutHTML = "";
+
+function storeScoutScreen() {
+    const el = document.getElementById("scoutScreen");
+    if (!el) {
+        console.warn("scoutScreen not found");
+        return;
+    }
+
+    originalScoutHTML = el.innerHTML;
+    el.classList.add("hidden");
+}
 
 function createTicks() {
 
@@ -98,8 +110,6 @@ function createTicks() {
 // =====================================================
 // 🚀 1. APP BOOT
 // =====================================================
-
-let originalScoutHTML;
 
 document.addEventListener("DOMContentLoaded", () => {
 
