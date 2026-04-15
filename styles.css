@@ -263,25 +263,26 @@ html, body {
 }
 
 .dir.n { 
-    top: -18px !important; 
+    top: 0px; 
     left: 50%; 
-    transform: translateX(-50%); 
+    transform: translateX(-50%, -110%); 
 } 
 
 .dir.s { 
-    bottom: -18px !important; left: 50%; 
-    transform: translateX(-50%); 
+    bottom: 0px; 
+    left: 50%; 
+    transform: translateX(-50%, 110%); 
 } 
 .dir.e { 
-    right: -18px !important; 
+    right: 0px; 
     top: 50%; 
-    transform: translateY(-50%); 
+    transform: translateY(110%, -50%); 
 } 
 
 .dir.w { 
-    left: -18px !important; 
+    left: 0px; 
     top: 50%; 
-    transform: translateY(-50%); 
+    transform: translateY(-110, -50%); 
 }
 
 #compassCenter {
