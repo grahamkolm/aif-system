@@ -435,20 +435,22 @@ function getBestFishingWindow(forecastData) {
 
 function getStableWindow(forecastData) {
 
-  // 🔥 MOVE IT HERE (inside function)
-  let storedWindow = localStorage.getItem("bestWindow");
+  const stored = localStorage.getItem("bestWindow");
 
-  if (storedWindow) {
-    return JSON.parse(storedWindow);
+  // Only use stored if it's valid
+  if (stored && stored !== "null") {
+    return JSON.parse(stored);
   }
 
   const window = getBestFishingWindow(forecastData);
 
-  localStorage.setItem("bestWindow", JSON.stringify(window));
+  // Only save if valid
+  if (window) {
+    localStorage.setItem("bestWindow", JSON.stringify(window));
+  }
 
   return window;
 }
-
 
 //--------------------------------------------------
 // BEST FISHING WINDOW
