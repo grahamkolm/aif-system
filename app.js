@@ -158,7 +158,53 @@ document.addEventListener("DOMContentLoaded", () => {
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
 
- 
+
+function showInsight(SPI, env, conf, light, depth) {
+
+    const el = document.getElementById("aiContent");
+    if (!el) return;
+
+    let tips = [];
+
+    // 🎯 SPI BASED
+    if (SPI > 75) {
+        tips.push("🔥 High feeding activity expected");
+        tips.push("🎯 Fish windward banks");
+        tips.push("🍬 Use high-attract bait");
+    } 
+    else if (SPI > 55) {
+        tips.push("👍 Moderate activity");
+        tips.push("📍 Focus transition zones");
+        tips.push("🎣 Balanced baiting strategy");
+    } 
+    else {
+        tips.push("⚠️ Low activity");
+        tips.push("🔍 Search deeper structure");
+        tips.push("🧪 Use single hookbait");
+    }
+
+    // 🌞 LIGHT
+    if (light > 70) {
+        tips.push("🌞 Bright — fish deeper or shaded areas");
+    } else {
+        tips.push("🌅 Low light — fish shallow margins");
+    }
+
+    // 🌊 DEPTH
+    if (depth >= 2 && depth <= 5) {
+        tips.push("📏 Ideal depth — patrol routes active");
+    }
+
+    // 🧠 CONFIDENCE
+    if (conf > 80) {
+        tips.push("🧠 Stay consistent — pattern is reliable");
+    } else {
+        tips.push("🧠 Be ready to adapt");
+    }
+
+    el.innerHTML = tips.map(t => `<div class="ai-tip">${t}</div>`).join("");
+}
+    
     // Store scout screen
     originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
     document.getElementById("scoutScreen").classList.add("hidden");
