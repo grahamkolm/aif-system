@@ -387,11 +387,19 @@ function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData)
 
   // 🔥 ADD THIS BLOCK
   const window = getStableWindow(forecastData);
-  const windowText = getWindowText(window);
+  console.log("Window Debug:", window);
+    const windowText = getWindowText(window);
 
-  if (windowText) {
-    lines.splice(1, 0, windowText); // inserts as 2nd line
+ if (windowText) {
+
+  // 🔥 Boost when SPI is strong
+  if (SPI > 80) {
+    lines.splice(1, 0, "🔥 " + windowText);
+  } else {
+    lines.splice(1, 0, windowText);
   }
+}
+
 
   const extra = getXFactor(SPI, prevSPI);
 
@@ -468,8 +476,20 @@ function getWindowText(window) {
 
   if (!window) return "No window yet";
 
-  return `🎯 Best fishing window: ${window[0]} → ${window[1]}`;
+  // 👉 Get today's date (e.g. "16 Apr")
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short"
+  }).replace(",", "");
+
+  // 👉 Check if today is inside the window
+  if (today === window[0] || today === window[1]) {
+    return "🚨 Window is OPEN — fish NOW";
+  }
+
+  return `🎯 Best fishing window: ${window[0]} → ${window[1]}`; 
 }
+
 
 // =====================================================
 // 🧭 COMPASS UI UPDATE 
