@@ -887,7 +887,7 @@ function calculateWaterTemps(airTemp) {
 // 📊 6. SPI ENGINE (UNIFIED)
 // =====================================================
 
-function calculateSPI(p, w, c, windDir, t, light, depth){
+function calculateSPI(p, w, c, windDir, data.main.temp, light, depth){
 
     let score = 0;
     let reasons = [];
@@ -1226,7 +1226,7 @@ function renderDashboard(data) {
     const light = data.light || 50;
     const depth = data.depth || 3;
     
-    let temps = calculateWaterTemps(t);
+    let temps = calculateWaterTemps(data.main.temp);
     if (tempModel.source === "sensor") {
     temps = tempModel;
     }
