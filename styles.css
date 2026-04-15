@@ -677,7 +677,7 @@ html, body {
 
     display: flex;
     justify-content: space-evenly;
-
+    pointer-events: none;
     z-index: 10;
 }
 
@@ -687,6 +687,7 @@ html, body {
     align-items: center;
     font-size: 12px;
     flex: 1;
+    pointer-events: auto;
 }
 
 /* ================= SCREENS ================= */ 
