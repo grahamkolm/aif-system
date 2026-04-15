@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initSplashBubbles();
     createTicks();
     positionDirections();
+    storeScoutScreen();
     
     // =============================
     // 🎯 UI SETUP
@@ -205,9 +206,14 @@ function showInsight(SPI, env, conf, light, depth) {
     el.innerHTML = tips.map(t => `<div class="ai-tip">${t}</div>`).join("");
 }
     
-    // Store scout screen
-    originalScoutHTML = document.getElementById("scoutScreen").innerHTML;
-    document.getElementById("scoutScreen").classList.add("hidden");
+    let originalScoutHTML = "";
+    function storeScoutScreen() {
+        const el = document.getElementById("scoutScreen");
+        if (!el) return;
+            originalScoutHTML = el.innerHTML;
+        el.classList.add("hidden");
+    }
+
 
     // =============================
     // ⏳ SPLASH TIMEOUT (MAIN CONTROL)
