@@ -124,11 +124,12 @@ html, body {
     align-items: center;
 
     padding-top: 20px;
-    padding-bottom: 160px;
+    padding-bottom: 120px;
 
     width: 100%;
     max-width: 420px;
     margin: 0 auto;
+    overflow-y: auto;
 
     opacity: 0;
     visibility: hidden;
@@ -647,8 +648,8 @@ html, body {
   max-height: 0;
   overflow: hidden;
 
-  transition: max-height 0.3s ease;
-  padding: 0 12px;
+  transition: max-height 0.4s ease;
+  padding: 0 14px;
   line-height: 1.4;
   color: rgba(255,255,255,0.9);
 }
@@ -703,3 +704,12 @@ html, body {
     align-items: center;
     justify-content: center;
 }
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
