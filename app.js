@@ -2073,18 +2073,18 @@ function refreshDashboard(){
 
 function toggleAI() {
     const panel = document.getElementById("aiPanel");
-    const content = document.getElementById("aiContent");
     const toggle = document.getElementById("aiToggle");
 
-    if (!panel || !content || !toggle) return;
+    if (!panel || !toggle) return;
 
-    panel.classList.toggle("collapsed");
+    panel.classList.toggle("active");
 
     if (panel.classList.contains("active")) {
         toggle.innerText = "−";
 
-        // 🔥 FORCE refresh when opened
-        showInsight(SPI, 
+        // 🔥 refresh when opened
+        showInsight(
+            SPI,
             parseInt(document.getElementById("envScore")?.innerText || 0),
             parseInt(document.getElementById("confScore")?.innerText || 0),
             parseInt(document.getElementById("light")?.innerText || 50),
