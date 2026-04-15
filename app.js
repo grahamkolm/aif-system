@@ -2079,10 +2079,11 @@ function toggleAI() {
 
     panel.classList.toggle("active");
 
-    if (panel.classList.contains("active")) {
-        toggle.innerText = "−";
+if (panel.classList.contains("active")) {
+    toggle.innerText = "−";
 
-        // 🔥 refresh when opened
+    // 🔒 SAFE CALL (prevents crash)
+    if (typeof showInsight === "function") {
         showInsight(
             SPI,
             parseInt(document.getElementById("envScore")?.innerText || 0),
@@ -2090,10 +2091,10 @@ function toggleAI() {
             parseInt(document.getElementById("light")?.innerText || 50),
             parseFloat(document.getElementById("depth")?.innerText || 3)
         );
-
-    } else {
-        toggle.innerText = "+";
     }
+
+} else {
+    toggle.innerText = "+";
 }
 
 // =====================================================
