@@ -1231,6 +1231,19 @@ function renderDashboard(data) {
     let temps = calculateWaterTemps(t);
     if (tempModel.source === "sensor") {
     temps = tempModel;
+    const ENV = {
+        light: light,
+        depth: depth,
+        wind: w
+    };
+        updateTacticalBar(
+            75,
+            70,
+            80,
+            ENV,
+            null
+            );
+    }
 }
 
 let surfaceTemp = temps.surface;
