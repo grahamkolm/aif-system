@@ -377,6 +377,7 @@ function getXFactor(SPI, prevSPI) {
   return null;
 }
 
+console.log("Forecast period:", forecastData);
 function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData) {
 
   const lines = [
@@ -1512,7 +1513,8 @@ updateTacticalBar(
     envScore,
     confScoreValue, 
     ENVdata,
-    lastSPI
+    lastSPI,
+    forecastData
     );
 
 let confEl = document.getElementById("confScore");
