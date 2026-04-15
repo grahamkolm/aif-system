@@ -219,7 +219,7 @@ function updateDirectionTicks(heading) {
 }
 
 function positionDirections() {
-  const radius = 180; // bigger than your ticks (~125)
+  const radius = 170; // bigger than your ticks (~125)
 
   setDir(".dir.n", 0);
   setDir(".dir.e", 90);
