@@ -1213,7 +1213,7 @@ function getLightStatus(cloud, time) {
 
 // =====================================================
 // 🎨 APPLY COLOR ENGINE
-// =====================================================
+// ===================================================== 
 function applyTileColor(tileId, status) {
 
   const tile = document.getElementById(tileId);
