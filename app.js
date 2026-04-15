@@ -1497,6 +1497,15 @@ setRingProgress(`env-progress`, envScore);
 setRingProgress(`conf-progress`, confScoreValue);
     
 // ✅ APPLY COLORS
+// ✅ TEXT COLORS
+const spiText = document.getElementById("spiValue");
+const envText = document.getElementById("envScore");
+const confText = document.getElementById("confScore");
+
+if (spiText) spiText.style.color = spiColor; 
+if (envText) envText.style.color = envColor; 
+if (confText) confText.style.color = confColor;
+    
 // ✅ SPI (SVG stroke — correct)
 if (spiCircle) {
     spiCircle.style.stroke = spiColor;
@@ -1533,14 +1542,6 @@ function setRingProgress(selector, value) {
   circle.style.strokeDashoffset = offset; 
 }
     
-// ✅ TEXT COLORS
-const spiText = document.getElementById("spiValue");
-const envText = document.getElementById("envScore");
-const confText = document.getElementById("confScore");
-
-if (spiText) spiText.style.color = spiColor; 
-if (envText) envText.style.color = envColor; 
-if (confText) confText.style.color = confColor;
     
 // ✅ UPDATE UI
 let bestZoneEl = document.getElementById("bestZone");
