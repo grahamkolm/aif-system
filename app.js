@@ -1559,11 +1559,6 @@ function renderDashboard(data) {
     const spiColor = getScoreColor(SPI); 
     const envColor = getScoreColor(envScore); 
     const confColor = getScoreColor(confScoreValue);
-
-    if(envCirle) {
-        envCircle.style.borderColor = envColor;
-        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
-    }
     
     const spiText = document.getElementById("spiValue");
     const envText = document.getElementById("envScore");
@@ -1572,12 +1567,21 @@ function renderDashboard(data) {
     if (spiText) spiText.style.color = spiColor; 
     if (envText) envText.style.color = "#ffffff"; 
     if (confText) confText.style.color = "#ffffff";
+
+    if(envCircle) {
+        envCircle.style.borderColor = envColor;
+        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
+    }
+
+    if(confCircle) {
+        confCircle.style.borderColor = confColor;
+        confCircle.style.boxShadow = `0 0 10px ${confColor}`;
+    }
     
     // ✅ SPI (SVG stroke — correct)
     if (spiCircle) {
     spiCircle.style.stroke = spiColor;
     }
-}
     
     updateAllTiles({
         air: t,
