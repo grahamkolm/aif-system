@@ -209,6 +209,27 @@ function createTicks() {
     }
 }
 
+// ================= INTERACTION (HOLD ACTIONS) ================= function setupHold(elementId, callback) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    let timer;
+
+    el.addEventListener("mousedown", () => {
+        timer = setTimeout(callback, 600);
+    });
+
+    el.addEventListener("mouseup", () => clearTimeout(timer));
+    el.addEventListener("mouseleave", () => clearTimeout(timer)); }
+
+// ================= INSIGHT PLACEHOLDERS ================= function showENVInsight() {
+    alert("ENV Insight coming soon..."); }
+
+function showCONFInsight() {
+    alert("Confidence Insight coming soon..."); 
+}
+
+
 // =====================================================
 // 🧩 2. UI HELPERS END
 // =====================================================
@@ -241,12 +262,19 @@ document.addEventListener("DOMContentLoaded", () => {
     animateSplash();
     initSplashBubbles();
 
+    
     // =============================
     // 🎯 UI SETUP
     // =============================
     createTicks();
     positionDirections();
     storeScoutScreen();
+
+    // =============================
+    // 🎯 UI INTERACTIONS
+    // =============================
+    setupHold("envScore", showENVInsight);
+    setupHold("confScore", showCONFInsight);
 
     // =============================
     // 🧭 INPUT SYSTEMS
@@ -291,111 +319,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // 🚀 APP BOOT END
 // =====================================================
     
-    // =============================
-    // 🎯 UI SETUP
-    // =============================
-    
-    function setupHold(elementId, callback) {
-    const el = document.getElementById(elementId);
-    if (!el) return;
-
-    let timer;
-
-    el.addEventListener("mousedown", () => {
-        timer = setTimeout(callback, 600);
-    });
-
-    el.addEventListener("mouseup", () => {
-        clearTimeout(timer);
-    });
-
-    el.addEventListener("mouseleave", () => {
-        clearTimeout(timer);
-    });
-}
-
-    function showENVInsight() {
-    alert("ENV Insight coming soon..."); 
-    }
-
-    function showCONFInsight() {
-    alert("Confidence Insight coming soon..."); 
-    }
-
-    setupHold("envScore", showENVInsight);
-    setupHold("confScore", showCONFInsight);
-    
-// =============================
-// ⏳ SPLASH TIMEOUT (MAIN CONTROL)
-// =============================
-    setTimeout(() => {
-
-        splashActive = false;
-
-        const splash = document.getElementById("splash");
-        const main = document.querySelector(".main");
-
-        // Fade out splash
-        if (splash) splash.style.opacity = "0";
-
-        // Wait for fade animation
-        setTimeout(() => {
-
-            if (splash) splash.style.display = "none";
-            if (main) main.classList.add("main-visible");
-            
-            // =============================
-            // 🚀 START APP (ONLY AFTER SPLASH)
-            // =============================
-            fetchWeatherSafe();
-            startApp();
-
-            canvas = document.getElementById("waterGraph");
-            ctx = canvas ? canvas.getContext("2d") : null;
-
-            // 🔁 KEEP UPDATING
-            setInterval(fetchWeatherSafe, 30000);
-
-        }, 400); // match CSS transition
-
-    }, 2500); // splash duration
-
-});
-
-function updateDirectionTicks(heading) {
-
-    const ticks = document.querySelectorAll(".tick");
-
-    ticks.forEach(tick => {
-        const angle = parseInt(tick.dataset.angle);
-
-        let diff = Math.abs(angle - heading);
-        if (diff > 180) diff = 360 - diff;
-
-        if (diff < 10) {
-            tick.classList.add("active-direction");
-        } else {
-            tick.classList.remove("active-direction");
-        }
-    });
-}
-
-function positionDirections() {
-  const radius = 170; // bigger than your ticks (~125)
-
-  setDir(".dir.n", 0);
-  setDir(".dir.e", 90);
-  setDir(".dir.s", 180);
-  setDir(".dir.w", 270);
-
-  function setDir(selector, angle) {
-    const el = document.querySelector(selector);
-    if (!el) return;
-
-    el.style.transform =
-      `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
-  }
-}
 
 // =====================================================
 // 💧 2. SPLASH SYSTEM
