@@ -13,7 +13,9 @@ let currentSession = null;
 // ============================
 // 🌍 LOCATION + MAP
 // ============================
-let userLocation = { lat: null, lon: null }; let mapInstance = null; let userMarker = null;
+let userLocation = { lat: null, lon: null }; 
+let mapInstance = null; 
+let userMarker = null;
 
 // ============================
 // 🧭 COMPASS
@@ -1938,9 +1940,6 @@ function getCastingAdvice(diff) {
 // =====================================================
 // 🧭 9. GPS + COMPASS + MAP
 // =====================================================
-
-let mapInstance = null;
-let userMarker = null;
 
 // ============================
 // 📍 INIT GPS (GET LOCATION)
