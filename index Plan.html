@@ -241,67 +241,60 @@ Report
 </div>
 </div>
 
-<div id="scoutScreen" class="scout hidden">
+<div id="scoutScreen" class="hidden">
+  <div class="scout-wrapper">
 
     <div class="scout-header">
-        <div class="scout-title">Scout Mode</div>
-        <div class="scout-sub">Quickly log activity & scan water</div>
+      <div class="scout-title">Scout Mode</div>
+      <div class="scout-sub">Quickly log activity & scan water</div>
     </div>
 
-    <!-- FISH ACTIVITY -->
-<div class="scout-container">
-    <div class="scout-section section">
-        <div class="scout-label section-title">Fish Activity</div>
-        <div class="option-row option-group">
-            <div class="opt option" data-type="activity" data-value="bubbles">Bubbles</div>
-            <div class="opt option" data-type="activity" data-value="rolling">Rolling Fish</div>
-            <div class="opt option" data-type="activity" data-value="none">No Activity</div>
-        </div>
-    </div>
-
-    <!-- WATER -->
     <div class="scout-section">
-        <div class="scout-label">Water Clarity</div>
-        <div class="scout-options">
-            <div class="opt" data-type="clarity" data-value="clear">Clear</div>
-            <div class="opt" data-type="clarity" data-value="stained">Slightly Stained</div>
-            <div class="opt" data-type="clarity" data-value="murky">Murky</div>
-        </div>
+      <div class="scout-label">Fish Activity</div>
+      <div class="option-row">
+        <div class="tap option" data-type="activity" data-value="bubbles">Bubbles</div>
+        <div class="tap option" data-type="activity" data-value="rolling">Rolling Fish</div>
+        <div class="tap option" data-type="activity" data-value="none">No Activity</div>
+      </div>
     </div>
 
-    <!-- LIFE -->
     <div class="scout-section">
-        <div class="scout-label">Life Signs</div>
-        <div class="scout-options">
-            <div class="opt" data-type="life" data-value="birds">Birds Active</div>
-            <div class="opt" data-type="life" data-value="none">No Birds</div>
-        </div>
+      <div class="scout-label">Water Clarity</div>
+      <div class="option-row">
+        <div class="tap option" data-type="clarity" data-value="clear">Clear</div>
+        <div class="tap option" data-type="clarity" data-value="stained">Slightly Stained</div>
+        <div class="tap option" data-type="clarity" data-value="murky">Murky</div>
+      </div>
     </div>
 
-    <!-- STRUCTURE -->
     <div class="scout-section">
-        <div class="scout-label">Structure</div>
-        <div class="scout-options">
-            <div class="opt" data-type="structure" data-value="weed">Weed</div>
-            <div class="opt" data-type="structure" data-value="dropoff">Drop-off</div>
-            <div class="opt" data-type="structure" data-value="flat">Flat</div>
-        </div>
+      <div class="scout-label">Life Signs</div>
+      <div class="option-row">
+        <div class="tap option" data-type="birds" data-value="active">Birds Active</div>
+        <div class="tap option" data-type="birds" data-value="none">No Birds</div>
+      </div>
     </div>
 
-    <!-- WIND -->
     <div class="scout-section">
-        <div class="scout-label">Wind Effect</div> 
-        <div class="scout-options">
-            <div class="opt" data-type="wind" data-value="bank">Windblown Bank</div>
-            <div class="opt" data-type="wind" data-value="calm">Calm Water</div>
-        </div>
+      <div class="scout-label">Structure</div>
+      <div class="option-row">
+        <div class="tap option" data-type="structure" data-value="weed">Weed</div>
+        <div class="tap option" data-type="structure" data-value="dropoff">Drop-off</div>
+        <div class="tap option" data-type="structure" data-value="flat">Flat</div>
+      </div>
     </div>
-</div>
-    
-    <!-- BUTTON -->
+
+    <div class="scout-section">
+      <div class="scout-label">Wind Effect</div>
+      <div class="option-row">
+        <div class="tap option" data-type="wind" data-value="bank">Windblown Bank</div>
+        <div class="tap option" data-type="wind" data-value="calm">Calm Water</div>
+      </div>
+    </div>
+
     <div class="scout-btn" onclick="saveAndScan()">Save & Continue</div>
-    
-    </div>
+
+  </div>
 </div>
 
 <!-- ================= MAP ================= -->
