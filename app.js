@@ -1,5 +1,5 @@
 // =====================================================
-// 🌍 0. GLOBAL BASE (CLEAN STRUCTURE)
+// 🌍 0. GLOBAL BASE START
 // =====================================================
 
 // ============================
@@ -103,17 +103,65 @@ const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
 const RED = "#ff3b3b";
 
-// ============================
-// 🎨 END OF GLOBALS
-// ============================
+// =====================================================
+// 🌍 0. GLOBAL BASE END
+// =====================================================
 
+// =====================================================
+// 🧩 2. UI HELPERS
+// =====================================================
+
+// =====================================================
+// 🎨 VISUAL HELPERS (COLORS / ICONS)
+// =====================================================
+
+// ================= ICON COLOR ENGINE ================= 
+function setIcon(iconName, value, rules) {
+    const icon = document.querySelector(`[data-lucide="${iconName}"]`);
+    if (!icon) return;
+
+    for (const r of rules) {
+        if (value >= r.min && value <= r.max) {
+            icon.style.stroke = r.color;
+            return;
+        }
+    }
+
+    // fallback
+    icon.style.stroke = GREEN;
+}
+
+// ================= SCORE COLOR ================= 
+    function getScoreColor(value) {
+    if (value >= 80) return "#00ff9c";   // green
+    if (value >= 60) return "#ffd700";   // yellow
+    return "#ff4d4d";                    // red
+}
+
+// =====================================================
+// 🧭 DIRECTION HELPERS
+// =====================================================
+
+// ================= WIND TEXT ================= 
+function getWindDirectionText(deg) {
+    if (deg >= 45 && deg < 135) return "Wind → East bank";
+    if (deg >= 135 && deg < 225) return "Wind → South bank";
+    if (deg >= 225 && deg < 315) return "Wind → West bank";
+    return "Wind → North bank";
+}
+
+// =====================================================
+// 🖥️ UI STATE HELPERS
+// =====================================================
 
 let originalScoutHTML = "";
 
+// ================= STORE SCOUT SCREEN ================= 
 function storeScoutScreen() {
     const el = document.getElementById("scoutScreen");
+
     if (!el) {
-        console.warn("scoutScreen not found");
+        console.warn("⚠️ scoutScreen not found");
         return;
     }
 
@@ -121,40 +169,49 @@ function storeScoutScreen() {
     el.classList.add("hidden");
 }
 
+// =====================================================
+// 🧭 COMPASS UI
+// =====================================================
+
+// ================= CREATE COMPASS TICKS ================= 
 function createTicks() {
+    const container = document.getElementById("compassTicks");
 
-  const container = document.getElementById("compassTicks");
-
-  if (!container) {
-    console.error("❌ tickContainer not found");
-    return;
-  }
-
-  const step = 5;
-
-  for (let i = 0; i < 360; i += step) {
-
-    let angle = i;
-
-    const tick = document.createElement("div");
-    tick.className = "tick";
-
-    if (i % 90 === 0) {
-      tick.classList.add("tick-major");
-    } else if (i % 15 === 0) {
-      tick.classList.add("tick-medium");
-    } else {
-      tick.classList.add("tick-small");
+    if (!container) {
+        console.error("❌ compassTicks container not found");
+        return;
     }
 
-    tick.dataset.angle = angle;
+    const step = 5;
 
-    tick.style.transform =
-      `translate(-50%, -50%) rotate(${angle}deg) translateY(-125px)`;
+    for (let i = 0; i < 360; i += step) {
 
-    container.appendChild(tick);
-  }
+        const angle = i;
+
+        const tick = document.createElement("div");
+        tick.className = "tick";
+
+        // size classification
+        if (i % 90 === 0) {
+            tick.classList.add("tick-major");
+        } else if (i % 15 === 0) {
+            tick.classList.add("tick-medium");
+        } else {
+            tick.classList.add("tick-small");
+        }
+
+        tick.dataset.angle = angle;
+
+        tick.style.transform =
+            `translate(-50%, -50%) rotate(${angle}deg) translateY(-125px)`;
+
+        container.appendChild(tick);
+    }
 }
+
+// =====================================================
+// 🧩 2. UI HELPERS END
+// =====================================================
 
 // =====================================================
 // 🚀 1. APP BOOT
@@ -1477,27 +1534,6 @@ function renderDashboard(data) {
         time: new Date().getHours()
     });
 
-    // ================= HELPER FUNCTION =================
-
-let lightEl = document.getElementById("light");
-    if (lightEl) lightEl.innerText = light + "%"; 
-let depthEl = document.getElementById("depth");
-    if(depthEl) depthEl.innerText = depth.toFixed(1) + " m";
-
-    function setIcon(iconName, value, rules) {
-        let icon = document.querySelector(`[data-lucide="${iconName}"]`);
-        if (!icon) return;
-
-        for (let r of rules) {
-            if (value >= r.min && value <= r.max) {
-                icon.style.stroke = r.color;
-                return;
-            }
-        }
-
-        icon.style.stroke = GREEN;
-    }
-
     // ================= AIR =================
     document.getElementById("air").innerText = t.toFixed(1) + "°C";
 
@@ -1538,14 +1574,7 @@ let depthEl = document.getElementById("depth");
         { min: 12, max: 19, color: ORANGE }
     ]);
 
-    function getWindDirectionText(deg){
-    if (deg >= 45 && deg < 135) return "Wind → East bank";
-    if (deg >= 135 && deg < 225) return "Wind → South bank";
-    if (deg >= 225 && deg < 315) return "Wind → West bank";
-    return "Wind → North bank";
-}
-
-    // ================= CLOUD =================
+   // ================= CLOUD =================
     document.getElementById("cloud").innerText = c + "%";
 
     setIcon("cloud", c, [
@@ -1561,8 +1590,6 @@ let depthEl = document.getElementById("depth");
     document.getElementById("season").innerText = getSeason();
     setIcon("leaf", 1, [{ min: 0, max: 10, color: GREEN }]);
 
-
-
     // ================= FEED =================
     document.getElementById("feed").innerText = feeding(SPI);
 
@@ -1571,16 +1598,7 @@ let depthEl = document.getElementById("depth");
         { min: 50, max: 69, color: ORANGE },
         { min: 0, max: 49, color: RED }
     ]);
-
    
-    function getScoreColor(value) {
-    if (value >= 80) return "#00ff9c";   // green
-    if (value >= 60) return "#ffd700";   // yellow
-    return "#ff4d4d";                    // red
-}
-
-
-    
 // ================= ENV + CONF =================
 // ================= ENV ================= 
 envScore = calculateENV(p, c, w, light, t);
