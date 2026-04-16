@@ -1490,12 +1490,16 @@ function renderDashboard(data) {
     const confEl = document.getElementById("confScore");
     if (confEl) confEl.innerText = confScoreValue + "%";
 
+    score = clamp(score, 0, 100);
+    return score;
+
     // =====================================================
     // 🎨 6. COLORS (NOW SAFE)
     // =====================================================
 
     const spiColor = getScoreColor(SPI);
-    const envColor = getScoreColor(envScore);
+    const safeENV = isNaN(envScore) ? 50 : envScore;
+    const envColor = getScoreColor(asfeENV);
     const confColor = getScoreColor(confScoreValue);
 
     // =====================================================
@@ -1737,9 +1741,11 @@ function calculateENV(p, c, w, light, airTemp) {
     if (moon === "New") score += 4;
 
     function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-}
-}
+        return Math.max(min, Math.min(max, value));   
+    }
+
+return score;
+
 
 // =====================================================
 // 🧠 8. ENVIRONMENT ENGINE END
