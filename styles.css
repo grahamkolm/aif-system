@@ -884,4 +884,20 @@ html, body {
     font-weight: bold;
 }
 
+.opt {
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.opt.active {
+    border-color: #00ffa6;
+    box-shadow: 0 0 10px rgba(0,255,166,0.4);
+    background: rgba(0,255,166,0.08);
+}
+
+
 
