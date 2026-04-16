@@ -1427,6 +1427,14 @@ function renderDashboard(data) {
 
     const tacticalData = { light, depth, wind: w };
 
+    showInsight(
+        SPI,
+        envScore,
+        confScoreValue,
+        ENV.light || 50,
+        ENV.depth || 3
+    );
+
     // ================= COMPASS DIFF =================
     diff = 0;
 
@@ -2006,7 +2014,7 @@ function updateMapLocation(lat, lon) {
 
 function updateSPI(v){
 
-    if (!v || isNaN(v)) return;
+    if (v == null || isNaN(v)) return;
     
     let arc = document.getElementById("spiArc");
     if(!arc) return;
@@ -2048,16 +2056,6 @@ if (envCircle && confCircle) {
     }
 }
 }
-
-// 🔥 AUTO AI UPDATE
-
-    showInsight(
-        SPI,
-        envScore,
-        confScoreValue,
-        ENV.light || 50,
-        ENV.depth || 3
-    );
 
 function estimateOxygen(temp, wind, cloud) {
 
@@ -2515,7 +2513,7 @@ function buildDropLog() {
           <div class="drop-title">🎯 Drop ${i+1}</div>
           <div>🕒 ${time}</div>
           <div>📊 SPI: ${d.spi}%</div>
-          <div>📍 ${d.lat.toFixed(4)}, ${d.lon.toFixed(4)}</div> 
+          <div>📍 ${d.lat ? d.lat.toFixed(4)}, : "-"}, ${d.lon ? d.lon.toFixed(4) : "-"}
           </div>
         `;
         container.appendChild(el);
@@ -2543,23 +2541,15 @@ function buildReportMap() {
             }
         });
     
-        drops.forEach(d => {
-            if (d.lat && d.lon) {
-                L.marker([d.lat, d.lon])
-                    .addTo(reportMapInstance)
-                    .bindPopup(`SPI: ${d.spi}%`);
+drops.forEach(d => {
+    if (!d.lat || !d.lon) return;
+
+    L.marker([d.lat, d.lon])
+        .addTo(reportMapInstance)
+        .bindPopup(`SPI: ${d.spi.toFixed(1)}%`); });
+
     }
 });
-
-        // add drops
-        drops.forEach(d => {
-
-            if (!d.lat || !d.lon) return;
-
-            L.marker([d.lat, d.lon])
-                .addTo(reportMapInstance)
-                .bindPopup(`SPI: ${d.spi.toFixed(1)}%`);
-        });
 
         setTimeout(() => {
             reportMapInstance.invalidateSize();
@@ -2582,7 +2572,7 @@ function getBestDropZone() {
 
 function setFishingZone(targetAngle) {
   const ticks = document.querySelectorAll(".tick");
-  const zoneStrength = getBestZone();
+  const zoneStrength = typeof getBestZone === "function" ? getBestZone() : "normal";
 
   ticks.forEach(tick => {
     const angle = parseInt(tick.dataset.angle);
