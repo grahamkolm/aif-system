@@ -86,6 +86,7 @@ let splashBubbles = [];
 // ============================
 let scoutData = {};
 let drops = [];
+let retryCount = 0;
 
 // ============================
 // 🌡️ TEMP MODEL
