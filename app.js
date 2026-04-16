@@ -1742,7 +1742,7 @@ function calculateENV(p, c, w, light, airTemp) {
     }
 
 return score;
-
+}
 
 // =====================================================
 // 🧠 8. ENVIRONMENT ENGINE END
