@@ -1668,7 +1668,7 @@ function renderDashboard(data) {
     // 📊 13. ENV + CONF
     // =====================================================
 
-    envScore = calculateENV(p, c, w, light, t);
+    envScore = calculateENV(data.main.pressure, data.clouds.all, data.wind.speed * 3.6, light, data.main.temp);
 
     const envEl = document.getElementById("envScore");
     if (envEl) envEl.innerText = envScore + "%";
@@ -1973,6 +1973,22 @@ function getCastingAdvice(diff) {
 // =====================================================
 // 🧭 9. GPS + COMPASS + MAP
 // =====================================================
+
+function initGPS() {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            userLocation.lat = pos.coords.latitude;
+            userLocation.lon = pos.coords.longitude;
+
+            console.log("GPS:", userLocation.lat, userLocation.lon);
+        },
+        (err) => {
+            console.warn("GPS error:", err);
+        }
+    );
+}
 
 // ============================
 // 🗺️ OPEN MAP
