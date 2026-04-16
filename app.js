@@ -2143,47 +2143,31 @@ function openScout(){
     screen.classList.remove("hidden");
     document.body.style.overflow = "hidden";
 
-    // 🔥 ATTACH EVENTS HERE (IMPORTANT)
+    // 🔥 IMPORTANT
     setupScoutOptions();
-
-    // 🔥 attach listeners HERE (NOT globally)
-    const buttons = screen.querySelectorAll(".opt");
-
-    buttons.forEach(btn => {
-        btn.onclick = () => {
-
-            const type = btn.dataset.type;
-
-            // remove active in same group
-            screen.querySelectorAll(`.tap.option[data-type="${type}"]`)
-                .forEach(el => el.classList.remove("active"));
-
-            btn.classList.add("active");
-
-            scoutData[type] = btn.dataset.value;
-
-            console.log("Scout updated:", scoutData);
-        };
-    });
 }
 
 function setupScoutOptions(){
 
-    document.querySelectorAll(".opt").forEach(btn => {
+    const buttons = document.querySelectorAll(".opt");
 
-        btn.onclick = () => {
+    console.log("Scout buttons found:", buttons.length);
 
-            const type = btn.dataset.type;
+    buttons.forEach(btn => {
 
-            // remove active in same group
+        btn.onclick = function(){
+
+            const type = this.dataset.type;
+
+            // remove active from same group
             document.querySelectorAll(`.opt[data-type="${type}"]`)
                 .forEach(el => el.classList.remove("active"));
 
-            btn.classList.add("active");
+            this.classList.add("active");
 
-            scoutData[type] = btn.dataset.value;
+            scoutData[type] = this.dataset.value;
 
-            console.log("Scout selected:", type, btn.dataset.value);
+            console.log("Selected:", type, this.dataset.value);
         };
     });
 }
