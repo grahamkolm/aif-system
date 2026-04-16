@@ -111,7 +111,8 @@ const RED = "#ff3b3b";
 // 🧩 2. UI HELPERS
 // =====================================================
 
-// ================= ICON COLOR ENGINE ================= function setIcon(iconName, value, rules) {
+// ================= ICON COLOR ENGINE ================= 
+function setIcon(iconName, value, rules) {
     const icon = document.querySelector(`[data-lucide="${iconName}"]`);
     if (!icon) return;
 
@@ -125,20 +126,23 @@ const RED = "#ff3b3b";
     icon.style.stroke = GREEN;
 }
 
-// ================= SCORE COLOR ================= function getScoreColor(value) {
+// ================= SCORE COLOR ================= 
+function getScoreColor(value) {
     if (value >= 80) return "#00ff9c";
     if (value >= 60) return "#ffd700";
     return "#ff4d4d";
 }
 
-// ================= WIND TEXT ================= function getWindDirectionText(deg) {
+// ================= WIND TEXT ================= 
+function getWindDirectionText(deg) {
     if (deg >= 45 && deg < 135) return "Wind → East bank";
     if (deg >= 135 && deg < 225) return "Wind → South bank";
     if (deg >= 225 && deg < 315) return "Wind → West bank";
     return "Wind → North bank";
 }
 
-// ================= STORE SCOUT ================= let originalScoutHTML = "";
+// ================= STORE SCOUT ================= 
+let originalScoutHTML = "";
 
 function storeScoutScreen() {
     const el = document.getElementById("scoutScreen");
@@ -148,7 +152,8 @@ function storeScoutScreen() {
     el.classList.add("hidden");
 }
 
-// ================= COMPASS TICKS ================= function createTicks() {
+// ================= COMPASS TICKS ================= 
+function createTicks() {
     const container = document.getElementById("compassTicks");
     if (!container) return;
 
@@ -168,7 +173,8 @@ function storeScoutScreen() {
     }
 }
 
-// ================= HOLD INTERACTION ================= function setupHold(elementId, callback) {
+// ================= HOLD INTERACTION ================= 
+    function setupHold(elementId, callback) {
     const el = document.getElementById(elementId);
     if (!el) return;
 
@@ -181,7 +187,8 @@ function storeScoutScreen() {
     el.addEventListener("mouseup", () => clearTimeout(timer));
     el.addEventListener("mouseleave", () => clearTimeout(timer)); }
 
-// ================= INSIGHTS ================= function showENVInsight() {
+// ================= INSIGHTS ================= 
+function showENVInsight() {
     alert("ENV Insight coming soon..."); }
 
 function showCONFInsight() {
@@ -275,7 +282,44 @@ document.addEventListener("DOMContentLoaded", () => {
 // =====================================================
 // 🚀 3. APP BOOT END
 // =====================================================
-    
+
+// =====================================================
+// 🚀 MAIN APP ENGINE
+// =====================================================
+
+function startApp() {
+    canvas = document.getElementById("waterGraph");
+    ctx = canvas ? canvas.getContext("2d") : null;
+
+    if (!canvas || !ctx) {
+        console.error("Canvas not ready");
+        return;
+    }
+
+    resizeCanvas();
+    animate();
+
+    generateHotspots();
+    setInterval(generateHotspots, 10000);
+    setInterval(ripple, 3000);
+}
+
+function resizeCanvas() {
+    if (!canvas || !ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+}
+// =====================================================
+// 🚀 MAIN APP ENGINE END
+// =====================================================
+
+
 // =====================================================
 // 💧 4. SPLASH SYSTEM
 // =====================================================
@@ -630,6 +674,10 @@ for (let i = splashRipples.length - 1; i >= 0; i--) {
 // =====================================================
 
 
+// =====================================================
+// 🌊 VISUAL ENGINE
+// =====================================================
+
 function ripple() {
     ripples.push({
         r: 0,
@@ -639,45 +687,6 @@ function ripple() {
     });
 }
 
-
-function startApp() {
-
-    canvas = document.getElementById("waterGraph");
-    ctx = canvas ? canvas.getContext("2d") : null;
-
-    if (!canvas || !ctx) {
-        console.error("Canvas not ready");
-        return;
-    }
-
-    resizeCanvas();
-    animate();
-
-    generateHotspots();
-    setInterval(generateHotspots, 10000);
-    setInterval(ripple, 3000);
-   
-    setTimeout(() => {
-    //    setupHold("Gauge", showSPIInsight);
-    }, 1500);
-}
-
-function resizeCanvas() {
-
-    if (!canvas || !ctx) return;
-
-    const dpr = window.devicePixelRatio || 1;
-
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
-}
-
-// =====================================================
-// 🌊 4. VISUAL ENGINE
-// =====================================================
 
 function spawnBubble() {
 
@@ -706,7 +715,9 @@ function animate() {
     if (!ctx || !canvas) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (typeof updateDirectionTicks === "function") {
     updateDirectionTicks(compassHeading || 0 );
+    }
     
     let spawnRate = 0.02 + (bubbleIntensity * 0.08);
     if (Math.random() < spawnRate) {
@@ -803,6 +814,14 @@ function generateHotspots() {
 // 🌦 5. WEATHER ENGINE
 // =====================================================
 
+function getBestZone() {
+    if (SPI >= 75) {
+    return "strong";
+} else {
+    return "normal";
+}
+}
+
 function fetchWeatherSafe() {
 
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
@@ -857,7 +876,6 @@ function updateFromWeather(data) {
   }
 }
 
-
 function calculateDerivedValues() {
 
   // Water temps fallback
@@ -900,7 +918,6 @@ function calculateDerivedValues() {
     SOURCE.light = "calculated";
   }
 }
-
 
 function analyzeWeather(w, p, c){
 
@@ -955,6 +972,9 @@ function calculateWaterTemps(airTemp) {
     };
 }
 
+// =====================================================
+// 📊 WEAHTER ENGINE END
+// =====================================================
 
 
 // =====================================================
@@ -2552,14 +2572,6 @@ function getBestDropZone() {
     let avgLon = highDrops.reduce((sum, d) => sum + d.lon, 0) / highDrops.length;
 
     return `Lat ${avgLat.toFixed(3)}, Lon ${avgLon.toFixed(3)}`; 
-}
-
-function getBestZone() {
-    if (SPI >= 75) {
-    return "strong";
-} else {
-    return "normal";
-}
 }
 
 function setFishingZone(targetAngle) {
