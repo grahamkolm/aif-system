@@ -747,6 +747,7 @@ html, body {
     left: 0;
     right: 0;
     bottom: 0;
+    inset: 0;
 
     background: rgba(0,0,0,0.85);
     backdrop-filter: blur(10px);
@@ -760,9 +761,11 @@ html, body {
 
 /* 📦 MAIN CARD */
 .scout-container {
+    position: relative;
     width: 90%;
     max-width: 400px;
     color: white;
+    z-index: 9999;
 }
 
 /* 🧩 SECTIONS */
@@ -860,7 +863,7 @@ html, body {
 .tap.option {
     padding: 8px 12px;
     border-radius: 20px;
-    background: rgba(255,255,255,0.05);
+    backgrou.nd: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
     font-size: 12px;
     cursor: pointer;
@@ -890,7 +893,9 @@ html, body {
     border: 1px solid rgba(255,255,255,0.15);
     color: #fff;
     cursor: pointer;
+    pointer-events: auto;
     transition: all 0.2s ease;
+    Z-index: 3;
 }
 
 .opt.active {
