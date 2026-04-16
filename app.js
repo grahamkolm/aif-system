@@ -1255,7 +1255,6 @@ if (typeof confScoreValue === "number") {
         score -= 3;
     }
 }
-}
 
 // =====================================================
 // 📊 CONF ENGINE END
