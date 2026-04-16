@@ -1181,23 +1181,6 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     return Math.max(40, Math.min(95, Math.round(score))); 
 }
 
-const forecastData = [
-        {date: "16 Apr", spi: 65},
-        {date: "17 Apr", spi: 78},
-        {date: "18 Apr", spi: 88},
-        {date: "19 Apr", spi: 82},
-        {date: "20 Apr", spi: 70}
-];
-console.log("Forecast check", forecastData);    
-updateTacticalBar(
-    SPI,
-    envScore,
-    confScoreValue, 
-    ENVdata,
-    lastSPI,
-    forecastData
-    );
-
 let confEl = document.getElementById("confScore");
 if (confEl) {
     confEl.innerText = confScoreValue + "%"; }
