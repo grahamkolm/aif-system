@@ -1678,33 +1678,6 @@ function renderDashboard(data) {
     if (confEl) confEl.innerText = confScoreValue + "%";
 
     // =====================================================
-    // 🧠 14. TACTICAL ENGINE
-    // =====================================================
-
-    const tacticalData = {
-        light,
-        depth,
-        wind: w
-    };
-
-    const forecastData = [
-        { date: "16 Apr", spi: 65 },
-        { date: "17 Apr", spi: 78 },
-        { date: "18 Apr", spi: 88 },
-        { date: "19 Apr", spi: 82 },
-        { date: "20 Apr", spi: 70 }
-    ];
-
-    updateTacticalBar(
-        SPI,
-        envScore,
-        confScoreValue,
-        tacticalData,
-        lastSPI,
-        forecastData
-    );
-
-    // =====================================================
     // 🎨 15. TILE GLOW EFFECT
     // =====================================================
 
