@@ -1409,10 +1409,20 @@ function renderDashboard(data) {
 
     console.log("📊 Rendering dashboard");
 
-    // 🎯 GET ELEMENTS (ONLY ONCE)
-    const spiCircle = document.getElementById("spiCircle");
+ const spiCircle = document.getElementById("spiCircle");
     const envCircle = document.getElementById("envCircle");
     const confCircle = document.getElementById("confCircle");
+
+    // ✅ THEN: use them
+    if (envCircle) {
+        envCircle.style.borderColor = envColor;
+        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
+    }
+
+    if (confCircle) {
+        confCircle.style.borderColor = confColor;
+        confCircle.style.boxShadow = `0 0 6px ${confColor}`;
+    }
     
     // =====================================================
     // 🧠 1. INPUT (EXTRACT + NORMALISE)
@@ -1567,16 +1577,6 @@ function renderDashboard(data) {
     if (spiCircle) {
     spiCircle.style.stroke = spiColor;
     }
-
-// ✅ ENV + CONF (USE BOX-SHADOW GLOW INSTEAD) 
-    if (envCircle) {
-    envCircle.style.borderColor = envColor;
-    envCircle.style.boxShadow = `0 0 10px ${envColor}`; 
-    }
-
-if (confCircle) {
-    confCircle.style.borderColor = confColor;
-    confCircle.style.boxShadow = `0 0 6px ${confColor}`; 
 }
     
     updateAllTiles({
