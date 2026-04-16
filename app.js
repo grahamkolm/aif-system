@@ -1178,10 +1178,11 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
 
     if (isNaN(score)) score = 50;
 
-    return Math.max(40, Math.min(95, Math.round(score))); }
+    return Math.max(40, Math.min(95, Math.round(score))); 
+}
 
 
-confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
 
 const tacticalData = {
     light,
@@ -1486,6 +1487,7 @@ function renderDashboard(data) {
 
     windDir = data.wind?.deg || 0;
 
+    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
     // ================= COMPASS DIFF =================
     diff = 0;
 
