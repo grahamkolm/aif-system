@@ -1409,6 +1409,11 @@ function renderDashboard(data) {
 
     console.log("📊 Rendering dashboard");
 
+    // 🎯 GET ELEMENTS (ONLY ONCE)
+    const spiCircle = document.getElementById("spiCircle");
+    const envCircle = document.getElementById("envCircle");
+    const confCircle = document.getElementById("confCircle");
+    
     // =====================================================
     // 🧠 1. INPUT (EXTRACT + NORMALISE)
     // =====================================================
@@ -1539,12 +1544,7 @@ function renderDashboard(data) {
     // =====================================================
     // 🎯 9. TILE ENGINE (CLEAN DATA PIPE)
     // =====================================================
-
-    // 🎯 GET ELEMENTS (ONLY ONCE)
-    const spiCircle = document.getElementById("spiCircle");
-    const envCircle = document.getElementById("envCircle");
-    const confCircle = document.getElementById("confCircle");
-    
+  
     // 🎨 COLORS (ONLY ONCE)
     const spiColor = getScoreColor(SPI); 
     const envColor = getScoreColor(envScore); 
