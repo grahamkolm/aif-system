@@ -2509,14 +2509,13 @@ function buildDropLog() {
         let el = document.createElement("div");
         el.className = "drop-card";
 
-        el.innerHTML = `
-        <div class="drop-card">
-          <div class="drop-title">🎯 Drop ${i+1}</div>
-          <div>🕒 ${time}</div>
-          <div>📊 SPI: ${d.spi}%</div>
-          <div>📍 ${d.lat ? d.lat.toFixed(4)}, : "-"}, ${d.lon ? d.lon.toFixed(4) : "-"}
-          </div>
-        `;
+       el.innerHTML = `
+<div class="drop-card">
+  <div class="drop-title">🎯 Drop ${i+1}</div>
+  <div>🕒 ${time}</div>
+  <div>📊 SPI: ${d.spi}%</div>
+  <div>📍 ${d.lat ? d.lat.toFixed(4) : "-"}, ${d.lon ? d.lon.toFixed(4) : "-"}</div> </div> `;
+
         container.appendChild(el);
     });
 }
