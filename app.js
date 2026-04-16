@@ -1,67 +1,110 @@
 // =====================================================
-// 🌍 0. GLOBAL BASE
+// 🌍 0. GLOBAL BASE (CLEAN STRUCTURE)
 // =====================================================
 
+// ============================
+// 🧠 CORE STATE
+// ============================
+let SPI = 50;
+let lastSPI = null;
+let lastConditions = {};
+let currentSession = null;
+
+// ============================
+// 🌍 LOCATION + MAP
+// ============================
+let userLocation = { lat: null, lon: null }; let mapInstance = null; let userMarker = null;
+
+// ============================
+// 🧭 COMPASS
+// ============================
+let compassHeading = null;
+let windDir = 0;
 let diff = 0;
-let splashActive = true;
+
+// ============================
+// 🌡️ ENVIRONMENT DATA
+// ============================
+const ENV = {
+    air: null,
+    surface: null,
+    bottom: null,
+    pressure: null,
+    wind: null,
+    cloud: null,
+    light: null,
+    depth: null,
+    oxygen: null
+};
+
+const SOURCE = {
+    air: "none",
+    surface: "none",
+    bottom: "none",
+    pressure: "none",
+    wind: "none",
+    cloud: "none",
+    light: "none",
+    depth: "none",
+    oxygen: "none"
+};
+
+// ============================
+// 📊 SCORES
+// ============================
+let envScore = 0;
+let confScoreValue = 0;
+let score = 50;
+
+// ============================
+// 📈 HISTORY TRACKING
+// ============================
 let tempHistory = [];
 let pressureHistory = [];
+
+// ============================
+// 🌊 VISUAL ENGINE
+// ============================
+let canvas, ctx;
+let bubbles = [];
+let ripples = [];
+let hotspots = [];
+let bubbleIntensity = 0.7;
+
+// ============================
+// 💧 SPLASH SYSTEM
+// ============================
+let splashActive = true;
+let splashCanvas;
+let splashCtx;
+let splashBubbles = [];
+
+// ============================
+// 🎣 SCOUT + DROPS
+// ============================
+let scoutData = {};
+let drops = [];
+
+// ============================
+// 🌡️ TEMP MODEL
+// ============================
 let tempModel = {
     surface: null,
     bottom: null,
     source: "forecast"
 };
-let currentSession = null;
-let lastSPI = null;
-let lastConditions = {};
-let userLocation = null;
-let compassHeading = null;
-let splashBubbles = [];
 
-let bubbleIntensity = 0.7;
-let hotspots = [];
-let SPI = 50;
-
-let bubbles = [];
-let canvas, ctx;
-let ripples = [];
-let scoutData = {};
-let drops = [];
-let splashCanvas;
-let splashCtx;
-let score = 50;
-let windDir = 0;
-let envScore = 0;
-let confScoreValue = 0;
-
+// ============================
+// 🎨 COLORS
+// ============================
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
 const RED = "#ff3b3b";
-const ENV = {
-  air: null,
-  surface: null,
-  bottom: null,
-  pressure: null,
-  wind: null,
-  cloud: null,
-  light: null,
-  depth: null,
-  oxygen: null
-};
 
-const SOURCE = {
-  air: "none",
-  surface: "none",
-  bottom: "none",
-  pressure: "none",
-  wind: "none",
-  cloud: "none",
-  light: "none",
-  depth: "none",
-  oxygen: "none"
-};
+// ============================
+// 🎨 END OF GLOBALS
+// ============================
 
-let userLocation = { lat: null, lon: null};
 
 let originalScoutHTML = "";
 
