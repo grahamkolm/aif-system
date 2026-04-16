@@ -1314,7 +1314,7 @@ function applyTileColor(tileId, status) {
 
 
 // =====================================================
-// 📊 7. DASHBOARD
+// 📊 7. DASHBOARD (START OF RENDERDASHBOARD)
 // =====================================================
 
 function renderDashboard(data) {
