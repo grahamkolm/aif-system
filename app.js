@@ -1752,6 +1752,7 @@ function calculateENV(p, c, w, light, airTemp) {
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
 }
+}
 
 // =====================================================
 // 🧠 8. ENVIRONMENT ENGINE END
