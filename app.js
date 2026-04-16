@@ -1896,18 +1896,70 @@ function getCastingAdvice(diff) {
 // 🧭 9. GPS + COMPASS + MAP
 // =====================================================
 
-function initGPS(){
-navigator.geolocation.getCurrentPosition(
+let mapInstance = null;
+let userMarker = null;
 
-    (pos) => {
+// ============================
+// 📍 INIT GPS (GET LOCATION)
+// ============================
+function initGPS() {
 
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
+    if (!navigator.geolocation) {
+        console.warn("GPS not supported");
+        return;
+    }
 
-        userLocation.lat = lat;
-        userLocation.lon = lon;
+    navigator.geolocation.getCurrentPosition(
 
+        (pos) => {
+
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+
+            // Save globally
+            userLocation.lat = lat;
+            userLocation.lon = lon;
+
+            console.log("📍 GPS:", lat, lon);
+
+            // Update map if already open
+            if (mapInstance) {
+                updateMapLocation(lat, lon);
+            }
+
+        },
+
+        (err) => {
+            console.warn("GPS error:", err);
+            alert("Enable location services");
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
+
+// ============================
+// 🗺️ OPEN MAP
+// ============================
+function openMap() {
+
+    const mapScreen = document.getElementById("mapScreen");
+    if (!mapScreen) return;
+
+    mapScreen.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    setTimeout(() => {
+
+        // Create map ONLY once
         if (!mapInstance) {
+
+            const lat = userLocation?.lat || -26.2;
+            const lon = userLocation?.lon || 28.0;
 
             mapInstance = L.map('mapContainer', {
                 zoomControl: true
@@ -1918,70 +1970,45 @@ navigator.geolocation.getCurrentPosition(
                 maxZoom: 19
             }).addTo(mapInstance);
 
-            window.userMarker = L.marker([lat, lon])
-                .addTo(mapInstance)
-                .bindPopup("You are here 🎯");
-
-        } else {
-            mapInstance.setView([lat, lon], 13);
-
-            if (window.userMarker) {
-                window.userMarker.setLatLng([lat, lon]);
-            }
+            updateMapLocation(lat, lon);
         }
 
-    },
-
-    (err) => {
-        console.log("GPS error:", err);
-        alert("Enable location services");
-    }
-
-);
-    
-let mapInstance;
-
-function openMap() {
-
-    const mapScreen = document.getElementById("mapScreen");
-
-    mapScreen.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-
-    // 👉 FORCE layout BEFORE Leaflet init
-    setTimeout(() => {
-
-        if (!mapInstance) {
-
-            mapInstance = L.map('mapContainer', {
-                zoomControl: true
-            }).setView([-26.2, 28.0], 13);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '',
-                maxZoom: 19
-            }).addTo(mapInstance);
-
-            L.marker([-26.2, 28.0])
-                .addTo(mapInstance)
-                .bindPopup("Your fishing spot 🎯")
-                .openPopup();
-        }
-
-        // 🔥 DOUBLE FIX (important)
+        // Fix rendering
         setTimeout(() => {
             mapInstance.invalidateSize();
         }, 200);
 
-    }, 300); // ⬅️ THIS DELAY FIXES BLACK SCREEN }
+    }, 300);
 }
 
-
+// ============================
+// ❌ CLOSE MAP
+// ============================
 function closeMap() {
-    document.getElementById("mapScreen").classList.add("hidden");
-    document.body.style.overflow = "auto";
-}
+    const screen = document.getElementById("mapScreen");
+    if (screen) screen.classList.add("hidden");
+    document.body.style.overflow = "auto"; }
 
+
+// ============================
+// 📌 UPDATE MARKER (SINGLE SOURCE)
+// ============================
+function updateMapLocation(lat, lon) {
+
+    if (!mapInstance) return;
+
+    // Move camera
+    mapInstance.setView([lat, lon], 13);
+
+    // Create OR update marker
+    if (!userMarker) {
+        userMarker = L.marker([lat, lon])
+            .addTo(mapInstance)
+            .bindPopup("You are here 🎯");
+    } else {
+        userMarker.setLatLng([lat, lon]);
+    }
+}
 
 // =====================================================
 // 🎯 10. UI HELPERS
