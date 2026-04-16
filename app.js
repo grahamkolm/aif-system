@@ -2151,7 +2151,7 @@ function openScout(){
             const type = btn.dataset.type;
 
             // remove active in same group
-            screen.querySelectorAll(`.opt[data-type="${type}"]`)
+            screen.querySelectorAll(`.tap.option[data-type="${type}"]`)
                 .forEach(el => el.classList.remove("active"));
 
             btn.classList.add("active");
