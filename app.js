@@ -2546,9 +2546,7 @@ drops.forEach(d => {
 
     L.marker([d.lat, d.lon])
         .addTo(reportMapInstance)
-        .bindPopup(`SPI: ${d.spi.toFixed(1)}%`); });
-
-    }
+        .bindPopup(`SPI: ${d.spi.toFixed(1)}%`); 
 });
 
         setTimeout(() => {
