@@ -1181,15 +1181,6 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     return Math.max(40, Math.min(95, Math.round(score))); 
 }
 
-
-
-
-const tacticalData = {
-    light,
-    depth,
-    wind: w
-};
-
 const forecastData = [
         {date: "16 Apr", spi: 65},
         {date: "17 Apr", spi: 78},
@@ -1488,6 +1479,12 @@ function renderDashboard(data) {
     windDir = data.wind?.deg || 0;
 
     confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
+    const tacticalData = {
+    light,
+    depth,
+    wind: w
+};
     // ================= COMPASS DIFF =================
     diff = 0;
 
