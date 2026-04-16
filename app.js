@@ -1490,16 +1490,13 @@ function renderDashboard(data) {
     const confEl = document.getElementById("confScore");
     if (confEl) confEl.innerText = confScoreValue + "%";
 
-    score = clamp(score, 0, 100);
-    return score;
-
     // =====================================================
     // 🎨 6. COLORS (NOW SAFE)
     // =====================================================
 
     const spiColor = getScoreColor(SPI);
     const safeENV = isNaN(envScore) ? 50 : envScore;
-    const envColor = getScoreColor(asfeENV);
+    const envColor = getScoreColor(safeENV);
     const confColor = getScoreColor(confScoreValue);
 
     // =====================================================
