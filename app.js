@@ -111,12 +111,7 @@ const RED = "#ff3b3b";
 // 🧩 2. UI HELPERS
 // =====================================================
 
-// =====================================================
-// 🎨 VISUAL HELPERS (COLORS / ICONS)
-// =====================================================
-
-// ================= ICON COLOR ENGINE ================= 
-function setIcon(iconName, value, rules) {
+// ================= ICON COLOR ENGINE ================= function setIcon(iconName, value, rules) {
     const icon = document.querySelector(`[data-lucide="${iconName}"]`);
     if (!icon) return;
 
@@ -127,89 +122,53 @@ function setIcon(iconName, value, rules) {
         }
     }
 
-    // fallback
     icon.style.stroke = GREEN;
 }
 
-// ================= SCORE COLOR ================= 
-    function getScoreColor(value) {
-    if (value >= 80) return "#00ff9c";   // green
-    if (value >= 60) return "#ffd700";   // yellow
-    return "#ff4d4d";                    // red
+// ================= SCORE COLOR ================= function getScoreColor(value) {
+    if (value >= 80) return "#00ff9c";
+    if (value >= 60) return "#ffd700";
+    return "#ff4d4d";
 }
 
-// =====================================================
-// 🧭 DIRECTION HELPERS
-// =====================================================
-
-// ================= WIND TEXT ================= 
-function getWindDirectionText(deg) {
+// ================= WIND TEXT ================= function getWindDirectionText(deg) {
     if (deg >= 45 && deg < 135) return "Wind → East bank";
     if (deg >= 135 && deg < 225) return "Wind → South bank";
     if (deg >= 225 && deg < 315) return "Wind → West bank";
     return "Wind → North bank";
 }
 
-// =====================================================
-// 🖥️ UI STATE HELPERS
-// =====================================================
+// ================= STORE SCOUT ================= let originalScoutHTML = "";
 
-let originalScoutHTML = "";
-
-// ================= STORE SCOUT SCREEN ================= 
 function storeScoutScreen() {
     const el = document.getElementById("scoutScreen");
-
-    if (!el) {
-        console.warn("⚠️ scoutScreen not found");
-        return;
-    }
+    if (!el) return;
 
     originalScoutHTML = el.innerHTML;
     el.classList.add("hidden");
 }
 
-// =====================================================
-// 🧭 COMPASS UI
-// =====================================================
-
-// ================= CREATE COMPASS TICKS ================= 
-function createTicks() {
+// ================= COMPASS TICKS ================= function createTicks() {
     const container = document.getElementById("compassTicks");
+    if (!container) return;
 
-    if (!container) {
-        console.error("❌ compassTicks container not found");
-        return;
-    }
-
-    const step = 5;
-
-    for (let i = 0; i < 360; i += step) {
-
-        const angle = i;
-
+    for (let i = 0; i < 360; i += 5) {
         const tick = document.createElement("div");
         tick.className = "tick";
 
-        // size classification
-        if (i % 90 === 0) {
-            tick.classList.add("tick-major");
-        } else if (i % 15 === 0) {
-            tick.classList.add("tick-medium");
-        } else {
-            tick.classList.add("tick-small");
-        }
+        if (i % 90 === 0) tick.classList.add("tick-major");
+        else if (i % 15 === 0) tick.classList.add("tick-medium");
+        else tick.classList.add("tick-small");
 
-        tick.dataset.angle = angle;
-
+        tick.dataset.angle = i;
         tick.style.transform =
-            `translate(-50%, -50%) rotate(${angle}deg) translateY(-125px)`;
+            `translate(-50%, -50%) rotate(${i}deg) translateY(-125px)`;
 
         container.appendChild(tick);
     }
 }
 
-// ================= INTERACTION (HOLD ACTIONS) ================= function setupHold(elementId, callback) {
+// ================= HOLD INTERACTION ================= function setupHold(elementId, callback) {
     const el = document.getElementById(elementId);
     if (!el) return;
 
@@ -222,20 +181,18 @@ function createTicks() {
     el.addEventListener("mouseup", () => clearTimeout(timer));
     el.addEventListener("mouseleave", () => clearTimeout(timer)); }
 
-// ================= INSIGHT PLACEHOLDERS ================= function showENVInsight() {
+// ================= INSIGHTS ================= function showENVInsight() {
     alert("ENV Insight coming soon..."); }
 
 function showCONFInsight() {
-    alert("Confidence Insight coming soon..."); 
-}
-
+    alert("Confidence Insight coming soon..."); }
 
 // =====================================================
 // 🧩 2. UI HELPERS END
 // =====================================================
 
 // =====================================================
-// 🚀 1. APP BOOT
+// 🚀 3. APP BOOT
 // =====================================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -316,45 +273,54 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =====================================================
-// 🚀 APP BOOT END
+// 🚀 3. APP BOOT END
 // =====================================================
     
-
 // =====================================================
-// 💧 2. SPLASH SYSTEM
+// 💧 4. SPLASH SYSTEM
 // =====================================================
 
 let splashRipples = [];
 
+// ================= RESIZE ================= 
 function resizeSplash() {
     if (!splashCanvas) return;
     splashCanvas.width = window.innerWidth;
-    splashCanvas.height = window.innerHeight;
-} 
-window.addEventListener("resize", resizeSplash); 
-resizeSplash();
+    splashCanvas.height = window.innerHeight; }
 
+window.addEventListener("resize", resizeSplash);
+
+// ================= RIPPLE ================= 
 function createSplashRipple() {
     splashRipples.push({
         x: Math.random() * splashCanvas.width,
         y: Math.random() * splashCanvas.height,
-        r: 0,
+        size: 0,
         alpha: 0.5
     });
 }
 
+// ================= BUBBLES ================= 
 function initSplashBubbles() {
-  bubbles = [];
+    splashBubbles = []; // ✅ FIXED
 
-  for (let i = 0; i < 40; i++) {
-    bubbles.push({
-      x: Math.random() * splashCanvas.width,
-      y: Math.random() * splashCanvas.height,
-      r: Math.random() * 3 + 1,
-      speed: Math.random() * 0.5 + 0.2
-    });
-  }
+    for (let i = 0; i < 40; i++) {
+        splashBubbles.push({
+            x: Math.random() * splashCanvas.width,
+            y: Math.random() * splashCanvas.height,
+            r: Math.random() * 3 + 1,
+            speed: Math.random() * 0.5 + 0.2
+        });
+    }
 }
+
+// =====================================================
+// 💧 4. SPLASH SYSTEM END
+// =====================================================
+
+// =====================================================
+// 🧭 5. COMPASS SYSTEM
+// =====================================================
 
 function getDirection(deg) {
     if (deg >= 337 || deg < 23) return "N";
@@ -376,235 +342,198 @@ function enableCompass() {
 
                 if (response === "granted") {
 
-                    console.log("✅ Compass enabled");
-
                     window.addEventListener("deviceorientation", e => {
-
                         if (e.alpha !== null) {
                             compassHeading = 360 - e.alpha;
                         }
-
                     });
 
-                } else {
-                    console.log("❌ Permission denied");
                 }
-
             })
             .catch(console.error);
 
     } else {
 
-        // Android
         window.addEventListener("deviceorientation", e => {
-
             if (e.alpha !== null) {
                 compassHeading = 360 - e.alpha;
             }
-
         });
-
-        console.log("✅ Compass auto-enabled");
     }
 }
-
-//--------------------------------------------------
-// TACTICAL BAR (FINAL DESIGN)
-//--------------------------------------------------
-
-function getConditionText(SPI, envScore) {
-
-  let score = (SPI + envScore) / 2;
-
-  if (score > 85) return "🔥 Conditions are excellent — fish should feed";
-  if (score > 70) return "👍 Conditions are good — fish active";
-  if (score > 55) return "👌 Conditions are fair — some movement";
-  if (score > 40) return "⚠️ Conditions are slow — bites limited";
-
-  return "❄️ Tough conditions — very quiet";
-}
-
-
-function getZoneText(SPI, light, depth, wind) {
-
-  if (SPI > 75 && wind > 5) return "📍 Focus shallow windward zones";
-  if (light > 70) return "📍 Fish deeper cooler water";
-  if (depth >= 2 && depth <= 5) return "📍 Target mid-depth transitions";
-
-  return "📍 Search structure and edges";
-}
-
-
-function getConfidenceText(SPI, confScore) {
-
-  if (SPI > 75 && confScore > 75)
-    return "🧠 Stay on your spots — be patient";
-
-  if (SPI > 60)
-    return "🧠 Give it time before changing";
-
-  if (SPI < 50)
-    return "🧠 Consider changing approach";
-
-  return "🧠 Monitor and adjust if needed";
-}
-
-
-function getXFactor(SPI, prevSPI) {
-
-  if (!prevSPI) return null;
-
-  let diff = SPI - prevSPI;
-
-  if (diff > 8) return "⚡ Conditions improving — get ready";
-  if (SPI > 85) return "🚀 Prime feeding window now";
-
-  return null;
-}
-
-function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData) {
-
-  const lines = [
-    getConditionText(SPI, envScore),
-    getZoneText(SPI, ENV.light, ENV.depth, ENV.wind),
-    getConfidenceText(SPI, confScore)
-  ];
-
-  // 🔥 ADD THIS BLOCK
-  const window = getStableWindow(forecastData);
-  console.log("Window Debug:", window);
-    const windowText = getWindowText(window);
-
- if (windowText) {
-
-  // 🔥 Boost when SPI is strong
-  if (SPI > 80) {
-    lines.splice(1, 0, "🔥 " + windowText);
-  } else {
-    lines.splice(1, 0, windowText);
-  }
-}
-
-
-  const extra = getXFactor(SPI, prevSPI);
-
-  if (extra) lines.push(extra);
-
-  document.getElementById("tactical").innerText = lines.join("\n"); }
-
-
-//--------------------------------------------------
-//LOCKING SYSTEM (VERY IMPORTANT)
-//--------------------------------------------------
-
-function getBestFishingWindow(forecastData) {
-
-  // 🛑 SAFETY CHECK
-  if (!forecastData || forecastData.length < 3) {
-    return null;
-  }
-
-  let bestScore = 0;
-  let bestWindow = null;
-
-  for (let i = 0; i < forecastData.length - 2; i++) {
-
-    let avg =
-      (forecastData[i].spi +
-       forecastData[i+1].spi +
-       forecastData[i+2].spi) / 3;
-
-    if (avg > bestScore) {
-      bestScore = avg;
-      bestWindow = [
-        forecastData[i].date,
-        forecastData[i+2].date
-      ];
-    }
-  }
-
-  return bestWindow;
-}
-
-function getStableWindow(forecastData) {
-
-  const stored = localStorage.getItem("bestWindow");
-
-  // ✅ Only use stored if it's a REAL array
-  if (stored) {
-    try {
-      const parsed = JSON.parse(stored);
-
-      if (Array.isArray(parsed) && parsed.length === 2) {
-        return parsed;
-      }
-    } catch (e) {
-      console.warn("Bad stored window, recalculating...");
-    }
-  }
-
-  const window = getBestFishingWindow(forecastData);
-
-  if (window) {
-    localStorage.setItem("bestWindow", JSON.stringify(window));
-  }
-
-  return window;
-}
-
-
-//--------------------------------------------------
-// BEST FISHING WINDOW
-//--------------------------------------------------
-
-function getWindowText(window) {
-
-  if (!window) return "No window yet";
-
-  // 👉 Get today's date (e.g. "16 Apr")
-  const today = new Date().toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short"
-  }).replace(",", "");
-
-  // 👉 Check if today is inside the window
-  if (today === window[0] || today === window[1]) {
-    return "🚨 Window is OPEN — fish NOW";
-  }
-
-  return `🎯 Best fishing window: ${window[0]} → ${window[1]}`; 
-}
-
-
-// =====================================================
-// 🧭 COMPASS UI UPDATE 
-// =====================================================
 
 function updateCompass(heading) {
 
     if (heading == null) return;
 
-    // Rotate compass ring (if exists)
     const compass = document.getElementById("compassRing");
     if (compass) {
         compass.style.transform = `rotate(${-heading}deg)`;
     }
 
-    // Update active tick (direction highlight)
     updateDirectionTicks(heading);
 
-    // Optional: set fishing zone based on wind vs heading
     if (typeof windDir !== "undefined") {
         setFishingZone(windDir);
     }
 }
 
-    // Compass
-    document.addEventListener("DOMContentLoaded", () => {
-        
-    document.body.addEventListener("touchstart", enableCompass, { once: true }); 
-    document.body.addEventListener("click", enableCompass, { once: true });
-    });
+// =====================================================
+// 🧭 5. COMPASS SYSTEM END
+// =====================================================
+
+// =====================================================
+// 🧭 6. MAIN APP ENGINE START
+// =====================================================
+
+// =====================================================
+// 🎯 7. TACTICAL ENGINE
+// =====================================================
+
+// ================= CONDITION ================= 
+function getConditionText(SPI, envScore) {
+
+    const score = (SPI + envScore) / 2;
+
+    if (score > 85) return "🔥 Conditions are excellent — fish should feed";
+    if (score > 70) return "👍 Conditions are good — fish active";
+    if (score > 55) return "👌 Conditions are fair — some movement";
+    if (score > 40) return "⚠️ Conditions are slow — bites limited";
+
+    return "❄️ Tough conditions — very quiet"; }
+
+// ================= ZONE ================= function getZoneText(SPI, light, depth, wind) {
+
+    if (SPI > 75 && wind > 5) return "📍 Focus shallow windward zones";
+    if (light > 70) return "📍 Fish deeper cooler water";
+    if (depth >= 2 && depth <= 5) return "📍 Target mid-depth transitions";
+
+    return "📍 Search structure and edges"; }
+
+// ================= CONFIDENCE ================= function getConfidenceText(SPI, confScore) {
+
+    if (SPI > 75 && confScore > 75)
+        return "🧠 Stay on your spots — be patient";
+
+    if (SPI > 60)
+        return "🧠 Give it time before changing";
+
+    if (SPI < 50)
+        return "🧠 Consider changing approach";
+
+    return "🧠 Monitor and adjust if needed"; }
+
+// ================= MOMENTUM ================= function getXFactor(SPI, prevSPI) {
+
+    if (!prevSPI) return null;
+
+    const diff = SPI - prevSPI;
+
+    if (diff > 8) return "⚡ Conditions improving — get ready";
+    if (SPI > 85) return "🚀 Prime feeding window now";
+
+    return null;
+}
+
+// ================= MAIN UPDATE ================= 
+function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData) {
+
+    const lines = [
+        getConditionText(SPI, envScore),
+        getZoneText(SPI, ENV.light, ENV.depth, ENV.wind),
+        getConfidenceText(SPI, confScore)
+    ];
+
+    // ================= WINDOW =================
+    const window = getStableWindow(forecastData);
+    const windowText = getWindowText(window);
+
+    if (windowText) {
+        lines.splice(1, 0, SPI > 80 ? "🔥 " + windowText : windowText);
+    }
+
+    // ================= MOMENTUM =================
+    const extra = getXFactor(SPI, prevSPI);
+    if (extra) lines.push(extra);
+
+    const el = document.getElementById("tactical");
+    if (el) el.innerText = lines.join("\n"); }
+
+// =====================================================
+// 🎯 7. TACTICAL ENGINE END
+// =====================================================
+
+// =====================================================
+// 🔒 8. WINDOW ENGINE
+// =====================================================
+
+function getBestFishingWindow(forecastData) {
+
+    if (!forecastData || forecastData.length < 3) return null;
+
+    let bestScore = 0;
+    let bestWindow = null;
+
+    for (let i = 0; i < forecastData.length - 2; i++) {
+
+        const avg =
+            (forecastData[i].spi +
+             forecastData[i+1].spi +
+             forecastData[i+2].spi) / 3;
+
+        if (avg > bestScore) {
+            bestScore = avg;
+            bestWindow = [
+                forecastData[i].date,
+                forecastData[i+2].date
+            ];
+        }
+    }
+
+    return bestWindow;
+}
+
+function getStableWindow(forecastData) {
+
+    try {
+        const stored = JSON.parse(localStorage.getItem("bestWindow"));
+
+        if (Array.isArray(stored) && stored.length === 2) {
+            return stored;
+        }
+    } catch {}
+
+    const window = getBestFishingWindow(forecastData);
+
+    if (window) {
+        localStorage.setItem("bestWindow", JSON.stringify(window));
+    }
+
+    return window;
+}
+
+function getWindowText(window) {
+
+    if (!window) return null; // ✅ cleaner
+
+    const today = new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short"
+    }).replace(",", "");
+
+    if (today === window[0] || today === window[1]) {
+        return "🚨 Window is OPEN — fish NOW";
+    }
+
+    return `🎯 Best fishing window: ${window[0]} → ${window[1]}`; }
+
+// =====================================================
+// 🔒 8. WINDOW ENGINE END
+// =====================================================
+
+// =====================================================
+// 🧭 9. ANIMATE START
+// =====================================================
 
 function animateSplash() {
 
@@ -665,20 +594,21 @@ splashCtx.shadowBlur = 0;
     
 for (let i = splashRipples.length - 1; i >= 0; i--) {
 
-  let b = splashRipples[i];
+    let b = splashRipples[i];
 
-  b.y -= b.speed;
-  b.alpha *= 0.98;
+    b.size += 0.8;       // ✅ FIXED
+    b.alpha *= 0.98;
 
-  splashCtx.beginPath();
-  splashCtx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
-  splashCtx.fillStyle = `rgba(255,255,255,${b.alpha})`;
-  splashCtx.fill();
+    splashCtx.beginPath();
+    splashCtx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+    splashCtx.fillStyle = `rgba(255,255,255,${b.alpha})`;
+    splashCtx.fill();
 
-  if (b.alpha < 0.02) {
-    splashRipples.splice(i, 1);
-  }
+    if (b.alpha < 0.02) {
+        splashRipples.splice(i, 1);
+    }
 }
+
 
   // 🌫️ DEPTH GLOW CENTER
   let glow = splashCtx.createRadialGradient(
@@ -696,8 +626,9 @@ for (let i = splashRipples.length - 1; i >= 0; i--) {
 }
 
 // =====================================================
-// 🚀 3. MAIN APP
+// 🧭 9. ANIMATE END
 // =====================================================
+
 
 function ripple() {
     ripples.push({
