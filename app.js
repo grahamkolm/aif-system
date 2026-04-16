@@ -1477,7 +1477,8 @@ function renderDashboard(data) {
         baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3));
     }
 
-    const finalSPI = applyScoutImpact(baseSPI);
+    const scoutImpact = calculateScoutImpact(scoutData);
+    const finalSPI = baseSPI = baseSPI + scoutImpact;
 
     console.log("SPI:", finalSPI);
 
@@ -2126,29 +2127,42 @@ function toggleAI() {
 // 🎯 SCOUT MODE (SENSOR TRIGGER)
 // =====================================================
 
+function setScout(type, value) {
+    scoutData[type] = value;
+    console.log("Scout:", scoutData);
+}
+
 function openScout(){
 
     console.log("Scout mode opened");
 
-    // 👉 Show Scout UI instead of scanning immediately
-    document.getElementById("scoutScreen").classList.remove("hidden");
+    const screen = document.getElementById("scoutScreen");
+    if (!screen) return;
+
+    screen.classList.remove("hidden");
     document.body.style.overflow = "hidden";
+
+    // 🔥 attach listeners HERE (NOT globally)
+    const buttons = screen.querySelectorAll(".opt");
+
+    buttons.forEach(btn => {
+        btn.onclick = () => {
+
+            const type = btn.dataset.type;
+
+            // remove active in same group
+            screen.querySelectorAll(`.opt[data-type="${type}"]`)
+                .forEach(el => el.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            scoutData[type] = btn.dataset.value;
+
+            console.log("Scout updated:", scoutData);
+        };
+    });
 }
 
-document.querySelectorAll(".opt").forEach(btn => {
-    btn.addEventListener("click", () => {
-
-        const type = btn.dataset.type;
-
-        // remove active in same group
-        document.querySelectorAll(`.opt[data-type="${type}"]`) 
-            .forEach(el => el.classList.remove("active"));
-
-        btn.classList.add("active");
-
-        scoutData[type] = btn.dataset.value;
-    });
-});
 
 function showConnectingScreen() {
 
