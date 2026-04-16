@@ -1553,9 +1553,6 @@ function renderDashboard(data) {
         }
     }
 
-    const msg = document.querySelector(".status-text");
-    if (msg) msg.innerText = "Conditions optimal";
-
     // =====================================================
     // 🎨 10. VISUAL ENGINE
     // =====================================================
