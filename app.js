@@ -1139,6 +1139,131 @@ function calculateSPI(p, w, c, windDir, t, light, depth, diff){
     };
 }
 
+// =====================================================
+// 📊 CONF ENGINE START
+// =====================================================
+  
+function calculateCONF(SPI, envScore, p, w, c, t) {
+
+    let score = 50;
+
+    let alignment = Math.abs(SPI - envScore);
+
+    if (alignment < 10) score += 20;
+    else if (alignment < 20) score += 10;
+    else score -= 10;
+
+    let trend = getPressureTrend(p);
+
+    if (trend === "stable") score += 10;
+    if (trend === "rising") score += 5;
+    if (trend === "falling") score -= 10;
+
+    if (w >= 5 && w <= 15) score += 8;
+    else if (w < 2 || w > 20) score -= 8;
+
+    if (c >= 30 && c <= 70) score += 6;
+    else if (c > 90 || c < 10) score -= 6;
+
+    if (t >= 18 && t <= 24) score += 10;
+    else if (t < 12 || t > 30) score -= 10;
+
+    let variability = Math.abs(SPI - (lastSPI !== undefined ? lastSPI : SPI));
+
+    if (variability < 5) score += 10;
+    else if (variability > 15) score -= 10;
+
+    if (SPI > 80 && envScore > 80) score += 5;
+    if (SPI < 40 && envScore < 40) score += 5;
+
+    if (isNaN(score)) score = 50;
+
+    return Math.max(40, Math.min(95, Math.round(score))); }
+
+
+confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
+const tacticalData = {
+    light,
+    depth,
+    wind: w
+};
+
+const forecastData = [
+        {date: "16 Apr", spi: 65},
+        {date: "17 Apr", spi: 78},
+        {date: "18 Apr", spi: 88},
+        {date: "19 Apr", spi: 82},
+        {date: "20 Apr", spi: 70}
+];
+console.log("Forecast check", forecastData);    
+updateTacticalBar(
+    SPI,
+    envScore,
+    confScoreValue, 
+    ENVdata,
+    lastSPI,
+    forecastData
+    );
+
+let confEl = document.getElementById("confScore");
+if (confEl) {
+    confEl.innerText = confScoreValue + "%"; }
+
+
+// 🎯 GET ELEMENTS (ONLY ONCE)
+const spiCircle = document.getElementById("spiCircle");
+const envCircle = document.getElementById("envCircle");
+const confCircle = document.getElementById("confCircle");
+
+// 🎨 COLORS (ONLY ONCE)
+const spiColor = getScoreColor(finalSPI); 
+const envColor = getScoreColor(envScore); 
+const confColor = getScoreColor(confScoreValue);
+    
+// ✅ APPLY COLORS
+// ✅ TEXT COLORS
+const spiText = document.getElementById("spiValue");
+const envText = document.getElementById("envScore");
+const confText = document.getElementById("confScore");
+
+if (spiText) spiText.style.color = spiColor; 
+if (envText) envText.style.color = "#ffffff"; 
+if (confText) confText.style.color = "#ffffff";
+    
+// ✅ SPI (SVG stroke — correct)
+if (spiCircle) {
+    spiCircle.style.stroke = spiColor;
+}
+
+// ✅ ENV + CONF (USE BOX-SHADOW GLOW INSTEAD) 
+    if (envCircle) {
+    envCircle.style.borderColor = envColor;
+    envCircle.style.boxShadow = `0 0 10px ${envColor}`; 
+    }
+
+if (confCircle) {
+    confCircle.style.borderColor = confColor;
+    confCircle.style.boxShadow = `0 0 6px ${confColor}`; 
+}
+
+// ================= CONF FEEDBACK ================= 
+if (typeof confScoreValue === "number") {
+    if (confScoreValue > 80) {
+        score += 3;
+    } else if (confScoreValue < 50) {
+        score -= 3;
+    }
+}
+}
+
+// =====================================================
+// 📊 CONF ENGINE END
+// =====================================================
+
+// =====================================================
+// 📊  SCOUT and TILE ENGINE START
+// =====================================================
 
 function applyScoutImpact(spi) {
 
@@ -1156,7 +1281,8 @@ function calculateAverageSPI() {
     if (drops.length === 0) return 0;
 
     let total = drops.reduce((sum, d) => sum + d.spi, 0);
-    return (total / drops.length).toFixed(1); }
+    return parseFloat((total / drops.length).toFixed(1));
+}
 
 
 // =====================================================
@@ -1165,7 +1291,7 @@ function calculateAverageSPI() {
 
 // 🎯 MAIN UPDATE FUNCTION
 function updateAllTiles(data) {
-
+  
   applyTileColor("airTile", getAirStatus(data.air));
   applyTileColor("surfaceTile", getSurfaceStatus(data.surface));
   applyTileColor("bottomTile", getBottomStatus(data.bottom));
@@ -1332,110 +1458,142 @@ function applyTileColor(tileId, status) {
   }
 }
 
+// =====================================================
+// 📊  SCOUT and TILE ENGINE END
+// =====================================================
 
 // =====================================================
-// 📊 7. DASHBOARD (START OF RENDERDASHBOARD)
+// 📊 7. DASHBOARD (RENDER ENGINE START)
 // =====================================================
 
 function renderDashboard(data) {
-    console.log("Dashboard render placeholder");
+
+    console.log("📊 Rendering dashboard");
+
+    // =====================================================
+    // 🧠 1. INPUT (EXTRACT + NORMALISE)
+    // =====================================================
+
     lastConditions = data;
+
     const t = data.main.temp;
     const p = data.main.pressure;
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
-    windDir = data.wind?.deg || 0;
-    diff = 0;
-    initGPS();
-
-    if (typeof compassHeading !== "undefined" &&compassHeading !== null) {
-        diff = Math.abs(windDir - compassHeading);
-        if(diff > 180) diff = 360 - diff;
-    }
-    console.log("Wind vs heading off:", diff);
-
-    let advice = getCastingAdvice(diff);
-    console.log("Casting:", advice);
 
     const light = data.light || 50;
     const depth = data.depth || 3;
-    
-    let temps = calculateWaterTemps(data.main.temp);
-    if (tempModel.source === "sensor") {
-    temps = tempModel;
+
+    windDir = data.wind?.deg || 0;
+
+    // ================= COMPASS DIFF =================
+    diff = 0;
+
+    if (compassHeading != null) {
+        diff = Math.abs(windDir - compassHeading);
+        if (diff > 180) diff = 360 - diff;
     }
-    let surfaceTemp = temps.surface;
-    let bottomTemp = temps.bottom;
-    
+
+    console.log("Wind vs heading:", diff);
+
+    // =====================================================
+    // 🌡️ 2. WATER MODEL
+    // =====================================================
+
+    let temps = calculateWaterTemps(t);
+
+    if (tempModel.source === "sensor") {
+        temps = tempModel;
+    }
+
+    const surfaceTemp = temps.surface;
+    const bottomTemp = temps.bottom;
+
+    // =====================================================
+    // 🧭 3. WORLD / POSITION SYSTEMS
+    // =====================================================
+
     updateCompass(windDir);
     setFishingZone(windDir);
-    let dam = loadDamData();
 
-    console.log("SPI INPUT:", t, p, w, c);
-    
-    let result = calculateSPI(p, w, c, windDir, t, light, depth); 
-    let newSPI = result.score;
+    // =====================================================
+    // 📊 4. SPI CALCULATION
+    // =====================================================
+
+    const result = calculateSPI(p, w, c, windDir, t, light, depth);
+
+    let baseSPI = result.score;
 
     // smoothing
     if (lastSPI !== null) {
-        newSPI = Math.round((newSPI * 0.7) + (lastSPI * 0.3));
+        baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3));
     }
-    
-    newSPI = applyScoutImpact(newSPI);
-    
-    let finalSPI = newSPI;
-    
-    console.log("base SPI:", newSPI);
-    console.log("Final SPI:", finalSPI);
-    
+
+    const finalSPI = applyScoutImpact(baseSPI);
+
+    console.log("SPI:", finalSPI);
+
     lastSPI = finalSPI;
     SPI = finalSPI;
-    
-  let scoutBonus = newSPI - result.score;
 
-    let scoutEl = document.getElementById("scoutBonus");
+    // =====================================================
+    // 🎣 5. SCOUT FEEDBACK
+    // =====================================================
+
+    const scoutBonus = finalSPI - result.score;
+
+    const scoutEl = document.getElementById("scoutBonus");
     if (scoutEl) {
-    scoutEl.innerText = scoutBonus >= 0
-        ? `+${scoutBonus} Scout`
-        : `${scoutBonus} Scout`;
-}
-   
-    let tempAnalysis = analyzeTemperature(t,surfaceTemp,bottomTemp);
-       
-    let status = document.getElementById("tactical");
-    if (status) status.innerText = "Updating...";
-    
-    let combineReasons = [
+        scoutEl.innerText = scoutBonus >= 0
+            ? `+${scoutBonus} Scout`
+            : `${scoutBonus} Scout`;
+    }
+
+    // =====================================================
+    // 🧠 6. ANALYSIS
+    // =====================================================
+
+    const tempAnalysis = analyzeTemperature(t, surfaceTemp, bottomTemp);
+
+    const combinedReasons = [
         ...(result.reasons || []),
         ...(tempAnalysis.insights || [])
     ];
-    
-    let msg = document.querySelector(".status-text");
+
+    const status = document.getElementById("tactical");
+    if (status) status.innerText = "Updating...";
+
+    const msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
-    
-    // =========================
-    // ✅ UPDATE RINGS 
-    // =========================
+
+    // =====================================================
+    // 🎨 7. VISUAL ENGINE
+    // =====================================================
+
     updateSPI(finalSPI);
-
-    // =========================
-    // ✅ VISUAL LINK (important)
-    // =========================
     bubbleIntensity = finalSPI / 100;
-    document.getElementById("feed").innerText = feeding(finalSPI);
 
-    // ================= OXYGEN =================
-        let oxygen = estimateOxygen(t, w, c);
+    // =====================================================
+    // 🫧 8. OXYGEN SYSTEM
+    // =====================================================
 
-    document.getElementById("oxygen").innerText =
-        oxygen.toFixed(1) + " mg/L";
+    const oxygen = estimateOxygen(t, w, c);
+
+    const oxygenEl = document.getElementById("oxygen");
+    if (oxygenEl) {
+        oxygenEl.innerText = oxygen.toFixed(1) + " mg/L";
+    }
 
     setIcon("droplets", oxygen, [
         { min: 9, max: 20, color: GREEN },
         { min: 7, max: 8.9, color: ORANGE },
         { min: 0, max: 6.9, color: RED }
     ]);
-    
+
+    // =====================================================
+    // 🎯 9. TILE ENGINE (CLEAN DATA PIPE)
+    // =====================================================
+
     updateAllTiles({
         air: t,
         surface: surfaceTemp,
@@ -1447,226 +1605,120 @@ function renderDashboard(data) {
         time: new Date().getHours()
     });
 
-    // ================= AIR =================
+    // =====================================================
+    // 📊 10. UI VALUES
+    // =====================================================
+
     document.getElementById("air").innerText = t.toFixed(1) + "°C";
+    document.getElementById("surface").innerText = surfaceTemp.toFixed(1) + "°C";
+    document.getElementById("bottom").innerText = bottomTemp.toFixed(1) + "°C";
+    document.getElementById("pressure").innerText = p + " hPa";
+    document.getElementById("wind").innerText = w.toFixed(1) + " km/h";
+    document.getElementById("cloud").innerText = c + "%";
+    document.getElementById("feed").innerText = feeding(finalSPI);
+
+    // =====================================================
+    // 🎨 11. ICON COLORS
+    // =====================================================
 
     setIcon("sun", t, [
         { min: 30, max: 100, color: RED },
         { min: 25, max: 29, color: ORANGE }
     ]);
 
-    // ================= SURFACE =================
-    document.getElementById("surface").innerText = surfaceTemp.toFixed(1) + "°C";
-
     setIcon("waves", surfaceTemp, [
         { min: 30, max: 100, color: RED },
         { min: 22, max: 29, color: ORANGE }
     ]);
-
-    // ================= BOTTOM =================
-    document.getElementById("bottom").innerText = bottomTemp.toFixed(1) + "°C";
 
     setIcon("arrow-down", bottomTemp, [
         { min: 28, max: 100, color: RED },
         { min: 20, max: 27, color: ORANGE }
     ]);
 
-    // ================= PRESSURE =================
-    document.getElementById("pressure").innerText = p + " hPa";
-
     setIcon("gauge", p, [
         { min: 1022, max: 1100, color: ORANGE },
         { min: 0, max: 1005, color: RED }
     ]);
-
-    // ================= WIND =================
-    document.getElementById("wind").innerText = w.toFixed(1) + " km/h";
 
     setIcon("wind", w, [
         { min: 20, max: 100, color: RED },
         { min: 12, max: 19, color: ORANGE }
     ]);
 
-   // ================= CLOUD =================
-    document.getElementById("cloud").innerText = c + "%";
-
     setIcon("cloud", c, [
         { min: 80, max: 100, color: RED },
         { min: 40, max: 79, color: ORANGE }
     ]);
 
-    // ================= MOON =================
-    document.getElementById("moon").innerText = getMoonPhase();
-    setIcon("moon", 1, [{ min: 0, max: 10, color: "#8fb3ff" }]);
-
-    // ================= SEASON =================
-    document.getElementById("season").innerText = getSeason();
-    setIcon("leaf", 1, [{ min: 0, max: 10, color: GREEN }]);
-
-    // ================= FEED =================
-    document.getElementById("feed").innerText = feeding(SPI);
-
-    setIcon("fish", SPI, [
+    setIcon("fish", finalSPI, [
         { min: 70, max: 100, color: GREEN },
         { min: 50, max: 69, color: ORANGE },
         { min: 0, max: 49, color: RED }
     ]);
-   
-// ================= ENV + CONF =================
-// ================= ENV ================= 
-envScore = calculateENV(p, c, w, light, t);
 
-let envEl = document.getElementById("envScore");
-if (envEl) envEl.innerText = envScore + "%";
-   
-// ================= CONF =================    
-function calculateCONF(SPI, envScore, p, w, c, t) {
+    // =====================================================
+    // 🌙 12. EXTRA INFO
+    // =====================================================
 
-    let score = 50;
+    document.getElementById("moon").innerText = getMoonPhase();
+    document.getElementById("season").innerText = getSeason();
 
-    let alignment = Math.abs(SPI - envScore);
+    // =====================================================
+    // 📊 13. ENV + CONF
+    // =====================================================
 
-    if (alignment < 10) score += 20;
-    else if (alignment < 20) score += 10;
-    else score -= 10;
+    envScore = calculateENV(p, c, w, light, t);
 
-    let trend = getPressureTrend(p);
+    const envEl = document.getElementById("envScore");
+    if (envEl) envEl.innerText = envScore + "%";
 
-    if (trend === "stable") score += 10;
-    if (trend === "rising") score += 5;
-    if (trend === "falling") score -= 10;
+    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
 
-    if (w >= 5 && w <= 15) score += 8;
-    else if (w < 2 || w > 20) score -= 8;
+    const confEl = document.getElementById("confScore");
+    if (confEl) confEl.innerText = confScoreValue + "%";
 
-    if (c >= 30 && c <= 70) score += 6;
-    else if (c > 90 || c < 10) score -= 6;
+    // =====================================================
+    // 🧠 14. TACTICAL ENGINE
+    // =====================================================
 
-    if (t >= 18 && t <= 24) score += 10;
-    else if (t < 12 || t > 30) score -= 10;
+    const tacticalData = {
+        light,
+        depth,
+        wind: w
+    };
 
-    let variability = Math.abs(SPI - (lastSPI !== undefined ? lastSPI : SPI));
+    const forecastData = [
+        { date: "16 Apr", spi: 65 },
+        { date: "17 Apr", spi: 78 },
+        { date: "18 Apr", spi: 88 },
+        { date: "19 Apr", spi: 82 },
+        { date: "20 Apr", spi: 70 }
+    ];
 
-    if (variability < 5) score += 10;
-    else if (variability > 15) score -= 10;
-
-    if (SPI > 80 && envScore > 80) score += 5;
-    if (SPI < 40 && envScore < 40) score += 5;
-
-    if (isNaN(score)) score = 50;
-
-    return Math.max(40, Math.min(95, Math.round(score))); }
-
-
-confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
-
-const ENVdata = {
-    light: light, 
-    depth: depth,
-    wind: w
-};
-
-const forecastData = [
-        {date: "16 Apr", spi: 65},
-        {date: "17 Apr", spi: 78},
-        {date: "18 Apr", spi: 88},
-        {date: "19 Apr", spi: 82},
-        {date: "20 Apr", spi: 70}
-];
-console.log("Forecast check", forecastData);    
-updateTacticalBar(
-    SPI,
-    envScore,
-    confScoreValue, 
-    ENVdata,
-    lastSPI,
-    forecastData
+    updateTacticalBar(
+        SPI,
+        envScore,
+        confScoreValue,
+        tacticalData,
+        lastSPI,
+        forecastData
     );
 
-let confEl = document.getElementById("confScore");
-if (confEl) {
-    confEl.innerText = confScoreValue + "%"; }
+    // =====================================================
+    // 🎨 15. TILE GLOW EFFECT
+    // =====================================================
 
-
-// 🎯 GET ELEMENTS (ONLY ONCE)
-const spiCircle = document.getElementById("spiCircle");
-const envCircle = document.getElementById("envCircle");
-const confCircle = document.getElementById("confCircle");
-
-// 🎨 COLORS (ONLY ONCE)
-const spiColor = getScoreColor(finalSPI); 
-const envColor = getScoreColor(envScore); 
-const confColor = getScoreColor(confScoreValue);
-    
-// ✅ APPLY COLORS
-// ✅ TEXT COLORS
-const spiText = document.getElementById("spiValue");
-const envText = document.getElementById("envScore");
-const confText = document.getElementById("confScore");
-
-if (spiText) spiText.style.color = spiColor; 
-if (envText) envText.style.color = "#ffffff"; 
-if (confText) confText.style.color = "#ffffff";
-    
-// ✅ SPI (SVG stroke — correct)
-if (spiCircle) {
-    spiCircle.style.stroke = spiColor;
-}
-
-// ✅ ENV + CONF (USE BOX-SHADOW GLOW INSTEAD) 
-    if (envCircle) {
-    envCircle.style.borderColor = envColor;
-    envCircle.style.boxShadow = `0 0 10px ${envColor}`; 
-    }
-
-if (confCircle) {
-    confCircle.style.borderColor = confColor;
-    confCircle.style.boxShadow = `0 0 6px ${confColor}`; 
-}
-
-// ================= CONF FEEDBACK ================= 
-if (typeof confScoreValue === "number") {
-    if (confScoreValue > 80) {
-        score += 3;
-    } else if (confScoreValue < 50) {
-        score -= 3;
-    }
-}
-}
-
-function setRingProgress(selector, value) {
-    const circle = document.querySelector(selector);
-    if (!circle) return;
-
-    const radius = 110;
-    const circumference = 2 * Math.PI * radius;
-
-    circle.style.strokeDasharray = circumference;
-    circle.style.strokeDashoffset = circumference * (1 - value / 100); 
-}
-
-
-// ✅ UPDATE UI
-let bestZoneEl = document.getElementById("bestZone");
-    if(bestZoneEl) {
-        bestZoneEl.innerText = getBestZone();
-    }
-
-function getBestSPITrend() {
-    let good = drops.filter(d => d.spi > 70);
-    return good.length;
-}
-    
-    // ================= TILE GLOW =================
     document.querySelectorAll(".tile").forEach(tile => {
         tile.style.boxShadow = SPI >= 80
             ? "0 0 12px rgba(0,255,156,0.25), inset 0 0 10px rgba(255,255,255,0.05)"
             : "0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05)";
     });
+}
 
-// =========================
-// ✅ TACTICAL BAR
-// =========================
+// =====================================================
+// 📊 7. DASHBOARD (RENDER ENGINE END)
+// =====================================================
 
 // =====================================================
 // 🧠 8. ENVIRONMENT HELPERS
@@ -1921,49 +1973,6 @@ function getCastingAdvice(diff) {
 // =====================================================
 // 🧭 9. GPS + COMPASS + MAP
 // =====================================================
-
-// ============================
-// 📍 INIT GPS (GET LOCATION)
-// ============================
-function initGPS() {
-
-    if (!navigator.geolocation) {
-        console.warn("GPS not supported");
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-
-        (pos) => {
-
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-
-            // Save globally
-            userLocation.lat = lat;
-            userLocation.lon = lon;
-
-            console.log("📍 GPS:", lat, lon);
-
-            // Update map if already open
-            if (mapInstance) {
-                updateMapLocation(lat, lon);
-            }
-
-        },
-
-        (err) => {
-            console.warn("GPS error:", err);
-            alert("Enable location services");
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }
-    );
-}
 
 // ============================
 // 🗺️ OPEN MAP
