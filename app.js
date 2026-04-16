@@ -1541,32 +1541,32 @@ function renderDashboard(data) {
     // =====================================================
 
     // 🎯 GET ELEMENTS (ONLY ONCE)
-const spiCircle = document.getElementById("spiCircle");
-const envCircle = document.getElementById("envCircle");
-const confCircle = document.getElementById("confCircle");
+    const spiCircle = document.getElementById("spiCircle");
+    const envCircle = document.getElementById("envCircle");
+    const confCircle = document.getElementById("confCircle");
     
-// 🎨 COLORS (ONLY ONCE)
-const spiColor = getScoreColor(SPI); 
-const envColor = getScoreColor(envScore); 
-const confColor = getScoreColor(confScoreValue);
+    // 🎨 COLORS (ONLY ONCE)
+    const spiColor = getScoreColor(SPI); 
+    const envColor = getScoreColor(envScore); 
+    const confColor = getScoreColor(confScoreValue);
 
-if(envCirle) {
+    if(envCirle) {
         envCircle.style.borderColor = envColor;
         envCircle.style.boxShadow = `0 0 10px ${envColor}`;
     }
     
-const spiText = document.getElementById("spiValue");
-const envText = document.getElementById("envScore");
-const confText = document.getElementById("confScore");
+    const spiText = document.getElementById("spiValue");
+    const envText = document.getElementById("envScore");
+    const confText = document.getElementById("confScore");
 
-if (spiText) spiText.style.color = spiColor; 
-if (envText) envText.style.color = "#ffffff"; 
-if (confText) confText.style.color = "#ffffff";
+    if (spiText) spiText.style.color = spiColor; 
+    if (envText) envText.style.color = "#ffffff"; 
+    if (confText) confText.style.color = "#ffffff";
     
-// ✅ SPI (SVG stroke — correct)
-if (spiCircle) {
+    // ✅ SPI (SVG stroke — correct)
+    if (spiCircle) {
     spiCircle.style.stroke = spiColor;
-}
+    }
 
 // ✅ ENV + CONF (USE BOX-SHADOW GLOW INSTEAD) 
     if (envCircle) {
