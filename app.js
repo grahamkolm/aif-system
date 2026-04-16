@@ -173,6 +173,24 @@ function createTicks() {
     }
 }
 
+// ================= GPS POSITION =================
+
+function positionDirections() {
+    const labels = document.querySelectorAll(".direction-label");
+    const radius = 130; // adjust based on your compass size
+
+    labels.forEach(label => {
+        const angle = parseFloat(label.dataset.angle);
+        const rad = (angle - 90) * (Math.PI / 180);
+
+        const x = Math.cos(rad) * radius;
+        const y = Math.sin(rad) * radius;
+
+        label.style.transform = `translate(${x}px, ${y}px)`;
+    });
+}
+
+
 // ================= HOLD INTERACTION ================= 
     function setupHold(elementId, callback) {
     const el = document.getElementById(elementId);
