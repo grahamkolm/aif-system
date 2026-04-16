@@ -440,6 +440,29 @@ function updateCompass(heading) {
     }
 }
 
+function updateDirectionTicks(heading) {
+    const ticks = document.querySelectorAll("#compassTicks .tick");
+
+    ticks.forEach(tick => {
+        const angle = parseFloat(tick.dataset.angle);
+        const diff = Math.abs(angle - heading);
+
+        // Normalize difference (wrap around 360)
+        const adjusted = Math.min(diff, 360 - diff);
+
+        if (adjusted < 5) {
+            tick.style.opacity = "1";
+            tick.style.height = "14px";
+        } else if (adjusted < 15) {
+            tick.style.opacity = "0.6";
+            tick.style.height = "10px";
+        } else {
+            tick.style.opacity = "0.2";
+            tick.style.height = "6px";
+        }
+    });
+}
+
 // =====================================================
 // 🧭 5. COMPASS SYSTEM END
 // =====================================================
