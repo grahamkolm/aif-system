@@ -170,19 +170,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resizeSplash();
 
+    // ✅ CLEANED: splash bubbles init (only ONE system)
+    splashBubbles = [];
     for (let i = 0; i < 40; i++) {
-  splashBubbles.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    r: Math.random() * 3 + 1,
-    speed: Math.random() * 0.5 + 0.2
-  });
-}
+        splashBubbles.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 3 + 1,
+            speed: Math.random() * 0.5 + 0.2
+        });
+    }
+
     animateSplash();
     initSplashBubbles();
+
+    // =============================
+    // 🎯 UI SETUP
+    // =============================
     createTicks();
     positionDirections();
     storeScoutScreen();
+
+    // =============================
+    // 🧭 INPUT SYSTEMS
+    // =============================
+    document.body.addEventListener("touchstart", enableCompass, { once: true });
+    document.body.addEventListener("click", enableCompass, { once: true });
+
+    // =============================
+    // ⏳ SPLASH CONTROL
+    // =============================
+    setTimeout(() => {
+
+        splashActive = false;
+
+        const splash = document.getElementById("splash");
+        const main = document.querySelector(".main");
+
+        if (splash) splash.style.opacity = "0";
+
+        setTimeout(() => {
+
+            if (splash) splash.style.display = "none";
+            if (main) main.classList.add("main-visible");
+
+            // =============================
+            // 🚀 START SYSTEMS
+            // =============================
+            startApp();          // 🎨 visuals
+            initGPS();           // 📍 GPS system
+            fetchWeatherSafe();  // 🌦 first data load
+
+            // 🔁 LOOP
+            setInterval(fetchWeatherSafe, 30000);
+
+        }, 400);
+
+    }, 2500);
+
+});
+
+// =====================================================
+// 🚀 APP BOOT END
+// =====================================================
     
     // =============================
     // 🎯 UI SETUP
@@ -218,9 +268,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setupHold("envScore", showENVInsight);
     setupHold("confScore", showCONFInsight);
     
-        // =============================
-    // ⏳ SPLASH TIMEOUT (MAIN CONTROL)
-    // =============================
+// =============================
+// ⏳ SPLASH TIMEOUT (MAIN CONTROL)
+// =============================
     setTimeout(() => {
 
         splashActive = false;
