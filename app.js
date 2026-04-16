@@ -1409,21 +1409,6 @@ function renderDashboard(data) {
 
     console.log("📊 Rendering dashboard");
 
- const spiCircle = document.getElementById("spiCircle");
-    const envCircle = document.getElementById("envCircle");
-    const confCircle = document.getElementById("confCircle");
-
-    // ✅ THEN: use them
-    if (envCircle) {
-        envCircle.style.borderColor = envColor;
-        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
-    }
-
-    if (confCircle) {
-        confCircle.style.borderColor = confColor;
-        confCircle.style.boxShadow = `0 0 6px ${confColor}`;
-    }
-    
     // =====================================================
     // 🧠 1. INPUT (EXTRACT + NORMALISE)
     // =====================================================
@@ -1440,13 +1425,8 @@ function renderDashboard(data) {
 
     windDir = data.wind?.deg || 0;
 
-    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+    const tacticalData = { light, depth, wind: w };
 
-    const tacticalData = {
-    light,
-    depth,
-    wind: w
-};
     // ================= COMPASS DIFF =================
     diff = 0;
 
@@ -1485,7 +1465,6 @@ function renderDashboard(data) {
 
     let baseSPI = result.score;
 
-    // smoothing
     if (lastSPI !== null) {
         baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3));
     }
@@ -1498,20 +1477,63 @@ function renderDashboard(data) {
     SPI = finalSPI;
 
     // =====================================================
-    // 🎣 5. SCOUT FEEDBACK
+    // 📊 5. ENV + CONF (🔥 MUST BE HERE)
     // =====================================================
 
-    const scoutBonus = finalSPI - result.score;
+    envScore = calculateENV(p, c, w, light, t);
 
-    const scoutEl = document.getElementById("scoutBonus");
-    if (scoutEl) {
-        scoutEl.innerText = scoutBonus >= 0
-            ? `+${scoutBonus} Scout`
-            : `${scoutBonus} Scout`;
+    const envEl = document.getElementById("envScore");
+    if (envEl) envEl.innerText = envScore + "%";
+
+    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
+    const confEl = document.getElementById("confScore");
+    if (confEl) confEl.innerText = confScoreValue + "%";
+
+    // =====================================================
+    // 🎨 6. COLORS (NOW SAFE)
+    // =====================================================
+
+    const spiColor = getScoreColor(SPI);
+    const envColor = getScoreColor(envScore);
+    const confColor = getScoreColor(confScoreValue);
+
+    // =====================================================
+    // 🎯 7. ELEMENTS
+    // =====================================================
+
+    const spiCircle = document.getElementById("spiCircle");
+    const envCircle = document.getElementById("envCircle");
+    const confCircle = document.getElementById("confCircle");
+
+    // =====================================================
+    // 🎨 8. APPLY COLORS
+    // =====================================================
+
+    const spiText = document.getElementById("spiValue");
+    const envText = document.getElementById("envScore");
+    const confText = document.getElementById("confScore");
+
+    if (spiText) spiText.style.color = spiColor;
+    if (envText) envText.style.color = "#ffffff";
+    if (confText) confText.style.color = "#ffffff";
+
+    if (envCircle) {
+        envCircle.style.borderColor = envColor;
+        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
+    }
+
+    if (confCircle) {
+        confCircle.style.borderColor = confColor;
+        confCircle.style.boxShadow = `0 0 10px ${confColor}`;
+    }
+
+    if (spiCircle) {
+        spiCircle.style.stroke = spiColor;
     }
 
     // =====================================================
-    // 🧠 6. ANALYSIS
+    // 🧠 9. ANALYSIS
     // =====================================================
 
     const tempAnalysis = analyzeTemperature(t, surfaceTemp, bottomTemp);
@@ -1528,14 +1550,14 @@ function renderDashboard(data) {
     if (msg) msg.innerText = "Conditions optimal";
 
     // =====================================================
-    // 🎨 7. VISUAL ENGINE
+    // 🎨 10. VISUAL ENGINE
     // =====================================================
 
     updateSPI(finalSPI);
     bubbleIntensity = finalSPI / 100;
 
     // =====================================================
-    // 🫧 8. OXYGEN SYSTEM
+    // 🫧 11. OXYGEN SYSTEM
     // =====================================================
 
     const oxygen = estimateOxygen(t, w, c);
@@ -1552,37 +1574,9 @@ function renderDashboard(data) {
     ]);
 
     // =====================================================
-    // 🎯 9. TILE ENGINE (CLEAN DATA PIPE)
+    // 📦 12. TILE ENGINE
     // =====================================================
-  
-    // 🎨 COLORS (ONLY ONCE)
-    const spiColor = getScoreColor(SPI); 
-    const envColor = getScoreColor(envScore); 
-    const confColor = getScoreColor(confScoreValue);
-    
-    const spiText = document.getElementById("spiValue");
-    const envText = document.getElementById("envScore");
-    const confText = document.getElementById("confScore");
 
-    if (spiText) spiText.style.color = spiColor; 
-    if (envText) envText.style.color = "#ffffff"; 
-    if (confText) confText.style.color = "#ffffff";
-
-    if(envCircle) {
-        envCircle.style.borderColor = envColor;
-        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
-    }
-
-    if(confCircle) {
-        confCircle.style.borderColor = confColor;
-        confCircle.style.boxShadow = `0 0 10px ${confColor}`;
-    }
-    
-    // ✅ SPI (SVG stroke — correct)
-    if (spiCircle) {
-    spiCircle.style.stroke = spiColor;
-    }
-    
     updateAllTiles({
         air: t,
         surface: surfaceTemp,
@@ -1595,7 +1589,7 @@ function renderDashboard(data) {
     });
 
     // =====================================================
-    // 📊 10. UI VALUES
+    // 📊 13. UI VALUES
     // =====================================================
 
     document.getElementById("air").innerText = t.toFixed(1) + "°C";
@@ -1607,7 +1601,7 @@ function renderDashboard(data) {
     document.getElementById("feed").innerText = feeding(finalSPI);
 
     // =====================================================
-    // 🎨 11. ICON COLORS
+    // 🎨 14. ICON COLORS
     // =====================================================
 
     setIcon("sun", t, [
@@ -1647,28 +1641,14 @@ function renderDashboard(data) {
     ]);
 
     // =====================================================
-    // 🌙 12. EXTRA INFO
+    // 🌙 15. EXTRA INFO
     // =====================================================
 
     document.getElementById("moon").innerText = getMoonPhase();
     document.getElementById("season").innerText = getSeason();
 
     // =====================================================
-    // 📊 13. ENV + CONF
-    // =====================================================
-
-    envScore = calculateENV(data.main.pressure, data.clouds.all, data.wind.speed * 3.6, light, data.main.temp);
-
-    const envEl = document.getElementById("envScore");
-    if (envEl) envEl.innerText = envScore + "%";
-
-    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
-
-    const confEl = document.getElementById("confScore");
-    if (confEl) confEl.innerText = confScoreValue + "%";
-
-    // =====================================================
-    // 🎨 15. TILE GLOW EFFECT
+    // 🎨 16. TILE GLOW
     // =====================================================
 
     document.querySelectorAll(".tile").forEach(tile => {
