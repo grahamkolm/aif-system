@@ -1544,14 +1544,17 @@ function renderDashboard(data) {
 const spiCircle = document.getElementById("spiCircle");
 const envCircle = document.getElementById("envCircle");
 const confCircle = document.getElementById("confCircle");
-
+    
 // 🎨 COLORS (ONLY ONCE)
-const spiColor = getScoreColor(finalSPI); 
+const spiColor = getScoreColor(SPI); 
 const envColor = getScoreColor(envScore); 
 const confColor = getScoreColor(confScoreValue);
+
+if(envCirle) {
+        envCircle.style.borderColor = envColor;
+        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
+    }
     
-// ✅ APPLY COLORS
-// ✅ TEXT COLORS
 const spiText = document.getElementById("spiValue");
 const envText = document.getElementById("envScore");
 const confText = document.getElementById("confScore");
