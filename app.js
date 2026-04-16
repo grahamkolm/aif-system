@@ -446,7 +446,8 @@ function getConditionText(SPI, envScore) {
 
     return "❄️ Tough conditions — very quiet"; }
 
-// ================= ZONE ================= function getZoneText(SPI, light, depth, wind) {
+// ================= ZONE ================= 
+function getZoneText(SPI, light, depth, wind) {
 
     if (SPI > 75 && wind > 5) return "📍 Focus shallow windward zones";
     if (light > 70) return "📍 Fish deeper cooler water";
@@ -454,7 +455,8 @@ function getConditionText(SPI, envScore) {
 
     return "📍 Search structure and edges"; }
 
-// ================= CONFIDENCE ================= function getConfidenceText(SPI, confScore) {
+// ================= CONFIDENCE ================= 
+function getConfidenceText(SPI, confScore) {
 
     if (SPI > 75 && confScore > 75)
         return "🧠 Stay on your spots — be patient";
@@ -467,7 +469,8 @@ function getConditionText(SPI, envScore) {
 
     return "🧠 Monitor and adjust if needed"; }
 
-// ================= MOMENTUM ================= function getXFactor(SPI, prevSPI) {
+// ================= MOMENTUM ================= 
+function getXFactor(SPI, prevSPI) {
 
     if (!prevSPI) return null;
 
