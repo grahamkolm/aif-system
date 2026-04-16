@@ -1275,7 +1275,8 @@ function applyScoutImpact(spi) {
     if (scoutData.wind === "windblown") bonus += 8;
     if (scoutData.wind === "calm") bonus -= 5;
 
-    return Math.max(0, Math.min(100, spi + bonus)); }
+    return Math.max(0, Math.min(100, spi + bonus)); 
+}
 
 function calculateAverageSPI() {
     if (drops.length === 0) return 0;
@@ -1300,8 +1301,8 @@ function updateAllTiles(data) {
   applyTileColor("windTile", getWindStatus(data.wind));
   applyTileColor("cloudTile", getCloudStatus(data.cloud));
   applyTileColor("oxygenTile", getOxygenStatus(data.oxygen, data.surface));
-  applyTileColor("lightTile", getLightStatus(data.cloud, data.time)); }
-
+  applyTileColor("lightTile", getLightStatus(data.cloud, data.time)); 
+}
 
 // =====================================================
 // 🌬️ AIR TEMP
