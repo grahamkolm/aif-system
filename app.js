@@ -1749,7 +1749,8 @@ function calculateENV(p, c, w, light, airTemp) {
     if (moon === "Full") score += 5;
     if (moon === "New") score += 4;
 
-    return clamp(score, 20, 95);
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
 }
 
 // =====================================================
