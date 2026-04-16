@@ -2468,7 +2468,8 @@ function openReport() {
 
 function closeReport() {
     document.getElementById("reportScreen").classList.add("hidden");
-    document.body.style.overflow = "auto"; }
+    document.body.style.overflow = "auto"; 
+}
 
 function buildReport() {
 
