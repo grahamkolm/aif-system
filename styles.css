@@ -761,3 +761,12 @@ html, body {
     display: none !important;
 }
 
+.scout-card {
+    background: rgba(20,20,20,0.95);
+    padding: 20px;
+    border-radius: 16px;
+    color: white;
+    text-align: center;
+    min-width: 250px;
+}
+
