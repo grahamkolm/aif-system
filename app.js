@@ -1020,19 +1020,29 @@ function calculateWaterTemps(airTemp) {
 // 📊 WEAHTER ENGINE END
 // =====================================================
 
-
 // =====================================================
-// 📊 6. SPI ENGINE (UNIFIED)
+// 📊 SPI ENGINE
 // =====================================================
+function calculateSPI(p, w, c, windDir, t, light, depth, diff){
 
-function calculateSPI(p, w, c, windDir, t, light, depth){
+    // ===== SAFE DEFAULTS =====
+    p = p ?? 1015;
+    w = w ?? 5;
+    c = c ?? 50;
+    t = t ?? 20;
+    light = light ?? 50;
+    depth = depth ?? 3;
+    diff = diff ?? 90;
 
     let score = 0;
     let reasons = [];
 
     // ================= PRESSURE =================
     let pressureScore = 0;
-    let trend = getPressureTrend(p);
+
+    let trend = typeof getPressureTrend === "function"
+        ? getPressureTrend(p)
+        : "stable";
 
     if (p >= 1012 && p <= 1020) pressureScore = 15;
     else if (p >= 1008 && p <= 1024) pressureScore = 10;
@@ -1044,37 +1054,27 @@ function calculateSPI(p, w, c, windDir, t, light, depth){
     score += pressureScore;
 
     // ================= COMBINATION BOOST =================
-
-    // Wind + Cloud synergy (VERY powerful)
     if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
-    score += 10;
-    reasons.push("Wind + cloud combo → aggressive feeding"); 
+        score += 10;
+        reasons.push("Wind + cloud combo → aggressive feeding");
     }
 
-    // Pressure + Temp stability
     if (p > 1015 && t >= 18 && t <= 24) {
-    score += 8;
-    reasons.push("Stable pressure + temp → consistent feeding"); 
+        score += 8;
+        reasons.push("Stable pressure + temp → consistent feeding");
     }
 
-    // Bad combo penalty
     if (w < 2 && c < 20) {
-    score -= 10;
-    reasons.push("Flat calm + bright → fish inactive"); 
+        score -= 10;
+        reasons.push("Flat calm + bright → fish inactive");
     }
-   
+
     // ================= WIND =================
-    let windScore = 0;
+    if (w >= 5 && w <= 15) score += 20;
+    else if (w >= 3) score += 10;
+    else if (w > 15) score += 5;
 
-    if (w >= 5 && w <= 15) windScore = 20;
-    else if (w >= 3 && w < 5) windScore = 10;
-    else if (w > 15) windScore = 5;
-    else windScore = 0;
-
-    score += windScore;
-
-// ================= WIND DIRECTION ================= 
-    if (diff !== undefined) {
+    // ================= WIND DIRECTION =================
     if (diff > 135) {
         score += 10;
         reasons.push("Wind blowing into zone (prime feeding)");
@@ -1082,68 +1082,63 @@ function calculateSPI(p, w, c, windDir, t, light, depth){
         score -= 8;
         reasons.push("Downwind zone (low activity)");
     }
-    }
-    
+
     // ================= CLOUD =================
-    let cloudScore = 0;
-
-    if (c >= 30 && c <= 70) cloudScore = 15;
-    else if (c > 70) cloudScore = 10;
-    else cloudScore = 5;
-
-    score += cloudScore;
+    if (c >= 30 && c <= 70) score += 15;
+    else if (c > 70) score += 10;
+    else score += 5;
 
     // ================= TEMP =================
-    let tempScore = 0;
-
-    if (t >= 18 && t <= 24) tempScore = 25;
-    else if (t >= 15 && t < 18) tempScore = 15;
-    else if (t > 24 && t <= 28) tempScore = 10;
-    else tempScore = 5;
-
-    score += tempScore;
+    if (t >= 18 && t <= 24) score += 25;
+    else if (t >= 15) score += 15;
+    else if (t <= 28) score += 10;
+    else score += 5;
 
     // ================= LIGHT =================
     if (light >= 40 && light <= 70) {
-    score += 8;
-    reasons.push("Optimal light penetration"); 
+        score += 8;
+        reasons.push("Optimal light penetration");
     } else if (light < 20) {
-    score -= 5;
-    reasons.push("Too dark — reduced visibility"); 
+        score -= 5;
+        reasons.push("Too dark — reduced visibility");
     } else {
-    score -= 3;
-    reasons.push("Too bright — fish cautious"); 
+        score -= 3;
+        reasons.push("Too bright — fish cautious");
     }
 
     // ================= DEPTH =================
     if (depth >= 2 && depth <= 5) {
-    score += 10;
-    reasons.push("Ideal feeding depth"); 
+        score += 10;
+        reasons.push("Ideal feeding depth");
     } else if (depth < 1) {
-    score -= 6;
-    reasons.push("Too shallow");
+        score -= 6;
+        reasons.push("Too shallow");
     } else if (depth > 8) {
-    score -= 4;
-    reasons.push("Too deep for active feeding"); 
-}
+        score -= 4;
+        reasons.push("Too deep for active feeding");
+    }
 
-// ================= TIME WINDOWS =================
-    score += sunriseWindow() * 0.5;
-    score += seasonalWeight() * 0.5;
+    // ================= TIME WINDOWS =================
+    if (typeof sunriseWindow === "function") {
+        score += sunriseWindow() * 0.5;
+    }
 
-// ================= FINAL NORMALIZE ===============
+    if (typeof seasonalWeight === "function") {
+        score += seasonalWeight() * 0.5;
+    }
 
-// Amplify extremes
-    if (score > 75) score += 5;
-    if (score < 40) score -= 5;
+    // ================= FINAL =================
+    if (score > 75) score = Math.min(score + 5, 100);
+    if (score < 40) score = Math.max(score - 5, 0);
 
     score = Math.max(15, Math.min(98, score));
 
     return {
         score: Math.round(score),
-        reasons: reasons
+        reasons
     };
 }
+
 
 function applyScoutImpact(spi) {
 
