@@ -1554,12 +1554,15 @@ function renderDashboard(data) {
 
     const status = document.getElementById("tactical");
     if (status) {
-        if (combinedReasons.length > 0) {
-            status.innerText = combinedReasons[0];
-        } else {
-            status.innerText = "Conditions stable";
-        }
+    if (combinedReasons.length > 0) {
+        status.innerHTML = combinedReasons
+            .slice(0, 3) // limit to 3 insights
+            .map(r => `<div>${r}</div>`)
+            .join("");
+    } else {
+        status.innerText = "Stable conditions";
     }
+}
 
     // =====================================================
     // 🎨 10. VISUAL ENGINE
