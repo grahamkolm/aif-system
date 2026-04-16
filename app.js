@@ -1545,7 +1545,13 @@ function renderDashboard(data) {
     ];
 
     const status = document.getElementById("tactical");
-    if (status) status.innerText = "Updating...";
+    if (status) {
+        if (combinedReasons.length > 0) {
+            status.innerText = combinedReasons[0];
+        } else {
+            status.innerText = "Conditions stable";
+        }
+    }
 
     const msg = document.querySelector(".status-text");
     if (msg) msg.innerText = "Conditions optimal";
