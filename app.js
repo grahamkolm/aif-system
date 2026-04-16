@@ -61,6 +61,8 @@ const SOURCE = {
   oxygen: "none"
 };
 
+let userLocation = { lat: null, lon: null};
+
 let originalScoutHTML = "";
 
 function storeScoutScreen() {
@@ -1279,6 +1281,7 @@ function renderDashboard(data) {
     const c = data.clouds.all;
     windDir = data.wind?.deg || 0;
     diff = 0;
+    initGPS();
 
     if (typeof compassHeading !== "undefined" &&compassHeading !== null) {
         diff = Math.abs(windDir - compassHeading);
@@ -1894,14 +1897,48 @@ function getCastingAdvice(diff) {
 // =====================================================
 
 function initGPS(){
-    navigator.geolocation.getCurrentPosition(pos=>{
-        userLocation = {
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude
-        };
-    });
-}
+navigator.geolocation.getCurrentPosition(
 
+    (pos) => {
+
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        userLocation.lat = lat;
+        userLocation.lon = lon;
+
+        if (!mapInstance) {
+
+            mapInstance = L.map('mapContainer', {
+                zoomControl: true
+            }).setView([lat, lon], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '',
+                maxZoom: 19
+            }).addTo(mapInstance);
+
+            window.userMarker = L.marker([lat, lon])
+                .addTo(mapInstance)
+                .bindPopup("You are here 🎯");
+
+        } else {
+            mapInstance.setView([lat, lon], 13);
+
+            if (window.userMarker) {
+                window.userMarker.setLatLng([lat, lon]);
+            }
+        }
+
+    },
+
+    (err) => {
+        console.log("GPS error:", err);
+        alert("Enable location services");
+    }
+
+);
+    
 let mapInstance;
 
 function openMap() {
