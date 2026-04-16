@@ -1676,123 +1676,158 @@ if (confCircle) {
 // =====================================================
 
 // =====================================================
-// 🧠 8. ENVIRONMENT HELPERS
+// 🧠 8. ENVIRONMENT ENGINE
 // =====================================================
 
 function updateFromSensor(data) {
-
-  if (data.surfaceTemp) {
-    ENV.surface = data.surfaceTemp;
-    SOURCE.surface = "sensor";
-  }
-
-  if (data.bottomTemp) {
-    ENV.bottom = data.bottomTemp;
-    SOURCE.bottom = "sensor";
-  }
-
-  if (data.pressure) {
-    ENV.pressure = data.pressure;
-    SOURCE.pressure = "sensor";
-  }
-
-  if (data.light) {
-    ENV.light = data.light;
-    SOURCE.light = "sensor";
-  }
-
-  if (data.depth) {
-    ENV.depth = data.depth;
-    SOURCE.depth = "sensor";
-  }
+    if (data.surfaceTemp) {
+        ENV.surface = data.surfaceTemp;
+        SOURCE.surface = "sensor";
+    }
+    if (data.bottomTemp) {
+        ENV.bottom = data.bottomTemp;
+        SOURCE.bottom = "sensor";
+    }
+    if (data.pressure) {
+        ENV.pressure = data.pressure;
+        SOURCE.pressure = "sensor";
+    }
+    if (data.light) {
+        ENV.light = data.light;
+        SOURCE.light = "sensor";
+    }
+    if (data.depth) {
+        ENV.depth = data.depth;
+        SOURCE.depth = "sensor";
+    }
 }
 
-   // =========================
-    // ✅ ENV CALCULATION
-    // =========================
+// ================= ENV SCORE ================= 
 function calculateENV(p, c, w, light, airTemp) {
 
-    let score = 50; // neutral baseline
+    let score = 50;
 
-    // ================= PRESSURE =================
-    let trend = getPressureTrend(p);
+    const trend = getPressureTrend(p);
 
+    // Pressure
     if (p >= 1012 && p <= 1020) score += 8;
     else if (p < 1008 || p > 1025) score -= 8;
 
     if (trend === "rising") score += 10;
     if (trend === "falling") score -= 12;
 
-    // ================= WIND =================
+    // Wind
     if (w >= 5 && w <= 15) score += 12;
     else if (w < 2) score -= 10;
     else if (w > 20) score -= 6;
 
-    // ================= CLOUD =================
+    // Cloud
     if (c >= 30 && c <= 70) score += 10;
     else if (c < 10) score -= 6;
     else if (c > 90) score -= 4;
 
-    // ================= LIGHT =================
+    // Light
     if (light >= 40 && light <= 70) score += 10;
     else if (light < 20) score -= 6;
     else if (light > 85) score -= 8;
 
-    // ================= TEMP TREND =================
-    let tempTrend = getTempTrend(airTemp);
-
+    // Temp trend
+    const tempTrend = getTempTrend(airTemp);
     if (tempTrend === "warming") score += 8;
     if (tempTrend === "cooling_fast") score -= 10;
 
-    if(airTemp < 15) {
-        score -= 5;
-    }
+    if (airTemp < 15) score -= 5;
 
-    // ================= TIME WINDOWS =================
-    let hour = new Date().getHours();
+    // Time windows
+    const h = new Date().getHours();
+    if (h >= 5 && h <= 9) score += 12;
+    if (h >= 17 && h <= 20) score += 14;
+    if (h >= 11 && h <= 15) score -= 6;
 
-    if (hour >= 5 && hour <= 9) score += 12;
-    if (hour >= 17 && hour <= 20) score += 14;
-    if (hour >= 11 && hour <= 15) score -= 6;
-
-    // ================= MOON =================
-    let moon = getMoonPhase();
-
+    // Moon
+    const moon = getMoonPhase();
     if (moon === "Full") score += 5;
     if (moon === "New") score += 4;
 
-    // ================= FINAL =================
-    return Math.max(20, Math.min(95, Math.round(score))); }
+    return clamp(score, 20, 95);
+}
 
-    // ================= CALCULATE TEMP HISTORY FOR ENV========
+// =====================================================
+// 🧠 8. ENVIRONMENT ENGINE END
+// =====================================================
+
+// =====================================================
+// 📈 TRENDS & TIME
+// =====================================================
 
 function getTempTrend(t) {
-
     tempHistory.push(t);
     if (tempHistory.length > 6) tempHistory.shift();
 
     if (tempHistory.length < 2) return "stable";
 
-    let tempDiff = tempHistory[tempHistory.length - 1] - tempHistory[0];
+    const diff = tempHistory[tempHistory.length - 1] - tempHistory[0];
 
-    if (tempDiff > 1) return "warming";
-    if (tempDiff < -1) return "cooling_fast";
-
+    if (diff > 1) return "warming";
+    if (diff < -1) return "cooling_fast";
     return "stable";
 }
-    
-function getMoonPhase(){
-    let d=new Date();
-    let lp=2551443;
-    let now=d.getTime()/1000;
-    let new_moon=592500;
-    let phase=((now-new_moon)%lp)/lp;
 
-    if(phase<0.25)return"Waxing";
-    if(phase<0.5)return"Full";
-    if(phase<0.75)return"Waning";
-    return"New";
+function getPressureTrend(p) {
+    pressureHistory.push(p);
+
+    if (pressureHistory.length > 6) pressureHistory.shift();
+    if (pressureHistory.length < 2) return "stable";
+
+    const diff = pressureHistory.at(-1) - pressureHistory[0];
+
+    if (diff > 1) return "rising";
+    if (diff < -1) return "falling";
+    return "stable";
 }
+
+function sunriseWindow() {
+    const h = new Date().getHours();
+    if (h >= 5 && h <= 9) return 10;
+    if (h >= 17 && h <= 20) return 12;
+    return 0;
+}
+
+function seasonalWeight() {
+    const m = new Date().getMonth() + 1;
+
+    if (m <= 2 || m === 12) return 8;
+    if (m <= 5) return 4;
+    if (m <= 8) return -4;
+    return 6;
+}
+
+function getSeason() {
+    const m = new Date().getMonth() + 1;
+
+    if (m <= 2 || m === 12) return "Summer";
+    if (m <= 5) return "Autumn";
+    if (m <= 8) return "Winter";
+    return "Spring";
+}
+
+function getMoonPhase() {
+    const d = new Date();
+    const lp = 2551443;
+    const now = d.getTime() / 1000;
+    const new_moon = 592500;
+
+    const phase = ((now - new_moon) % lp) / lp;
+
+    if (phase < 0.25) return "Waxing";
+    if (phase < 0.5) return "Full";
+    if (phase < 0.75) return "Waning";
+    return "New";
+}
+
+// =====================================================
+// 📈 TRENDS & TIME END
+// =====================================================
 
 function analyzeTemperature(air, surface, bottom) {
 
@@ -1850,80 +1885,32 @@ function seasonalWeight(){
     return 6;
 }
 
-// =========================
-// 🎯 CASTING INTELLIGENCE
-// =========================
-
-function getCastDirection(windDir) {
-
-    if (compassHeading === null) {
-        return "📍 Enable compass for casting direction";
-    }
-
-    let diff = Math.abs(windDir - compassHeading);
-    if (diff > 180) diff = 360 - diff;
-
-    if (diff > 135) {
-        return "🔥 Cast into wind — focus on windward bank";
-    }
-
-    if (diff < 45) {
-        return "❌ Avoid downwind — low feeding pressure";
-    }
-
-    return "⚠️ Crosswind — fish edges of wind lanes"; 
-}
-
-
-function getDepthStrategy(light, depth) {
-
-    if (light < 30) {
-        return "🌅 Fish shallow margins — low light feeding window";
-    }
-
-    if (light > 70) {
-        return "🌞 Fish deeper or near structure — fish avoiding light";
-    }
-
-    if (depth >= 2 && depth <= 5) {
-        return "🎯 Target patrol routes (2–5m zone)";
-    }
-
-    return "🔍 Adjust depth — locate feeding zones"; 
-}
-
-function getBaitSuggestion(SPI) {
-
-    if (SPI > 75) {
-        return "🍬 High-attract hookbait (pop-up, wafters, strong scent)";
-    }
-
-    if (SPI > 60) {
-        return "🎣 Balanced boilie approach (bottom bait + matching free feed)";
-    }
-
-    return "🧪 Slow presentation — single hookbait or high visual pop-up"; 
-}
-
-function getPressureTrend(p){
-
-    pressureHistory.push(p);
-
-    if(pressureHistory.length>6) pressureHistory.shift();
-    if(pressureHistory.length<2) return "stable";
-
-    diff = pressureHistory[pressureHistory.length-1] - pressureHistory[0];
-
-    if(diff>1)return "rising";
-    if(diff<-1)return "falling";
-    return "stable";
-}
+// =====================================================
+// 🎯 STRATEGY ENGINE
+// =====================================================
 
 function getCastingAdvice(diff) {
     if (diff < 45) return "Into wind ⚠️";
     if (diff > 135) return "Perfect windward 🔥";
     return "Crosswind ⚠️";
 }
+
+function getDepthStrategy(light, depth) {
+    if (light < 30) return "Fish shallow margins";
+    if (light > 70) return "Fish deeper structure";
+    if (depth >= 2 && depth <= 5) return "Target patrol routes";
+    return "Adjust depth";
+}
+
+function getBaitSuggestion(SPI) {
+    if (SPI > 75) return "High attract bait";
+    if (SPI > 60) return "Balanced boilie approach";
+    return "Single hookbait";
+}
+
+// =====================================================
+// 🎯 STRATEGY ENGINE END
+// =====================================================
 
 // =====================================================
 // 🧭 9. GPS + COMPASS + MAP
@@ -1944,6 +1931,11 @@ function initGPS() {
         }
     );
 }
+
+// =====================================================
+// 🧭 9. GPS + COMPASS + MAP END
+// =====================================================
+
 
 // ============================
 // 🗺️ OPEN MAP
@@ -2014,7 +2006,7 @@ function updateMapLocation(lat, lon) {
 }
 
 // =====================================================
-// 🎯 10. UI HELPERS
+// 🎯 10. UI HELPERS START
 // =====================================================
 
 function updateSPI(v){
