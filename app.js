@@ -1186,42 +1186,6 @@ if (confEl) {
     confEl.innerText = confScoreValue + "%"; }
 
 
-// 🎯 GET ELEMENTS (ONLY ONCE)
-const spiCircle = document.getElementById("spiCircle");
-const envCircle = document.getElementById("envCircle");
-const confCircle = document.getElementById("confCircle");
-
-// 🎨 COLORS (ONLY ONCE)
-const spiColor = getScoreColor(finalSPI); 
-const envColor = getScoreColor(envScore); 
-const confColor = getScoreColor(confScoreValue);
-    
-// ✅ APPLY COLORS
-// ✅ TEXT COLORS
-const spiText = document.getElementById("spiValue");
-const envText = document.getElementById("envScore");
-const confText = document.getElementById("confScore");
-
-if (spiText) spiText.style.color = spiColor; 
-if (envText) envText.style.color = "#ffffff"; 
-if (confText) confText.style.color = "#ffffff";
-    
-// ✅ SPI (SVG stroke — correct)
-if (spiCircle) {
-    spiCircle.style.stroke = spiColor;
-}
-
-// ✅ ENV + CONF (USE BOX-SHADOW GLOW INSTEAD) 
-    if (envCircle) {
-    envCircle.style.borderColor = envColor;
-    envCircle.style.boxShadow = `0 0 10px ${envColor}`; 
-    }
-
-if (confCircle) {
-    confCircle.style.borderColor = confColor;
-    confCircle.style.boxShadow = `0 0 6px ${confColor}`; 
-}
-
 // ================= CONF FEEDBACK ================= 
 if (typeof confScoreValue === "number") {
     if (confScoreValue > 80) {
@@ -1576,6 +1540,42 @@ function renderDashboard(data) {
     // 🎯 9. TILE ENGINE (CLEAN DATA PIPE)
     // =====================================================
 
+    // 🎯 GET ELEMENTS (ONLY ONCE)
+const spiCircle = document.getElementById("spiCircle");
+const envCircle = document.getElementById("envCircle");
+const confCircle = document.getElementById("confCircle");
+
+// 🎨 COLORS (ONLY ONCE)
+const spiColor = getScoreColor(finalSPI); 
+const envColor = getScoreColor(envScore); 
+const confColor = getScoreColor(confScoreValue);
+    
+// ✅ APPLY COLORS
+// ✅ TEXT COLORS
+const spiText = document.getElementById("spiValue");
+const envText = document.getElementById("envScore");
+const confText = document.getElementById("confScore");
+
+if (spiText) spiText.style.color = spiColor; 
+if (envText) envText.style.color = "#ffffff"; 
+if (confText) confText.style.color = "#ffffff";
+    
+// ✅ SPI (SVG stroke — correct)
+if (spiCircle) {
+    spiCircle.style.stroke = spiColor;
+}
+
+// ✅ ENV + CONF (USE BOX-SHADOW GLOW INSTEAD) 
+    if (envCircle) {
+    envCircle.style.borderColor = envColor;
+    envCircle.style.boxShadow = `0 0 10px ${envColor}`; 
+    }
+
+if (confCircle) {
+    confCircle.style.borderColor = confColor;
+    confCircle.style.boxShadow = `0 0 6px ${confColor}`; 
+}
+    
     updateAllTiles({
         air: t,
         surface: surfaceTemp,
