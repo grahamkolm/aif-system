@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
             fetchWeatherSafe();  // 🌦 first data load
 
             // 🔁 LOOP
-            setInterval(fetchWeatherSafe, 30000);
+            setInterval(fetchWeatherSafe, 120000);
 
         }, 400);
 
