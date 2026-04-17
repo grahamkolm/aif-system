@@ -1893,15 +1893,18 @@ function calculateENV(p, c, w, light, airTemp) {
     score += lightScore;
 
     // TEMP (15)
-let tempScore = 0;
+    let tempScore = 0;
 
-if (airTemp >= 18 && airTemp <= 24) tempScore = 15; else if (airTemp >= 15) tempScore = 10;
-else if (airTemp >= 12) tempScore = 7;   // 👈 soften cold penalty
-else if (airTemp >= 10) tempScore = 5;
-else tempScore = 3;
+    if (airTemp >= 18 && airTemp <= 24) tempScore = 15; else if (airTemp >= 15) tempScore = 10;
+    else if (airTemp >= 12) tempScore = 7;   // 👈 soften cold penalty
+    else if (airTemp >= 10) tempScore = 5;
+    else tempScore = 3;
 
-score += tempScore;
+    score += tempScore;
 
+    if (t <= 15) {
+        score += 0.75;
+    }
 
     // =============================
     // 🟢 INTERACTION BOOSTS (15 max)
