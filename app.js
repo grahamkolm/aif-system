@@ -1457,17 +1457,29 @@ function renderDashboard(data) {
     // 📊 4. SPI CALCULATION
     // =====================================================
 
-    const result = calculateSPI(p, w, c, windDir, t, light, depth);
+const result = calculateSPI(p, w, c, windDir, t, light, depth);
 
-    let finalSPI = baseSPI;
+// ✅ DEFINE baseSPI properly
+let baseSPI = result.score;
 
-    // 🎣 APPLY SCOUT (controlled)
-    const scoutImpact = calculateScoutImpact(scoutData) * 0.5;
+// smooth with previous
+if (lastSPI !== null) {
+    baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3)); }
 
-    finalSPI = finalSPI + scoutImpact;
+// 🎣 APPLY SCOUT (controlled)
+let finalSPI = baseSPI;
 
-    // clamp
-    finalSPI = Math.max(0, Math.min(100, Math.round(finalSPI)));
+const scoutImpact = calculateScoutImpact(scoutData) * 0.5;
+
+finalSPI = finalSPI + scoutImpact;
+
+// ✅ clamp final value
+finalSPI = Math.max(0, Math.min(100, Math.round(finalSPI)));
+
+console.log("SPI:", finalSPI);
+
+lastSPI = finalSPI;
+SPI = finalSPI;
 
     // =====================================================
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
