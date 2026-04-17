@@ -1218,7 +1218,7 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     if (Math.abs(SPI - envScore) < 15) score += 8;
 
     // cold consistency bonus
-    if (SPI >= 40 && SPI <= 65) score += 6; 
+    if (SPI >= 45 && SPI <= 60) score += 4; 
     }
   
 
@@ -1256,8 +1256,8 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     // =============================
 
     // ENV weakness penalty
-    if (envScore < 80) {
-        score -= (80 - envScore) * 1.2;
+    if (envScore < 70) {
+        score -= (70 - envScore) * 0.6;
     }
 
     // SPI unrealistic vs ENV
@@ -1285,10 +1285,6 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     if (isNaN(score)) score = 50;
 
     return Math.max(30, Math.min(100, Math.round(score))); 
-}
-
-if (score < 45 && airTemp >= 10) {
-    score += 5;
 }
 
 // =====================================================
@@ -1560,9 +1556,6 @@ let baseSPI = result.score;
 // smoothing
 if (lastSPI !== null) {
     baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3)); }
-
-// ENV influence
-let envWeight = 0.6 + (envScore / 100 * 0.4); baseSPI = baseSPI * envWeight;
 
 // penalties
 if (baseSPI > envScore + 10) {
@@ -1902,8 +1895,8 @@ function calculateENV(p, c, w, light, airTemp) {
 
     score += tempScore;
 
-    if (t <= 15) {
-        score += 0.75;
+    if (airTemp <= 15) {
+        score *= 0.75;
     }
 
     // =============================
@@ -1963,7 +1956,7 @@ function calculateENV(p, c, w, light, airTemp) {
     // 🎯 NON-LINEAR SCALING (KEY)
     // =============================
 
-    score = Math.pow(score / 100, 1.2) * 100;
+    score = Math.pow(score / 100, 1.3) * 100;
 
     // =============================
     // FINAL
