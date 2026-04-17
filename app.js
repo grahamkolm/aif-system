@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createTicks();
     positionDirections();
     storeScoutScreen();
-    applyScoutENV();
+    //applyScoutENV();
     envScore = calculateENV(ENV);
 
     // =============================
@@ -1227,25 +1227,36 @@ if (typeof confScoreValue === "number") {
 // 📊  SCOUT and TILE ENGINE START
 // =====================================================
 
-function applyScoutImpact(spi) {
+function applyScoutImpact(spi, scout) {
+
+    if (!scout) return spi;
 
     let bonus = 0;
 
-    if (scoutData.activity === "bubbles") bonus += 10;
-    if (scoutData.activity === "rolling") bonus += 15;
+    // 🎣 Activity (strong signal)
+    if (scout.activity === "bubbles") bonus += 8;
+    if (scout.activity === "rolling") bonus += 15;
 
-    if (scoutData.wind === "windblown") bonus += 8;
-    if (scoutData.wind === "calm") bonus -= 5;
+    // 🌬 Wind observation
+    if (scout.wind === "windblown") bonus += 6;
+    if (scout.wind === "calm") bonus -= 6;
 
+    // 🌊 Water clarity
+    if (scout.clarity === "stained") bonus += 4;
+    if (scout.clarity === "murky") bonus -= 6;
+
+    // 🐦 Birds (feeding indicator)
+    if (scout.birds === "some") bonus += 4;
+    if (scout.birds === "active") bonus += 8;
+
+    // 🪵 Structure
+    if (scout.structure === "weed") bonus += 5;
+    if (scout.structure === "dropoff") bonus += 8;
+
+    // 🔒 Clamp final
     return Math.max(0, Math.min(100, spi + bonus)); 
 }
 
-function calculateAverageSPI() {
-    if (drops.length === 0) return 0;
-
-    let total = drops.reduce((sum, d) => sum + d.spi, 0);
-    return parseFloat((total / drops.length).toFixed(1));
-}
 
 
 // =====================================================
