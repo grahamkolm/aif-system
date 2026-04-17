@@ -103,6 +103,8 @@ let tempModel = {
 const GREEN = "#00ffa6";
 const ORANGE = "#ffc400";
 const RED = "#ff3b3b";
+const BLUE = "#00bfff";
+const WHITE = "#ffffff";
 
 // =====================================================
 // 🌍 0. GLOBAL BASE END
