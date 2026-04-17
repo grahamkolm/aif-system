@@ -899,9 +899,11 @@ html, body {
 }
 
 .opt.active {
+    border: 2px solid #00ff9c;
     border-color: #00ffa6;
-    box-shadow: 0 0 10px rgba(0,255,166,0.4);
-    background: rgba(0,255,166,0.08);
+    box-shadow: 0 0 12px rgba(0,255,166,0.4);
+    background: rgba(0,255,166,0.15);
+    color: #00ff9c;
 }
 
 
