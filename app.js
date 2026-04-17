@@ -1518,16 +1518,38 @@ function renderDashboard(data) {
 
     const result = calculateSPI(p, w, c, windDir, t, light, depth);
 
-    let baseSPI = result.score;
+// 1️⃣ RAW SPI (pure physics)
+let rawSPI = result.score;
 
-    if (lastSPI !== null) {
-        baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3));
+// 2️⃣ SOFT SCOUT (limited influence)
+let scoutImpact = calculateScoutImpact(scoutData) * 0.4;
+
+// 3️⃣ COMBINE FIRST
+let combinedSPI = rawSPI + scoutImpact;
+
+// 4️⃣ THEN SMOOTH (CRITICAL ORDER)
+let finalSPI;
+
+if (lastSPI !== null) {
+    finalSPI = Math.round((combinedSPI * 0.6) + (lastSPI * 0.4)); } else {
+    finalSPI = Math.round(combinedSPI);
+}
+
+// 5️⃣ HARD LIMIT CHANGE SPEED (ANTI-JUMP) if (lastSPI !== null) {
+    const maxStep = 5;
+    const diff = finalSPI - lastSPI;
+
+    if (Math.abs(diff) > maxStep) {
+        finalSPI = lastSPI + Math.sign(diff) * maxStep;
     }
+}
 
-    const scoutImpact = calculateScoutImpact(scoutData);
-    const finalSPI = Math.max(0, Math.min(100,
-          baseSPI + scoutImpact
-  ));
+// 6️⃣ CLAMP
+finalSPI = Math.max(0, Math.min(100, finalSPI));
+
+// 7️⃣ SAVE
+lastSPI = finalSPI;
+SPI = finalSPI;
 
     console.log("SPI:", finalSPI);
 
