@@ -949,7 +949,7 @@ function calculateDerivedValues() {
       SOURCE.bottom = "model";
     }
   }
-}
+
   // Oxygen calculation
   const temp = ENV.surface;
   const wind = ENV.wind || 0;
