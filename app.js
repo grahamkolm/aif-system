@@ -1709,55 +1709,53 @@ function updateFromSensor(data) {
 // ================= ENV SCORE ================= 
 function calculateENV(p, c, w, light, airTemp) {
 
-    let score = 50;
+    let score = 0;
 
     const trend = getPressureTrend(p);
 
-    // Pressure
-    if (p >= 1012 && p <= 1020) score += 8;
-    else if (p < 1008 || p > 1025) score -= 8;
+    // ================= PRESSURE (20 max)
+    if (p >= 1012 && p <= 1020) score += 15;
+    else if (p >= 1008 && p <= 1024) score += 10;
+    else score += 5;
 
-    if (trend === "rising") score += 10;
-    if (trend === "falling") score -= 12;
+    if (trend === "rising") score += 5;
+    if (trend === "falling") score -= 5;
 
-    // Wind
-    if (w >= 5 && w <= 15) score += 12;
-    else if (w < 2) score -= 10;
-    else if (w > 20) score -= 6;
+    // ================= WIND (20 max)
+    if (w >= 5 && w <= 15) score += 20;
+    else if (w >= 3) score += 12;
+    else if (w > 15) score += 6;
+    else score += 4;
 
-    // Cloud
-    if (c >= 30 && c <= 70) score += 10;
-    else if (c < 10) score -= 6;
-    else if (c > 90) score -= 4;
+    // ================= CLOUD (15 max)
+    if (c >= 30 && c <= 70) score += 15;
+    else if (c > 70) score += 10;
+    else score += 5;
 
-    // Light
-    if (light >= 40 && light <= 70) score += 10;
-    else if (light < 20) score -= 6;
-    else if (light > 85) score -= 8;
+    // ================= LIGHT (15 max)
+    if (light >= 40 && light <= 70) score += 15;
+    else if (light < 20) score += 5;
+    else score += 8;
 
-    // Temp trend
+    // ================= TEMP TREND (15 max)
     const tempTrend = getTempTrend(airTemp);
-    if (tempTrend === "warming") score += 8;
-    if (tempTrend === "cooling_fast") score -= 10;
 
-    if (airTemp < 15) score -= 5;
+    if (tempTrend === "warming") score += 10;
+    if (tempTrend === "cooling_fast") score -= 8;
 
-    // Time windows
+    if (airTemp >= 18 && airTemp <= 24) score += 5;
+
+    // ================= TIME WINDOW (15 max)
     const h = new Date().getHours();
+
     if (h >= 5 && h <= 9) score += 12;
-    if (h >= 17 && h <= 20) score += 14;
-    if (h >= 11 && h <= 15) score -= 6;
+    else if (h >= 17 && h <= 20) score += 14;
+    else if (h >= 11 && h <= 15) score -= 5;
 
-    // Moon
-    const moon = getMoonPhase();
-    if (moon === "Full") score += 5;
-    if (moon === "New") score += 4;
+    // ================= FINAL CLAMP (CRITICAL FIX)
+    score = Math.max(0, Math.min(100, Math.round(score)));
 
-    function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));   
-    }
-
-return score;
+    return score;
 }
 
 // =====================================================
