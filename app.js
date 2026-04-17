@@ -1504,6 +1504,42 @@ const result = calculateSPI(p, w, c, windDir, t, light, depth);
 // ✅ DEFINE baseSPI properly
 let baseSPI = result.score;
 
+// =============================
+// 🌍 ENV COUPLING (NEW)
+// =============================
+
+// normalize ENV (0–1)
+let envFactor = envScore / 100;
+
+// soft floor so ENV doesn’t kill everything let envWeight = 0.6 + (envFactor * 0.4); // range: 0.6 → 1.0
+
+// apply damping
+baseSPI = baseSPI * envWeight;
+
+// =============================
+// ⚠️ OVERPERFORMANCE PENALTY
+// =============================
+if (baseSPI > envScore + 10) {
+    let excess = baseSPI - (envScore + 10);
+    baseSPI -= excess * 0.7;
+}
+
+// =============================
+// 🎯 SOFT CEILING (NOT A CAP)
+// =============================
+if (envScore < 85) {
+    let ceiling = envScore + 12;
+    if (baseSPI > ceiling) {
+        baseSPI -= (baseSPI - ceiling) * 0.6;
+    }
+}
+
+// =============================
+// FINAL NORMALISE
+// =============================
+baseSPI = Math.max(10, Math.min(98, Math.round(baseSPI))); 
+
+    
 // smooth with previous
 if (lastSPI !== null) {
     baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3)); }
