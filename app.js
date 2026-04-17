@@ -1457,7 +1457,23 @@ function renderDashboard(data) {
         ENV.depth || 3
     );
 
-    // ================= COMPASS DIFF =================
+    // ================= ENV UPDATE ================= 
+  ENV.air = data.main.temp; 
+  ENV.pressure = data.main.pressure; 
+  ENV.wind = data.wind.speed * 3.6; 
+  ENV.cloud = data.clouds.all;
+
+  // derived (from your model)
+  ENV.surface = surfaceTemp;
+  ENV.bottom = bottomTemp;
+
+  // fallback depth + light
+  ENV.depth = ENV.depth || 3;
+  ENV.light = ENV.light || 50;
+
+  // oxygen (already calculated later, but safe here too) ENV.oxygen = estimateOxygen(ENV.surface, ENV.wind, ENV.cloud);
+
+      // ================= COMPASS DIFF =================
     diff = 0;
 
     if (compassHeading != null) {
@@ -1513,7 +1529,7 @@ function renderDashboard(data) {
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
     // =====================================================
 
-    envScore = calculateENV(p, c, w, light, t);
+    envScore = calculateENV(ENV);
 
     const envEl = document.getElementById("envScore");
     if (envEl) envEl.innerText = envScore + "%";
@@ -1730,40 +1746,49 @@ function updateFromSensor(data) {
 }
 
 // ================= ENV SCORE ================= 
-function calculateENV(p, c, w, light, airTemp) {
+function calculateENV(ENV) {
 
-    let score = 0; // 🔥 start from 0 (not 50)
+    let score = 0;
 
-    const trend = getPressureTrend(p);
+    const trend = getPressureTrend(ENV.pressure);
 
-    // Pressure (max 15)
-    if (p >= 1012 && p <= 1020) score += 10;
+    // ===== PRESSURE =====
+    if (ENV.pressure >= 1012 && ENV.pressure <= 1020) score += 10;
     else score += 5;
 
     if (trend === "rising") score += 5;
     if (trend === "falling") score -= 5;
 
-    // Wind (max 15)
-    if (w >= 5 && w <= 15) score += 15;
-    else if (w >= 3) score += 8;
+    // ===== WIND =====
+    if (ENV.wind >= 5 && ENV.wind <= 15) score += 15;
+    else if (ENV.wind >= 3) score += 8;
     else score += 3;
 
-    // Cloud (max 15)
-    if (c >= 30 && c <= 70) score += 15;
-    else if (c >= 20) score += 8;
+    // ===== CLOUD =====
+    if (ENV.cloud >= 30 && ENV.cloud <= 70) score += 15;
+    else if (ENV.cloud >= 20) score += 8;
     else score += 3;
 
-    // Light (max 15)
-    if (light >= 40 && light <= 70) score += 15;
-    else if (light >= 25) score += 8;
+    // ===== LIGHT =====
+    if (ENV.light >= 40 && ENV.light <= 70) score += 15;
+    else if (ENV.light >= 25) score += 8;
     else score += 3;
 
-    // Temp (max 20)
-    if (airTemp >= 18 && airTemp <= 24) score += 20;
-    else if (airTemp >= 15) score += 10;
+    // ===== TEMP (USE WATER NOT AIR 🔥) =====
+    if (ENV.surface >= 18 && ENV.surface <= 24) score += 20;
+    else if (ENV.surface >= 15) score += 10;
     else score += 5;
 
-    // Time windows (max 20)
+    // ===== DEPTH QUALITY =====
+    if (ENV.depth >= 2 && ENV.depth <= 5) score += 10;
+    else score += 5;
+
+    // ===== OXYGEN =====
+    if (ENV.oxygen >= 7) score += 10;
+    else if (ENV.oxygen >= 5) score += 5;
+    else score -= 5;
+
+    // ===== TIME WINDOWS =====
     const h = new Date().getHours();
     if (h >= 5 && h <= 9) score += 10;
     if (h >= 17 && h <= 20) score += 10;
