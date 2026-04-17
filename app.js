@@ -1570,7 +1570,8 @@ if (baseSPI > envScore + 10) {
 // normalize ENV (0–1)
 let envFactor = envScore / 100;
 
-// soft floor so ENV doesn’t kill everything let envWeight = 0.6 + (envFactor * 0.4); // range: 0.6 → 1.0
+// soft floor so ENV doesn’t kill everything 
+let envWeight = 0.6 + (envFactor * 0.4); // range: 0.6 → 1.0
 
 // apply damping
 baseSPI = baseSPI * envWeight;
