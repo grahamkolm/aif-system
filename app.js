@@ -2,31 +2,13 @@
 // 🌍 0. GLOBAL BASE START
 // ===================================================== 
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/service-worker.js")
-      .then(reg => console.log("Service Worker registered:", reg.scope))
-      .catch(err => console.error("Service Worker failed:", err));
-  });
-}
-
 // ============================
-// 🧠 CORE STATE & LOCAL STORAGE
+// 🧠 CORE STATE
 // ============================
 let SPI = 50;
 let lastSPI = null;
 let lastConditions = {};
-let currentSession = [];
-
-function saveSession(session) {
-  let sessions = JSON.parse(localStorage.getItem("aif_sessions")) || [];
-  sessions.push(session);
-  localStorage.setItem("aif_sessions", JSON.stringify(sessions)); }
-
-function getSessions() {
-  return JSON.parse(localStorage.getItem("aif_sessions")) || []; 
-}
-
+let currentSession = null;
 
 // ============================
 // 🌍 LOCATION + MAP
@@ -270,8 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
     createTicks();
     positionDirections();
     storeScoutScreen();
-    //applyScoutENV();
-    envScore = calculateENV(ENV);
 
     // =============================
     // 🎯 UI INTERACTIONS
@@ -890,11 +870,8 @@ function getBestZone() {
 function fetchWeatherSafe() {
 
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
-const lat = userLocation.lat || -26.2;
-const lon = userLocation.lon || 28.0;
 
-fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`)
-
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY}`)
         .then(r => r.json())
         .then(data => {
     console.log("Weather data received:", data);
@@ -1227,36 +1204,25 @@ if (typeof confScoreValue === "number") {
 // 📊  SCOUT and TILE ENGINE START
 // =====================================================
 
-function applyScoutImpact(spi, scout) {
-
-    if (!scout) return spi;
+function applyScoutImpact(spi) {
 
     let bonus = 0;
 
-    // 🎣 Activity (strong signal)
-    if (scout.activity === "bubbles") bonus += 8;
-    if (scout.activity === "rolling") bonus += 15;
+    if (scoutData.activity === "bubbles") bonus += 10;
+    if (scoutData.activity === "rolling") bonus += 15;
 
-    // 🌬 Wind observation
-    if (scout.wind === "windblown") bonus += 6;
-    if (scout.wind === "calm") bonus -= 6;
+    if (scoutData.wind === "windblown") bonus += 8;
+    if (scoutData.wind === "calm") bonus -= 5;
 
-    // 🌊 Water clarity
-    if (scout.clarity === "stained") bonus += 4;
-    if (scout.clarity === "murky") bonus -= 6;
-
-    // 🐦 Birds (feeding indicator)
-    if (scout.birds === "some") bonus += 4;
-    if (scout.birds === "active") bonus += 8;
-
-    // 🪵 Structure
-    if (scout.structure === "weed") bonus += 5;
-    if (scout.structure === "dropoff") bonus += 8;
-
-    // 🔒 Clamp final
     return Math.max(0, Math.min(100, spi + bonus)); 
 }
 
+function calculateAverageSPI() {
+    if (drops.length === 0) return 0;
+
+    let total = drops.reduce((sum, d) => sum + d.spi, 0);
+    return parseFloat((total / drops.length).toFixed(1));
+}
 
 
 // =====================================================
@@ -1470,19 +1436,7 @@ function renderDashboard(data) {
         ENV.depth || 3
     );
 
-    // ================= ENV UPDATE ================= 
-  ENV.air = data.main.temp; 
-  ENV.pressure = data.main.pressure; 
-  ENV.wind = data.wind.speed * 3.6; 
-  ENV.cloud = data.clouds.all;
-
-  // fallback depth + light
-  ENV.depth = ENV.depth || 3;
-  ENV.light = ENV.light || 50;
-
-  // oxygen (already calculated later, but safe here too) ENV.oxygen = estimateOxygen(ENV.surface, ENV.wind, ENV.cloud);
-
-      // ================= COMPASS DIFF =================
+    // ================= COMPASS DIFF =================
     diff = 0;
 
     if (compassHeading != null) {
@@ -1518,38 +1472,14 @@ function renderDashboard(data) {
 
     const result = calculateSPI(p, w, c, windDir, t, light, depth);
 
-// 1️⃣ RAW SPI (pure physics)
-let rawSPI = result.score;
+    let baseSPI = result.score;
 
-// 2️⃣ SOFT SCOUT (limited influence)
-let scoutImpact = calculateScoutImpact(scoutData) * 0.4;
-
-// 3️⃣ COMBINE FIRST
-let combinedSPI = rawSPI + scoutImpact;
-
-// 4️⃣ THEN SMOOTH (CRITICAL ORDER)
-let finalSPI;
-
-if (lastSPI !== null) {
-    finalSPI = Math.round((combinedSPI * 0.6) + (lastSPI * 0.4)); } else {
-    finalSPI = Math.round(combinedSPI);
-}
-
-// 5️⃣ HARD LIMIT CHANGE SPEED (ANTI-JUMP) if (lastSPI !== null) {
-    const maxStep = 5;
-    const diff = finalSPI - lastSPI;
-
-    if (Math.abs(diff) > maxStep) {
-        finalSPI = lastSPI + Math.sign(diff) * maxStep;
+    if (lastSPI !== null) {
+        baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3));
     }
-}
 
-// 6️⃣ CLAMP
-finalSPI = Math.max(0, Math.min(100, finalSPI));
-
-// 7️⃣ SAVE
-lastSPI = finalSPI;
-SPI = finalSPI;
+    const scoutImpact = calculateScoutImpact(scoutData);
+    const finalSPI = baseSPI = baseSPI + scoutImpact;
 
     console.log("SPI:", finalSPI);
 
@@ -1560,7 +1490,7 @@ SPI = finalSPI;
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
     // =====================================================
 
-    envScore = calculateENV(ENV);
+    envScore = calculateENV(p, c, w, light, t);
 
     const envEl = document.getElementById("envScore");
     if (envEl) envEl.innerText = envScore + "%";
@@ -1777,55 +1707,57 @@ function updateFromSensor(data) {
 }
 
 // ================= ENV SCORE ================= 
-function calculateENV(ENV) {
+function calculateENV(p, c, w, light, airTemp) {
 
-    let score = 0;
+    let score = 50;
 
-    const trend = getPressureTrend(ENV.pressure);
+    const trend = getPressureTrend(p);
 
-    // ===== PRESSURE =====
-    if (ENV.pressure >= 1012 && ENV.pressure <= 1020) score += 10;
-    else score += 5;
+    // Pressure
+    if (p >= 1012 && p <= 1020) score += 8;
+    else if (p < 1008 || p > 1025) score -= 8;
 
-    if (trend === "rising") score += 5;
-    if (trend === "falling") score -= 5;
+    if (trend === "rising") score += 10;
+    if (trend === "falling") score -= 12;
 
-    // ===== WIND =====
-    if (ENV.wind >= 5 && ENV.wind <= 15) score += 15;
-    else if (ENV.wind >= 3) score += 8;
-    else score += 3;
+    // Wind
+    if (w >= 5 && w <= 15) score += 12;
+    else if (w < 2) score -= 10;
+    else if (w > 20) score -= 6;
 
-    // ===== CLOUD =====
-    if (ENV.cloud >= 30 && ENV.cloud <= 70) score += 15;
-    else if (ENV.cloud >= 20) score += 8;
-    else score += 3;
+    // Cloud
+    if (c >= 30 && c <= 70) score += 10;
+    else if (c < 10) score -= 6;
+    else if (c > 90) score -= 4;
 
-    // ===== LIGHT =====
-    if (ENV.light >= 40 && ENV.light <= 70) score += 15;
-    else if (ENV.light >= 25) score += 8;
-    else score += 3;
+    // Light
+    if (light >= 40 && light <= 70) score += 10;
+    else if (light < 20) score -= 6;
+    else if (light > 85) score -= 8;
 
-    // ===== TEMP (USE WATER NOT AIR 🔥) =====
-    if (ENV.surface >= 18 && ENV.surface <= 24) score += 20;
-    else if (ENV.surface >= 15) score += 10;
-    else score += 5;
+    // Temp trend
+    const tempTrend = getTempTrend(airTemp);
+    if (tempTrend === "warming") score += 8;
+    if (tempTrend === "cooling_fast") score -= 10;
 
-    // ===== DEPTH QUALITY =====
-    if (ENV.depth >= 2 && ENV.depth <= 5) score += 10;
-    else score += 5;
+    if (airTemp < 15) score -= 5;
 
-    // ===== OXYGEN =====
-    if (ENV.oxygen >= 7) score += 10;
-    else if (ENV.oxygen >= 5) score += 5;
-    else score -= 5;
-
-    // ===== TIME WINDOWS =====
+    // Time windows
     const h = new Date().getHours();
-    if (h >= 5 && h <= 9) score += 10;
-    if (h >= 17 && h <= 20) score += 10;
+    if (h >= 5 && h <= 9) score += 12;
+    if (h >= 17 && h <= 20) score += 14;
+    if (h >= 11 && h <= 15) score -= 6;
 
-    // 🔒 FINAL CLAMP
-    return Math.max(0, Math.min(100, Math.round(score))); 
+    // Moon
+    const moon = getMoonPhase();
+    if (moon === "Full") score += 5;
+    if (moon === "New") score += 4;
+
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));   
+    }
+
+return score;
 }
 
 // =====================================================
@@ -2273,31 +2205,24 @@ function checkSensors() {
     fetch("http://192.168.4.1/data")
         .then(res => res.json())
         .then(data => {
-         // 🔴 SAVE SENSOR DATA
-    currentSession.push({
-      depth: data.depth || 0,
-      waterTemp: data.waterTemp || 0,
-      turbidity: data.turbidity || 0,
-      airTemp: data.airTemp || 0,
-      pressure: data.pressure || 0,
-      timestamp: Date.now()
-    });
 
-    // ✅ DISPLAY CORRECT VALUES (FIXED STRUCTURE)
-    document.getElementById("sensorStatusList").innerHTML = `
-      <div>Air Temp: ${data.airTemp ?? "--"} °C</div>
-      <div>Pressure: ${data.pressure ?? "--"} hPa</div>
-      <div>Water Temp: ${data.waterTemp ?? "--"} °C</div>
-      <div>Turbidity: ${data.turbidity ?? "--"}</div>
-      <div>Depth: ${data.depth ?? "--"} m</div>
-    `;
-  })
-  .catch(() => {
-    document.getElementById("sensorStatusList").innerHTML = `
-      <div style="color:#ff3b3b;">❌ Connection failed</div>
-      <div style="opacity:0.7; margin-top:6px;">Check WiFi (AIF Sensor)</div>
-    `;
-  });
+   document.getElementById("sensorStatusList").innerHTML = `
+    <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
+    <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
+    <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
+    <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
+    <div>Light ${data.light ? "✅" : "❌"}</div>
+    <div>Depth ${data.depth ? "✅" : "❌"}</div>
+    <div>Battery ${data.battery ? "✅" : "❌"}</div> `;
+
+        })
+        .catch(() => {
+
+            document.getElementById("sensorStatusList").innerHTML = `
+                <div style="color:#ff3b3b;">❌ Connection failed</div>
+                <div style="opacity:0.7; margin-top:6px;">Check WiFi (AIF Sensor)</div>
+            `;
+        });
 }
 
 function retryConnection() {
@@ -2355,22 +2280,6 @@ function startScan() {
     }, 2000);
 }
 
-function applyScoutToENV() {
-
-    if (scoutData.depth) {
-        ENV.depth = scoutData.depth;
-    }
-
-    if (scoutData.clarity === "murky") {
-        ENV.light = Math.max(20, ENV.light - 20);
-    }
-
-    if (scoutData.activity === "rolling") {
-        ENV.oxygen += 1; // fish active = good oxygen zones
-    }
-}
-
-
 function showScanFailed() {
 
     let screen = document.getElementById("scoutScreen");
@@ -2404,19 +2313,6 @@ function resetTempModel(){
     };
 }
 
-function finishScan() {
-  const session = {
-    id: Date.now(),
-    timestamp: new Date().toISOString(),
-    gps: userLocation,
-    conditions: lastConditions,
-    data: currentSession
-  };
-
-  saveSession(session);
-
-  console.log("Session saved:", session); 
-}
 
 function showSummary(){
 
@@ -2463,32 +2359,37 @@ function showResults(data) {
     `;
 }
 
-function calculateScoutImpact(scout) {
+function calculateScoutImpact(scout){
 
-    let bonus = 0;
+    let score = 0;
 
-    if (!scout) return 0;
+    // 🐟 Activity
+    if(scout.activity === "none") score -= 15;
+    if(scout.activity === "bubbles") score += 5;
+    if(scout.activity === "rolling") score += 15;
 
-    // Activity (most important)
-    if (scout.activity === "bubbles") bonus += 8;
-    if (scout.activity === "rolling") bonus += 15;
+    // 🌊 Clarity
+    if(scout.clarity === "clear") score += 5;
+    if(scout.clarity === "stained") score += 10;
+    if(scout.clarity === "murky") score -= 5;
 
-    // Wind positioning
-    if (scout.wind === "windblown") bonus += 10;
-    if (scout.wind === "calm") bonus -= 5;
+    // 🐦 Birds
+    if(scout.birds === "some") score += 5;
+    if(scout.birds === "active") score += 10;
 
-    // Clarity
-    if (scout.clarity === "stained") bonus += 6;
-    if (scout.clarity === "murky") bonus -= 5;
+    // 🌬 Wind effect
+    if(scout.wind === "bank") score += 10;
+    if(scout.wind === "calm") score -= 5;
 
-    // Birds (feeding indicators)
-    if (scout.birds === "active") bonus += 8;
+    // 🌊 Surface activity
+    if(scout.surface === "medium") score += 5;
+    if(scout.surface === "high") score += 10;
 
-    // Structure (VERY important IRL)
-    if (scout.structure === "dropoff") bonus += 10;
-    if (scout.structure === "weed") bonus += 5;
+    // 🪵 Structure
+    if(scout.structure === "weed") score += 5;
+    if(scout.structure === "dropoff") score += 10;
 
-    return Math.max(-20, Math.min(20, bonus)); 
+    return Math.max(-20, Math.min(20, score)); 
 }
 
 function closeScout(){
