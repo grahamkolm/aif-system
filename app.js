@@ -1502,7 +1502,7 @@ function renderDashboard(data) {
 const result = calculateSPI(p, w, c, windDir, t, light, depth);
 
 // ✅ DEFINE baseSPI properly
-let baseSPI = result.score;
+baseSPI = baseSPI * (0.6 + (envScore / 100 * 0.4));
 
 // =============================
 // 🌍 ENV COUPLING (NEW)
