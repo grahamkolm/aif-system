@@ -2248,8 +2248,7 @@ function checkSensors() {
       <div style="opacity:0.7; margin-top:6px;">Check WiFi (AIF Sensor)</div>
     `;
   });
-
-
+}
 function retryConnection() {
 
     retryCount++;
