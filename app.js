@@ -2144,13 +2144,15 @@ function setupScoutOptions(){
 
     const buttons = document.querySelectorAll(".opt");
 
-    console.log("Scout buttons found:", buttons.length);
-
     buttons.forEach(btn => {
 
         btn.onclick = function(){
 
             const type = this.dataset.type;
+            let value = this.dataset.value;
+
+            // ✅ NORMALIZE VALUES
+            if (value === "slightly-stained") value = "stained";
 
             // remove active from same group
             document.querySelectorAll(`.opt[data-type="${type}"]`)
@@ -2158,11 +2160,22 @@ function setupScoutOptions(){
 
             this.classList.add("active");
 
-            scoutData[type] = this.dataset.value;
+            scoutData[type] = value;
 
-            console.log("Selected:", type, this.dataset.value);
+            console.log("Scout updated:", scoutData);
         };
     });
+}
+
+function continueScout(){
+
+    // 🔒 Save silently
+    localStorage.setItem("scoutData", JSON.stringify(scoutData));
+
+    console.log("Scout saved:", scoutData);
+
+    // 🚀 Go straight to scan
+    showConnectingScreen();
 }
 
 function showConnectingScreen() {
