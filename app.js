@@ -906,9 +906,7 @@ function fetchWeatherSafe() {
         } else {
             console.error("renderDashboard STILL not available");
         }
-    }, 500); // ⬅️ longer delay
-});
-}
+    }, 500);
 
 function updateFromWeather(data) {
 
