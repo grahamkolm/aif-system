@@ -270,6 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
     createTicks();
     positionDirections();
     storeScoutScreen();
+    applyScoutENV();
+    envScore = calculateENV(ENV);
 
     // =============================
     // 🎯 UI INTERACTIONS
@@ -2323,6 +2325,22 @@ function startScan() {
 
     }, 2000);
 }
+
+function applyScoutToENV() {
+
+    if (scoutData.depth) {
+        ENV.depth = scoutData.depth;
+    }
+
+    if (scoutData.clarity === "murky") {
+        ENV.light = Math.max(20, ENV.light - 20);
+    }
+
+    if (scoutData.activity === "rolling") {
+        ENV.oxygen += 1; // fish active = good oxygen zones
+    }
+}
+
 
 function showScanFailed() {
 
