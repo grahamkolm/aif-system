@@ -888,8 +888,11 @@ function getBestZone() {
 function fetchWeatherSafe() {
 
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
+const lat = userLocation.lat || -26.2;
+const lon = userLocation.lon || 28.0;
 
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY}`)
+fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`)
+
         .then(r => r.json())
         .then(data => {
     console.log("Weather data received:", data);
@@ -1497,7 +1500,9 @@ function renderDashboard(data) {
     }
 
     const scoutImpact = calculateScoutImpact(scoutData);
-    const finalSPI = baseSPI = baseSPI + scoutImpact;
+    const finalSPI = Math.max(0, Math.min(100,
+          baseSPI + scoutImpact;
+  ));
 
     console.log("SPI:", finalSPI);
 
@@ -1727,55 +1732,44 @@ function updateFromSensor(data) {
 // ================= ENV SCORE ================= 
 function calculateENV(p, c, w, light, airTemp) {
 
-    let score = 50;
+    let score = 0; // 🔥 start from 0 (not 50)
 
     const trend = getPressureTrend(p);
 
-    // Pressure
-    if (p >= 1012 && p <= 1020) score += 8;
-    else if (p < 1008 || p > 1025) score -= 8;
+    // Pressure (max 15)
+    if (p >= 1012 && p <= 1020) score += 10;
+    else score += 5;
 
-    if (trend === "rising") score += 10;
-    if (trend === "falling") score -= 12;
+    if (trend === "rising") score += 5;
+    if (trend === "falling") score -= 5;
 
-    // Wind
-    if (w >= 5 && w <= 15) score += 12;
-    else if (w < 2) score -= 10;
-    else if (w > 20) score -= 6;
+    // Wind (max 15)
+    if (w >= 5 && w <= 15) score += 15;
+    else if (w >= 3) score += 8;
+    else score += 3;
 
-    // Cloud
-    if (c >= 30 && c <= 70) score += 10;
-    else if (c < 10) score -= 6;
-    else if (c > 90) score -= 4;
+    // Cloud (max 15)
+    if (c >= 30 && c <= 70) score += 15;
+    else if (c >= 20) score += 8;
+    else score += 3;
 
-    // Light
-    if (light >= 40 && light <= 70) score += 10;
-    else if (light < 20) score -= 6;
-    else if (light > 85) score -= 8;
+    // Light (max 15)
+    if (light >= 40 && light <= 70) score += 15;
+    else if (light >= 25) score += 8;
+    else score += 3;
 
-    // Temp trend
-    const tempTrend = getTempTrend(airTemp);
-    if (tempTrend === "warming") score += 8;
-    if (tempTrend === "cooling_fast") score -= 10;
+    // Temp (max 20)
+    if (airTemp >= 18 && airTemp <= 24) score += 20;
+    else if (airTemp >= 15) score += 10;
+    else score += 5;
 
-    if (airTemp < 15) score -= 5;
-
-    // Time windows
+    // Time windows (max 20)
     const h = new Date().getHours();
-    if (h >= 5 && h <= 9) score += 12;
-    if (h >= 17 && h <= 20) score += 14;
-    if (h >= 11 && h <= 15) score -= 6;
+    if (h >= 5 && h <= 9) score += 10;
+    if (h >= 17 && h <= 20) score += 10;
 
-    // Moon
-    const moon = getMoonPhase();
-    if (moon === "Full") score += 5;
-    if (moon === "New") score += 4;
-
-    function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));   
-    }
-
-return score;
+    // 🔒 FINAL CLAMP
+    return Math.max(0, Math.min(100, Math.round(score))); 
 }
 
 // =====================================================
@@ -2397,37 +2391,32 @@ function showResults(data) {
     `;
 }
 
-function calculateScoutImpact(scout){
+function calculateScoutImpact(scout) {
 
-    let score = 0;
+    let bonus = 0;
 
-    // 🐟 Activity
-    if(scout.activity === "none") score -= 15;
-    if(scout.activity === "bubbles") score += 5;
-    if(scout.activity === "rolling") score += 15;
+    if (!scout) return 0;
 
-    // 🌊 Clarity
-    if(scout.clarity === "clear") score += 5;
-    if(scout.clarity === "stained") score += 10;
-    if(scout.clarity === "murky") score -= 5;
+    // Activity (most important)
+    if (scout.activity === "bubbles") bonus += 8;
+    if (scout.activity === "rolling") bonus += 15;
 
-    // 🐦 Birds
-    if(scout.birds === "some") score += 5;
-    if(scout.birds === "active") score += 10;
+    // Wind positioning
+    if (scout.wind === "windblown") bonus += 10;
+    if (scout.wind === "calm") bonus -= 5;
 
-    // 🌬 Wind effect
-    if(scout.wind === "bank") score += 10;
-    if(scout.wind === "calm") score -= 5;
+    // Clarity
+    if (scout.clarity === "stained") bonus += 6;
+    if (scout.clarity === "murky") bonus -= 5;
 
-    // 🌊 Surface activity
-    if(scout.surface === "medium") score += 5;
-    if(scout.surface === "high") score += 10;
+    // Birds (feeding indicators)
+    if (scout.birds === "active") bonus += 8;
 
-    // 🪵 Structure
-    if(scout.structure === "weed") score += 5;
-    if(scout.structure === "dropoff") score += 10;
+    // Structure (VERY important IRL)
+    if (scout.structure === "dropoff") bonus += 10;
+    if (scout.structure === "weed") bonus += 5;
 
-    return Math.max(-20, Math.min(20, score)); 
+    return Math.max(-20, Math.min(20, bonus)); 
 }
 
 function closeScout(){
