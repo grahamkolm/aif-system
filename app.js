@@ -16,7 +16,7 @@ if ("serviceWorker" in navigator) {
 let SPI = 50;
 let lastSPI = null;
 let lastConditions = {};
-let currentSession = null;
+let currentSession = [];
 
 function saveSession(session) {
   let sessions = JSON.parse(localStorage.getItem("aif_sessions")) || [];
@@ -2331,6 +2331,19 @@ function resetTempModel(){
     };
 }
 
+function finishScan() {
+  const session = {
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    gps: userLocation,
+    conditions: lastConditions,
+    data: currentSession
+  };
+
+  saveSession(session);
+
+  console.log("Session saved:", session); 
+}
 
 function showSummary(){
 
