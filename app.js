@@ -868,34 +868,33 @@ function getBestZone() {
 
 
 function fetchWeatherSafe() {
-
+ 
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
-
+ 
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY}`)
         .then(r => r.json())
         .then(data => {
-    console.log("Weather data received:", data);
-
-    if (data && data.main) {
-        renderDashboard(data);
-    } else {
-        console.warn("Invalid weather data", data);
-    }
-            
+            console.log("Weather data received:", data);
+ 
+            if (data && data.main) {
+                renderDashboard(data);
+            } else {
+                console.warn("Invalid weather data", data);
+            }
         })
         .catch(() => {
-    console.warn("Using simulated weather");
-
-    // ❌ ONLY fallback if no previous data
-    if (!lastConditions || !lastConditions.main) {
-        renderDashboard({
-            main: { temp: 22, pressure: 1018 },
-            wind: { speed: 3, deg: 180 },
-            clouds: { all: 40 }
+            console.warn("Using simulated weather");
+ 
+            // ONLY fallback if no previous data
+            if (!lastConditions || !lastConditions.main) {
+                renderDashboard({
+                    main: { temp: 22, pressure: 1018 },
+                    wind: { speed: 3, deg: 180 },
+                    clouds: { all: 40 }
+                });
+            }
         });
-    }
-});
-
+ 
     setTimeout(() => {
         if (typeof renderDashboard === "function") {
             renderDashboard({
@@ -907,7 +906,8 @@ function fetchWeatherSafe() {
             console.error("renderDashboard STILL not available");
         }
     }, 500);
-
+}
+ 
 function updateFromWeather(data) {
 
   if (!ENV.air) {
