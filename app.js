@@ -1103,7 +1103,8 @@ function calculateSPI(p, w, c, windDir, t, light, depth, diff){
     else if (c > 70) score += 10;
     else score += 5;
 
-    // ================= TEMP ================= if (!isCold) {
+    // ================= TEMP ================= 
+    if (!isCold) {
     // normal (warm season)
     if (t >= 18 && t <= 24) score += 25;
     else if (t >= 15) score += 15;
