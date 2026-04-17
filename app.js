@@ -1476,15 +1476,6 @@ function renderDashboard(data) {
   ENV.wind = data.wind.speed * 3.6; 
   ENV.cloud = data.clouds.all;
 
-  // derived (from your model)
-  let temps = calculateWaterTemps(t);
-  if (tempModel.source === "sensor") {
-    temps = tempModel;
-  }
-
-  const surfaceTemp = temps.surface;
-  const bottomTemp = temps.bottom;
-  
   ENV.surface = surfaceTemp;
   ENV.bottom = bottomTemp;
 
