@@ -11,12 +11,22 @@ if ("serviceWorker" in navigator) {
 }
 
 // ============================
-// 🧠 CORE STATE
+// 🧠 CORE STATE & LOCAL STORAGE
 // ============================
 let SPI = 50;
 let lastSPI = null;
 let lastConditions = {};
 let currentSession = null;
+
+function saveSession(session) {
+  let sessions = JSON.parse(localStorage.getItem("aif_sessions")) || [];
+  sessions.push(session);
+  localStorage.setItem("aif_sessions", JSON.stringify(sessions)); }
+
+function getSessions() {
+  return JSON.parse(localStorage.getItem("aif_sessions")) || []; 
+}
+
 
 // ============================
 // 🌍 LOCATION + MAP
