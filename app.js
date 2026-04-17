@@ -1476,9 +1476,6 @@ function renderDashboard(data) {
   ENV.wind = data.wind.speed * 3.6; 
   ENV.cloud = data.clouds.all;
 
-  ENV.surface = surfaceTemp;
-  ENV.bottom = bottomTemp;
-
   // fallback depth + light
   ENV.depth = ENV.depth || 3;
   ENV.light = ENV.light || 50;
