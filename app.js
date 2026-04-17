@@ -1502,8 +1502,21 @@ function renderDashboard(data) {
 const result = calculateSPI(p, w, c, windDir, t, light, depth);
 
 // ✅ DEFINE baseSPI properly
-baseSPI = baseSPI * (0.6 + (envScore / 100 * 0.4));
+let baseSPI = result.score;
 
+// smoothing
+if (lastSPI !== null) {
+    baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3)); }
+
+// ENV influence
+let envWeight = 0.6 + (envScore / 100 * 0.4); baseSPI = baseSPI * envWeight;
+
+// penalties
+if (baseSPI > envScore + 10) {
+    let excess = baseSPI - (envScore + 10);
+    baseSPI -= excess * 0.7;
+}
+    
 // =============================
 // 🌍 ENV COUPLING (NEW)
 // =============================
