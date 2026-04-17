@@ -1040,6 +1040,7 @@ function calculateWaterTemps(airTemp) {
 function calculateSPI(p, w, c, windDir, t, light, depth, diff){
 
     // ===== SAFE DEFAULTS =====
+    let isCold = t <=15;
     p = p ?? 1015;
     w = w ?? 5;
     c = c ?? 50;
@@ -1102,11 +1103,41 @@ function calculateSPI(p, w, c, windDir, t, light, depth, diff){
     else if (c > 70) score += 10;
     else score += 5;
 
-    // ================= TEMP =================
+    // ================= TEMP ================= if (!isCold) {
+    // normal (warm season)
     if (t >= 18 && t <= 24) score += 25;
     else if (t >= 15) score += 15;
     else if (t <= 28) score += 10;
     else score += 5;
+} else {
+    // ❄️ WINTER MODE
+    if (t >= 10 && t <= 15) {
+        score += 18;
+        reasons.push("Cold stable water — big carp feeding windows");
+    } else if (t >= 8) {
+        score += 12;
+        reasons.push("Very cold — slow but targetable fish");
+    } else {
+        score += 6;
+        reasons.push("Extreme cold — minimal movement");
+    }
+}
+
+
+// ❄️ WINTER STABILITY BONUS
+if (isCold) {
+    let trend = getPressureTrend(p);
+ 
+    if (trend === "stable") {
+        score += 12;
+        reasons.push("Stable winter conditions — predictable feeding");
+    }
+ 
+    if (w >= 3 && w <= 10) {
+        score += 6;
+        reasons.push("Light winter wind — oxygen without stress");
+    }
+}
 
     // ================= LIGHT =================
     if (light >= 40 && light <= 70) {
@@ -1238,6 +1269,10 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     if (isNaN(score)) score = 50;
 
     return Math.max(30, Math.min(100, Math.round(score))); 
+}
+
+if (score < 45 && airTemp >= 10) {
+    score += 5;
 }
 
 // =====================================================
@@ -1842,12 +1877,15 @@ function calculateENV(p, c, w, light, airTemp) {
     score += lightScore;
 
     // TEMP (15)
-    let tempScore = 0;
-    if (airTemp >= 18 && airTemp <= 24) tempScore = 15;
-    else if (airTemp >= 15) tempScore = 10;
-    else tempScore = 6;
+let tempScore = 0;
 
-    score += tempScore;
+if (airTemp >= 18 && airTemp <= 24) tempScore = 15; else if (airTemp >= 15) tempScore = 10;
+else if (airTemp >= 12) tempScore = 7;   // 👈 soften cold penalty
+else if (airTemp >= 10) tempScore = 5;
+else tempScore = 3;
+
+score += tempScore;
+
 
     // =============================
     // 🟢 INTERACTION BOOSTS (15 max)
@@ -1884,7 +1922,7 @@ function calculateENV(p, c, w, light, airTemp) {
 
     // Temp stress
     if (airTemp > 30 || airTemp < 10) {
-        score -= 10;
+        score -= 6;
     }
 
     // Pressure instability
