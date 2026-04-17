@@ -1204,19 +1204,6 @@ if (typeof confScoreValue === "number") {
 // 📊  SCOUT and TILE ENGINE START
 // =====================================================
 
-function applyScoutImpact(spi) {
-
-    let bonus = 0;
-
-    if (scoutData.activity === "bubbles") bonus += 10;
-    if (scoutData.activity === "rolling") bonus += 15;
-
-    if (scoutData.wind === "windblown") bonus += 8;
-    if (scoutData.wind === "calm") bonus -= 5;
-
-    return Math.max(0, Math.min(100, spi + bonus)); 
-}
-
 function calculateAverageSPI() {
     if (drops.length === 0) return 0;
 
@@ -1472,19 +1459,15 @@ function renderDashboard(data) {
 
     const result = calculateSPI(p, w, c, windDir, t, light, depth);
 
-    let baseSPI = result.score;
+    let finalSPI = baseSPI;
 
-    if (lastSPI !== null) {
-        baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3));
-    }
+    // 🎣 APPLY SCOUT (controlled)
+    const scoutImpact = calculateScoutImpact(scoutData) * 0.5;
 
-    const scoutImpact = calculateScoutImpact(scoutData);
-    const finalSPI = baseSPI = baseSPI + scoutImpact;
+    finalSPI = finalSPI + scoutImpact;
 
-    console.log("SPI:", finalSPI);
-
-    lastSPI = finalSPI;
-    SPI = finalSPI;
+    // clamp
+    finalSPI = Math.max(0, Math.min(100, Math.round(finalSPI)));
 
     // =====================================================
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
