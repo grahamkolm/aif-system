@@ -1157,54 +1157,85 @@ function calculateSPI(p, w, c, windDir, t, light, depth, diff){
   
 function calculateCONF(SPI, envScore, p, w, c, t) {
 
-    let score = 50;
+    let score = 0;
 
+    // =============================
+    // 🟢 1. ALIGNMENT (max 25)
+    // =============================
     let alignment = Math.abs(SPI - envScore);
+    let alignmentScore = Math.max(0, 25 - alignment * 1.2);
+    score += alignmentScore;
 
-    if (alignment < 10) score += 20;
-    else if (alignment < 20) score += 10;
-    else score -= 10;
+    // =============================
+    // 🟢 2. STABILITY (max 20)
+    // =============================
+    let variability = Math.abs(SPI - (lastSPI ?? SPI));
+    let stabilityScore = Math.max(0, 20 - variability * 1.5);
+    score += stabilityScore;
 
+    // =============================
+    // 🟢 3. PRESSURE (max 15)
+    // =============================
     let trend = getPressureTrend(p);
+    let pressureScore = 0;
 
-    if (trend === "stable") score += 10;
-    if (trend === "rising") score += 5;
-    if (trend === "falling") score -= 10;
+    if (trend === "stable") pressureScore = 15;
+    else if (trend === "rising") pressureScore = 10;
+    else pressureScore = 5;
 
-    if (w >= 5 && w <= 15) score += 8;
-    else if (w < 2 || w > 20) score -= 8;
+    score += pressureScore;
 
-    if (c >= 30 && c <= 70) score += 6;
-    else if (c > 90 || c < 10) score -= 6;
+    // =============================
+    // 🟢 4. ENV QUALITY (max 20)
+    // =============================
+    let envQuality = Math.pow(envScore / 100, 1.3) * 20;
+    score += envQuality;
 
-    if (t >= 18 && t <= 24) score += 10;
-    else if (t < 12 || t > 30) score -= 10;
+    // =============================
+    // 🟢 5. CONDITIONS (max 20)
+    // =============================
+    let conditionScore = 0;
 
-    let variability = Math.abs(SPI - (lastSPI !== undefined ? lastSPI : SPI));
+    if (w >= 5 && w <= 15) conditionScore += 7;
+    if (c >= 30 && c <= 70) conditionScore += 6;
+    if (t >= 18 && t <= 24) conditionScore += 7;
 
-    if (variability < 5) score += 10;
-    else if (variability > 15) score -= 10;
+    score += conditionScore;
 
-    if (SPI > 80 && envScore > 80) score += 5;
-    if (SPI < 40 && envScore < 40) score += 5;
+    // =============================
+    // 🔴 PENALTIES
+    // =============================
+
+    // ENV weakness penalty
+    if (envScore < 80) {
+        score -= (80 - envScore) * 1.2;
+    }
+
+    // SPI unrealistic vs ENV
+    if (SPI > envScore + 12) {
+        score -= (SPI - envScore) * 0.8;
+    }
+
+    // instability penalty
+    if (variability > 10) {
+        score -= (variability - 10) * 2;
+    }
+
+    // extreme conditions
+    if (w > 20 || w < 2) score -= 10;
+    if (t > 30 || t < 10) score -= 10;
+    if (c > 95 || c < 5) score -= 8;
+
+    // =============================
+    // 🎯 NATURAL SCALING (KEY PART)
+    // =============================
+
+    // compress top-end (makes 90+ hard)
+    score = score - (score * 0.08);
 
     if (isNaN(score)) score = 50;
 
-    return Math.max(40, Math.min(95, Math.round(score))); 
-}
-
-let confEl = document.getElementById("confScore");
-if (confEl) {
-    confEl.innerText = confScoreValue + "%"; }
-
-
-// ================= CONF FEEDBACK ================= 
-if (typeof confScoreValue === "number") {
-    if (confScoreValue > 80) {
-        score += 3;
-    } else if (confScoreValue < 50) {
-        score -= 3;
-    }
+    return Math.max(30, Math.min(100, Math.round(score))); 
 }
 
 // =====================================================
