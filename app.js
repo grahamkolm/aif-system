@@ -2249,6 +2249,7 @@ function checkSensors() {
     `;
   });
 }
+
 function retryConnection() {
 
     retryCount++;
