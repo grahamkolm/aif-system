@@ -1206,6 +1206,21 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     let variability = Math.abs(SPI - (lastSPI ?? SPI));
     let stabilityScore = Math.max(0, 20 - variability * 1.5);
     score += stabilityScore;
+    let isCold = t <= 15;
+
+    // ❄️ WINTER CONFIDENCE BOOST
+    if (isCold) {
+    let trend = getPressureTrend(p);
+
+    if (trend === "stable") score += 12;
+    if (trend === "rising") score += 6;
+
+    if (Math.abs(SPI - envScore) < 15) score += 8;
+
+    // cold consistency bonus
+    if (SPI >= 40 && SPI <= 65) score += 6; 
+    }
+  
 
     // =============================
     // 🟢 3. PRESSURE (max 15)
