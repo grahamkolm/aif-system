@@ -865,7 +865,7 @@ function getBestZone() {
 } else {
     return "normal";
 }
-}
+
 
 function fetchWeatherSafe() {
 
@@ -880,7 +880,10 @@ function fetchWeatherSafe() {
         renderDashboard(data);
     } else {
         console.warn("Invalid weather data", data);
-    }).catch(() => {
+    }
+            
+        })
+        .catch(() => {
     console.warn("Using simulated weather");
 
     // ❌ ONLY fallback if no previous data
