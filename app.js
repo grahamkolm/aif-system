@@ -1748,51 +1748,119 @@ function calculateENV(p, c, w, light, airTemp) {
 
     let score = 0;
 
-    const trend = getPressureTrend(p);
+    // =============================
+    // 🟢 CORE DRIVERS (70 total)
+    // =============================
 
-    // ================= PRESSURE (20 max)
-    if (p >= 1012 && p <= 1020) score += 15;
-    else if (p >= 1008 && p <= 1024) score += 10;
-    else score += 5;
+    // PRESSURE (20)
+    let trend = getPressureTrend(p);
+    let pressureScore = 0;
 
-    if (trend === "rising") score += 5;
-    if (trend === "falling") score -= 5;
+    if (p >= 1012 && p <= 1020) pressureScore = 15;
+    else if (p >= 1008 && p <= 1024) pressureScore = 10;
+    else pressureScore = 5;
 
-    // ================= WIND (20 max)
-    if (w >= 5 && w <= 15) score += 20;
-    else if (w >= 3) score += 12;
-    else if (w > 15) score += 6;
-    else score += 4;
+    if (trend === "rising") pressureScore += 5;
+    if (trend === "falling") pressureScore -= 5;
 
-    // ================= CLOUD (15 max)
-    if (c >= 30 && c <= 70) score += 15;
-    else if (c > 70) score += 10;
-    else score += 5;
+    score += pressureScore;
 
-    // ================= LIGHT (15 max)
-    if (light >= 40 && light <= 70) score += 15;
-    else if (light < 20) score += 5;
-    else score += 8;
+    // WIND (15)
+    let windScore = 0;
+    if (w >= 5 && w <= 15) windScore = 15;
+    else if (w >= 3) windScore = 10;
+    else if (w > 15) windScore = 6;
+    else windScore = 4;
 
-    // ================= TEMP TREND (15 max)
-    const tempTrend = getTempTrend(airTemp);
+    score += windScore;
 
-    if (tempTrend === "warming") score += 10;
-    if (tempTrend === "cooling_fast") score -= 8;
+    // CLOUD (10)
+    let cloudScore = 0;
+    if (c >= 30 && c <= 70) cloudScore = 10;
+    else if (c > 70) cloudScore = 7;
+    else cloudScore = 4;
 
-    if (airTemp >= 18 && airTemp <= 24) score += 5;
+    score += cloudScore;
 
-    // ================= TIME WINDOW (15 max)
-    const h = new Date().getHours();
+    // LIGHT (10)
+    let lightScore = 0;
+    if (light >= 40 && light <= 70) lightScore = 10;
+    else if (light < 20) lightScore = 5;
+    else lightScore = 6;
 
-    if (h >= 5 && h <= 9) score += 12;
-    else if (h >= 17 && h <= 20) score += 14;
+    score += lightScore;
+
+    // TEMP (15)
+    let tempScore = 0;
+    if (airTemp >= 18 && airTemp <= 24) tempScore = 15;
+    else if (airTemp >= 15) tempScore = 10;
+    else tempScore = 6;
+
+    score += tempScore;
+
+    // =============================
+    // 🟢 INTERACTION BOOSTS (15 max)
+    // =============================
+
+    // Wind + Cloud synergy
+    if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
+        score += 8;
+    }
+
+    // Pressure + Temp stability
+    if (p > 1015 && airTemp >= 18 && airTemp <= 24) {
+        score += 5;
+    }
+
+    // Low light + cloud (feeding confidence)
+    if (light < 60 && c >= 40) {
+        score += 2;
+    }
+
+    // =============================
+    // 🔴 CONFLICT PENALTIES
+    // =============================
+
+    // Bright + no cloud (harsh conditions)
+    if (light > 80 && c < 20) {
+        score -= 10;
+    }
+
+    // No wind + clear sky
+    if (w < 2 && c < 20) {
+        score -= 10;
+    }
+
+    // Temp stress
+    if (airTemp > 30 || airTemp < 10) {
+        score -= 10;
+    }
+
+    // Pressure instability
+    if (trend === "falling" && p < 1008) {
+        score -= 8;
+    }
+
+    // =============================
+    // ⏱ TIME FACTOR (10)
+    // =============================
+
+    let h = new Date().getHours();
+
+    if (h >= 5 && h <= 9) score += 8;
+    else if (h >= 17 && h <= 20) score += 10;
     else if (h >= 11 && h <= 15) score -= 5;
 
-    // ================= FINAL CLAMP (CRITICAL FIX)
-    score = Math.max(0, Math.min(100, Math.round(score)));
+    // =============================
+    // 🎯 NON-LINEAR SCALING (KEY)
+    // =============================
 
-    return score;
+    score = Math.pow(score / 100, 1.2) * 100;
+
+    // =============================
+    // FINAL
+    // =============================
+    return Math.max(0, Math.min(100, Math.round(score))); 
 }
 
 // =====================================================
