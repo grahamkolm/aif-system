@@ -2223,6 +2223,18 @@ function checkSensors() {
     fetch("http://192.168.4.1/data")
         .then(res => res.json())
         .then(data => {
+        // store incoming sensor data
+        currentSession.push({
+          depth: data.depth,
+          waterTemp: data.waterTemp,
+          turbidity: data.turbidity,
+          airTemp: data.airTemp,
+          pressure: data.pressure,
+          timestamp: Date.now()
+    });
+
+});
+         
 
    document.getElementById("sensorStatusList").innerHTML = `
     <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
