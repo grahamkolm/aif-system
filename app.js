@@ -1519,7 +1519,7 @@ function renderDashboard(data) {
 
     const scoutImpact = calculateScoutImpact(scoutData);
     const finalSPI = Math.max(0, Math.min(100,
-          baseSPI + scoutImpact;
+          baseSPI + scoutImpact
   ));
 
     console.log("SPI:", finalSPI);
