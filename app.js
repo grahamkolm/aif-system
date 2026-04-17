@@ -2223,37 +2223,32 @@ function checkSensors() {
     fetch("http://192.168.4.1/data")
         .then(res => res.json())
         .then(data => {
-        // store incoming sensor data
-        currentSession.push({
-          depth: data.depth,
-          waterTemp: data.waterTemp,
-          turbidity: data.turbidity,
-          airTemp: data.airTemp,
-          pressure: data.pressure,
-          timestamp: Date.now()
+         // 🔴 SAVE SENSOR DATA
+    currentSession.push({
+      depth: data.depth || 0,
+      waterTemp: data.waterTemp || 0,
+      turbidity: data.turbidity || 0,
+      airTemp: data.airTemp || 0,
+      pressure: data.pressure || 0,
+      timestamp: Date.now()
     });
 
-});
-         
+    // ✅ DISPLAY CORRECT VALUES (FIXED STRUCTURE)
+    document.getElementById("sensorStatusList").innerHTML = `
+      <div>Air Temp: ${data.airTemp ?? "--"} °C</div>
+      <div>Pressure: ${data.pressure ?? "--"} hPa</div>
+      <div>Water Temp: ${data.waterTemp ?? "--"} °C</div>
+      <div>Turbidity: ${data.turbidity ?? "--"}</div>
+      <div>Depth: ${data.depth ?? "--"} m</div>
+    `;
+  })
+  .catch(() => {
+    document.getElementById("sensorStatusList").innerHTML = `
+      <div style="color:#ff3b3b;">❌ Connection failed</div>
+      <div style="opacity:0.7; margin-top:6px;">Check WiFi (AIF Sensor)</div>
+    `;
+  });
 
-   document.getElementById("sensorStatusList").innerHTML = `
-    <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
-    <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
-    <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
-    <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
-    <div>Light ${data.light ? "✅" : "❌"}</div>
-    <div>Depth ${data.depth ? "✅" : "❌"}</div>
-    <div>Battery ${data.battery ? "✅" : "❌"}</div> `;
-
-        })
-        .catch(() => {
-
-            document.getElementById("sensorStatusList").innerHTML = `
-                <div style="color:#ff3b3b;">❌ Connection failed</div>
-                <div style="opacity:0.7; margin-top:6px;">Check WiFi (AIF Sensor)</div>
-            `;
-        });
-}
 
 function retryConnection() {
 
