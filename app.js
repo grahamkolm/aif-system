@@ -865,6 +865,7 @@ function getBestZone() {
 } else {
     return "normal";
 }
+}
 
 
 function fetchWeatherSafe() {
