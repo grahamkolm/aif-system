@@ -836,12 +836,20 @@ html, body {
 .scout-title {
     font-size: 24px;
     font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(0,255,166,0.25);
 }
 
 .scout-sub {
     font-size: 13px;
     opacity: 0.6;
 }
+
+.scout-sub .highlight (
+    color: #ffffff;
+    font-weight: 500;
+}
+
 
 /* SECTIONS */
 .scout-section {
