@@ -898,18 +898,6 @@ function fetchWeatherSafe() {
                 });
             }
         });
- 
-    setTimeout(() => {
-        if (typeof renderDashboard === "function") {
-            renderDashboard({
-                main: { temp: 22, pressure: 1018 },
-                wind: { speed: 3, deg: 180 },
-                clouds: { all: 40 }
-            });
-        } else {
-            console.error("renderDashboard STILL not available");
-        }
-    }, 500);
 }
  
 function updateFromWeather(data) {
@@ -1034,6 +1022,16 @@ function calculateWaterTemps(airTemp) {
 // =====================================================
 // 📊 WEAHTER ENGINE END
 // =====================================================
+
+    envScore = calculateENV(p, c, w, light, t);
+
+    const envEl = document.getElementById("envScore");
+    if (envEl) envEl.innerText = envScore + "%";
+
+    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
+    const confEl = document.getElementById("confScore");
+    if (confEl) confEl.innerText = confScoreValue + "%";
 
 // =====================================================
 // 📊 SPI ENGINE
@@ -1583,21 +1581,14 @@ if (baseSPI > envScore + 10) {
 // =============================
 
 // normalize ENV (0–1)
-let envFactor = envScore / 100;
+let envDiff = baseSPI - envScore;
+    baseSPI -= envDiff * 0.25;
 
 // soft floor so ENV doesn’t kill everything 
 let envWeight = 0.6 + (envFactor * 0.4); // range: 0.6 → 1.0
 
 // apply damping
 baseSPI = baseSPI * envWeight;
-
-// =============================
-// ⚠️ OVERPERFORMANCE PENALTY
-// =============================
-if (baseSPI > envScore + 10) {
-    let excess = baseSPI - (envScore + 10);
-    baseSPI -= excess * 0.7;
-}
 
 // =============================
 // 🎯 SOFT CEILING (NOT A CAP)
@@ -1614,11 +1605,7 @@ if (envScore < 85) {
 // =============================
 baseSPI = Math.max(10, Math.min(98, Math.round(baseSPI))); 
 
-    
-// smooth with previous
-if (lastSPI !== null) {
-    baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3)); }
-
+   
 // 🎣 APPLY SCOUT (controlled)
 let finalSPI = baseSPI;
 
@@ -1638,15 +1625,6 @@ SPI = finalSPI;
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
     // =====================================================
 
-    envScore = calculateENV(p, c, w, light, t);
-
-    const envEl = document.getElementById("envScore");
-    if (envEl) envEl.innerText = envScore + "%";
-
-    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
-
-    const confEl = document.getElementById("confScore");
-    if (confEl) confEl.innerText = confScoreValue + "%";
 
     // =====================================================
     // 🎨 6. COLORS (NOW SAFE)
