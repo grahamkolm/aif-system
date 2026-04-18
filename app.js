@@ -1329,7 +1329,8 @@ function updateAllTiles(data) {
 // =====================================================
 function getAirStatus(temp) {
   if (temp >= 15 && temp <= 24) return "green";
-  if (temp >= 10 && temp <= 28) return "orange";
+  if (temp >= 10 && temp <= 28) return "green";
+  if (temp >= 7 && temp <= 24) return "orange";
   return "red";
 }
 
@@ -1582,7 +1583,7 @@ if (baseSPI > envScore + 10) {
 
 // normalize ENV (0–1)
 let envDiff = baseSPI - envScore;
-    baseSPI -= envDiff * 0.25;
+    baseSPI -= envDiff * 0.15;
 
 // soft floor so ENV doesn’t kill everything 
     let envFactor = envScore / 100;
@@ -1653,8 +1654,8 @@ SPI = finalSPI;
     const confText = document.getElementById("confScore");
 
     if (spiText) spiText.style.color = spiColor;
-    if (envText) envText.style.color = "#ffffff";
-    if (confText) confText.style.color = "#ffffff";
+    if (envText) envText.style.color = envColor";
+    if (confText) confText.style.color = "confColor";
 
     if (envCircle) {
         envCircle.style.borderColor = envColor;
@@ -1891,7 +1892,7 @@ function calculateENV(p, c, w, light, airTemp) {
     score += tempScore;
 
     if (airTemp <= 15) {
-        score *= 0.75;
+        score *= 0.85;
     }
 
     // =============================
