@@ -2396,12 +2396,15 @@ function setupScoutOptions(){
 
 function continueScout(){
 
-    // 🔒 Save silently
+    if (Object.keys(scoutData.length < 2) {
+        alert ("Select at least 2 observations");
+        return;
+    }
+    
     localStorage.setItem("scoutData", JSON.stringify(scoutData));
 
     console.log("Scout saved:", scoutData);
 
-    // 🚀 Go straight to scan
     showConnectingScreen();
 }
 
