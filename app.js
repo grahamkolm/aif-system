@@ -1622,7 +1622,27 @@ console.log("SPI:", finalSPI);
 
 lastSPI = finalSPI;
 SPI = finalSPI;
-let displaySPI = getSeasonAdjustedSPI(SPI, t);
+// =============================
+// 🎯 DISPLAY ADJUSTMENTS (FINAL LAYER)
+// =============================
+
+// seasonal boost
+let displaySPI = SPI;
+    
+displaySPI = getSeasonAdjustedSPI(SPI, t);
+
+// wind reality check
+if (w < 2) {
+    displaySPI -= 5;
+}
+
+// ENV limiter
+if (envScore < 45) {
+    displaySPI -= (45 - envScore) * 0.4; }
+
+// clamp
+displaySPI = Math.max(0, Math.min(100, Math.round(displaySPI)));
+
     // =====================================================
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
     // =====================================================
@@ -1699,7 +1719,7 @@ let displaySPI = getSeasonAdjustedSPI(SPI, t);
     // =====================================================
 
     updateSPI(displaySPI);
-    bubbleIntensity = finalSPI / 100;
+    bubbleIntensity = displaySPI / 100;
 
     // =====================================================
     // 🫧 11. OXYGEN SYSTEM
