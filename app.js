@@ -230,7 +230,8 @@ function showCONFInsight() {
 // =====================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-
+    setupScoutOptions();
+});
     // =============================
     // 🌊 SPLASH INIT
     // =============================
