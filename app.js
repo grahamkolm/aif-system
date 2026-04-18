@@ -2376,19 +2376,14 @@ function setScout(type, value) {
     console.log("Scout:", scoutData);
 }
 
-function openScout(){
-
-    console.log("Scout mode opened");
-
+function openScout() {
     const screen = document.getElementById("scoutScreen");
-    if (!screen) return;
-
     screen.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
 
-    // 🔥 IMPORTANT
-    setupScoutOptions();
-    setTimeout(setupScoutOptions, 50);
+    // 🔥 Important: delay until DOM is visible
+    setTimeout(() => {
+        setupScoutOptions();
+    }, 50);
 }
 
 function setupScoutOptions(){
