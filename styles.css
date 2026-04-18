@@ -700,10 +700,6 @@ html, body {
 }
 
 /* ================= SCREENS ================= */ 
-.hidden {
-    display: none !important;
-}
-
 .overlay-screen {
     position: fixed;
     inset: 0;
@@ -787,17 +783,6 @@ html, body {
     flex-wrap: wrap;
 }
 
-/* 🔘 BUTTON STYLE */
-.tap.option {
-    padding: 10px 14px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
 /* ✨ HOVER */
 .tap.option:hover {
     background: rgba(0,255,156,0.1);
@@ -845,7 +830,7 @@ html, body {
     opacity: 0.6;
 }
 
-.scout-sub .highlight (
+.scout-sub .highlight {
     color: #ffffff;
     font-weight: 500;
     text-shadow: 0 0 6px rgba(255,255,255,0.2);
@@ -869,23 +854,6 @@ html, body {
     flex-wrap: wrap;
     gap: 8px;
 }
-
-/* BUTTONS */
-.tap.option {
-    padding: 8px 12px;
-    border-radius: 20px;
-    backgrou.nd: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-/* ACTIVE STATE */
-.tap.option.active {
-    background: rgba(0,255,156,0.2);
-    border-color: #00ffa6;
-    box-shadow: 0 0 8px rgba(0,255,156,0.4); }
 
 /* CTA */
 .scout-btn {
