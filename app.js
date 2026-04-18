@@ -1507,7 +1507,7 @@ function renderDashboard(data) {
     const depth = data.depth || 3;
 
     windDir = data.wind?.deg || 0;
-
+    
     const tacticalData = { light, depth, wind: w };
 
     showInsight(
@@ -1622,7 +1622,7 @@ console.log("SPI:", finalSPI);
 
 lastSPI = finalSPI;
 SPI = finalSPI;
-
+let displaySPI = getSeasonAdjustedSPI(SPI, t);
     // =====================================================
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
     // =====================================================
@@ -1698,7 +1698,7 @@ SPI = finalSPI;
     // 🎨 10. VISUAL ENGINE
     // =====================================================
 
-    updateSPI(finalSPI);
+    updateSPI(displaySPI);
     bubbleIntensity = finalSPI / 100;
 
     // =====================================================
@@ -1958,6 +1958,21 @@ function calculateENV(p, c, w, light, airTemp) {
     // FINAL
     // =============================
     return Math.max(0, Math.min(100, Math.round(score))); 
+}
+
+function getSeasonAdjustedSPI(spi, temp) {
+
+    const isWinter = temp <= 15;
+
+    if (!isWinter) return spi;
+
+    // winter scaling curve
+    if (spi >= 70) return spi; // already high
+    if (spi >= 50) return spi + 10;
+    if (spi >= 35) return spi + 15;
+    if (spi >= 25) return spi + 18;
+
+    return spi + 10;
 }
 
 // =====================================================
