@@ -1654,8 +1654,8 @@ SPI = finalSPI;
     const confText = document.getElementById("confScore");
 
     if (spiText) spiText.style.color = spiColor;
-    if (envText) envText.style.color = envColor";
-    if (confText) confText.style.color = "confColor";
+    if (envText) envText.style.color = envColor;
+    if (confText) confText.style.color = confColor;
 
     if (envCircle) {
         envCircle.style.borderColor = envColor;
