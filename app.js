@@ -1561,7 +1561,7 @@ function renderDashboard(data) {
     // 📊 4. SPI CALCULATION
     // =====================================================
 
-const result = calculateSPI(p, w, c, windDir, t, light, depth);
+const result = calculateSPI(p, w, c, windDir, t, light, depth, diff);
 
 // ✅ DEFINE baseSPI properly
 let baseSPI = result.score;
@@ -1585,7 +1585,8 @@ let envDiff = baseSPI - envScore;
     baseSPI -= envDiff * 0.25;
 
 // soft floor so ENV doesn’t kill everything 
-let envWeight = 0.6 + (envFactor * 0.4); // range: 0.6 → 1.0
+    let envFactor = envScore / 100;
+    let envWeight = 0.6 + (envFactor * 0.4); // range: 0.6 → 1.0
 
 // apply damping
 baseSPI = baseSPI * envWeight;
