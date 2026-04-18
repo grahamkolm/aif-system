@@ -2396,7 +2396,7 @@ function setupScoutOptions(){
 
 function continueScout(){
 
-    if (Object.keys(scoutData.length < 2) {
+    if (Object.keys(scoutData).length < 2) {
         alert ("Select at least 2 observations");
         return;
     }
