@@ -823,6 +823,7 @@ html, body {
     font-weight: 600;
     letter-spacing: 0.5px;
     text-shadow: 0 0 8px rgba(0,255,166,0.25);
+    color: var(--green-main);
 }
 
 .scout-sub {
@@ -861,7 +862,7 @@ html, body {
     padding: 14px;
     text-align: center;
     border-radius: 14px;
-    background: linear-gradient(135deg, #00ffa6, #00cfff);
+    background: linear-gradient(135deg, var(--green-main), #00c48c);
     color: black;
     font-weight: bold;
 }
