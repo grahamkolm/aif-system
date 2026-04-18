@@ -39,6 +39,12 @@ const ENV = {
     oxygen: null
 };
 
+let forecastData = [
+    { date: "Today", spi: 60 },
+    { date: "Tomorrow", spi: 72 },
+    { date: "Day 3", spi: 78 }
+];
+
 const SOURCE = {
     air: "none",
     surface: "none",
@@ -1702,17 +1708,15 @@ displaySPI = Math.max(0, Math.min(100, Math.round(displaySPI)));
         ...(tempAnalysis.insights || [])
     ];
 
-    const status = document.getElementById("tactical");
-    if (status) {
-    if (combinedReasons.length > 0) {
-        status.innerHTML = combinedReasons
-            .slice(0, 3) // limit to 3 insights
-            .map(r => `<div>${r}</div>`)
-            .join("");
-    } else {
-        status.innerText = "Stable conditions";
-    }
-}
+    updateTacticalBar(
+    SPI,
+    envScore,
+    confScoreValue,
+    ENV,
+    lastSPI,
+    forecastData || []
+);
+
 
     // =====================================================
     // 🎨 10. VISUAL ENGINE
