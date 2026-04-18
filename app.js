@@ -610,20 +610,24 @@ function getStableWindow(forecastData) {
     return window;
 }
 
-function getWindowText(window) {
+function getWindowText(window, forecastData) {
 
-    if (!window) return null; // ✅ cleaner
+    if (!window || !forecastData) return null;
 
-    const today = new Date().toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short"
-    }).replace(",", "");
+    const avgSPI = forecastData
+        .slice(0, 3)
+        .reduce((sum, d) => sum + d.spi, 0) / 3;
 
-    if (today === window[0] || today === window[1]) {
-        return "🚨 Window is OPEN — fish NOW";
+    if (avgSPI < 50) {
+        return `⚠️ Weak window: ${window[0]} → ${window[1]}`;
     }
 
-    return `🎯 Best fishing window: ${window[0]} → ${window[1]}`; }
+    if (avgSPI < 65) {
+        return `🎯 Moderate window: ${window[0]} → ${window[1]}`;
+    }
+
+    return `🔥 Strong feeding window: ${window[0]} → ${window[1]}`; 
+}
 
 // =====================================================
 // 🔒 8. WINDOW ENGINE END
