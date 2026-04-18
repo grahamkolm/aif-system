@@ -898,6 +898,32 @@ html, body {
     font-weight: bold;
 }
 
+.scout-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: rgba(255,255,255,0.7);
+    font-size: 16px;
+    cursor: pointer;
+
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+
+    transition: all 0.25s ease;
+}
+
+
 .opt {
     padding: 10px 16px;
     border-radius: 20px;
