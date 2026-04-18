@@ -2463,7 +2463,7 @@ function checkSensors() {
 
   if (list) list.innerHTML = "Connecting...";
 
-  return fetch("http://192.168.1.68/data")
+  return fetch("http://192.168.1.160/data")
     .then(res => res.json())
     .then(data => {
 
@@ -2522,7 +2522,7 @@ function startScan() {
 
     setTimeout(() => {
 
-        fetch("http://192.168.1.68/data")
+        fetch("http://192.168.1.160/data")
             .then(res => res.json())
             .then(data => {
             if (data.surfaceTemp && data.bottomTemp) {
