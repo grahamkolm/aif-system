@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"> <title>AIF Dashboard</title>
 
 <link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png"> <meta name="mobile-web-app-capable" content="yes"> <meta name="theme-color" content="#05080d">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -17,6 +20,7 @@
 <div class="bg"></div>
 
 <div id="splash">
+    <canvas id="splashCanvas"></canvas>
     <div class="splash-content">
         <div class="loader">
             <div class ="bar"></div>
@@ -26,7 +30,8 @@
     
 <div id="main" class="main">
 
-<canvas id="waterGraph"></canvas>    
+<canvas id="waterGraph"></canvas>
+    <div class="content">
 
     <!-- ================= HEADER ================= -->
     <div class="header">
@@ -35,140 +40,166 @@
         <div class="subtitle2">Drop • Scan • Strike</div>
     </div>
 
-    <!-- ================= SPI ================= -->
-    <div class="instrument">
-        <div class="spi-container">
+   
+    <!-- ================= SPI ================= --> 
+<div class="instrument">
+  <div class="spi-container">
 
-            <div class="env-circle">
-                <div class="mini-value" id="envScore">--</div>
-                <div class="mini-label">ENV</div>
-            </div>
+    <div class="spi-wrapper">
 
-            <div class="conf-circle">
-                <div class="mini-value" id="confScore">--</div>
-                <div class="mini-label">CONF</div>
-            </div>
+      <!-- REAL GAUGE -->
+      <svg id="spiGauge" viewBox="0 0 300 300">
+        <circle cx="150" cy="150" r="110"
+          stroke="#ffffff"
+          stroke-width="10"
+          fill="none"
+          stroke-dasharray="8 12"/>
 
-            <svg id="spiGauge" viewBox="0 0 300 300">
+        <circle id="spiArc"
+          cx="150"
+          cy="150"
+          r="110"
+          stroke="#ffffff"
+          stroke-width="12"
+          fill="none"
+          stroke-linecap="round"
+          transform="rotate(-90 150 150)"/>
 
-                <circle cx="150" cy="150" r="110"
-                    stroke="#2f4f4f"
-                    stroke-width="10"
-                    fill="none"
-                    stroke-dasharray="8 12"/>
+        <text x="150" y="145" text-anchor="middle"
+          class="spi-number"
+          id="spiValue">--%</text>
 
-                <circle id="spiArc"
-                    cx="150"
-                    cy="150"
-                    r="110"
-                    stroke="#00ff9c"
-                    stroke-width="14"
-                    fill="none"
-                    stroke-linecap="round"
-                    transform="rotate(-90 150 150)"/>
+        <text x="150" y="175"
+          text-anchor="middle"
+          class="spi-label">SPI</text>
+      </svg>
 
-                <text x="150" y="145" text-anchor="middle"
-                    class="spi-number"
-                    id="spiValue">--%</text>
+      <!-- COMPASS (INSIDE WRAPPER ✅) -->
+      <div class="compass-ring">
+        <div id="compassTicks"></div>
+        <div class="direction-label" data-angle="0">N</div> 
+        <div class="direction-label" data-angle="90">E</div> 
+        <div class="direction-label" data-angle="180">S</div> 
+        <div class="direction-label" data-angle="270">W</div>
+      </div>
 
-                <text x="150" y="175"
-                    text-anchor="middle"
-                    class="spi-label">SPI</text>
+      <!-- ENV -->
+      <div class="env-circle">
+        <svg viewBox="0 0 100 100" class="mini-ring">
+          <circle cx="50" cy="50" r="42" class="ring-bg"/>
+          </svg>
+        <div class="mini-value" id="envScore">95%</div>
+        <div class="mini-label">ENV</div>
+      </div>
 
-            </svg>
+      <!-- CONF -->
+      <div class="conf-circle">
+        <svg viewBox="0 0 100 100" class="mini-ring">
+          <circle cx="50" cy="50" r="42" class="ring-bg"/>
+          </svg>
+        <div class="mini-value" id="confScore">83%</div>
+        <div class="mini-label">CONF</div>
+      </div>
 
-        </div>
-    </div>
+    </div> <!-- spi-wrapper -->
+
+  </div> <!-- spi-container -->
+</div> <!-- instrument -->
+
 
     <!-- ================= TACTICAL ================= -->
     <div class="tactical-bar" id="tactical">
         Waiting for environmental data...
     </div>
-
+    
     <!-- ================= TILES ================= -->
     <div class="tile-grid">
 
-    <div class="tile">
+    <div class="tile" id="airTile">
     <i data-lucide="sun"></i>
     <div class="tile-title">air</div>
     <div class="tile-value" id="air">--</div>
     </div>
     
-    <div class="tile">
+    <div class="tile" id="surfaceTile">
     <i data-lucide="waves"></i>
     <div class="tile-title">Surface</div>
     <div class="tile-value" id="surface">--</div>
     </div>
         
-    <div class="tile">
+    <div class="tile" id="bottomTile">
     <i data-lucide="arrow-down"></i>
     <div class="tile-title">Bottom</div>
     <div class="tile-value" id="bottom">--</div>
     </div>
 
-    <div class="tile">
+    <div class="tile" id="pressureTile">
     <i data-lucide="gauge"></i>
     <div class="tile-title">Pressure</div>
     <div class="tile-value" id="pressure">--</div>
     </div>
         
-    <div class="tile">
+    <div class="tile" id="windTile">
     <i data-lucide="wind"></i>
     <div class="tile-title">Wind</div>
     <div class="tile-value" id="wind">--</div>
     </div>
     
-    <div class="tile">
+    <div class="tile" id="cloudTile">
     <i data-lucide="cloud"></i>
     <div class="tile-title">Cloud</div>
     <div class="tile-value" id="cloud">--</div>
     </div>
 
-    <div class="tile">
+    <div class="tile" id="moonTile">
     <i data-lucide="moon"></i>
     <div class="tile-title">Moon</div>
     <div class="tile-value" id="moon">--</div>
     </div>
         
-    <div class="tile">
+    <div class="tile" id="seasonTile">
     <i data-lucide="leaf"></i>
     <div class="tile-title">Season</div>
     <div class="tile-value" id="season">--</div>
     </div>
         
-    <div class="tile">
+    <div class="tile" id="feedTile">
     <i data-lucide="fish"></i>
     <div class="tile-title">Feed</div>
     <div class="tile-value" id="feed">--</div>
     </div>
         
-    <div class="tile">
+    <div class="tile" id="oxygenTile">
     <i data-lucide="droplets"></i>
     <div class="tile-title">Oxygen</div>
     <div class="tile-value" id="oxygen">--</div>
     </div>  
     
-    <div class="tile" id="compassTile">
-    <i data-lucide="compass"></i>
-    <div class="tile-title">compass</div>
-    <div class="tile-value" id="compassDir">Tap</div>
+    <div class="tile" id="lightTile">
+    <i data-lucide="zap"></i>
+    <div class="tile-title">Light</div>
+    <div class="tile-value" id="light">--</div>
+    </div>
+
+    <div class="tile" id="depthTile">
+    <i data-lucide="arrow-down"></i>
+    <div class="tile-title">Depth</div>
+    <div class="tile-value" id="depth">--</div>
     </div>
 
     </div>
 
     <!-- ================= AI ================= -->
-    <div class="ai-box" onclick="toggleAI()">
-        <b>AI Tactical Analysis</b>
-        <div id="aiContent" class="ai-content"></div>
-    </div>
-
-<div id="aiPanel" class="ai-panel collapsed">
-    
+<div id="aiPanel" class="ai-panel">
     <div class="ai-header" onclick="toggleAI()">
         <span>AI Tactical Insight</span>
         <span id="aiToggle">+</span>
     </div>
 
+    <div id="aiContent" class="ai-content">
+        Waiting for analysis...
+        </div>
+    </div>
 </div>
     
 <!-- ================= DOCK ================= --> 
@@ -199,9 +230,9 @@ Map
 Plan 
 </div>  
   
-<div class="dock-btn" onclick="openSetup()">
+<div class="dock-btn" onclick="openDam()">
 <i data-lucide="settings"></i>
-Setup
+Dam
 </div>
 
 <div class="dock-btn" onclick="openReport()">
@@ -210,67 +241,62 @@ Report
 </div>
 </div>
 
-<div id="scoutScreen" class="scout hidden">
+<div id="scoutScreen" class="hidden">
+  <div class="scout-wrapper">
 
     <div class="scout-header">
-        <div class="scout-title">Scout Mode</div>
-        <div class="scout-sub">Quickly log activity & scan water</div>
+      <div class="scout-title">Scout Mode</div>
+      <div class="scout-sub">Quickly log activity & scan water</div>
     </div>
 
-    <!-- FISH ACTIVITY -->
-<div class="scout-container">
-    <div class="scout-section section">
-        <div class="scout-label section-title">Fish Activity</div>
-        <div class="option-row option-group">
-            <div class="opt option" data-type="activity" data-value="bubbles">Bubbles</div>
-            <div class="opt option" data-type="activity" data-value="rolling">Rolling Fish</div>
-            <div class="opt option" data-type="activity" data-value="none">No Activity</div>
-        </div>
-    </div>
-
-    <!-- WATER -->
+      
     <div class="scout-section">
-        <div class="scout-label">Water Clarity</div>
-        <div class="scout-options">
-            <div class="opt" data-type="clarity" data-value="clear">Clear</div>
-            <div class="opt" data-type="clarity" data-value="stained">Slightly Stained</div>
-            <div class="opt" data-type="clarity" data-value="murky">Murky</div>
-        </div>
+      <div class="scout-label">Fish Activity</div>
+      <div class="option-row">
+        <div class="opt" data-type="activity" data-value="bubbles">Bubbles</div>
+        <div class="opt" data-type="activity" data-value="rolling">Rolling Fish</div>
+        <div class="opt" data-type="activity" data-value="none">No Activity</div>
+      </div>
     </div>
 
-    <!-- LIFE -->
     <div class="scout-section">
-        <div class="scout-label">Life Signs</div>
-        <div class="scout-options">
-            <div class="opt" data-type="life" data-value="birds">Birds Active</div>
-            <div class="opt" data-type="life" data-value="none">No Birds</div>
-        </div>
+      <div class="scout-label">Water Clarity</div>
+      <div class="option-row">
+        <div class="opt" data-type="clarity" data-value="clear">Clear</div>
+        <div class="opt" data-type="clarity" data-value="stained">Slightly Stained</div>
+        <div class="opt" data-type="clarity" data-value="murky">Murky</div>
+      </div>
     </div>
 
-    <!-- STRUCTURE -->
     <div class="scout-section">
-        <div class="scout-label">Structure</div>
-        <div class="scout-options">
-            <div class="opt" data-type="structure" data-value="weed">Weed</div>
-            <div class="opt" data-type="structure" data-value="dropoff">Drop-off</div>
-            <div class="opt" data-type="structure" data-value="flat">Flat</div>
-        </div>
+      <div class="scout-label">Life Signs</div>
+      <div class="option-row">
+        <div class="opt" data-type="birds" data-value="active">Birds Active</div>
+        <div class="opt" data-type="birds" data-value="none">No Birds</div>
+      </div>
     </div>
 
-    <!-- WIND -->
     <div class="scout-section">
-        <div class="scout-label">Wind Effect</div> 
-        <div class="scout-options">
-            <div class="opt" data-type="wind" data-value="bank">Windblown Bank</div>
-            <div class="opt" data-type="wind" data-value="calm">Calm Water</div>
-        </div>
+      <div class="scout-label">Structure</div>
+      <div class="option-row">
+        <div class="opt" data-type="structure" data-value="weed">Weed</div>
+        <div class="opt" data-type="structure" data-value="dropoff">Drop-off</div>
+        <div class="opt" data-type="structure" data-value="flat">Flat</div>
+      </div>
     </div>
-</div>
-    
-    <!-- BUTTON -->
-    <div class="scout-btn" onclick="saveAndScan()">Save & Continue</div>
-    
+
+    <div class="scout-section">
+      <div class="scout-label">Wind Effect</div>
+      <div class="option-row">
+        <div class="opt" data-type="wind" data-value="bank">Windblown Bank</div>
+        <div class="opt" data-type="wind" data-value="calm">Calm Water</div>
+      </div>
     </div>
+
+    <div class="scout-close" onclick="closeScout()">X</div>
+    <div class="scout-btn" onclick="continueScout()">Continue - Scan</div>
+
+  </div>
 </div>
 
 <!-- ================= MAP ================= -->
@@ -308,6 +334,12 @@ Report
     <div id="dropLog"></div>
 
 </div>
+
+<!-- PLAN SCREEN -->
+<div id="planScreen" class="hidden overlay-screen"></div>
+
+<!-- DAM SCREEN -->
+<div id="damScreen" class="hidden overlay-screen"></div>
 
     
 <script src="app.js"></script>
