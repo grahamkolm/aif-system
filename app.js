@@ -1023,16 +1023,6 @@ function calculateWaterTemps(airTemp) {
 // 📊 WEAHTER ENGINE END
 // =====================================================
 
-    envScore = calculateENV(p, c, w, light, t);
-
-    const envEl = document.getElementById("envScore");
-    if (envEl) envEl.innerText = envScore + "%";
-
-    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
-
-    const confEl = document.getElementById("confScore");
-    if (confEl) confEl.innerText = confScoreValue + "%";
-
 // =====================================================
 // 📊 SPI ENGINE
 // =====================================================
@@ -1557,6 +1547,16 @@ function renderDashboard(data) {
     updateCompass(windDir);
     setFishingZone(windDir);
 
+    envScore = calculateENV(p, c, w, light, t);
+
+    const envEl = document.getElementById("envScore");
+    if (envEl) envEl.innerText = envScore + "%";
+
+    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
+    const confEl = document.getElementById("confScore");
+    if (confEl) confEl.innerText = confScoreValue + "%";
+    
     // =====================================================
     // 📊 4. SPI CALCULATION
     // =====================================================
