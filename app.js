@@ -486,7 +486,8 @@ function getConditionText(SPI, envScore) {
     if (score > 85) return "🔥 Conditions are excellent — fish should feed";
     if (score > 70) return "👍 Conditions are good — fish active";
     if (score > 55) return "👌 Conditions are fair — some movement";
-    if (score > 40) return "⚠️ Conditions are slow — bites limited";
+    if (score > 45) return "⚠️ Conditions are slow — bites limited";
+    if (score > 30) return "⚠️ Very slow - expect minimal activity";
 
     return "❄️ Tough conditions — very quiet"; }
 
@@ -1068,6 +1069,17 @@ function calculateSPI(p, w, c, windDir, t, light, depth, diff){
 
     score += pressureScore;
 
+    function filterInsights(reasons, SPI) {
+    if (SPI < 45) {
+        return reasons.map(r => {
+            if (r.includes("feeding")) return "Limited feeding activity";
+            if (r.includes("optimal")) return "Conditions partially supportive";
+            return r;
+        });
+    }
+    return reasons;
+}
+    
     // ================= COMBINATION BOOST =================
     if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
         score += 10;
@@ -1221,7 +1233,10 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     if (SPI >= 45 && SPI <= 60) score += 4; 
     }
   
-
+    if (envScore < 40) {
+        score -= (40 - envScore) * 1.5;
+    }
+    
     // =============================
     // 🟢 3. PRESSURE (max 15)
     // =============================
