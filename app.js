@@ -2388,6 +2388,7 @@ function openScout(){
 
     // 🔥 IMPORTANT
     setupScoutOptions();
+    setTimeout(setupScoutOptions, 50);
 }
 
 function setupScoutOptions(){
