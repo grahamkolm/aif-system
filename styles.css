@@ -810,12 +810,14 @@ html, body {
 }
 
 .scout-card {
-    background: rgba(20,20,20,0.95);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(12px);
     padding: 20px;
     border-radius: 16px;
     color: white;
     text-align: center;
     min-width: 250px;
+    box-shadow: 0 0 30px rgba(0,255,166,0.08);
 }
 
 /* CENTERED CARD */
@@ -832,7 +834,7 @@ html, body {
 }
 
 .scout-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
 }
 
@@ -848,7 +850,7 @@ html, body {
 
 .scout-label {
     font-size: 13px;
-    opacity: 0.6;
+    opacity: 0.8;
     margin-bottom: 8px;
 }
 
@@ -891,20 +893,25 @@ html, body {
     padding: 10px 16px;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.15);
-    color: #fff;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.05);
     cursor: pointer;
     pointer-events: auto;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     Z-index: 3;
 }
 
 .opt.active {
     border: 2px solid #00ff9c;
     border-color: #00ffa6;
-    box-shadow: 0 0 12px rgba(0,255,166,0.4);
-    background: rgba(0,255,166,0.15);
-    color: #00ff9c;
+    box-shadow: 0 0 10px rgba(0,255,166,0.25);
+    background: rgba(0,255,166,0.08);
+    color: #00ffa6;
+    transform: scale(0.96);
 }
 
+.scout-group {
+  margin-bottom: 20px;
+}
 
 
