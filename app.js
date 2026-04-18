@@ -1633,7 +1633,7 @@ displaySPI = getSeasonAdjustedSPI(SPI, t);
 
 // wind reality check
 if (w < 2) {
-    displaySPI -= 5;
+    displaySPI -= 8;
 }
 
 // ENV limiter
