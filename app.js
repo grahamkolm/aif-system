@@ -2413,18 +2413,27 @@ function setupScoutOptions(){
     });
 }
 
-function continueScout(){
+async function continueScout() {
 
-    if (Object.keys(scoutData).length < 2) {
-        alert ("Select at least 2 observations");
-        return;
-    }
-    
-    localStorage.setItem("scoutData", JSON.stringify(scoutData));
+  if (Object.keys(scoutData).length < 2) {
+    alert("Select at least 2 observations");
+    return;
+  }
 
-    console.log("Scout saved:", scoutData);
+  localStorage.setItem("scoutData", JSON.stringify(scoutData));
+  console.log("Scout saved:", scoutData);
 
-    showConnectingScreen();
+  showConnectingScreen(); // show loading
+
+  const ok = await checkSensors(); // 🔥 THIS WAS MISSING
+
+  if (!ok) {
+    showConnectionError(); // your fail screen
+    return;
+  }
+
+  // ✅ SUCCESS
+  closeScout(); // or go to next screen
 }
 
 function showConnectingScreen() {
@@ -2450,34 +2459,33 @@ function showConnectingScreen() {
 }
 
 function checkSensors() {
+  let list = document.getElementById("sensorStatusList");
 
-    let list = document.getElementById("sensorStatusList");
+  if (list) list.innerHTML = "Connecting...";
 
-    if(list){
-        list.innerHTML = "Connecting...";
-    }
+  return fetch("http://192.168.4.1/data")
+    .then(res => res.json())
+    .then(data => {
 
-    fetch("http://192.168.4.1/data")
-        .then(res => res.json())
-        .then(data => {
+      document.getElementById("sensorStatusList").innerHTML = `
+        <div>Temperature ${data.temp ? "✅" : "❌"}</div>
+        <div>Pressure ${data.pressure ? "✅" : "❌"}</div>
+        <div>Altitude ${data.altitude ? "✅" : "❌"}</div>
+        <div>Light ${data.light ? "✅" : "❌"}</div>
+        <div>Turbidity ${data.turbidity !== undefined ? "✅" : "❌"}</div>
+        <div>Depth ${data.depth ? "✅" : "❌"}</div>
+      `;
 
-   document.getElementById("sensorStatusList").innerHTML = `
-    <div>Temperature ${data.main?.temp ? "✅" : "❌"}</div>
-    <div>Pressure ${data.main?.pressure ? "✅" : "❌"}</div>
-    <div>Oxygen ${data.oxygen ? "✅" : "❌"}</div>
-    <div>Turbidity ${data.turbidity ? "✅" : "❌"}</div>
-    <div>Light ${data.light ? "✅" : "❌"}</div>
-    <div>Depth ${data.depth ? "✅" : "❌"}</div>
-    <div>Battery ${data.battery ? "✅" : "❌"}</div> `;
+      return true; // 👈 success
+    })
+    .catch(err => {
+      console.error(err);
 
-        })
-        .catch(() => {
+      document.getElementById("sensorStatusList").innerHTML =
+        "❌ Connection failed";
 
-            document.getElementById("sensorStatusList").innerHTML = `
-                <div style="color:#ff3b3b;">❌ Connection failed</div>
-                <div style="opacity:0.7; margin-top:6px;">Check WiFi (AIF Sensor)</div>
-            `;
-        });
+      return false; // 👈 fail
+    });
 }
 
 function retryConnection() {
