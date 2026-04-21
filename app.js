@@ -2468,18 +2468,18 @@ function checkSensors() {
     .then(data => {
 
       document.getElementById("sensorStatusList").innerHTML = `
-        <div>Temperature ${data.temp ? "✅" : "❌"}</div>
-        <div>Pressure ${data.pressure ? "✅" : "❌"}</div>
-        <div>Altitude ${data.altitude ? "✅" : "❌"}</div>
-        <div>Light ${data.light ? "✅" : "❌"}</div>
+        <div>Temperature ${data.temp !== undefined ? "✅" : "❌"}</div>
+        <div>Pressure ${data.pressure !== undefined ? "✅" : "❌"}</div>
+        <div>Altitude ${data.altitude !== undefined ? "✅" : "❌"}</div>
+        <div>Light ${data.light !== undefined ? "✅" : "❌"}</div>
         <div>Turbidity ${data.turbidity !== undefined ? "✅" : "❌"}</div>
-        <div>Depth ${data.depth ? "✅" : "❌"}</div>
+        <div>Depth ${data.depth !== undefined ? "✅" : "❌"}</div>
       `;
 
       return true; // 👈 success
     })
     .catch(err => {
-      console.error(err);
+      console.error("FETCH ERROR:", err);
 
       document.getElementById("sensorStatusList").innerHTML =
         "❌ Connection failed";
