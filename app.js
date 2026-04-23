@@ -2258,8 +2258,8 @@ function updateSPI(v){
 
     let color = GREEN;
 
-    if (v < 50) color = BLUE;
-    else if (v < 70) color = WHITE;
+    if (v < 50) color = GREEN;
+    else if (v < 70) color = GREEN;
 
     arc.style.stroke = color;
 
