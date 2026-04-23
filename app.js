@@ -1192,7 +1192,8 @@ function calculateSPI(envScore, waterScore, data) {
 // =====================================================
 // 📊 CONF ENGINE START
 // =====================================================
-  
+confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+
 function calculateCONF(SPI, envScore, p, w, c, t) {
 
     let score = 50; // 🔥 BASELINE (important)
@@ -1541,7 +1542,6 @@ function renderDashboard(data) {
     const envEl = document.getElementById("envScore");
     if (envEl) envEl.innerText = envScore + "%";
 
-    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
 
     const confEl = document.getElementById("confScore");
     if (confEl) confEl.innerText = confScoreValue + "%";
@@ -1550,86 +1550,70 @@ function renderDashboard(data) {
     // 📊 4. SPI CALCULATION
     // =====================================================
 
-const result = calculateSPI(p, w, c, windDir, t, light, depth, diff);
+const waterScore = null; // until sensor used
 
-// ✅ DEFINE baseSPI properly
-let baseSPI = result.score;
+const result = calculateSPI(
+    envScore,
+    waterScore,
+    {
+        p,
+        w,
+        c,
+        windDir,
+        t,
+        light,
+        depth,
+        diff
+    }
+);
 
-// smoothing
+
+
+// =============================
+// 📊 SPI CORE
+// =============================
+const waterScore = null;
+
+const result = calculateSPI(envScore, waterScore, {
+    p, w, c, windDir, t, light, depth, diff });
+
+let finalSPI = result.score;
+
+// =============================
+// 🔄 SMOOTHING
+// =============================
 if (lastSPI !== null) {
-    baseSPI = Math.round((baseSPI * 0.7) + (lastSPI * 0.3)); }
-
-// penalties
-if (baseSPI > envScore + 10) {
-    let excess = baseSPI - (envScore + 10);
-    baseSPI -= excess * 0.7;
-}
-    
-// =============================
-// 🌍 ENV COUPLING (NEW)
-// =============================
-
-// normalize ENV (0–1)
-let envDiff = baseSPI - envScore;
-    baseSPI -= envDiff * 0.15;
-
-// soft floor so ENV doesn’t kill everything 
-    let envFactor = envScore / 100;
-    let envWeight = 0.6 + (envFactor * 0.4); // range: 0.6 → 1.0
-
-// apply damping
-baseSPI = baseSPI * envWeight;
+    finalSPI = Math.round((finalSPI * 0.7) + (lastSPI * 0.3)); }
 
 // =============================
-// 🎯 SOFT CEILING (NOT A CAP)
+// 🌍 ENV ALIGNMENT
+// =============================
+let delta = finalSPI - envScore;
+finalSPI -= delta * 0.2;
+
+// =============================
+// 🎯 LIMITS
 // =============================
 if (envScore < 85) {
-    let ceiling = envScore + 12;
-    if (baseSPI > ceiling) {
-        baseSPI -= (baseSPI - ceiling) * 0.6;
+    let cap = envScore + 12;
+    if (finalSPI > cap) {
+        finalSPI -= (finalSPI - cap) * 0.6;
     }
 }
 
 // =============================
-// FINAL NORMALISE
+// 🎣 SCOUT IMPACT
 // =============================
-baseSPI = Math.max(10, Math.min(98, Math.round(baseSPI))); 
+finalSPI += calculateScoutImpact(scoutData) * 0.5;
 
-   
-// 🎣 APPLY SCOUT (controlled)
-let finalSPI = baseSPI;
+// =============================
+// FINAL CLAMP
+// =============================
+finalSPI = Math.max(10, Math.min(98, Math.round(finalSPI)));
 
-const scoutImpact = calculateScoutImpact(scoutData) * 0.5;
-
-finalSPI = finalSPI + scoutImpact;
-
-// ✅ clamp final value
-finalSPI = Math.max(0, Math.min(100, Math.round(finalSPI)));
-
-console.log("SPI:", finalSPI);
-
-lastSPI = finalSPI;
 SPI = finalSPI;
-// =============================
-// 🎯 DISPLAY ADJUSTMENTS (FINAL LAYER)
-// =============================
+lastSPI = finalSPI;
 
-// seasonal boost
-let displaySPI = SPI;
-    
-displaySPI = getSeasonAdjustedSPI(SPI, t);
-
-// wind reality check
-if (w < 2) {
-    displaySPI -= 8;
-}
-
-// ENV limiter
-if (envScore < 45) {
-    displaySPI -= (45 - envScore) * 0.4; }
-
-// clamp
-displaySPI = Math.max(0, Math.min(100, Math.round(displaySPI)));
 
     // =====================================================
     // 📊 5. ENV + CONF (🔥 MUST BE HERE)
@@ -2099,30 +2083,6 @@ function analyzeTemperature(air, surface, bottom) {
         score: score,
         insights: insights // ✅ THIS is what fixes your error
     };
-}
-
-function sunriseWindow(){
-    let h=new Date().getHours();
-    if(h>=5 && h<=9)return 10;
-    if(h>=17 && h<=20)return 12;
-    return 0;
-}
-
-function getSeason(){
-    let m = new Date().getMonth()+1;
-
-    if(m<=2||m==12)return "Summer";
-    if(m<=5)return "Autumn";
-    if(m<=8)return "Winter";
-    return "Spring";
-}
-
-function seasonalWeight(){
-    let m=new Date().getMonth()+1;
-    if(m<=2||m==12)return 8;
-    if(m<=5)return 4;
-    if(m<=8)return -4;
-    return 6;
 }
 
 // =====================================================
