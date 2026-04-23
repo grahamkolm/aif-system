@@ -1036,158 +1036,152 @@ function calculateWaterTemps(airTemp) {
 // =====================================================
 // 📊 SPI ENGINE
 // =====================================================
-function calculateSPI(p, w, c, windDir, t, light, depth, diff){
+function calculateSPI(envScore, waterScore, data) {
 
-    // ===== SAFE DEFAULTS =====
-    let isCold = t <=15;
-    p = p ?? 1015;
-    w = w ?? 5;
-    c = c ?? 50;
-    t = t ?? 20;
-    light = light ?? 50;
-    depth = depth ?? 3;
-    diff = diff ?? 90;
+    let {
+        p, w, c, windDir, t, light,
+        depth, diff
+    } = data;
 
-    let score = 0;
     let reasons = [];
+    let isCold = t <= 15;
+    let trend = getPressureTrend(p);
 
-    // ================= PRESSURE =================
-    let pressureScore = 0;
+    // =============================
+    // 🧠 1. BASE = ENV + WATER FUSION
+    // =============================
 
-    let trend = typeof getPressureTrend === "function"
-        ? getPressureTrend(p)
-        : "stable";
+    let score;
 
-    if (p >= 1012 && p <= 1020) pressureScore = 15;
-    else if (p >= 1008 && p <= 1024) pressureScore = 10;
-    else pressureScore = 5;
+    if (waterScore !== null) {
 
-    if (trend === "rising") pressureScore += 5;
-    if (trend === "falling") pressureScore -= 5;
+        // 🔥 TRUE FUSION (not just add-on)
+        score = (envScore * 0.6) + (waterScore * 0.4);
 
-    score += pressureScore;
+        let delta = waterScore - envScore;
 
-    function filterInsights(reasons, SPI) {
-    if (SPI < 45) {
-        return reasons.map(r => {
-            if (r.includes("feeding")) return "Limited feeding activity";
-            if (r.includes("optimal")) return "Conditions partially supportive";
-            return r;
-        });
-    }
-    return reasons;
-}
-    
-    // ================= COMBINATION BOOST =================
-    if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
-        score += 10;
-        reasons.push("Wind + cloud combo → aggressive feeding");
-    }
+        // alignment boost
+        if (envScore > 60 && waterScore > 60) {
+            score += 5;
+            reasons.push("Strong surface + water alignment");
+        }
 
-    if (p > 1015 && t >= 18 && t <= 24) {
-        score += 8;
-        reasons.push("Stable pressure + temp → consistent feeding");
-    }
+        // hidden opportunity
+        if (envScore < 45 && waterScore > 60) {
+            score += 8;
+            reasons.push("Hidden water opportunity");
+        }
 
-    if (w < 2 && c < 20) {
-        score -= 10;
-        reasons.push("Flat calm + bright → fish inactive");
+        // conflict
+        if (envScore > 60 && waterScore < 40) {
+            score -= 8;
+            reasons.push("Surface good, water weak");
+        }
+
+    } else {
+        // fallback
+        score = envScore;
     }
 
-    // ================= WIND =================
-    if (w >= 5 && w <= 15) score += 20;
-    else if (w >= 3) score += 10;
-    else if (w > 15) score += 5;
-
-    // ================= WIND DIRECTION =================
+    // =============================
+    // 🌬 2. WIND POSITIONING
+    // =============================
     if (diff > 135) {
         score += 10;
-        reasons.push("Wind blowing into zone (prime feeding)");
+        reasons.push("Wind pushing into zone");
     } else if (diff < 45) {
-        score -= 8;
-        reasons.push("Downwind zone (low activity)");
-    }
-
-    // ================= CLOUD =================
-    if (c >= 30 && c <= 70) score += 15;
-    else if (c > 70) score += 10;
-    else score += 5;
-
-    // ================= TEMP ================= 
-    if (!isCold) {
-    // normal (warm season)
-    if (t >= 18 && t <= 24) score += 25;
-    else if (t >= 15) score += 15;
-    else if (t <= 28) score += 10;
-    else score += 5;
-} else {
-    // ❄️ WINTER MODE
-    if (t >= 10 && t <= 15) {
-        score += 18;
-        reasons.push("Cold stable water — big carp feeding windows");
-    } else if (t >= 8) {
-        score += 12;
-        reasons.push("Very cold — slow but targetable fish");
-    } else {
-        score += 6;
-        reasons.push("Extreme cold — minimal movement");
-    }
-}
-
-
-// ❄️ WINTER STABILITY BONUS
-if (isCold) {
-    let trend = getPressureTrend(p);
- 
-    if (trend === "stable") {
-        score += 12;
-        reasons.push("Stable winter conditions — predictable feeding");
-    }
- 
-    if (w >= 3 && w <= 10) {
-        score += 6;
-        reasons.push("Light winter wind — oxygen without stress");
-    }
-}
-
-    // ================= LIGHT =================
-    if (light >= 40 && light <= 70) {
-        score += 8;
-        reasons.push("Optimal light penetration");
-    } else if (light < 20) {
-        score -= 5;
-        reasons.push("Too dark — reduced visibility");
-    } else {
-        score -= 3;
-        reasons.push("Too bright — fish cautious");
-    }
-
-    // ================= DEPTH =================
-    if (depth >= 2 && depth <= 5) {
-        score += 10;
-        reasons.push("Ideal feeding depth");
-    } else if (depth < 1) {
         score -= 6;
-        reasons.push("Too shallow");
+        reasons.push("Downwind zone");
+    }
+
+    // =============================
+    // 🌊 3. DEPTH POSITIONING
+    // =============================
+    if (depth >= 2 && depth <= 5) {
+        score += 8;
+        reasons.push("Optimal feeding depth");
+    } else if (depth < 1) {
+        score -= 5;
     } else if (depth > 8) {
         score -= 4;
-        reasons.push("Too deep for active feeding");
     }
 
-    // ================= TIME WINDOWS =================
-    if (typeof sunriseWindow === "function") {
-        score += sunriseWindow() * 0.5;
+    // =============================
+    // 💡 4. LIGHT BEHAVIOUR
+    // =============================
+    if (light < 40) {
+        score += 5;
+        reasons.push("Low light feeding advantage");
     }
 
-    if (typeof seasonalWeight === "function") {
-        score += seasonalWeight() * 0.5;
+    if (light > 80 && c < 20) {
+        score -= 6;
+        reasons.push("Bright + clear pressure");
     }
 
-    // ================= FINAL =================
-    if (score > 75) score = Math.min(score + 5, 100);
-    if (score < 40) score = Math.max(score - 5, 0);
+    // =============================
+    // ❄️ 5. WINTER ADAPTATION
+    // =============================
+    if (isCold) {
 
-    score = Math.max(15, Math.min(98, score));
+        if (trend === "stable") {
+            score += 6;
+            reasons.push("Stable winter pattern");
+        }
+
+        if (w >= 3 && w <= 10) {
+            score += 4;
+            reasons.push("Winter oxygen movement");
+        }
+
+        if (score >= 40 && score <= 60) {
+            score += 4;
+        }
+    }
+
+    // =============================
+    // ⚡ 6. OPPORTUNITY BOOSTS
+    // =============================
+    if (w >= 5 && w <= 15 && c >= 30) {
+        score += 6;
+        reasons.push("Wind + cloud feeding setup");
+    }
+
+    if (p > 1015 && t >= 15) {
+        score += 4;
+        reasons.push("Stable atmospheric support");
+    }
+
+    // =============================
+    // 🔴 7. REAL LIMITS ONLY
+    // =============================
+    if (w < 1) score -= 5;
+    if (t < 8 || t > 32) score -= 5;
+
+    // =============================
+    // 🎯 8. FINAL SHAPING
+    // =============================
+
+    // soft curve (keeps mid-range realistic)
+    score = Math.pow(score / 100, 1.1) * 100;
+
+    score = Math.max(25, Math.min(90, score));
+
+    // =============================
+    // 🧠 REASON FILTER (your system)
+    // =============================
+    function filterInsights(reasons, SPI) {
+        if (SPI < 45) {
+            return reasons.map(r => {
+                if (r.includes("feeding")) return "Limited feeding activity";
+                if (r.includes("advantage")) return "Conditions slightly supportive";
+                return r;
+            });
+        }
+        return reasons;
+    }
+
+    reasons = filterInsights(reasons, score);
 
     return {
         score: Math.round(score),
@@ -1201,103 +1195,87 @@ if (isCold) {
   
 function calculateCONF(SPI, envScore, p, w, c, t) {
 
-    let score = 0;
+    let score = 50; // 🔥 BASELINE (important)
+
+    let isCold = t <= 15;
+    let trend = getPressureTrend(p);
 
     // =============================
-    // 🟢 1. ALIGNMENT (max 25)
+    // 🟢 1. ALIGNMENT (±15)
     // =============================
     let alignment = Math.abs(SPI - envScore);
-    let alignmentScore = Math.max(0, 25 - alignment * 1.2);
-    score += alignmentScore;
+
+    if (alignment < 10) score += 12;
+    else if (alignment < 20) score += 6;
+    else score -= 6;
 
     // =============================
-    // 🟢 2. STABILITY (max 20)
+    // 🟢 2. STABILITY (±15)
     // =============================
     let variability = Math.abs(SPI - (lastSPI ?? SPI));
-    let stabilityScore = Math.max(0, 20 - variability * 1.5);
-    score += stabilityScore;
-    let isCold = t <= 15;
 
-    // ❄️ WINTER CONFIDENCE BOOST
+    if (variability < 5) score += 12;
+    else if (variability < 10) score += 6;
+    else score -= 8;
+
+    // =============================
+    // 🟢 3. PRESSURE RELIABILITY (±12)
+    // =============================
+    if (trend === "stable") score += 10;
+    else if (trend === "rising") score += 6;
+    else score -= 4;
+
+    // =============================
+    // 🟢 4. ENV SUPPORT (±12)
+    // =============================
+    if (envScore >= 60) score += 10;
+    else if (envScore >= 45) score += 6;
+    else score += 2; // 🔥 LOW ENV still gives confidence
+
+    // =============================
+    // 🟢 5. CONDITION CONSISTENCY (±10)
+    // =============================
+    let consistency = 0;
+
+    if (w >= 3 && w <= 15) consistency += 4;
+    if (c >= 20 && c <= 80) consistency += 3;
+    if (t >= 10 && t <= 28) consistency += 3;
+
+    score += consistency;
+
+    // =============================
+    // ❄️ 6. WINTER ADAPTATION (NEW)
+    // =============================
     if (isCold) {
-    let trend = getPressureTrend(p);
 
-    if (trend === "stable") score += 12;
-    if (trend === "rising") score += 6;
+        // stable cold conditions = predictable
+        if (trend === "stable") score += 8;
 
-    if (Math.abs(SPI - envScore) < 15) score += 8;
+        // alignment matters more in winter
+        if (alignment < 15) score += 6;
 
-    // cold consistency bonus
-    if (SPI >= 45 && SPI <= 60) score += 4; 
-    }
-  
-    if (envScore < 40) {
-        score -= (40 - envScore) * 1.5;
-    }
-    
-    // =============================
-    // 🟢 3. PRESSURE (max 15)
-    // =============================
-    let trend = getPressureTrend(p);
-    let pressureScore = 0;
-
-    if (trend === "stable") pressureScore = 15;
-    else if (trend === "rising") pressureScore = 10;
-    else pressureScore = 5;
-
-    score += pressureScore;
-
-    // =============================
-    // 🟢 4. ENV QUALITY (max 20)
-    // =============================
-    let envQuality = Math.pow(envScore / 100, 1.3) * 20;
-    score += envQuality;
-
-    // =============================
-    // 🟢 5. CONDITIONS (max 20)
-    // =============================
-    let conditionScore = 0;
-
-    if (w >= 5 && w <= 15) conditionScore += 7;
-    if (c >= 30 && c <= 70) conditionScore += 6;
-    if (t >= 18 && t <= 24) conditionScore += 7;
-
-    score += conditionScore;
-
-    // =============================
-    // 🔴 PENALTIES
-    // =============================
-
-    // ENV weakness penalty
-    if (envScore < 70) {
-        score -= (70 - envScore) * 0.6;
+        // moderate SPI in winter is GOOD
+        if (SPI >= 40 && SPI <= 60) score += 6;
     }
 
-    // SPI unrealistic vs ENV
-    if (SPI > envScore + 12) {
-        score -= (SPI - envScore) * 0.8;
-    }
-
-    // instability penalty
-    if (variability > 10) {
-        score -= (variability - 10) * 2;
-    }
-
-    // extreme conditions
-    if (w > 20 || w < 2) score -= 10;
-    if (t > 30 || t < 10) score -= 10;
-    if (c > 95 || c < 5) score -= 8;
-
     // =============================
-    // 🎯 NATURAL SCALING (KEY PART)
+    // 🔴 7. ONLY REAL RISKS (reduced penalties)
     // =============================
 
-    // compress top-end (makes 90+ hard)
-    score = score - (score * 0.08);
+    if (variability > 15) score -= 10; // unstable system
+
+    if (w > 20 || w < 1) score -= 6;
+    if (t > 32 || t < 8) score -= 6;
+    if (c > 95 || c < 5) score -= 5;
+
+    // =============================
+    // 🎯 SOFT SCALING
+    // =============================
+    score = Math.pow(score / 100, 1.1) * 100;
 
     if (isNaN(score)) score = 50;
 
-    return Math.max(30, Math.min(100, Math.round(score))); 
+    return Math.max(35, Math.min(95, Math.round(score))); 
 }
 
 // =====================================================
