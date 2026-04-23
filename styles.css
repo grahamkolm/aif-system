@@ -792,6 +792,7 @@ html, body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   z-index: 1000;
+}
 
 /* 🔘 OPTIONS GRID */
 .option-row {
