@@ -2415,6 +2415,41 @@ function setupScoutOptions(){
 
 async function continueScout() {
 
+const scoutData = {
+  // SECTION 1 (you already have)
+  activity,
+  clarity,
+  birds,
+  structure,
+  wind,
+
+  // SECTION 2 (NEW)
+  airTemp: parseFloat(document.getElementById("airTemp").value) || null,
+  pressure: parseFloat(document.getElementById("pressure").value) || null,
+  altitude: parseFloat(document.getElementById("altitude").value) || null,
+
+  surfaceTemp: parseFloat(document.getElementById("surfaceTemp").value) || null,
+  bottomTemp: parseFloat(document.getElementById("bottomTemp").value) || null,
+
+  thermoStart: parseFloat(document.getElementById("thermoStart").value) || null,
+  thermoEnd: parseFloat(document.getElementById("thermoEnd").value) || null,
+
+  turbidity: parseFloat(document.getElementById("turbidity").value) || null,
+  light: parseFloat(document.getElementById("light").value) || null,
+  depth: parseFloat(document.getElementById("depth").value) || null 
+};
+
+  if (scoutData.thermoStart && scoutData.thermoEnd) {
+  if (scoutData.thermoStart >= scoutData.thermoEnd) {
+    // swap values automatically
+    let temp = scoutData.thermoStart;
+    scoutData.thermoStart = scoutData.thermoEnd;
+    scoutData.thermoEnd = temp;
+  }
+}
+
+let scouts = JSON.parse(localStorage.getItem("scouts") || "[]"); scouts.push(scoutData); localStorage.setItem("scouts", JSON.stringify(scouts));
+    
   if (Object.keys(scoutData).length < 2) {
     alert("Select at least 2 observations");
     return;
