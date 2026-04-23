@@ -19,11 +19,11 @@
     box-sizing: border-box;
 }
 
-body {
+/*body {
   flex-direction: column;
   justify-content: center;
   padding-bottom: 100px;
-}
+}*/
 
 html, body {
     height: 100%;
@@ -44,6 +44,10 @@ html, body {
 
 #splash {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     inset: 0;
     background: #05080d;
     z-index: 9999;
@@ -780,8 +784,14 @@ html, body {
 }
 
 .scout-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  z-index: 1000;
 
 /* 🔘 OPTIONS GRID */
 .option-row {
