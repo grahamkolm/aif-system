@@ -1865,143 +1865,154 @@ function updateFromSensor(data) {
 // ================= ENV SCORE ================= 
 function calculateENV(p, c, w, light, airTemp) {
 
+    let score = 50; // 🔥 BASELINE (THIS FIXES YOUR 30% ISSUE)
+
+    // =============================
+    // 🌡 PRESSURE (±10)
+    // =============================
+    let trend = getPressureTrend(p);
+
+    if (p >= 1012 && p <= 1020) score += 8;
+    else if (p >= 1008 && p <= 1024) score += 5;
+    else score -= 5;
+
+    if (trend === "rising") score += 3;
+    if (trend === "falling") score -= 3;
+
+    // =============================
+    // 🌬 WIND (±10)
+    // =============================
+    if (w >= 5 && w <= 15) score += 8;
+    else if (w >= 3) score += 5;
+    else if (w < 2) score -= 4;
+    else score += 2;
+
+    // =============================
+    // ☁ CLOUD (±8)
+    // =============================
+    if (c >= 30 && c <= 70) score += 6;
+    else if (c > 70) score += 4;
+    else score -= 3;
+
+    // =============================
+    // 💡 LIGHT (±8)
+    // =============================
+    if (light >= 40 && light <= 70) score += 6;
+    else if (light < 30) score += 5;
+    else if (light > 80) score -= 4;
+
+    // =============================
+    // 🌡 TEMP (±12) → ADAPTIVE
+    // =============================
+    if (airTemp >= 18 && airTemp <= 24) score += 10;
+    else if (airTemp >= 15) score += 7;
+    else if (airTemp >= 12) score += 4;
+    else if (airTemp >= 10) score += 2;
+    else score -= 4;
+
+    // =============================
+    // ⚡ SMART INTERACTIONS (±10)
+    // =============================
+
+    // Wind + cloud synergy
+    if (w >= 5 && c >= 30) score += 5;
+
+    // Low light advantage
+    if (light < 50) score += 3;
+
+    // Dead calm + clear (bad combo)
+    if (w < 2 && c < 20) score -= 6;
+
+    // =============================
+    // ⏱ TIME FACTOR (±8)
+    // =============================
+    let h = new Date().getHours();
+
+    if (h >= 5 && h <= 9) score += 6;
+    else if (h >= 17 && h <= 20) score += 8;
+    else if (h >= 11 && h <= 15) score -= 4;
+
+    // =============================
+    // 🎯 CLAMP (IMPORTANT)
+    // =============================
+    return Math.max(20, Math.min(85, Math.round(score))); 
+}
+
+function calculateWaterScore(surfaceTemp, bottomTemp, thermoclineStart, thermoclineEnd, turbidity, light) {
+
     let score = 0;
 
     // =============================
-    // 🟢 CORE DRIVERS (70 total)
+    // 🌡 WATER TEMP PROFILE (30)
     // =============================
+    let delta = Math.abs(surfaceTemp - bottomTemp);
 
-    // PRESSURE (20)
-    let trend = getPressureTrend(p);
-    let pressureScore = 0;
+    if (surfaceTemp >= 18 && surfaceTemp <= 24) score += 15;
+    else if (surfaceTemp >= 15) score += 12;
+    else if (surfaceTemp >= 12) score += 9;
+    else score += 6;
 
-    if (p >= 1012 && p <= 1020) pressureScore = 15;
-    else if (p >= 1008 && p <= 1024) pressureScore = 10;
-    else pressureScore = 5;
+    // Stability / layering
+    if (delta >= 2 && delta <= 5) score += 10;   // ideal thermocline
+    else if (delta > 5) score += 6;
+    else score += 4;
 
-    if (trend === "rising") pressureScore += 5;
-    if (trend === "falling") pressureScore -= 5;
+    // =============================
+    // 🌊 THERMOCLINE POSITION (20)
+    // =============================
+    if (thermoclineStart !== null && thermoclineEnd !== null) {
 
-    score += pressureScore;
+        let mid = (thermoclineStart + thermoclineEnd) / 2;
 
-    // WIND (15)
-    let windScore = 0;
-    if (w >= 5 && w <= 15) windScore = 15;
-    else if (w >= 3) windScore = 10;
-    else if (w > 15) windScore = 6;
-    else windScore = 4;
-
-    score += windScore;
-
-    // CLOUD (10)
-    let cloudScore = 0;
-    if (c >= 30 && c <= 70) cloudScore = 10;
-    else if (c > 70) cloudScore = 7;
-    else cloudScore = 4;
-
-    score += cloudScore;
-
-    // LIGHT (10)
-    let lightScore = 0;
-    if (light >= 40 && light <= 70) lightScore = 10;
-    else if (light < 20) lightScore = 5;
-    else lightScore = 6;
-
-    score += lightScore;
-
-    // TEMP (15)
-    let tempScore = 0;
-
-    if (airTemp >= 18 && airTemp <= 24) tempScore = 15; else if (airTemp >= 15) tempScore = 10;
-    else if (airTemp >= 12) tempScore = 7;   // 👈 soften cold penalty
-    else if (airTemp >= 10) tempScore = 5;
-    else tempScore = 3;
-
-    score += tempScore;
-
-    if (airTemp <= 15) {
-        score *= 0.85;
+        if (mid >= 2 && mid <= 5) score += 20;   // perfect feeding zone
+        else if (mid <= 7) score += 15;
+        else score += 10;
     }
 
     // =============================
-    // 🟢 INTERACTION BOOSTS (15 max)
+    // 🌫 TURBIDITY (15)
     // =============================
-
-    // Wind + Cloud synergy
-    if (w >= 5 && w <= 15 && c >= 30 && c <= 70) {
-        score += 8;
-    }
-
-    // Pressure + Temp stability
-    if (p > 1015 && airTemp >= 18 && airTemp <= 24) {
-        score += 5;
-    }
-
-    // Low light + cloud (feeding confidence)
-    if (light < 60 && c >= 40) {
-        score += 2;
-    }
+    if (turbidity >= 30 && turbidity <= 60) score += 15;
+    else if (turbidity < 30) score += 10;
+    else score += 8;
 
     // =============================
-    // 🔴 CONFLICT PENALTIES
+    // 💡 LIGHT PENETRATION (10)
     // =============================
+    if (light >= 30 && light <= 70) score += 10;
+    else if (light < 30) score += 8;
+    else score += 6;
 
-    // Bright + no cloud (harsh conditions)
-    if (light > 80 && c < 20) {
-        score -= 10;
-    }
-
-    // No wind + clear sky
-    if (w < 2 && c < 20) {
-        score -= 10;
-    }
-
-    // Temp stress
-    if (airTemp > 30 || airTemp < 10) {
-        score -= 6;
-    }
-
-    // Pressure instability
-    if (trend === "falling" && p < 1008) {
-        score -= 8;
-    }
-
-    // =============================
-    // ⏱ TIME FACTOR (10)
-    // =============================
-
-    let h = new Date().getHours();
-
-    if (h >= 5 && h <= 9) score += 8;
-    else if (h >= 17 && h <= 20) score += 10;
-    else if (h >= 11 && h <= 15) score -= 5;
-
-    // =============================
-    // 🎯 NON-LINEAR SCALING (KEY)
-    // =============================
-
-    score = Math.pow(score / 100, 1.3) * 100;
-
-    // =============================
-    // FINAL
-    // =============================
     return Math.max(0, Math.min(100, Math.round(score))); 
 }
 
-function getSeasonAdjustedSPI(spi, temp) {
 
-    const isWinter = temp <= 15;
+function calculateFinalSPI(envScore, waterScore, hasSensor) {
 
-    if (!isWinter) return spi;
+    if (!hasSensor) {
+        return envScore; // fallback clean
+    }
 
-    // winter scaling curve
-    if (spi >= 70) return spi; // already high
-    if (spi >= 50) return spi + 10;
-    if (spi >= 35) return spi + 15;
-    if (spi >= 25) return spi + 18;
+    // 🔥 Weighted + adaptive
+    let finalScore = (envScore * 0.6) + (waterScore * 0.4);
 
-    return spi + 10;
+    // Boost when both agree
+    if (envScore > 60 && waterScore > 60) {
+        finalScore += 5;
+    }
+
+    // Conflict handling
+    if (envScore > 60 && waterScore < 40) {
+        finalScore -= 8; // looks good outside, bad below
+    }
+
+    if (envScore < 40 && waterScore > 60) {
+        finalScore += 10; // 🔥 hidden opportunity
+    }
+
+    return Math.max(0, Math.min(100, Math.round(finalScore))); 
 }
+
 
 // =====================================================
 // 🧠 8. ENVIRONMENT ENGINE END
