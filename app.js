@@ -1550,7 +1550,7 @@ function renderDashboard(data) {
     // 📊 4. SPI CALCULATION
     // =====================================================
 
-const waterScore = null; // until sensor used
+let waterScore = null; // until sensor used
 
 const result = calculateSPI(
     envScore,
@@ -1573,9 +1573,6 @@ const result = calculateSPI(
 // 📊 SPI CORE
 // =============================
 waterScore = null;
-
-const result = calculateSPI(envScore, waterScore, {
-    p, w, c, windDir, t, light, depth, diff });
 
 let finalSPI = result.score;
 
@@ -1688,8 +1685,8 @@ lastSPI = finalSPI;
     // 🎨 10. VISUAL ENGINE
     // =====================================================
 
-    updateSPI(displaySPI);
-    bubbleIntensity = displaySPI / 100;
+    updateSPI(SPI);
+    bubbleIntensity = SPI / 100;
 
     // =====================================================
     // 🫧 11. OXYGEN SYSTEM
