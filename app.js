@@ -1192,7 +1192,6 @@ function calculateSPI(envScore, waterScore, data) {
 // =====================================================
 // 📊 CONF ENGINE START
 // =====================================================
-confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
 
 function calculateCONF(SPI, envScore, p, w, c, t) {
 
@@ -1538,7 +1537,8 @@ function renderDashboard(data) {
     setFishingZone(windDir);
 
     envScore = calculateENV(p, c, w, light, t);
-
+    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
+    
     const envEl = document.getElementById("envScore");
     if (envEl) envEl.innerText = envScore + "%";
 
