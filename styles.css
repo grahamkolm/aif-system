@@ -741,6 +741,25 @@ html, body {
 
 /* ================= SCOUT ================= */
 /* 🧠 SCOUT OVERLAY */
+
+.source-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: #ccc;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.source-btn.active {
+  background: linear-gradient(135deg, #00ffa3, #00cfff);
+  color: #000;
+  border: none;
+  box-shadow: 0 0 12px rgba(0,255,160,0.5); 
+}
+
 #scoutScreen {
     position: fixed;
     top: 0;
