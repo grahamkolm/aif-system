@@ -760,6 +760,25 @@ html, body {
   box-shadow: 0 0 12px rgba(0,255,160,0.5); 
 }
 
+.primary-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  background: linear-gradient(135deg, #00ffa3, #00cfff);
+  box-shadow: 0 8px 20px rgba(0,255,160,0.3);
+  transition: 0.2s;
+}
+
+.primary-btn:active {
+  transform: scale(0.98);
+}
+
+
 #scoutScreen {
     position: fixed;
     top: 0;
