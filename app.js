@@ -2524,6 +2524,64 @@ function startScan() {
     }, 2000);
 }
 
+let scoutMode = "manual";
+
+function updateScoutMode(mode) {
+
+  scoutMode = mode;
+
+  const sensorBox = document.getElementById("sensorBox");
+  const manualBtn = document.getElementById("manualBtn");
+  const sensorBtn = document.getElementById("sensorBtn");
+
+  if (mode === "sensor") {
+    sensorBox.style.display = "block";
+    manualBtn.classList.remove("active");
+    sensorBtn.classList.add("active");
+  } else {
+    sensorBox.style.display = "none";
+    manualBtn.classList.add("active");
+    sensorBtn.classList.remove("active");
+  }
+}
+
+async function connectSensor() {
+
+  const status = document.getElementById("sensorStatus");
+  status.innerText = "Connecting...";
+
+  try {
+
+    // TEMP TEST DATA (replace later with BLE)
+    const data = {
+      temp: 16,
+      pressure: 1011,
+      surfaceTemp: 15,
+      bottomTemp: 13,
+      depth: 3
+    };
+
+    applySensorData(data);
+
+    status.innerText = "Connected";
+
+  } catch (err) {
+    console.error(err);
+    status.innerText = "Connection failed";
+  }
+}
+
+function applySensorData(data) {
+
+  document.getElementById("airTemp").value = data.temp ?? "";
+  document.getElementById("pressure").value = data.pressure ?? "";
+  document.getElementById("surfaceTemp").value = data.surfaceTemp ?? "";
+  document.getElementById("bottomTemp").value = data.bottomTemp ?? "";
+  document.getElementById("depth").value = data.depth ?? "";
+
+}
+
+
 function showScanFailed() {
 
     let screen = document.getElementById("scoutScreen");
