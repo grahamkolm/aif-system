@@ -2571,6 +2571,31 @@ function retryConnection() {
     setTimeout(checkSensors, 1000);
 }
 
+function updateDashboardFromScout(data) {
+
+  if (data.air)
+    document.getElementById("air").innerText = data.air + "°C";
+
+  if (data.surface)
+    document.getElementById("surface").innerText = data.surface + "°C";
+
+  if (data.bottom)
+    document.getElementById("bottom").innerText = data.bottom + "°C";
+
+  if (data.pressure)
+    document.getElementById("pressure").innerText = data.pressure + " hPa";
+
+  if (data.light)
+    document.getElementById("light").innerText = data.light + "%";
+
+  if (data.depth)
+    document.getElementById("depth").innerText = data.depth + " m";
+
+  console.log("Dashboard updated from Scout ✅"); 
+}
+
+
+
 function startScan() {
 
     let screen = document.getElementById("scoutScreen");
