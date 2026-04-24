@@ -249,7 +249,8 @@ Report
       <div class="scout-sub">Quickly log activity & scan water</div>
     </div>
 
-      
+    <!-- ================= SELECTIONS ================= -->
+
     <div class="scout-section">
       <div class="scout-label">Fish Activity</div>
       <div class="option-row">
@@ -293,98 +294,102 @@ Report
       </div>
     </div>
 
-<button id="scoutBtn" onclick="handleScout()">
-  Save
-</button>
+    <!-- ================= DATA SOURCE ================= -->
 
-      
-<div class="scout-section">
-  <div class="scout-title">Data Source</div>
+    <div class="scout-section">
+      <div class="scout-title">Data Source</div>
 
-  <div style="display:flex; gap:10px; margin-top:10px;">
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <button class="source-btn active" data-source="manual" onclick="selectSource('manual')">
+          Manual
+        </button>
 
-  </div>
-</div>
-
-<div id="sensorFields">      
-<div class="scout-section">
-  <div class="scout-label"> Sensor Readings</div>
-
-<div id="sensorBox" style="display:none; margin-bottom:15px;">
-
-  <button class="btn primary" onclick="connectSensor()">
-    Connect Sensor
-  </button>
-
-  <div id="sensorStatus" style="margin-top:8px; opacity:0.7;">
-    Not connected
-  </div>
-
-</div>
-
-    
-  <!-- Air -->
-  <div class="input-group">
-    <label>Air Temp (°C)</label>
-    <input type="number" id="airTemp" placeholder="e.g. 16">
-  </div>
-
-  <div class="input-group">
-    <label>Pressure (hPa)</label>
-    <input type="number" id="pressure" placeholder="e.g. 1023">
-  </div>
-
-  <div class="input-group">
-    <label>Altitude (m)</label>
-    <input type="number" id="altitude" placeholder="e.g. 1400">
-  </div>
-
-  <!-- Water -->
-  <div class="input-group">
-    <label>Surface Temp (°C)</label>
-    <input type="number" id="surfaceTemp" placeholder="e.g. 13">
-  </div>
-
-  <div class="input-group">
-    <label>Bottom Temp (°C)</label>
-    <input type="number" id="bottomTemp" placeholder="e.g. 10">
-  </div>
-
-  <!-- Thermocline -->
-  <div class="input-row">
-    <div>
-      <label>Thermocline Start (m)</label>
-      <input type="number" id="thermoStart" placeholder="e.g. 2">
+        <button class="source-btn" data-source="sensor" onclick="selectSource('sensor')">
+          Sensor
+        </button>
+      </div>
     </div>
 
-    <div>
-      <label>Thermocline End (m)</label>
-      <input type="number" id="thermoEnd" placeholder="e.g. 4">
+    <!-- ================= INPUTS ================= -->
+
+    <div id="sensorFields">
+
+      <div class="scout-section">
+        <div class="scout-label">Sensor Readings</div>
+
+        <div id="sensorBox" style="display:none; margin-bottom:15px;">
+          <button class="btn primary" onclick="connectSensor()">Connect Sensor</button>
+          <div id="sensorStatus" style="margin-top:8px; opacity:0.7;">
+            Not connected
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Air Temp (°C)</label>
+          <input type="number" id="airTemp" placeholder="e.g. 16">
+        </div>
+
+        <div class="input-group">
+          <label>Pressure (hPa)</label>
+          <input type="number" id="pressure" placeholder="e.g. 1023">
+        </div>
+
+        <div class="input-group">
+          <label>Altitude (m)</label>
+          <input type="number" id="altitude" placeholder="e.g. 1400">
+        </div>
+
+        <div class="input-group">
+          <label>Surface Temp (°C)</label>
+          <input type="number" id="surfaceTemp" placeholder="e.g. 13">
+        </div>
+
+        <div class="input-group">
+          <label>Bottom Temp (°C)</label>
+          <input type="number" id="bottomTemp" placeholder="e.g. 10">
+        </div>
+
+        <div class="input-row">
+          <div>
+            <label>Thermocline Start (m)</label>
+            <input type="number" id="thermoStart" placeholder="e.g. 2">
+          </div>
+
+          <div>
+            <label>Thermocline End (m)</label>
+            <input type="number" id="thermoEnd" placeholder="e.g. 4">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Turbidity (%)</label>
+          <input type="number" id="turbidity" placeholder="e.g. 40">
+        </div>
+
+        <div class="input-group">
+          <label>Light (%)</label>
+          <input type="number" id="light" placeholder="e.g. 30">
+        </div>
+
+        <div class="input-group">
+          <label>Max Depth (m)</label>
+          <input type="number" id="depth" placeholder="e.g. 10">
+        </div>
+
+      </div>
+
     </div>
-  </div>
 
-  <!-- Water Quality -->
-  <div class="input-group">
-    <label>Turbidity (%)</label>
-    <input type="number" id="turbidity" placeholder="e.g. 40">
-  </div>
+    <!-- ================= ACTION ================= -->
 
-  <div class="input-group">
-    <label>Light (%)</label>
-    <input type="number" id="light" placeholder="e.g. 30">
-  </div>
+    <button id="scoutBtn" onclick="handleScout()" class="primary-btn">
+      Save
+    </button>
 
-  <!-- Depth -->
-  <div class="input-group">
-    <label>Max Depth (m)</label>
-    <input type="number" id="depth" placeholder="e.g. 10">
-  </div>
-      
     <div class="scout-close" onclick="closeScout()">X</div>
-    
+
   </div>
 </div>
-  </div>
     
 <!-- ================= MAP ================= -->
 <div id="mapScreen" class="hidden">
