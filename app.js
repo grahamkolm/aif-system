@@ -2456,30 +2456,14 @@ function updateScoutUI() {
 }
 
 
-function handleScout() {
+async function handleScout() {
 
-    if (dataSource === "manual") {
+  if (dataSource === "sensor") {
+    await connectSensor();
+  } else {
+    saveScoutData();
+  }
 
-        console.log("Saving manual...");
-
-        saveScoutData();
-        closeScout();
-
-    } else {
-
-        console.log("Scanning sensor...");
-
-        // TEMP simulation (VERY IMPORTANT)
-        const data = simulateSensorFill();
-
-        fillScoutFields(data);
-
-        // now switch to manual view so user sees data
-        dataSource = "manual";
-        selectSource("manual");
-
-        alert("Sensor data loaded ✔️");
-    }
 }
 
 function simulateSensorFill() {
@@ -2634,27 +2618,42 @@ function selectSource(type) {
 
 async function connectSensor() {
 
-  const status = document.getElementById("sensorStatus");
-  status.innerText = "Connecting...";
-
   try {
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: ['12345678-1234-1234-1234-1234567890ab'] // your ESP32 service
+    });
 
-    // TEMP TEST DATA (replace later with BLE)
-    const data = {
-      temp: 16,
-      pressure: 1011,
-      surfaceTemp: 15,
-      bottomTemp: 13,
-      depth: 3
-    };
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService('12345678-1234-1234-1234-1234567890ab');
+    const characteristic = await service.getCharacteristic('abcd1234-ab12-cd34-ef56-abcdef123456');
 
-    applySensorData(data);
+    await characteristic.startNotifications();
 
-    status.innerText = "Connected";
+    characteristic.addEventListener('characteristicvaluechanged', (event) => {
 
-  } catch (err) {
-    console.error(err);
-    status.innerText = "Connection failed";
+      const value = event.target.value;
+
+      // 👉 THIS IS YOUR CODE (CORRECT PLACE)
+      const decoder = new TextDecoder('utf-8');
+      const jsonString = decoder.decode(value);
+
+      try {
+        const data = JSON.parse(jsonString);
+        console.log("Sensor data:", data);
+
+        populateSensorData(data); // ← your function
+
+      } catch (e) {
+        console.error("JSON parse error:", e, jsonString);
+      }
+
+    });
+
+    document.getElementById("sensorStatus").innerText = "Connected ✅";
+
+  } catch (error) {
+    console.error("Bluetooth error:", error);
   }
 }
 
@@ -2666,6 +2665,21 @@ function applySensorData(data) {
   document.getElementById("bottomTemp").value = data.bottomTemp ?? "";
   document.getElementById("depth").value = data.depth ?? "";
 
+}
+
+
+function populateSensorData(data) {
+  if (data.air !== undefined)
+    document.getElementById("airTemp").value = data.air;
+
+  if (data.surface !== undefined)
+    document.getElementById("surfaceTemp").value = data.surface;
+
+  if (data.bottom !== undefined)
+    document.getElementById("bottomTemp").value = data.bottom;
+
+  if (data.turbidity !== undefined)
+    document.getElementById("turbidity").value = data.turbidity; 
 }
 
 
@@ -2688,7 +2702,22 @@ function showScanFailed() {
     </div>
     `;
 }
-    
+
+function populateSensorData(data) {
+
+  document.getElementById("airTemp").value = data.air || "";
+  document.getElementById("pressure").value = data.pressure || "";
+  document.getElementById("altitude").value = data.altitude || "";
+
+  document.getElementById("surfaceTemp").value = data.surface || "";
+  document.getElementById("bottomTemp").value = data.bottom || "";
+
+  document.getElementById("turbidity").value = data.turbidity || "";
+
+  alert("Sensor data loaded ✅");
+
+}
+
 function saveAndScan() {
     localStorage.setItem("scoutData", JSON.stringify(scoutData));
     showConnectingScreen();
