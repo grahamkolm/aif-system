@@ -2595,6 +2595,60 @@ function updateDashboardFromScout(data) {
 }
 
 
+let bleCharacteristic;
+
+async function connectSensor() {
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ name: "AIF_SENSOR" }],
+      optionalServices: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"]
+    });
+
+    const server = await device.gatt.connect();
+
+    const service = await server.getPrimaryService(
+      "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+    );
+
+    bleCharacteristic = await service.getCharacteristic(
+      "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+    );
+
+    await bleCharacteristic.startNotifications();
+
+    bleCharacteristic.addEventListener(
+      "characteristicvaluechanged",
+      handleSensorData
+    );
+
+    console.log("✅ Sensor connected");
+
+  } catch (err) {
+    console.error("❌ BLE Error:", err);
+  }
+}
+
+
+function handleSensorData(event) {
+  const value = event.target.value;
+
+  // decode bytes → string
+  const decoder = new TextDecoder('utf-8');
+  const jsonString = decoder.decode(value);
+
+  console.log("RAW:", jsonString);
+
+  try {
+    const data = JSON.parse(jsonString);
+
+    console.log("Parsed:", data);
+
+    populateSensorData(data);
+
+  } catch (e) {
+    console.error("JSON parse error:", e);
+  }
+}
 
 function startScan() {
 
@@ -2727,18 +2781,31 @@ function applySensorData(data) {
 
 
 function populateSensorData(data) {
-  if (data.air !== undefined)
+
+  if (data.air)
     document.getElementById("airTemp").value = data.air;
 
-  if (data.surface !== undefined)
+  if (data.surface)
     document.getElementById("surfaceTemp").value = data.surface;
 
-  if (data.bottom !== undefined)
+  if (data.bottom)
     document.getElementById("bottomTemp").value = data.bottom;
 
-  if (data.turbidity !== undefined)
-    document.getElementById("turbidity").value = data.turbidity; 
+  if (data.pressure)
+    document.getElementById("pressure").value = data.pressure;
+
+  if (data.turbidity)
+    document.getElementById("turbidity").value = data.turbidity;
+
+  if (data.light)
+    document.getElementById("light").value = data.light;
+
+  if (data.depth)
+    document.getElementById("depth").value = data.depth;
+
+  console.log("✅ Fields updated from sensor"); 
 }
+
 
 
 function showScanFailed() {
