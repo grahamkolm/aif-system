@@ -2456,6 +2456,58 @@ function updateScoutUI() {
 }
 
 
+function handleScout() {
+
+    if (dataSource === "manual") {
+
+        console.log("Saving manual...");
+
+        saveScoutData();
+        closeScout();
+
+    } else {
+
+        console.log("Scanning sensor...");
+
+        // TEMP simulation (VERY IMPORTANT)
+        const data = simulateSensorFill();
+
+        fillScoutFields(data);
+
+        // now switch to manual view so user sees data
+        dataSource = "manual";
+        selectSource("manual");
+
+        alert("Sensor data loaded ✔️");
+    }
+}
+
+function simulateSensorFill() {
+    return {
+        airTemp: 18,
+        pressure: 1015,
+        surfaceTemp: 17,
+        bottomTemp: 14,
+        turbidity: 45,
+        light: 60,
+        depth: 3
+    };
+}
+
+
+function fillScoutFields(data) {
+
+    document.getElementById("airTemp").value = data.airTemp || "";
+    document.getElementById("pressure").value = data.pressure || "";
+    document.getElementById("surfaceTemp").value = data.surfaceTemp || "";
+    document.getElementById("bottomTemp").value = data.bottomTemp || "";
+    document.getElementById("turbidity").value = data.turbidity || "";
+    document.getElementById("light").value = data.light || "";
+    document.getElementById("depth").value = data.depth || "";
+
+}
+
+
 function checkSensors() {
   let list = document.getElementById("sensorStatusList");
 
