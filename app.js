@@ -2439,6 +2439,23 @@ function showConnectingScreen() {
     checkSensors();
 }
 
+function updateScoutUI() {
+
+    const inputs = document.getElementById("sensorFields");
+    const btn = document.getElementById("scoutBtn");
+
+    if (!inputs || !btn) return;
+
+    if (dataSource === "manual") {
+        inputs.style.display = "block";
+        btn.innerText = "Save";
+    } else {
+        inputs.style.display = "none";
+        btn.innerText = "Scan Sensor";
+    }
+}
+
+
 function checkSensors() {
   let list = document.getElementById("sensorStatusList");
 
