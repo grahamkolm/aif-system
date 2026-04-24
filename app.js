@@ -2967,7 +2967,7 @@ function openDam(){
 
             <div class="scout-actions">
                 <button onclick="saveDam()" class="btn primary">Save</button>
-                <button onclick="closeDam()" class="btn secondary">Close</button>
+                <button onclick="closeDam()" class="btn secondary">Close</button> 
             </div>
 
         </div>
