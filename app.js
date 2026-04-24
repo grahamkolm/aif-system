@@ -2617,20 +2617,19 @@ function updateScoutMode(mode) {
 let dataSource = "manual"; // default
 
 function selectSource(type) {
+  dataSource = type;
 
-    dataSource = type;
+  document.querySelectorAll('.source-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
 
-    // reset buttons
-    document.querySelectorAll(".source-btn")
-        .forEach(btn => btn.classList.remove("active"));
+  document.querySelector(`[data-source="${type}"]`)
+    .classList.add('active');
 
-    // activate selected
-    document.querySelector(`[data-source="${type}"]`)
-        .classList.add("active");
-
-    updateScoutUI();
-
-    console.log("Selected:", dataSource); }
+  // SHOW / HIDE SENSOR UI
+  document.getElementById("sensorBox").style.display =
+    type === "sensor" ? "block" : "none"; 
+}
 
 
 async function connectSensor() {
