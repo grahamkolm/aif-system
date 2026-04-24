@@ -294,8 +294,39 @@ Report
     </div>
 
 <div class="scout-section">
+  <div class="scout-title">Data Source</div>
+
+  <div style="display:flex; gap:10px; margin-top:10px;">
+
+    <button id="manualBtn" class="opt active"
+      onclick="updateScoutMode('manual')">
+      Manual
+    </button>
+
+    <button id="sensorBtn" class="opt"
+      onclick="updateScoutMode('sensor')">
+      Sensor
+    </button>
+
+  </div>
+</div>
+      
+<div class="scout-section">
   <div class="scout-label"> Sensor Readings</div>
 
+<div id="sensorBox" style="display:none; margin-bottom:15px;">
+
+  <button class="btn primary" onclick="connectSensor()">
+    Connect Sensor
+  </button>
+
+  <div id="sensorStatus" style="margin-top:8px; opacity:0.7;">
+    Not connected
+  </div>
+
+</div>
+
+    
   <!-- Air -->
   <div class="input-group">
     <label>Air Temp (°C)</label>
