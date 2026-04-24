@@ -1572,7 +1572,7 @@ const result = calculateSPI(
 // =============================
 // 📊 SPI CORE
 // =============================
-const waterScore = null;
+waterScore = null;
 
 const result = calculateSPI(envScore, waterScore, {
     p, w, c, windDir, t, light, depth, diff });
