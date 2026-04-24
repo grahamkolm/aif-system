@@ -2545,6 +2545,25 @@ function updateScoutMode(mode) {
   }
 }
 
+let dataSource = "manual"; // default
+
+function selectSource(type) {
+
+    dataSource = type;
+
+    // reset buttons
+    document.querySelectorAll(".source-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+    // activate selected
+    document.querySelector(`[data-source="${type}"]`)
+        .classList.add("active");
+
+    updateScoutUI();
+
+    console.log("Selected:", dataSource); }
+
+
 async function connectSensor() {
 
   const status = document.getElementById("sensorStatus");
