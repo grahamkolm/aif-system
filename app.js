@@ -2386,7 +2386,7 @@ Object.assign(scoutData, {
   birds,
   structure,
   wind,
-});
+})
 
   // SECTION 2 (NEW)
   airTemp: parseFloat(document.getElementById("airTemp").value) || null,
