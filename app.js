@@ -2381,27 +2381,30 @@ function setupScoutOptions(){
 async function continueScout() {
 
 Object.assign(scoutData, {
-  activity,
-  clarity,
-  birds,
-  structure,
-  wind,
 
-  // SECTION 2 (NEW)
-  airTemp: parseFloat(document.getElementById("airTemp").value) || null,
-  pressure: parseFloat(document.getElementById("pressure").value) || null,
-  altitude: parseFloat(document.getElementById("altitude").value) || null,
+    // SECTION 1
+    activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value,
+    clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value,
+    birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value,
+    structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value,
+    wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value,
 
-  surfaceTemp: parseFloat(document.getElementById("surfaceTemp").value) || null,
-  bottomTemp: parseFloat(document.getElementById("bottomTemp").value) || null,
+    // SECTION 2 (NEW)
+    airTemp: parseFloat(document.getElementById("airTemp").value) || null,
+    pressure: parseFloat(document.getElementById("pressure").value) || null,
+    altitude: parseFloat(document.getElementById("altitude").value) || null,
 
-  thermoStart: parseFloat(document.getElementById("thermoStart").value) || null,
-  thermoEnd: parseFloat(document.getElementById("thermoEnd").value) || null,
+    surfaceTemp: parseFloat(document.getElementById("surfaceTemp").value) || null,
+    bottomTemp: parseFloat(document.getElementById("bottomTemp").value) || null,
 
-  turbidity: parseFloat(document.getElementById("turbidity").value) || null,
-  light: parseFloat(document.getElementById("light").value) || null,
-  depth: parseFloat(document.getElementById("depth").value) || null 
-};
+    thermoStart: parseFloat(document.getElementById("thermoStart").value) || null,
+    thermoEnd: parseFloat(document.getElementById("thermoEnd").value) || null,
+
+    turbidity: parseFloat(document.getElementById("turbidity").value) || null,
+    light: parseFloat(document.getElementById("light").value) || null,
+    depth: parseFloat(document.getElementById("depth").value) || null
+
+});
 
   if (scoutData.thermoStart && scoutData.thermoEnd) {
   if (scoutData.thermoStart >= scoutData.thermoEnd) {
