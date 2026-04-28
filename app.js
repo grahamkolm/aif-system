@@ -230,6 +230,7 @@ function showCONFInsight() {
 // =====================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadDrops();
     setupScoutOptions();
     // =============================
     // 🌊 SPLASH INIT
@@ -2113,18 +2114,28 @@ function getBaitSuggestion(SPI) {
 // 🧭 9. GPS + COMPASS + MAP
 // =====================================================
 
+let watchId;
+
 function initGPS() {
     if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition(
+    watchId = navigator.geolocation.watchPosition(
         (pos) => {
-            userLocation.lat = pos.coords.latitude;
-            userLocation.lon = pos.coords.longitude;
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
 
-            console.log("GPS:", userLocation.lat, userLocation.lon);
+            userLocation = { lat, lon };
+
+            // 🔥 update map automatically
+            updateMapLocation(lat, lon);
         },
         (err) => {
             console.warn("GPS error:", err);
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 5000,
+            timeout: 10000
         }
     );
 }
@@ -2165,7 +2176,15 @@ function openMap() {
             updateMapLocation(lat, lon);
         }
 
-        // Fix rendering
+drops.forEach(d => {
+    if (d.lat && d.lon) {
+        L.marker([d.lat, d.lon])
+            .addTo(mapInstance)
+            .bindPopup(`SPI: ${d.spi}%`);
+    }
+});
+
+       
         setTimeout(() => {
             mapInstance.invalidateSize();
         }, 200);
@@ -2361,13 +2380,13 @@ function setupScoutOptions(){
 
 async function continueScout() {
 
-const scoutData = {
-  // SECTION 1 (you already have)
+Object.assign(scoutData, {
   activity,
   clarity,
   birds,
   structure,
   wind,
+});
 
   // SECTION 2 (NEW)
   airTemp: parseFloat(document.getElementById("airTemp").value) || null,
@@ -2780,32 +2799,6 @@ function applySensorData(data) {
 }
 
 
-function populateSensorData(data) {
-
-  if (data.air)
-    document.getElementById("airTemp").value = data.air;
-
-  if (data.surface)
-    document.getElementById("surfaceTemp").value = data.surface;
-
-  if (data.bottom)
-    document.getElementById("bottomTemp").value = data.bottom;
-
-  if (data.pressure)
-    document.getElementById("pressure").value = data.pressure;
-
-  if (data.turbidity)
-    document.getElementById("turbidity").value = data.turbidity;
-
-  if (data.light)
-    document.getElementById("light").value = data.light;
-
-  if (data.depth)
-    document.getElementById("depth").value = data.depth;
-
-  console.log("✅ Fields updated from sensor"); 
-}
-
 
 
 function showScanFailed() {
@@ -2857,18 +2850,33 @@ function resetTempModel(){
 }
 
 
-function showSummary(){
+function loadDrops() {
+    const stored = localStorage.getItem("drops");
+    if (stored) {
+        drops = JSON.parse(stored);
+    }
+}
+
+
+function showSummary() {
+
+    let last = drops[drops.length - 1];
 
     let screen = document.getElementById("scoutScreen");
 
     screen.innerHTML = `
-        <div class="scout-title">Scan Complete</div>
+        <div class="scout-title">Scout Summary</div>
 
-        <div>Clarity: ${scoutData.clarity || "-"}</div>
-        <div>Birds: ${scoutData.birds || "-"}</div>
-        <div>Activity: ${scoutData.activity || "-"}</div>
+        <div>📍 Lat: ${last.lat?.toFixed(5)}</div>
+        <div>📍 Lon: ${last.lon?.toFixed(5)}</div>
 
-        <div style="margin-top:20px;">SPI Updated</div>
+        <div>📊 SPI: ${last.spi}%</div>
+        <div>🌍 ENV: ${last.env}%</div>
+        <div>🧠 CONF: ${last.conf}%</div>
+
+        <div>🌡 Surface: ${last.surface || "-"}°C</div>
+        <div>🌊 Bottom: ${last.bottom || "-"}°C</div>
+        <div>📏 Depth: ${last.depth || "-"} m</div>
 
         <div class="scout-btn" onclick="closeScout()">Done</div>
     `;
@@ -2979,20 +2987,33 @@ function setupHold(elementId, callback) {
 // 🌊 DROP
 
 function openDrop() {
-    console.log("DROP CLICKED");
 
-    let dropData = {
-        time: Date.now(),
+    const drop = {
+        id: Date.now(),
+        time: new Date().toISOString(),
         lat: userLocation?.lat || null,
         lon: userLocation?.lon || null,
+
+        // 🔥 CORE DATA
         spi: SPI,
-        scout: scoutData,
-        success: false
+        env: envScore,
+        conf: confScoreValue,
+
+        // 🌡 SENSOR / SCOUT
+        surface: ENV.surface,
+        bottom: ENV.bottom,
+        depth: ENV.depth,
+        oxygen: ENV.oxygen,
+
+        scout: { ...scoutData }
     };
 
-    drops.push(dropData);
-    
-    console.log("DROP SAVED:", dropData); 
+    drops.push(drop);
+
+    // 🔥 SAVE PERSISTENTLY
+    localStorage.setItem("drops", JSON.stringify(drops));
+
+    console.log("DROP SAVED:", drop);
 
     showDropFeedback();
     ripple();
