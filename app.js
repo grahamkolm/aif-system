@@ -16,6 +16,7 @@ let currentSession = null;
 let userLocation = { lat: null, lon: null }; 
 let mapInstance = null; 
 let userMarker = null;
+let dropMarkers = [];
 
 // ============================
 // 🧭 COMPASS
@@ -2176,12 +2177,18 @@ function openMap() {
             updateMapLocation(lat, lon);
         }
 
+// 🔥 CLEAR OLD MARKERS FIRST
+dropMarkers.forEach(m => mapInstance.removeLayer(m)); dropMarkers = [];
+
+// 🔥 DRAW ALL DROPS
 drops.forEach(d => {
-    if (d.lat && d.lon) {
-        L.marker([d.lat, d.lon])
-            .addTo(mapInstance)
-            .bindPopup(`SPI: ${d.spi}%`);
-    }
+    if (!d.lat || !d.lon) return;
+
+    const marker = L.marker([d.lat, d.lon])
+        .addTo(mapInstance)
+        .bindPopup(`SPI: ${d.spi}%`);
+
+    dropMarkers.push(marker);
 });
 
        
