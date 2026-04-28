@@ -2159,12 +2159,11 @@ function openMap() {
 
     setTimeout(() => {
 
-        // Create map ONLY once
+        const lat = userLocation?.lat || -26.2;
+        const lon = userLocation?.lon || 28.0;
+
+        // ✅ Create map once
         if (!mapInstance) {
-
-            const lat = userLocation?.lat || -26.2;
-            const lon = userLocation?.lon || 28.0;
-
             mapInstance = L.map('mapContainer', {
                 zoomControl: true
             }).setView([lat, lon], 13);
@@ -2173,25 +2172,26 @@ function openMap() {
                 attribution: '',
                 maxZoom: 19
             }).addTo(mapInstance);
-
-            updateMapLocation(lat, lon);
         }
 
-// 🔥 CLEAR OLD MARKERS FIRST
-dropMarkers.forEach(m => mapInstance.removeLayer(m)); dropMarkers = [];
+        // ✅ ALWAYS update location
+        updateMapLocation(lat, lon);
 
-// 🔥 DRAW ALL DROPS
-drops.forEach(d => {
-    if (!d.lat || !d.lon) return;
+        // 🔥 CLEAR OLD MARKERS
+        dropMarkers.forEach(m => mapInstance.removeLayer(m));
+        dropMarkers = [];
 
-    const marker = L.marker([d.lat, d.lon])
-        .addTo(mapInstance)
-        .bindPopup(`SPI: ${d.spi}%`);
+        // 🔥 DRAW DROPS (THIS WAS YOUR MISSING PIECE)
+        drops.forEach(d => {
+            if (!d.lat || !d.lon) return;
 
-    dropMarkers.push(marker);
-});
+            const marker = L.marker([d.lat, d.lon])
+                .addTo(mapInstance)
+                .bindPopup(`SPI: ${d.spi}%`);
 
-       
+            dropMarkers.push(marker);
+        });
+
         setTimeout(() => {
             mapInstance.invalidateSize();
         }, 200);
