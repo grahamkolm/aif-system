@@ -263,8 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // =============================
     splashCanvas = document.getElementById("splashCanvas");
     splashCtx = splashCanvas?.getContext("2d");
-    document.getElementById("clearScoutsBtn")
-    .addEventListener("click", clearScoutMarkers);
     
     resizeSplash();
 
