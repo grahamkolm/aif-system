@@ -2225,25 +2225,27 @@ function closeMap() {
 // ============================
 function updateMapLocation(lat, lon) {
 
-    // 🚫 DO NOTHING if map not ready
+    // 🛑 STOP if map not ready
     if (!mapInstance) {
-        console.warn("Map not ready yet");
+        console.warn("Map not ready yet — skipping update");
         return;
     }
 
-    // 🚫 DO NOTHING if GPS invalid
     if (!lat || !lon) {
-        console.warn("Invalid GPS");
+        console.warn("Invalid GPS coords");
         return;
     }
 
-    // ✅ Safe to use map
-    mapInstance.setView([lat, lon], 15);
+    updateMapLocation(userLocation.lat, userlocation.lon);
+    
+    // Move camera
+    mapInstance.setView([lat, lon], 13);
 
+    // Create OR update marker
     if (!userMarker) {
         userMarker = L.marker([lat, lon])
             .addTo(mapInstance)
-            .bindPopup("You are here 📍");
+            .bindPopup("You are here 🎯");
     } else {
         userMarker.setLatLng([lat, lon]);
     }
