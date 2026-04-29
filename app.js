@@ -2149,7 +2149,7 @@ function initGPS() {
 
 
 // ============================
-// 🗺️ OPEN MAP
+// 🗺️ OPEN MAP (CLEAN VERSION)
 // ============================
 function openMap() {
 
@@ -2161,24 +2161,23 @@ function openMap() {
 
     setTimeout(() => {
 
-    let lat = userLocation?.lat;
-    let lon = userLocation?.lon;
-    if (!lat || !lon) {
-        console.warn("GPS not ready yet - using fallback");
-        //fallback
-        lat = -26.2;
-        lon = 28.0;
-    }
+        // =============================
+        // 📍 GET LOCATION (SAFE)
+        // =============================
+        let lat = userLocation?.lat;
+        let lon = userLocation?.lon;
 
-    // Only center if GPS exists
-    if (lat && lon) {
-    mapInstance.setView([lat, lon], 15); }
-    if (!mapInstance) {
-        console.error("Map not initialized");
-    }
+        if (!lat || !lon) {
+            console.warn("GPS not ready — using fallback");
+            lat = -26.2;
+            lon = 28.0;
+        }
 
-        // ✅ Create map once
+        // =============================
+        // 🗺️ CREATE MAP (ONLY ONCE)
+        // =============================
         if (!mapInstance) {
+
             mapInstance = L.map('mapContainer', {
                 zoomControl: true
             }).setView([lat, lon], 13);
@@ -2187,16 +2186,31 @@ function openMap() {
                 attribution: '',
                 maxZoom: 19
             }).addTo(mapInstance);
+
+            console.log("✅ Map initialized");
+
+        } else {
+
+            // =============================
+            // 🔄 UPDATE VIEW (ONLY IF EXISTS)
+            // =============================
+            mapInstance.setView([lat, lon], 13);
         }
 
-        // ✅ ALWAYS update location
+        // =============================
+        // 📍 UPDATE USER MARKER
+        // =============================
         updateMapLocation(lat, lon);
 
-        // 🔥 CLEAR OLD MARKERS
+        // =============================
+        // 🔥 CLEAR OLD DROP MARKERS
+        // =============================
         dropMarkers.forEach(m => mapInstance.removeLayer(m));
         dropMarkers = [];
 
-        // 🔥 DRAW DROPS (THIS WAS YOUR MISSING PIECE)
+        // =============================
+        // 🎯 DRAW DROPS
+        // =============================
         drops.forEach(d => {
             if (!d.lat || !d.lon) return;
 
@@ -2207,6 +2221,9 @@ function openMap() {
             dropMarkers.push(marker);
         });
 
+        // =============================
+        // 🧱 FIX RENDER SIZE (CRITICAL)
+        // =============================
         setTimeout(() => {
             mapInstance.invalidateSize();
         }, 200);
@@ -2228,28 +2245,21 @@ function closeMap() {
 // ============================
 function updateMapLocation(lat, lon) {
 
-    // 🛑 STOP if map not ready
+    // 🔒 HARD STOP 1 — map not ready
     if (!mapInstance) {
-        console.warn("Map not ready yet — skipping update");
+        console.warn("⛔ Map not ready — skip update");
         return;
     }
 
-    if (!lat || !lon) {
-        console.warn("Invalid GPS coords");
+    // 🔒 HARD STOP 2 — invalid GPS
+    if (lat == null || lon == null || isNaN(lat) || isNaN(lon)) {
+        console.warn("⛔ Invalid GPS — skip update");
         return;
     }
 
-    if (!lat || !lon) {
-        console.warn("Skipping update - invalid Coords");
-        return;
-    }
-    
-    updateMapLocation(userLocation.lat, userlocation.lon);
-    
-    // Move camera
+    // ✅ SAFE TO USE
     mapInstance.setView([lat, lon], 13);
 
-    // Create OR update marker
     if (!userMarker) {
         userMarker = L.marker([lat, lon])
             .addTo(mapInstance)
@@ -2258,6 +2268,7 @@ function updateMapLocation(lat, lon) {
         userMarker.setLatLng([lat, lon]);
     }
 }
+
 
 // =====================================================
 // 🎯 10. UI HELPERS START
