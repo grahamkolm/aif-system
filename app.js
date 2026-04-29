@@ -2571,7 +2571,6 @@ async function continueScout() {
   bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
   thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
   thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
-
   pressure: pressure || null,   // 👈 ADD THIS
 
   activity,
