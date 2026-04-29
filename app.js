@@ -2224,6 +2224,7 @@ function openMap() {
 
             const marker = L.marker([d.lat, d.lon], { icon: dropIcon })
                 .addTo(mapInstance)
+                .bringToFront();
                 .bindPopup(`SPI: ${d.spi}%`);
 
             dropMarkers.push(marker);
