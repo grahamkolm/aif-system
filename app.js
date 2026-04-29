@@ -2598,7 +2598,7 @@ async function continueScout() {
 
     // 🔹 optional latest snapshot (good for dashboard)
     localStorage.setItem("scoutLatest", JSON.stringify(newScout));
-    console.log{"Saved Scouts:", scouts);
+    console.log("Saved Scouts:", scouts);
     console.log("✅ Scout saved:", newScout);
 
     // ============================
