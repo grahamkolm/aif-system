@@ -2235,6 +2235,16 @@ function openMap() {
             dropMarkers.push(marker);
         });
 
+        const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
+
+        scouts.forEach(s => {
+        if (!s.lat || !s.lon) return;
+
+        L.marker([s.lat, s.lon], { icon: scoutIcon })
+        .addTo(mapInstance)
+        .bindPopup(`Scout • ${s.activity || "data"}`); 
+        });
+
         // =============================
         // 🧱 FIX RENDER SIZE (CRITICAL)
         // =============================
@@ -2462,73 +2472,107 @@ function setupScoutOptions(){
     });
 }
 
+// =====================================================
+// 🧭 CONTINUE SCOUT (CLEAN + SAFE)
+// =====================================================
 async function continueScout() {
 
-Object.assign(scoutData, {
+    // ============================
+    // 📍 GPS CHECK FIRST (CRITICAL)
+    // ============================
+    const lat = userLocation?.lat;
+    const lon = userLocation?.lon;
 
-    // SECTION 1
-    activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value,
-    clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value,
-    birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value,
-    structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value,
-    wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value,
+    if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+        alert("⚠️ Waiting for GPS — please stand still a few seconds");
+        return;
+    }
 
-    // SECTION 2
-    airTemp: parseFloat(document.getElementById("airTemp").value) || null,
-    pressure: parseFloat(document.getElementById("pressure").value) || null,
-    altitude: parseFloat(document.getElementById("altitude").value) || null,
+    // ============================
+    // 📥 COLLECT INPUT DATA
+    // ============================
+    const newScout = {
 
-    surfaceTemp: parseFloat(document.getElementById("surfaceTemp").value) || null,
-    bottomTemp: parseFloat(document.getElementById("bottomTemp").value) || null,
+        // SECTION 1
+        activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value || null,
+        clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value || null,
+        birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value || null,
+        structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value || null,
+        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value || null,
 
-    thermoStart: parseFloat(document.getElementById("thermoStart").value) || null,
-    thermoEnd: parseFloat(document.getElementById("thermoEnd").value) || null,
+        // SECTION 2
+        airTemp: parseFloat(document.getElementById("airTemp")?.value) || null,
+        pressure: parseFloat(document.getElementById("pressure")?.value) || null,
+        altitude: parseFloat(document.getElementById("altitude")?.value) || null,
 
-    turbidity: parseFloat(document.getElementById("turbidity").value) || null,
-    light: parseFloat(document.getElementById("light").value) || null,
-    depth: parseFloat(document.getElementById("depth").value) || null });
+        surfaceTemp: parseFloat(document.getElementById("surfaceTemp")?.value) || null,
+        bottomTemp: parseFloat(document.getElementById("bottomTemp")?.value) || null,
 
-// 📍 GPS ATTACH (THIS IS THE FIX)
-scoutData.lat = userLocation.lat;
-scoutData.lon = userLocation.lon;
+        thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
+        thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
 
+        turbidity: parseFloat(document.getElementById("turbidity")?.value) || null,
+        light: parseFloat(document.getElementById("light")?.value) || null,
+        depth: parseFloat(document.getElementById("depth")?.value) || null,
 
-if (!scoutData.lat || !scoutData.lon) {
-    alert("⚠️ Waiting for GPS — please stand still a few seconds");
-    return;
+        // 📍 GPS
+        lat,
+        lon,
+
+        // 🕒 Timestamp (important later)
+        time: Date.now()
+    };
+
+    // ============================
+    // 🔄 FIX THERMO VALUES
+    // ============================
+    if (newScout.thermoStart && newScout.thermoEnd) {
+        if (newScout.thermoStart >= newScout.thermoEnd) {
+            [newScout.thermoStart, newScout.thermoEnd] =
+            [newScout.thermoEnd, newScout.thermoStart];
+        }
+    }
+
+    // ============================
+    // ✅ MIN VALIDATION
+    // ============================
+    const filledFields = Object.values(newScout).filter(v => v !== null).length;
+
+    if (filledFields < 3) {
+        alert("⚠️ Add at least a few observations");
+        return;
+    }
+
+    // ============================
+    // 💾 SAVE CLEAN DATA
+    // ============================
+    let scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
+
+    scouts.push(newScout);
+
+    localStorage.setItem("scouts", JSON.stringify(scouts));
+    localStorage.setItem("scoutData", JSON.stringify(newScout));
+
+    console.log("✅ Scout saved:", newScout);
+
+    // ============================
+    // 🔄 UI FLOW
+    // ============================
+    showConnectingScreen();
+
+    const ok = await checkSensors();
+
+    if (!ok) {
+        showConnectionError();
+        return;
+    }
+
+    // ============================
+    // ✅ SUCCESS
+    // ============================
+    closeScout();
 }
 
-  if (scoutData.thermoStart && scoutData.thermoEnd) {
-  if (scoutData.thermoStart >= scoutData.thermoEnd) {
-    // swap values automatically
-    let temp = scoutData.thermoStart;
-    scoutData.thermoStart = scoutData.thermoEnd;
-    scoutData.thermoEnd = temp;
-  }
-}
-
-let scouts = JSON.parse(localStorage.getItem("scouts") || "[]"); scouts.push(scoutData); localStorage.setItem("scouts", JSON.stringify(scouts));
-    
-  if (Object.keys(scoutData).length < 2) {
-    alert("Select at least 2 observations");
-    return;
-  }
-
-  localStorage.setItem("scoutData", JSON.stringify(scoutData));
-  console.log("Scout saved:", scoutData);
-
-  showConnectingScreen(); // show loading
-
-  const ok = await checkSensors(); // 🔥 THIS WAS MISSING
-
-  if (!ok) {
-    showConnectionError(); // your fail screen
-    return;
-  }
-
-  // ✅ SUCCESS
-  closeScout(); // or go to next screen
-}
 
 function showConnectingScreen() {
 
