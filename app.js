@@ -30,7 +30,7 @@ const dropIcon = L.icon({
 });
 
 const scoutIcon = L.icon({
-    iconUrl: 'orange-marker.png',
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
     iconSize: [28, 45],
     iconAnchor: [14, 45]
 });
