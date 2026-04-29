@@ -2239,12 +2239,12 @@ function openMap() {
         window.scoutMarkers = [];
         
         scouts.forEach(s => {
-        if (!s.lat || !s.lon) return;
+        if (!s.lat == null || !s.lon == null) return;
 
         const marker = L.marker([s.lat, s.lon], {
-            icon: scoutIcon,
             zIndexOffset: 1000
         });
+            
         marker.addTo(mapInstance);
         marker.bindPopup(`Scout • ${s.activity || "data"}`);
         
