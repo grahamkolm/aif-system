@@ -2568,25 +2568,16 @@ async function continueScout() {
 
   spi: SPI,
 
-  bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
-  thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
-  thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
-  pressure: pressure || null,   // 👈 ADD THIS
-
-  activity,
-  clarity,
-  structure,
-  wind,
-  birds
-
-
-        // SECTION 1
-        activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
-        clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value ?? null,
-        birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
+      bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
+      thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
+      thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
+      pressure: pressure || null,   // 👈 ADD THIS
+      activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
+      clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value ?? null,
+      birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
         structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value ?? null,
         wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null,
-
+   };
         // SECTION 2
         airTemp: parseFloat(document.getElementById("airTemp")?.value) || null,
         pressure: parseFloat(document.getElementById("pressure")?.value) || null,
