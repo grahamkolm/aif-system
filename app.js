@@ -2273,10 +2273,10 @@ function drawBestZone() {
     }
 
     bestZoneCircle = L.circle([zone.lat, zone.lon], {
-        radius: zone.strength === "strong" ? 120 : 80,
-        color: "#00ff9c",
-        fillColor: "#00ff9c",
-        fillOpacity: 0.15
+        radius: 300, 
+        color: "#28a745",
+        fillColor: "#28a745",
+        fillOpacity: 0.2
     }).addTo(mapInstance);
 
 }
