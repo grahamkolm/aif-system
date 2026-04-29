@@ -2614,14 +2614,6 @@ async function continueScout() {
     // ============================
     // 🔄 UI FLOW
     // ============================
-    showConnectingScreen();
-
-    const ok = await checkSensors();
-
-    if (!ok) {
-        showConnectionError();
-        return;
-    }
 
     // ============================
     // ✅ SUCCESS
