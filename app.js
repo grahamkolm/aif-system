@@ -2513,7 +2513,11 @@ async function continueScout() {
     // ============================
     // 📥 COLLECT INPUT DATA
     // ============================
+    console.log("Final Scout Save:", lat, lon);
+    
     const newScout = {
+        lat: lat,
+        lon: lon,
 
         // SECTION 1
         activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value || null,
