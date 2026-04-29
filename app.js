@@ -23,14 +23,15 @@ const userIcon = L.icon({
 });
 
 const dropIcon = L.icon({
-    iconUrl: 'blue-marker.png',
-    iconSize: [25, 41]
+    iconUrl: 'orange-marker.png',
+    iconSize: [25, 41],
     iconAnchor: [12, 41]
 });
 
 const scoutIcon = L.icon({
-    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
-    iconSize: [32, 32]
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32]
 });
 
 // ============================
