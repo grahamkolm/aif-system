@@ -133,6 +133,14 @@ const WHITE = "#ffffff";
 // =====================================================
 // 🌍 0. GLOBAL BASE END
 // =====================================================
+let scouts = [];
+
+    try {
+        scouts = JSON.parse(localStorage.getItem("scouts")) || [];
+    } catch (e) {
+        console.warn("⚠️ Corrupt scout storage, resetting...");
+        scouts = [];
+    }
 
 // =====================================================
 // 🧩 2. UI HELPERS
@@ -2582,15 +2590,7 @@ async function continueScout() {
     // ============================
     // 💾 SAFE STORAGE (UPGRADED)
     // ============================
-    let scouts = [];
-
-    try {
-        scouts = JSON.parse(localStorage.getItem("scouts")) || [];
-    } catch (e) {
-        console.warn("⚠️ Corrupt scout storage, resetting...");
-        scouts = [];
-    }
-
+    
     scouts.push(newScout);
 
     localStorage.setItem("scouts", JSON.stringify(scouts));
