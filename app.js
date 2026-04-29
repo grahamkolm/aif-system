@@ -2229,19 +2229,22 @@ function openMap() {
             dropMarkers.push(marker);
         });
 
-        drawBestZone();
+        drawDropZone();
         drawScoutZone();
         const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
 
         if (window.scoutMarkers) {
-            window.scoutMarkers.forEach(m => mapInstance.removalLayer(m));
+            window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
         }
         window.scoutMarkers = [];
         
         scouts.forEach(s => {
         if (!s.lat || !s.lon) return;
 
-        const marker = L.marker([s.lat + 0.00005, s.lon + 0.00005], { icon: scoutIcon })
+        const marker = L.marker([s.lat, s.lon], {
+            icon: scoutIcon,
+            zIndexOffset: 1000
+        });
         marker.addTo(mapInstance);
         marker.bindPopup(`Scout • ${s.activity || "data"}`);
         
@@ -2261,23 +2264,20 @@ function openMap() {
 
 let bestZoneCircle = null;
 
-function drawBestZone() {
-
+function drawDropZone() {
     const zone = getBestZone();
     if (!zone || !mapInstance) return;
 
-    // remove old circle
-    if (bestZoneCircle) {
-        mapInstance.removeLayer(bestZoneCircle);
+    if (window.dropZoneCircle) {
+        mapInstance.removeLayer(window.dropZoneCircle);
     }
 
-    bestZoneCircle = L.circle([zone.lat, zone.lon], {
-        radius: 300, 
+    window.dropZoneCircle = L.circle([zone.lat, zone.lon], {
+        radius: zone.strength === "strong" ? 80 : 50,
         color: "#28a745",
         fillColor: "#28a745",
         fillOpacity: 0.2
     }).addTo(mapInstance);
-
 }
 
 
@@ -2600,8 +2600,8 @@ async function continueScout() {
     // ============================
     // 🗺️ FORCE MAP REFRESH (CRITICAL)
     // ============================
-    if (typeof renderMap === "function") {
-        renderMap();
+    if (mapInstance) {
+        drawScoutZone();
     }
 
     // ============================
@@ -3358,23 +3358,18 @@ function getBestScoutZone() {
     };
 }
 
-function drawBestZone() {
-    const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
+function drawScoutZone() {
+    const best = getBestScoutZone();
+    if (!zone || !mapInstance) return;
 
-    if (!scouts.length) return;
-
-    const best = getBestScout(scouts);
-
-    if (!best) return;
-
-    if (window.bestZone) {
-        mapInstance.removeLayer(window.bestZone);
+    if (window.scoutZoneCircle) {
+        mapInstance.removeLayer(window.scoutZoneCircle);
     }
 
-    window.bestZone = L.circle([best.lat, best.lon], {
-        radius: 40,
+    window.scoutZoneCircle = L.circle([zone.lat, zone.lon], {
+        radius: zone.strength === "strong" ? 50 : 30,
         color: "#00ff88",
-        fillOpacity: 0.2
+        fillOpacity: 0.25
     }).addTo(mapInstance);
 }
 
