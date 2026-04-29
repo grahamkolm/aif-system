@@ -2659,43 +2659,10 @@ async function handleScout() {
   if (dataSource === "sensor") {
     await connectSensor();
   } else {
-    saveScoutData();
+    continueScout();
   }
 
 }
-
-function saveScoutData() {
-
-  const data = {
-    activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value,
-    clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value,
-    birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value,
-    structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value,
-    wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value,
-
-    air: document.getElementById("airTemp").value,
-    pressure: document.getElementById("pressure").value,
-    altitude: document.getElementById("altitude").value,
-    surface: document.getElementById("surfaceTemp").value,
-    bottom: document.getElementById("bottomTemp").value,
-    thermoStart: document.getElementById("thermoStart").value,
-    thermoEnd: document.getElementById("thermoEnd").value,
-    turbidity: document.getElementById("turbidity").value,
-    light: document.getElementById("light").value,
-    depth: document.getElementById("depth").value
-  };
-
-  console.log("Saving Scout Data:", data);
-
-  // Save locally
-  localStorage.setItem("scoutData", JSON.stringify(data));
-
-  // OPTIONAL: update dashboard immediately
-  updateDashboardFromScout(data);
-
-  alert("Scout data saved ✅");
-}
-
 
 function simulateSensorFill() {
     return {
