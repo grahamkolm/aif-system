@@ -19,19 +19,20 @@ let userMarker = null;
 let dropMarkers = [];
 const userIcon = L.icon({
     iconUrl: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
-    iconSize: [32, 32]
+    iconSize: [36, 36],
+    iconAnchor: [18, 36]
 });
 
 const dropIcon = L.icon({
-    iconUrl: 'orange-marker.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24]
 });
 
 const scoutIcon = L.icon({
-    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32]
+    iconUrl: 'orange-marker.png',
+    iconSize: [28, 45],
+    iconAnchor: [14, 45]
 });
 
 // ============================
