@@ -2128,7 +2128,7 @@ function initGPS() {
             userLocation = { lat, lon };
 
             // 🔥 update map automatically
-            if (mapinstance) {
+            if (mapInstance) {
                 updateMapLocation(lat, lon);
             }
         },
@@ -2161,13 +2161,18 @@ function openMap() {
 
     setTimeout(() => {
 
-    const lat = userLocation.lat;
-    const lon = userLocation.lon;
+    const lat = userLocation?.lat;
+    const lon = userLocation?.lon;
+    if (!lat || !lon) {
+        console.warn("GPS not ready yet");
+    }
 
     // Only center if GPS exists
     if (lat && lon) {
     mapInstance.setView([lat, lon], 15); }
-
+    if (!mapInstance) {
+        console.error("Map not initialized");
+    }
 
         // ✅ Create map once
         if (!mapInstance) {
