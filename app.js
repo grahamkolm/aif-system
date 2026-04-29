@@ -2599,7 +2599,7 @@ async function continueScout() {
     localStorage.setItem("scoutLatest", JSON.stringify(newScout));
     console.log("Saved Scouts:", scouts);
     console.log("✅ Scout saved:", newScout);
-    closeScoutPanel();
+    closeScout();
     // ============================
     // 🗺️ FORCE MAP REFRESH (CRITICAL)
     // ============================
@@ -2910,9 +2910,6 @@ function applySensorData(data) {
   document.getElementById("depth").value = data.depth ?? "";
 
 }
-
-
-
 
 function showScanFailed() {
 
