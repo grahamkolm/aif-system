@@ -2225,7 +2225,6 @@ function openMap() {
             const marker = L.marker([d.lat, d.lon], { icon: dropIcon })
                 marker.addTo(mapInstance);
                 marker.bindPopup(`SPI: ${d.spi}%`);
-                marker.bringToFront();
             
             dropMarkers.push(marker);
         });
@@ -2245,7 +2244,7 @@ function openMap() {
         const marker = L.marker([s.lat + 0.00005, s.lon + 0.00005], { icon: scoutIcon })
         marker.addTo(mapInstance);
         marker.bindPopup(`Scout • ${s.activity || "data"}`);
-        marker.bringToFront();
+        
         window.scoutMarkers.push(marker);
         
         });
