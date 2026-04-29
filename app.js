@@ -34,7 +34,7 @@ const scoutIcon = L.icon({
     iconSize: [28, 45],
     iconAnchor: [14, 45]
 });
-
+let scoutMarkers = [];
 // ============================
 // 🧭 COMPASS
 // ============================
@@ -3241,9 +3241,11 @@ function buildReportMap() {
 drops.forEach(d => {
     if (!d.lat || !d.lon) return;
 
-    L.marker([d.lat, d.lon])
+    const marker = L.marker([d.lat, d.lon])
         .addTo(reportMapInstance)
-        .bindPopup(`SPI: ${d.spi.toFixed(1)}%`); 
+        .bindPopup(`SPI: ${d.spi.toFixed(1)}%`);
+
+    scoutMarkers.push(marker);
 });
 
         setTimeout(() => {
