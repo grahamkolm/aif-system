@@ -3340,7 +3340,7 @@ function getBestScoutZone() {
 }
 
 function drawScoutZone() {
-    const best = getBestScoutZone();
+    const zone = getBestScoutZone();
     if (!zone || !mapInstance) return;
 
     if (window.scoutZoneCircle) {
