@@ -2159,8 +2159,13 @@ function openMap() {
 
     setTimeout(() => {
 
-        const lat = userLocation?.lat || -26.2;
-        const lon = userLocation?.lon || 28.0;
+    const lat = userLocation.lat;
+    const lon = userLocation.lon;
+
+    // Only center if GPS exists
+    if (lat && lon) {
+    mapInstance.setView([lat, lon], 15); }
+
 
         // ✅ Create map once
         if (!mapInstance) {
@@ -2215,16 +2220,26 @@ function updateMapLocation(lat, lon) {
 
     if (!mapInstance) return;
 
-    // Move camera
-    mapInstance.setView([lat, lon], 13);
+    // ❗ Guard against bad GPS
+    if (!lat || !lon) {
+        console.warn("No GPS yet — skipping marker");
+        return;
+    }
 
-    // Create OR update marker
+    // Move camera
+    mapInstance.setView([lat, lon], 15);
+
+    // Create marker FIRST TIME
     if (!userMarker) {
         userMarker = L.marker([lat, lon])
             .addTo(mapInstance)
-            .bindPopup("You are here 🎯");
-    } else {
+            .bindPopup("You are here 📍");
+
+        console.log("✅ User marker CREATED");
+    } 
+    else {
         userMarker.setLatLng([lat, lon]);
+        console.log("🔄 User marker UPDATED");
     }
 }
 
@@ -2396,7 +2411,7 @@ Object.assign(scoutData, {
     structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value,
     wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value,
 
-    // SECTION 2 (NEW)
+    // SECTION 2
     airTemp: parseFloat(document.getElementById("airTemp").value) || null,
     pressure: parseFloat(document.getElementById("pressure").value) || null,
     altitude: parseFloat(document.getElementById("altitude").value) || null,
@@ -2409,9 +2424,17 @@ Object.assign(scoutData, {
 
     turbidity: parseFloat(document.getElementById("turbidity").value) || null,
     light: parseFloat(document.getElementById("light").value) || null,
-    depth: parseFloat(document.getElementById("depth").value) || null
+    depth: parseFloat(document.getElementById("depth").value) || null });
 
-});
+// 📍 GPS ATTACH (THIS IS THE FIX)
+scoutData.lat = userLocation.lat;
+scoutData.lon = userLocation.lon;
+
+
+if (!scoutData.lat || !scoutData.lon) {
+    alert("⚠️ Waiting for GPS — please stand still a few seconds");
+    return;
+}
 
   if (scoutData.thermoStart && scoutData.thermoEnd) {
   if (scoutData.thermoStart >= scoutData.thermoEnd) {
@@ -2997,29 +3020,27 @@ function setupHold(elementId, callback) {
 
 function openDrop() {
 
+    if (!userLocation.lat || !userLocation.lon) {
+        alert("GPS not ready yet — wait a few seconds");
+        return;
+    }
+
     const drop = {
         id: Date.now(),
         time: new Date().toISOString(),
-        lat: userLocation?.lat || null,
-        lon: userLocation?.lon || null,
-
-        // 🔥 CORE DATA
+        lat: userLocation.lat,
+        lon: userLocation.lon,
         spi: SPI,
         env: envScore,
         conf: confScoreValue,
-
-        // 🌡 SENSOR / SCOUT
         surface: ENV.surface,
         bottom: ENV.bottom,
         depth: ENV.depth,
         oxygen: ENV.oxygen,
-
         scout: { ...scoutData }
     };
 
     drops.push(drop);
-
-    // 🔥 SAVE PERSISTENTLY
     localStorage.setItem("drops", JSON.stringify(drops));
 
     console.log("DROP SAVED:", drop);
