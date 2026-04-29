@@ -2219,7 +2219,7 @@ function openMap() {
         drops.forEach(d => {
             if (!d.lat || !d.lon) return;
 
-            const marker = L.marker([s.lat, s.lon], { icon: dropIcon })
+            const marker = L.marker([d.lat, d.lon], { icon: dropIcon })
                 .addTo(mapInstance)
                 .bindPopup(`SPI: ${d.spi}%`);
 
