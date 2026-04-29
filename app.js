@@ -2231,26 +2231,30 @@ function openMap() {
 
         drawDropZone();
         drawScoutZone();
-        const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
+const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
 
-        if (window.scoutMarkers) {
-            window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
-        }
-        window.scoutMarkers = [];
-        
-        scouts.forEach(s => {
-        if (!s.lat == null || !s.lon == null) return;
+console.log("SCOUTS:", scouts);
 
-        const marker = L.marker([s.lat, s.lon], {
-            zIndexOffset: 1000
-        });
-            
-        marker.addTo(mapInstance);
-        marker.bindPopup(`Scout • ${s.activity || "data"}`);
-        
-        window.scoutMarkers.push(marker);
-        
-        });
+if (window.scoutMarkers) {
+    window.scoutMarkers.forEach(m => mapInstance.removeLayer(m)); }
+
+window.scoutMarkers = [];
+
+scouts.forEach(s => {
+
+    if (s.lat == null || s.lon == null) return;
+
+    const marker = L.marker([s.lat, s.lon], {
+        icon: scoutIcon,
+        zIndexOffset: 1000
+    });
+
+    marker.addTo(mapInstance);
+    marker.bindPopup(`Scout • ${s.activity || "data"}`);
+
+    window.scoutMarkers.push(marker);
+});
+
 
         // =============================
         // 🧱 FIX RENDER SIZE (CRITICAL)
