@@ -2128,7 +2128,9 @@ function initGPS() {
             userLocation = { lat, lon };
 
             // 🔥 update map automatically
-            updateMapLocation(lat, lon);
+            if (mapinstance) {
+                updateMapLocation(lat, lon);
+            }
         },
         (err) => {
             console.warn("GPS error:", err);
@@ -2218,28 +2220,27 @@ function closeMap() {
 // ============================
 function updateMapLocation(lat, lon) {
 
-    if (!mapInstance) return;
-
-    // ❗ Guard against bad GPS
-    if (!lat || !lon) {
-        console.warn("No GPS yet — skipping marker");
+    // 🚫 DO NOTHING if map not ready
+    if (!mapInstance) {
+        console.warn("Map not ready yet");
         return;
     }
 
-    // Move camera
+    // 🚫 DO NOTHING if GPS invalid
+    if (!lat || !lon) {
+        console.warn("Invalid GPS");
+        return;
+    }
+
+    // ✅ Safe to use map
     mapInstance.setView([lat, lon], 15);
 
-    // Create marker FIRST TIME
     if (!userMarker) {
         userMarker = L.marker([lat, lon])
             .addTo(mapInstance)
             .bindPopup("You are here 📍");
-
-        console.log("✅ User marker CREATED");
-    } 
-    else {
+    } else {
         userMarker.setLatLng([lat, lon]);
-        console.log("🔄 User marker UPDATED");
     }
 }
 
