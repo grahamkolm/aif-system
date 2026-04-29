@@ -2575,9 +2575,10 @@ async function continueScout() {
     const filledFields = Object.values(newScout)
         .filter(v => v !== null && v !== undefined).length;
 
-    if (filledFields < 5) {
+    if (filledFields < 2) {
         alert("⚠️ Add a few more observations");
         return;
+        console.log{"Saved Scouts:", scouts);
     }
 
     // ============================
