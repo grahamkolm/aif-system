@@ -2172,7 +2172,7 @@ function openMap() {
 
     mapScreen.classList.remove("hidden");
     document.body.style.overflow = "hidden";
-
+    
     setTimeout(() => {
 
         // =============================
@@ -2200,7 +2200,7 @@ function openMap() {
                 attribution: '',
                 maxZoom: 19
             }).addTo(mapInstance);
-
+            drawBestZone();
             console.log("✅ Map initialized");
 
         } else {
@@ -3237,42 +3237,71 @@ drops.forEach(d => {
     }, 300);
 }
 
-function getBestDropZone() {
+// =====================================================
+// 🎯 BEST FISHING ZONE (DROPS BASED)
+// =====================================================
 
-    let highDrops = drops.filter(d => d.spi >= 70);
+// Get best zone center from drops
+function getBestZone() {
 
-    if (highDrops.length === 0) return "No strong zone yet";
+    if (!drops || drops.length === 0) return null;
 
-    let avgLat = highDrops.reduce((sum, d) => sum + d.lat, 0) / highDrops.length;
-    let avgLon = highDrops.reduce((sum, d) => sum + d.lon, 0) / highDrops.length;
+    // Only strong drops
+    const goodDrops = drops.filter(d => d.spi >= 65 && d.lat && d.lon);
 
-    return `Lat ${avgLat.toFixed(3)}, Lon ${avgLon.toFixed(3)}`; 
+    if (goodDrops.length === 0) return null;
+
+    let avgLat = 0;
+    let avgLon = 0;
+
+    goodDrops.forEach(d => {
+        avgLat += d.lat;
+        avgLon += d.lon;
+    });
+
+    avgLat /= goodDrops.length;
+    avgLon /= goodDrops.length;
+
+    return {
+        lat: avgLat,
+        lon: avgLon,
+        strength: goodDrops.length >= 3 ? "strong" : "normal",
+        count: goodDrops.length
+    };
 }
 
+
+// =====================================================
+// 🎯 SPI DIRECTION ZONE (UI TICKS)
+// =====================================================
 function setFishingZone(targetAngle) {
-  const ticks = document.querySelectorAll(".tick");
-  const zoneStrength = typeof getBestZone === "function" ? getBestZone() : "normal";
 
-  ticks.forEach(tick => {
-    const angle = parseInt(tick.dataset.angle);
+    const ticks = document.querySelectorAll(".tick");
+    if (!ticks.length) return;
 
-    let diff = Math.abs(angle - targetAngle);
-    if (diff > 180) diff = 360 - diff;
+    const zoneData = getBestZone();
+    const zoneStrength = zoneData?.strength || "normal";
 
-    const zoneWidth = SPI >= 75 ? 30 : 20;
-      
-    tick.classList.remove("active-zone", "active-zone-strong");
-      
-      if (diff < zoneWidth) {
-      if (zoneStrength === "strong") {
-        tick.classList.add("active-zone-strong");
-      } else {
-        tick.classList.add("active-zone");
-      }
-    }
-  });
+    ticks.forEach(tick => {
+
+        const angle = parseInt(tick.dataset.angle);
+        let diff = Math.abs(angle - targetAngle);
+        if (diff > 180) diff = 360 - diff;
+
+        const zoneWidth = zoneStrength === "strong" ? 35 : 20;
+
+        tick.classList.remove("active-zone", "active-zone-strong");
+
+        if (diff < zoneWidth) {
+            tick.classList.add(
+                zoneStrength === "strong"
+                    ? "active-zone-strong"
+                    : "active-zone"
+            );
+        }
+
+    });
 }
-
 
 // 🌊 DAM
 let damData = {
