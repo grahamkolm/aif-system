@@ -2578,7 +2578,7 @@ async function continueScout() {
   structure,
   wind,
   birds
-};
+
 
         // SECTION 1
         activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
