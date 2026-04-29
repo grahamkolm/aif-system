@@ -2530,6 +2530,11 @@ async function continueScout() {
 
     console.log("📍 GPS Fix:", lat, lon);
 
+    function clearScoutMarkers() {
+        scoutMarkers.forEach(marker => marker.remove());
+        scoutMarkers = [];
+    }
+    
     // ============================
     // 📥 COLLECT INPUT DATA
     // ============================
