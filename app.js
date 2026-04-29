@@ -17,6 +17,20 @@ let userLocation = { lat: null, lon: null };
 let mapInstance = null; 
 let userMarker = null;
 let dropMarkers = [];
+const userIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+    iconSize: [32, 32]
+});
+
+const dropIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    iconSize: [32, 32]
+});
+
+const scoutIcon = L.icon({
+    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+    iconSize: [32, 32]
+});
 
 // ============================
 // 🧭 COMPASS
@@ -2241,31 +2255,52 @@ function closeMap() {
 
 
 // ============================
-// 📌 UPDATE MARKER (SINGLE SOURCE)
+// 📌 UPDATE USER LOCATION (CLEAN)
 // ============================
 function updateMapLocation(lat, lon) {
 
-    // 🔒 HARD STOP 1 — map not ready
+    // 🔒 STOP if map not ready
     if (!mapInstance) {
         console.warn("⛔ Map not ready — skip update");
         return;
     }
 
-    // 🔒 HARD STOP 2 — invalid GPS
+    // 🔒 STOP if invalid coords
     if (lat == null || lon == null || isNaN(lat) || isNaN(lon)) {
         console.warn("⛔ Invalid GPS — skip update");
         return;
     }
 
-    // ✅ SAFE TO USE
-    mapInstance.setView([lat, lon], 13);
+    // =============================
+    // 📍 UPDATE MAP VIEW (SMOOTH)
+    // =============================
+    // Only recenter if far away (prevents jitter later)
+    const currentCenter = mapInstance.getCenter();
 
+    const distance = mapInstance.distance(
+        [currentCenter.lat, currentCenter.lng],
+        [lat, lon]
+    );
+
+    if (distance > 50) { // meters threshold
+        mapInstance.setView([lat, lon], 13);
+    }
+
+    // =============================
+    // 🧍 USER MARKER
+    // =============================
     if (!userMarker) {
-        userMarker = L.marker([lat, lon])
-            .addTo(mapInstance)
-            .bindPopup("You are here 🎯");
+
+        userMarker = L.marker([lat, lon], {
+            icon: userIcon // ✅ your global icon
+        })
+        .addTo(mapInstance)
+        .bindPopup("You 🎯");
+
     } else {
+
         userMarker.setLatLng([lat, lon]);
+
     }
 }
 
