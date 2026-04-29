@@ -888,15 +888,6 @@ function generateHotspots() {
 // 🌦 5. WEATHER ENGINE
 // =====================================================
 
-function getBestZone() {
-    if (SPI >= 75) {
-    return "strong";
-} else {
-    return "normal";
-}
-}
-
-
 function fetchWeatherSafe() {
  
     const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
@@ -2200,7 +2191,7 @@ function openMap() {
                 attribution: '',
                 maxZoom: 19
             }).addTo(mapInstance);
-            drawBestZone();
+            //drawBestZone();
             console.log("✅ Map initialized");
 
         } else {
@@ -2228,7 +2219,7 @@ function openMap() {
         drops.forEach(d => {
             if (!d.lat || !d.lon) return;
 
-            const marker = L.marker([d.lat, d.lon])
+            const marker = L.marker([s.lat, s.lon], { icon: dropIcon })
                 .addTo(mapInstance)
                 .bindPopup(`SPI: ${d.spi}%`);
 
@@ -2237,12 +2228,19 @@ function openMap() {
 
         const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
 
+        if (window.scoutMarkers) {
+            window.scoutMarkers.forEach(m => mapInstance.removalLayer(m));
+        }
+        window.scoutMarkers = [];
+        
         scouts.forEach(s => {
         if (!s.lat || !s.lon) return;
 
-        L.marker([s.lat, s.lon], { icon: scoutIcon })
+        const marker = L.marker([s.lat, s.lon], { icon: scoutIcon })
         .addTo(mapInstance)
-        .bindPopup(`Scout • ${s.activity || "data"}`); 
+        .bindPopup(`Scout • ${s.activity || "data"}`);
+
+        window.scoutMarkers.push(marker);
         });
 
         // =============================
@@ -2753,38 +2751,6 @@ function updateDashboardFromScout(data) {
 
 
 let bleCharacteristic;
-
-async function connectSensor() {
-  try {
-    const device = await navigator.bluetooth.requestDevice({
-      filters: [{ name: "AIF_SENSOR" }],
-      optionalServices: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"]
-    });
-
-    const server = await device.gatt.connect();
-
-    const service = await server.getPrimaryService(
-      "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-    );
-
-    bleCharacteristic = await service.getCharacteristic(
-      "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-    );
-
-    await bleCharacteristic.startNotifications();
-
-    bleCharacteristic.addEventListener(
-      "characteristicvaluechanged",
-      handleSensorData
-    );
-
-    console.log("✅ Sensor connected");
-
-  } catch (err) {
-    console.error("❌ BLE Error:", err);
-  }
-}
-
 
 function handleSensorData(event) {
   const value = event.target.value;
