@@ -2599,7 +2599,7 @@ async function continueScout() {
     localStorage.setItem("scoutLatest", JSON.stringify(newScout));
     console.log("Saved Scouts:", scouts);
     console.log("✅ Scout saved:", newScout);
-
+    closeScoutPanel();
     // ============================
     // 🗺️ FORCE MAP REFRESH (CRITICAL)
     // ============================
