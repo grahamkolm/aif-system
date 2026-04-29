@@ -2578,9 +2578,9 @@ async function continueScout() {
     if (filledFields < 2) {
         alert("⚠️ Add a few more observations");
         return;
-        console.log{"Saved Scouts:", scouts);
     }
 
+        console.log{"Saved Scouts:", scouts);
     // ============================
     // 💾 SAFE STORAGE (UPGRADED)
     // ============================
