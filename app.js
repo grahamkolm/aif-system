@@ -2525,7 +2525,6 @@ async function continueScout() {
     // ============================
     // 📥 COLLECT INPUT DATA
     // ============================
-    const scouts = JSON.parse(localStorage.getItem("scouts")) || [];
     const newScout = {
         lat,
         lon,
