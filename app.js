@@ -2526,15 +2526,16 @@ async function continueScout() {
     // ============================
     // 📥 COLLECT INPUT DATA
     // ============================
+    const scouts = JSON.parse(localStorage.getItem("scouts")) || [];
     const newScout = {
-
-        // 📍 LOCATION
         lat,
         lon,
-
-        // 🕒 META
-        id: Date.now(),           // unique ID (important later)
+        id: scouts.length +1,           // unique ID (important later)
         time: Date.now(),
+        spi: SPI,   // 👈 make sure SPI variable exists
+        bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
+        thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
+        thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
 
         // SECTION 1
         activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
