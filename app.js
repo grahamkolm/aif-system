@@ -2126,7 +2126,7 @@ function initGPS() {
             const lon = pos.coords.longitude;
 
             userLocation = { lat, lon };
-
+            console.log("GPS Fix:", lat, lon);
             // 🔥 update map automatically
             if (mapInstance) {
                 updateMapLocation(lat, lon);
@@ -2161,10 +2161,13 @@ function openMap() {
 
     setTimeout(() => {
 
-    const lat = userLocation?.lat;
-    const lon = userLocation?.lon;
+    let lat = userLocation?.lat;
+    let lon = userLocation?.lon;
     if (!lat || !lon) {
-        console.warn("GPS not ready yet");
+        console.warn("GPS not ready yet - using fallback");
+        //fallback
+        lat = -26.2;
+        lon = 28.0;
     }
 
     // Only center if GPS exists
@@ -2236,6 +2239,11 @@ function updateMapLocation(lat, lon) {
         return;
     }
 
+    if (!lat || !lon) {
+        console.warn("Skipping update - invalid Coords");
+        return;
+    }
+    
     updateMapLocation(userLocation.lat, userlocation.lon);
     
     // Move camera
