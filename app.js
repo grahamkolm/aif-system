@@ -2531,9 +2531,6 @@ function setupScoutOptions(){
     });
 }
 
-// =====================================================
-// 🧭 CONTINUE SCOUT (CLEAN + SAFE)
-// =====================================================
 async function continueScout() {
 
     // ============================
@@ -2556,42 +2553,41 @@ async function continueScout() {
         scoutMarkers.forEach(marker => marker.remove());
         scoutMarkers = [];
     }
-    
-    // ============================
-    // 📥 COLLECT INPUT DATA
-    // ============================
-   const newScout = {
-  lat,
-  lon,
-  id: scouts.length + 1,
-  time: Date.now(),
 
-  spi: SPI,
+    // ============================
+    // 📥 COLLECT INPUT DATA (FIXED)
+    // ============================
+    const newScout = {
+        lat,
+        lon,
+        id: scouts.length + 1,
+        time: Date.now(),
 
-      bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
-      thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
-      thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
-      pressure: pressure || null,   // 👈 ADD THIS
-      activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
-      clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value ?? null,
-      birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
-        structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value ?? null,
-        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null,
-   };
-        // SECTION 2
+        spi: SPI,
+
+        // 🌡 TEMPS
+        bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
+        surfaceTemp: parseFloat(document.getElementById("surfaceTemp")?.value) || null,
+
+        // 🌊 THERMOCLINE
+        thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
+        thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
+
+        // 📊 WEATHER / SENSOR
         airTemp: parseFloat(document.getElementById("airTemp")?.value) || null,
         pressure: parseFloat(document.getElementById("pressure")?.value) || null,
         altitude: parseFloat(document.getElementById("altitude")?.value) || null,
 
-        surfaceTemp: parseFloat(document.getElementById("surfaceTemp")?.value) || null,
-        bottomTemp: parseFloat(document.getElementById("bottomTemp")?.value) || null,
-
-        thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
-        thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
-
         turbidity: parseFloat(document.getElementById("turbidity")?.value) || null,
         light: parseFloat(document.getElementById("light")?.value) || null,
-        depth: parseFloat(document.getElementById("depth")?.value) || null
+        depth: parseFloat(document.getElementById("depth")?.value) || null,
+
+        // 🎯 OBSERVATIONS
+        activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
+        clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value ?? null,
+        birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
+        structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value ?? null,
+        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null
     };
 
     // ============================
@@ -2616,30 +2612,26 @@ async function continueScout() {
     }
 
     // ============================
-    // 💾 SAFE STORAGE (UPGRADED)
+    // 💾 SAVE
     // ============================
-    
     scouts.push(newScout);
 
     localStorage.setItem("scouts", JSON.stringify(scouts));
-
-    // 🔹 optional latest snapshot (good for dashboard)
     localStorage.setItem("scoutLatest", JSON.stringify(newScout));
+
     console.log("Saved Scouts:", scouts);
     console.log("✅ Scout saved:", newScout);
+
     closeScout();
+
     // ============================
-    // 🗺️ FORCE MAP REFRESH (CRITICAL)
+    // 🗺️ REFRESH MAP
     // ============================
     if (mapInstance) {
         drawScoutZone();
     }
 
-    // ============================
-    // 🎯 FEEDBACK
-    // ============================
-    alert("✅ Scout saved successfully");
-
+    alert("✅ Scout saved successfully"); 
 }
 
 function showConnectingScreen() {
