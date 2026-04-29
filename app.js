@@ -2240,43 +2240,46 @@ function openMap() {
         drawDropZone();
         drawScoutZone();
 
-    console.log("SCOUTS:", scouts);
+console.log("SCOUTS:", scouts);
 
+// clear old markers
 if (window.scoutMarkers) {
-    window.scoutMarkers.forEach(m => mapInstance.removeLayer(m)); }
+    window.scoutMarkers.forEach(m => mapInstance.removeLayer(m)); } window.scoutMarkers = [];
 
-window.scoutMarkers = [];
+// draw scouts
+scouts.forEach(s => {
 
-const popup = `
-<b>🎯 Scout #${s.id}</b><br>
+    if (!s.lat || !s.lon) return;
 
-<b style="color:${
-  s.spi >= 70 ? "green" :
-  s.spi >= 50 ? "orange" :
-  "red"
-}">
-Score: ${s.spi ?? "-"}
-</b><br><br>
+    const popup = `
+    <b>🎯 Scout #${s.id}</b><br>
 
-🌡 <b>Bottom Temp:</b> ${s.bottom ?? "-"}°C<br>
+    <b style="color:${
+        s.spi >= 70 ? "green" :
+        s.spi >= 50 ? "orange" :
+        "red"
+    }">
+    Score: ${s.spi ?? "-"}
+    </b><br><br>
 
-🌊 <b>Thermocline:</b> ${
-  s.thermoStart && s.thermoEnd
-    ? `${s.thermoStart}-${s.thermoEnd}m`
-    : "-"
-}<br>
+    🌡 Bottom Temp: ${s.bottom ?? "-"}°C<br>
+    🌊 Thermocline: ${
+        s.thermoStart && s.thermoEnd
+            ? `${s.thermoStart}-${s.thermoEnd}m`
+            : "-"
+    }<br>
+    📊 Pressure: ${s.pressure ?? "-"} hPa<br><br>
 
-📊 <b>Pressure:</b> ${s.pressure ?? "-"} hPa<br><br>
+    🐟 Activity: ${s.activity ?? "-"}<br>
+    💧 Water: ${s.clarity ?? "-"}<br>
+    🏗 Structure: ${s.structure ?? "-"}<br>
+    🌬 Wind: ${s.wind ?? "-"}<br>
+    🐦 Birds: ${s.birds ?? "-"}
+    `;
 
-🐟 Activity: ${s.activity ?? "-"}<br>
-💧 Water: ${s.clarity ?? "-"}<br>
-🏗 Structure: ${s.structure ?? "-"}<br>
-🌬 Wind: ${s.wind ?? "-"}<br>
-🐦 Birds: ${s.birds ?? "-"}
-`;
-
-    marker.addTo(mapInstance);
-    marker.bindPopup(`Scout • ${s.activity || "data"}`);
+    const marker = L.marker([s.lat, s.lon], { icon: scoutIcon })
+        .addTo(mapInstance)
+        .bindPopup(popup);
 
     window.scoutMarkers.push(marker);
 });
