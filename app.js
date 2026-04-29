@@ -2611,17 +2611,6 @@ async function continueScout() {
 
 }
 
-    // ============================
-    // 🔄 UI FLOW
-    // ============================
-
-    // ============================
-    // ✅ SUCCESS
-    // ============================
-    closeScout();
-}
-
-
 function showConnectingScreen() {
 
     let screen = document.getElementById("scoutScreen");
