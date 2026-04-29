@@ -2231,9 +2231,8 @@ function openMap() {
 
         drawDropZone();
         drawScoutZone();
-const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
 
-console.log("SCOUTS:", scouts);
+    console.log("SCOUTS:", scouts);
 
 if (window.scoutMarkers) {
     window.scoutMarkers.forEach(m => mapInstance.removeLayer(m)); }
