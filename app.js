@@ -2226,6 +2226,8 @@ function openMap() {
             dropMarkers.push(marker);
         });
 
+        drawBestZone();
+        
         const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
 
         if (window.scoutMarkers) {
@@ -2252,6 +2254,28 @@ function openMap() {
 
     }, 300);
 }
+
+let bestZoneCircle = null;
+
+function drawBestZone() {
+
+    const zone = getBestZone();
+    if (!zone || !mapInstance) return;
+
+    // remove old circle
+    if (bestZoneCircle) {
+        mapInstance.removeLayer(bestZoneCircle);
+    }
+
+    bestZoneCircle = L.circle([zone.lat, zone.lon], {
+        radius: zone.strength === "strong" ? 120 : 80,
+        color: "#00ff9c",
+        fillColor: "#00ff9c",
+        fillOpacity: 0.15
+    }).addTo(mapInstance);
+
+}
+
 
 // ============================
 // ❌ CLOSE MAP
