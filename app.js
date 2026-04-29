@@ -23,8 +23,9 @@ const userIcon = L.icon({
 });
 
 const dropIcon = L.icon({
-    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-    iconSize: [32, 32]
+    iconUrl: 'blue-marker.png',
+    iconSize: [25, 41]
+    iconAnchor: [12, 41]
 });
 
 const scoutIcon = L.icon({
@@ -2238,11 +2239,12 @@ function openMap() {
         scouts.forEach(s => {
         if (!s.lat || !s.lon) return;
 
-        const marker = L.marker([s.lat, s.lon], { icon: scoutIcon })
+        const marker = L.marker([s.lat + 0.00005, s.lon + 0.00005], { icon: scoutIcon })
         .addTo(mapInstance)
         .bindPopup(`Scout • ${s.activity || "data"}`);
 
         window.scoutMarkers.push(marker);
+        
         });
 
         // =============================
