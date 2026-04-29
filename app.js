@@ -2230,7 +2230,7 @@ function openMap() {
         });
 
         drawBestZone();
-        
+        drawScoutZone();
         const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
 
         if (window.scoutMarkers) {
@@ -2504,31 +2504,40 @@ function setupScoutOptions(){
 async function continueScout() {
 
     // ============================
-    // 📍 GPS CHECK FIRST (CRITICAL)
+    // 📍 GPS (SAFE + FALLBACK)
     // ============================
-    const lat = userLocation?.lat;
-    const lon = userLocation?.lon;
+    const lat = userLocation?.lat ?? window.lastLat;
+    const lon = userLocation?.lon ?? window.lastLon;
 
-    if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
-        alert("⚠️ Waiting for GPS — please stand still a few seconds");
+    if (lat == null || lon == null) {
+        alert("⚠️ No GPS yet - move slightly and try again");
         return;
     }
+
+    window.lastLat = lat;
+    window.lastLon = lon;
+
+    console.log("📍 GPS Fix:", lat, lon);
 
     // ============================
     // 📥 COLLECT INPUT DATA
     // ============================
-    console.log("Final Scout Save:", lat, lon);
-    
     const newScout = {
-        lat: lat,
-        lon: lon,
+
+        // 📍 LOCATION
+        lat,
+        lon,
+
+        // 🕒 META
+        id: Date.now(),           // unique ID (important later)
+        time: Date.now(),
 
         // SECTION 1
-        activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value || null,
-        clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value || null,
-        birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value || null,
-        structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value || null,
-        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value || null,
+        activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
+        clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value ?? null,
+        birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
+        structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value ?? null,
+        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null,
 
         // SECTION 2
         airTemp: parseFloat(document.getElementById("airTemp")?.value) || null,
@@ -2543,21 +2552,14 @@ async function continueScout() {
 
         turbidity: parseFloat(document.getElementById("turbidity")?.value) || null,
         light: parseFloat(document.getElementById("light")?.value) || null,
-        depth: parseFloat(document.getElementById("depth")?.value) || null,
-
-        // 📍 GPS
-        lat,
-        lon,
-
-        // 🕒 Timestamp (important later)
-        time: Date.now()
+        depth: parseFloat(document.getElementById("depth")?.value) || null
     };
 
     // ============================
     // 🔄 FIX THERMO VALUES
     // ============================
-    if (newScout.thermoStart && newScout.thermoEnd) {
-        if (newScout.thermoStart >= newScout.thermoEnd) {
+    if (newScout.thermoStart != null && newScout.thermoEnd != null) {
+        if (newScout.thermoStart > newScout.thermoEnd) {
             [newScout.thermoStart, newScout.thermoEnd] =
             [newScout.thermoEnd, newScout.thermoStart];
         }
@@ -2566,24 +2568,48 @@ async function continueScout() {
     // ============================
     // ✅ MIN VALIDATION
     // ============================
-    const filledFields = Object.values(newScout).filter(v => v !== null).length;
+    const filledFields = Object.values(newScout)
+        .filter(v => v !== null && v !== undefined).length;
 
-    if (filledFields < 3) {
-        alert("⚠️ Add at least a few observations");
+    if (filledFields < 5) {
+        alert("⚠️ Add a few more observations");
         return;
     }
 
     // ============================
-    // 💾 SAVE CLEAN DATA
+    // 💾 SAFE STORAGE (UPGRADED)
     // ============================
-    let scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
+    let scouts = [];
+
+    try {
+        scouts = JSON.parse(localStorage.getItem("scouts")) || [];
+    } catch (e) {
+        console.warn("⚠️ Corrupt scout storage, resetting...");
+        scouts = [];
+    }
 
     scouts.push(newScout);
 
     localStorage.setItem("scouts", JSON.stringify(scouts));
-    localStorage.setItem("scoutData", JSON.stringify(newScout));
+
+    // 🔹 optional latest snapshot (good for dashboard)
+    localStorage.setItem("scoutLatest", JSON.stringify(newScout));
 
     console.log("✅ Scout saved:", newScout);
+
+    // ============================
+    // 🗺️ FORCE MAP REFRESH (CRITICAL)
+    // ============================
+    if (typeof renderMap === "function") {
+        renderMap();
+    }
+
+    // ============================
+    // 🎯 FEEDBACK
+    // ============================
+    alert("✅ Scout saved successfully");
+
+}
 
     // ============================
     // 🔄 UI FLOW
@@ -3282,6 +3308,75 @@ drops.forEach(d => {
 // =====================================================
 // 🎯 BEST FISHING ZONE (DROPS BASED)
 // =====================================================
+function scoreScout(s) {
+    let score = 0;
+
+    if (s.activity === "rolling") score += 40;
+    if (s.activity === "active") score += 30;
+
+    if (s.clarity === "clean") score += 20;
+    if (s.clarity === "stained") score += 10;
+
+    if (s.birds === "present") score += 15;
+
+    if (s.structure === "dropoff") score += 20;
+
+    if (s.wind === "calm") score += 10;
+
+    return score;
+}
+
+function getBestScoutZone() {
+    const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
+
+    if (!scouts.length) return null;
+
+    // Score + filter strong scouts
+    const goodScouts = scouts.filter(s => {
+        const score = scoreScout(s);
+        return score >= 50 && s.lat && s.lon;
+    });
+
+    if (goodScouts.length === 0) return null;
+
+    let avgLat = 0;
+    let avgLon = 0;
+
+    goodScouts.forEach(s => {
+        avgLat += s.lat;
+        avgLon += s.lon;
+    });
+
+    avgLat /= goodScouts.length;
+    avgLon /= goodScouts.length;
+
+    return {
+        lat: avgLat,
+        lon: avgLon,
+        strength: goodScouts.length >= 3 ? "strong" : "normal",
+        count: goodScouts.length
+    };
+}
+
+function drawBestZone() {
+    const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
+
+    if (!scouts.length) return;
+
+    const best = getBestScout(scouts);
+
+    if (!best) return;
+
+    if (window.bestZone) {
+        mapInstance.removeLayer(window.bestZone);
+    }
+
+    window.bestZone = L.circle([best.lat, best.lon], {
+        radius: 40,
+        color: "#00ff88",
+        fillOpacity: 0.2
+    }).addTo(mapInstance);
+}
 
 // Get best zone center from drops
 function getBestZone() {
