@@ -2223,10 +2223,10 @@ function openMap() {
             if (!d.lat || !d.lon) return;
 
             const marker = L.marker([d.lat, d.lon], { icon: dropIcon })
-                .addTo(mapInstance)
-                .bringToFront()
-                .bindPopup(`SPI: ${d.spi}%`);
-
+                marker.addTo(mapInstance);
+                marker.bindPopup(`SPI: ${d.spi}%`);
+                marker.bringToFront();
+            
             dropMarkers.push(marker);
         });
 
@@ -2243,9 +2243,9 @@ function openMap() {
         if (!s.lat || !s.lon) return;
 
         const marker = L.marker([s.lat + 0.00005, s.lon + 0.00005], { icon: scoutIcon })
-        .addTo(mapInstance)
-        .bindPopup(`Scout • ${s.activity || "data"}`);
-
+        marker.addTo(mapInstance);
+        marker.bindPopup(`Scout • ${s.activity || "data"}`);
+        marker.bringToFront();
         window.scoutMarkers.push(marker);
         
         });
