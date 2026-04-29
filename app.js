@@ -2247,14 +2247,33 @@ if (window.scoutMarkers) {
 
 window.scoutMarkers = [];
 
-scouts.forEach(s => {
+const popup = `
+<b>🎯 Scout #${s.id}</b><br>
 
-    if (s.lat == null || s.lon == null) return;
+<b style="color:${
+  s.spi >= 70 ? "green" :
+  s.spi >= 50 ? "orange" :
+  "red"
+}">
+Score: ${s.spi ?? "-"}
+</b><br><br>
 
-    const marker = L.marker([s.lat, s.lon], {
-        icon: scoutIcon,
-        zIndexOffset: 1000
-    });
+🌡 <b>Bottom Temp:</b> ${s.bottom ?? "-"}°C<br>
+
+🌊 <b>Thermocline:</b> ${
+  s.thermoStart && s.thermoEnd
+    ? `${s.thermoStart}-${s.thermoEnd}m`
+    : "-"
+}<br>
+
+📊 <b>Pressure:</b> ${s.pressure ?? "-"} hPa<br><br>
+
+🐟 Activity: ${s.activity ?? "-"}<br>
+💧 Water: ${s.clarity ?? "-"}<br>
+🏗 Structure: ${s.structure ?? "-"}<br>
+🌬 Wind: ${s.wind ?? "-"}<br>
+🐦 Birds: ${s.birds ?? "-"}
+`;
 
     marker.addTo(mapInstance);
     marker.bindPopup(`Scout • ${s.activity || "data"}`);
@@ -2538,15 +2557,26 @@ async function continueScout() {
     // ============================
     // 📥 COLLECT INPUT DATA
     // ============================
-    const newScout = {
-        lat,
-        lon,
-        id: scouts.length +1,           // unique ID (important later)
-        time: Date.now(),
-        spi: SPI,   // 👈 make sure SPI variable exists
-        bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
-        thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
-        thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
+   const newScout = {
+  lat,
+  lon,
+  id: scouts.length + 1,
+  time: Date.now(),
+
+  spi: SPI,
+
+  bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
+  thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
+  thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
+
+  pressure: pressure || null,   // 👈 ADD THIS
+
+  activity,
+  clarity,
+  structure,
+  wind,
+  birds
+};
 
         // SECTION 1
         activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
