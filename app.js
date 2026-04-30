@@ -301,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // 🔧 INIT CORE
     // ============================
     loadDrops();   // 🔥 restores drops
-    loadScouts?.(); // 🔥 optional if you have it (safe call)
     setupScoutOptions();
 
     // =============================
