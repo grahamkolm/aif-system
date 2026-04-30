@@ -2167,6 +2167,9 @@ function initGPS() {
 // ============================
 // 🗺️ OPEN MAP (CLEAN VERSION)
 // ============================
+let followUser = true;
+let interactionTimeout;
+
 function openMap() {
 
     const mapScreen = document.getElementById("mapScreen");
@@ -2174,7 +2177,7 @@ function openMap() {
 
     mapScreen.classList.remove("hidden");
     document.body.style.overflow = "hidden";
-    
+
     setTimeout(() => {
 
         // =============================
@@ -2202,15 +2205,31 @@ function openMap() {
                 attribution: '',
                 maxZoom: 19
             }).addTo(mapInstance);
-            //drawBestZone();
+
+            // =============================
+            // 🎯 HANDLE USER INTERACTION (ONLY ONCE)
+            // =============================
+            mapInstance.on("dragstart zoomstart", () => {
+                followUser = false;
+            });
+
+            mapInstance.on("moveend zoomend", () => {
+                clearTimeout(interactionTimeout);
+                interactionTimeout = setTimeout(() => {
+                    followUser = true;
+                }, 5000);
+            });
+
             console.log("✅ Map initialized");
 
         } else {
 
             // =============================
-            // 🔄 UPDATE VIEW (ONLY IF EXISTS)
+            // 🔄 UPDATE VIEW (SMART FOLLOW)
             // =============================
-            mapInstance.setView([lat, lon], 13);
+            if (followUser) {
+                mapInstance.panTo([lat, lon]);
+            }
         }
 
         // =============================
@@ -2231,68 +2250,76 @@ function openMap() {
             if (!d.lat || !d.lon) return;
 
             const marker = L.marker([d.lat, d.lon], { icon: dropIcon })
-                marker.addTo(mapInstance);
-                marker.bindPopup(`SPI: ${d.spi}%`);
-            
+                .addTo(mapInstance)
+                .bindPopup(`SPI: ${d.spi}%`);
+
             dropMarkers.push(marker);
         });
 
         drawDropZone();
         drawScoutZone();
 
-console.log("SCOUTS:", scouts);
+        // =============================
+        // 🎯 SCOUT MARKERS
+        // =============================
+        console.log("SCOUTS:", scouts);
 
-// clear old markers
-if (window.scoutMarkers) {
-    window.scoutMarkers.forEach(m => mapInstance.removeLayer(m)); } window.scoutMarkers = [];
+        if (window.scoutMarkers) {
+            window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
+        }
+        window.scoutMarkers = [];
 
-// draw scouts
-scouts.forEach(s => {
+        scouts.forEach(s => {
 
-    if (!s.lat || !s.lon) return;
+            if (!s.lat || !s.lon) return;
 
-    const popup = `
-    <b>🎯 Scout #${s.id}</b><br>
+            const popup = `
+            <b>🎯 Scout #${s.id}</b><br>
 
-    <b style="color:${
-        s.spi >= 70 ? "green" :
-        s.spi >= 50 ? "orange" :
-        "red"
-    }">
-    Score: ${s.spi ?? "-"}
-    </b><br><br>
+            <b style="color:${
+                s.spi >= 70 ? "green" :
+                s.spi >= 50 ? "orange" :
+                "red"
+            }">
+            Score: ${s.spi ?? "-"}
+            </b><br><br>
 
-    🌡 Bottom Temp: ${s.bottom ?? "-"}°C<br>
-    🌊 Thermocline: ${
-        s.thermoStart && s.thermoEnd
-            ? `${s.thermoStart}-${s.thermoEnd}m`
-            : "-"
-    }<br>
-    📊 Pressure: ${s.pressure ?? "-"} hPa<br><br>
+            🌡 Bottom Temp: ${s.bottom ?? "-"}°C<br>
+            🌊 Thermocline: ${
+                s.thermoStart && s.thermoEnd
+                    ? `${s.thermoStart}-${s.thermoEnd}m`
+                    : "-"
+            }<br>
+            📊 Pressure: ${s.pressure ?? "-"} hPa<br><br>
 
-    🐟 Activity: ${s.activity ?? "-"}<br>
-    💧 Water: ${s.clarity ?? "-"}<br>
-    🏗 Structure: ${s.structure ?? "-"}<br>
-    🌬 Wind: ${s.wind ?? "-"}<br>
-    🐦 Birds: ${s.birds ?? "-"}
-    `;
+            🐟 Activity: ${s.activity ?? "-"}<br>
+            💧 Water: ${s.clarity ?? "-"}<br>
+            🏗 Structure: ${s.structure ?? "-"}<br>
+            🌬 Wind: ${s.wind ?? "-"}<br>
+            🐦 Birds: ${s.birds ?? "-"}<br><br>
 
-    const marker = L.marker([s.lat, s.lon], { icon: scoutIcon })
-        .addTo(mapInstance)
-        .bindPopup(popup);
+            📍 GPS: ${s.lat.toFixed(5)}, ${s.lon.toFixed(5)}
+            `;
 
-    window.scoutMarkers.push(marker);
-});
+            const marker = L.marker([s.lat, s.lon], { icon: scoutIcon })
+                .addTo(mapInstance)
+                .bindPopup(popup);
 
+            window.scoutMarkers.push(marker);
+        });
+
+    }, 200);
+}
 
         // =============================
         // 🧱 FIX RENDER SIZE (CRITICAL)
         // =============================
         setTimeout(() => {
-            mapInstance.invalidateSize();
-        }, 200);
+            if (mapInstance) {
+                mapInstance.invalidateSize();
+        }
 
-    }, 300);
+    }, 200);
 }
 
 let bestZoneCircle = null;
