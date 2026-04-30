@@ -3052,12 +3052,33 @@ function resetTempModel(){
 
 
 function loadDrops() {
-    const stored = localStorage.getItem("drops");
-    if (stored) {
-        drops = JSON.parse(stored);
+    try {
+        const stored = localStorage.getItem("drops");
+
+        if (!stored) {
+            drops = [];
+            return;
+        }
+
+        const parsed = JSON.parse(stored);
+
+        // 🔥 HARD VALIDATION
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+            drops = [];
+            localStorage.removeItem("drops"); // clean bad state
+            return;
+        }
+
+        drops = parsed;
+
+    } catch (e) {
+        console.warn("⚠️ Corrupt drop storage, resetting...");
+        drops = [];
+        localStorage.removeItem("drops");
     }
 }
 
+console.log("DROPS AFTER LOAD:", drops);
 
 function showSummary() {
 
