@@ -373,10 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setInterval(fetchWeatherSafe, 120000);
 
         }, 400);
-
-    }, 2500);
-
-});
+ });
 
 // =====================================================
 // 🚀 3. APP BOOT END
