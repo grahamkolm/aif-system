@@ -267,6 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         scouts = [];
         localStorage.removeItem("scouts");
+        localStorage.setItem("scouts", JSON.stringify([]));       
 
         // 🔥 remove scout markers safely
         if (window.scoutMarkers && mapInstance) {
@@ -3365,9 +3366,8 @@ function scoreScout(s) {
 }
 
 function getBestScoutZone() {
-    const scouts = JSON.parse(localStorage.getItem("scouts") || "[]");
 
-    if (!scouts.length) return null;
+    if (!scouts || scouts.length === 0) return null;
 
     // Score + filter strong scouts
     const goodScouts = scouts.filter(s => {
