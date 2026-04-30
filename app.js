@@ -109,6 +109,7 @@ let splashBubbles = [];
 // 🎣 SCOUT + DROPS
 // ============================
 let scoutData = {};
+let scouts = [];
 let drops = [];
 let retryCount = 0;
 window.scoutMarkers = window.scoutMarkers || [];
