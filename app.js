@@ -94,6 +94,7 @@ let canvas, ctx;
 let bubbles = [];
 let ripples = [];
 let hotspots = [];
+let splashRipples = [];
 let bubbleIntensity = 0.7;
 
 // ============================
@@ -420,7 +421,7 @@ function resizeCanvas() {
 // 💧 4. SPLASH SYSTEM
 // =====================================================
 
-let splashRipples = [];
+
 
 // ================= RESIZE ================= 
 function resizeSplash() {
