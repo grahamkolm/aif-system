@@ -266,19 +266,40 @@ document.addEventListener("DOMContentLoaded", () => {
         scouts = [];
         localStorage.removeItem("scouts");
 
-        // clear markers if map already open
-        if (window.scoutMarkers) {
-            window.scoutMarkers.forEach(m => mapInstance?.removeLayer(m));
+        // 🔥 remove scout markers safely
+        if (window.scoutMarkers && mapInstance) {
+            window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
             window.scoutMarkers = [];
         }
 
+        console.log("🧹 Scouts cleared");
         alert("All scouts cleared");
+    });
+
+    // ============================
+    // 🎯 CLEAR DROPS (NEW)
+    // ============================
+    document.getElementById("clearDropsBtn")?.addEventListener("click", () => {
+        if (!confirm("Clear all drops?")) return;
+
+        drops = [];
+        localStorage.removeItem("drops");
+
+        // 🔥 remove drop markers safely
+        if (window.dropMarkers && mapInstance) {
+            window.dropMarkers.forEach(m => mapInstance.removeLayer(m));
+            window.dropMarkers = [];
+        }
+
+        console.log("🎯 Drops cleared");
+        alert("All drops cleared");
     });
 
     // ============================
     // 🔧 INIT CORE
     // ============================
-    loadDrops();
+    loadDrops();   // 🔥 restores drops
+    loadScouts?.(); // 🔥 optional if you have it (safe call)
     setupScoutOptions();
 
     // =============================
