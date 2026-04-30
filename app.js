@@ -111,6 +111,8 @@ let splashBubbles = [];
 let scoutData = {};
 let drops = [];
 let retryCount = 0;
+window.scoutMarkers = window.scoutMarkers || [];
+window.dropMarkers = window.dropMarkers || [];
 
 // ============================
 // 🌡️ TEMP MODEL
