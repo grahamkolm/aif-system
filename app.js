@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!confirm("Clear all drops?")) return;
 
         drops = [];
-        localStorage.removeItem("drops");
+        localStorage.setItem("drops", JSON.stringify([]));
 
         // 🔥 remove drop markers safely
         if (window.dropMarkers && mapInstance) {
