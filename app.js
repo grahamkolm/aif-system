@@ -280,22 +280,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ============================
     // 🎯 CLEAR DROPS (NEW)
-    // ============================
-    document.getElementById("clearDropsBtn")?.addEventListener("click", () => {
-        if (!confirm("Clear all drops?")) return;
+    // ============================document.getElementById("clearDropsBtn")?.addEventListener("click", () => {
+    if (!confirm("Clear all drops?")) return;
 
-        drops = [];
-        localStorage.setItem("drops", JSON.stringify([]));
+    // 🔥 CLEAR MEMORY
+    drops = [];
 
-        // 🔥 remove drop markers safely
-        if (window.dropMarkers && mapInstance) {
-            window.dropMarkers.forEach(m => mapInstance.removeLayer(m));
-            window.dropMarkers = [];
-        }
+    // 🔥 REMOVE STORAGE COMPLETELY (not set empty)
+    localStorage.removeItem("drops");
 
-        console.log("🎯 Drops cleared");
-        alert("All drops cleared");
-    });
+    // 🔥 CLEAR MARKERS
+    if (window.dropMarkers && mapInstance) {
+        window.dropMarkers.forEach(m => mapInstance.removeLayer(m));
+        window.dropMarkers = [];
+    }
+
+    console.log("🎯 Drops FULLY cleared");
+    alert("All drops cleared");
+});
+
 
     // ============================
     // 🔧 INIT CORE
