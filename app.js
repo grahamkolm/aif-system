@@ -16,7 +16,6 @@ let currentSession = null;
 let userLocation = { lat: null, lon: null }; 
 let mapInstance = null; 
 let userMarker = null;
-let dropMarkers = [];
 const userIcon = L.icon({
     iconUrl: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
     iconSize: [36, 36],
@@ -2283,7 +2282,7 @@ function openMap() {
         // =============================
         // 🔥 CLEAR OLD DROP MARKERS
         // =============================
-        dropMarkers.forEach(m => mapInstance.removeLayer(m));
+        window.dropMarkers.forEach(m => mapInstance.removeLayer(m));
         dropMarkers = [];
 
         // =============================
@@ -2296,7 +2295,7 @@ function openMap() {
                 .addTo(mapInstance)
                 .bindPopup(`SPI: ${d.spi}%`);
 
-            dropMarkers.push(marker);
+            window.dropMarkers.push(marker);
         });
 
         drawDropZone();
