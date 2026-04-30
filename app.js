@@ -256,17 +256,39 @@ function showCONFInsight() {
 // =====================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    // ============================
+    // 🧹 CLEAR SCOUTS
+    // ============================
+    document.getElementById("clearBtn")?.addEventListener("click", () => {
+        if (!confirm("Clear all scouts?")) return;
+
+        scouts = [];
+        localStorage.removeItem("scouts");
+
+        // clear markers if map already open
+        if (window.scoutMarkers) {
+            window.scoutMarkers.forEach(m => mapInstance?.removeLayer(m));
+            window.scoutMarkers = [];
+        }
+
+        alert("All scouts cleared");
+    });
+
+    // ============================
+    // 🔧 INIT CORE
+    // ============================
     loadDrops();
     setupScoutOptions();
+
     // =============================
     // 🌊 SPLASH INIT
     // =============================
     splashCanvas = document.getElementById("splashCanvas");
     splashCtx = splashCanvas?.getContext("2d");
-    
+
     resizeSplash();
 
-    // ✅ CLEANED: splash bubbles init (only ONE system)
     splashBubbles = [];
     for (let i = 0; i < 40; i++) {
         splashBubbles.push({
@@ -280,7 +302,6 @@ document.addEventListener("DOMContentLoaded", () => {
     animateSplash();
     initSplashBubbles();
 
-    
     // =============================
     // 🎯 UI SETUP
     // =============================
@@ -320,11 +341,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // =============================
             // 🚀 START SYSTEMS
             // =============================
-            startApp();          // 🎨 visuals
-            initGPS();           // 📍 GPS system
-            fetchWeatherSafe();  // 🌦 first data load
+            startApp();
+            initGPS();
+            fetchWeatherSafe();
 
-            // 🔁 LOOP
             setInterval(fetchWeatherSafe, 120000);
 
         }, 400);
@@ -3626,6 +3646,24 @@ function showInsight(SPI, env, conf, light, depth) {
 
     el.innerHTML = tips.map(t => `<div class="ai-tip">${t}</div>`).join("");
 }
+
+// ============================
+// 🗑 CLEAR MAP SCOUTS (VISUAL ONLY)
+// ============================
+document.getElementById("clearMapBtn")?.addEventListener("click", () => {
+    if (!window.scoutMarkers) return;
+
+    window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
+    window.scoutMarkers = [];
+
+    console.log("🧹 Map cleared (visual only)"); });
+
+// ============================
+// ❌ CLOSE MAP
+// ============================
+document.getElementById("closeMapBtn")?.addEventListener("click", () => {
+    closeMap();
+});
 
 window.retryConnection = retryConnection;
 window.startScan = startScan;
