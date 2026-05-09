@@ -2349,7 +2349,13 @@ function openMap() {
             📍 GPS: ${s.lat.toFixed(5)}, ${s.lon.toFixed(5)}
             `;
 
-            const marker = L.marker([s.lat, s.lon], { icon: scoutIcon })
+           const offsetLat = s.lat + ((s.id || 1) * 0.00003); 
+           const offsetLon = s.lon + ((s.id || 1) * 0.00003);
+
+           const marker = L.marker([offsetLat, offsetLon], {
+        icon: scoutIcon
+})
+
                 .addTo(mapInstance)
                 .bindPopup(popup);
 
