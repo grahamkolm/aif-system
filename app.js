@@ -2370,9 +2370,9 @@ function openMap() {
                  if (s.bottom != null) {
                     document.getElementById("bottomTempValue").innerText = s.bottom + " C";
                 }
-
-            window.scoutMarkers.push(marker);
         });
+
+                window.scoutMarkers.push(marker);
 
     }, 200);
 }
