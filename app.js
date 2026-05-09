@@ -281,7 +281,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ============================
     // 🎯 CLEAR DROPS (NEW)
-    // ============================document.getElementById("clearDropsBtn")?.addEventListener("click", () => {
+    // ============================
+    document.getElementById("clearDropsBtn")?.addEventListener("click", () => {
     if (!confirm("Clear all drops?")) return;
 
     // 🔥 CLEAR MEMORY
