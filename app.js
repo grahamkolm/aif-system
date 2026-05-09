@@ -3754,4 +3754,3 @@ window.retryConnection = retryConnection;
 window.startScan = startScan;
 
 window.closeScout = closeScout;
-    }
