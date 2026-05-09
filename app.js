@@ -1554,7 +1554,7 @@ function renderDashboard(data) {
     const w = data.wind.speed * 3.6;
     const c = data.clouds.all;
 
-    const light = data.light || 50;
+    const light = ENV.light || data.light || 50;
     const depth = ENV.depth || data.depth || 5;
 
     windDir = data.wind?.deg || 0;
@@ -1780,7 +1780,9 @@ lastSPI = finalSPI;
         wind: w,
         cloud: c,
         oxygen: oxygen,
+        light: light,
         time: new Date().getHours()
+        
     });
 
     // =====================================================
@@ -1794,6 +1796,8 @@ lastSPI = finalSPI;
     document.getElementById("wind").innerText = w.toFixed(1) + " km/h";
     document.getElementById("cloud").innerText = c + "%";
     document.getElementById("feed").innerText = feeding(finalSPI);
+    document.getElementById("light").innerText = light + "%";
+    document.getElementById("depth").innerText = depth + " m";
 
     // =====================================================
     // 🎨 14. ICON COLORS
