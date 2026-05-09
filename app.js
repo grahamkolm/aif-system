@@ -375,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setInterval(fetchWeatherSafe, 120000);
 
         }, 400);
+    });
  });
 
 // =====================================================
