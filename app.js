@@ -1555,7 +1555,7 @@ function renderDashboard(data) {
     const c = data.clouds.all;
 
     const light = data.light || 50;
-    const depth = data.depth || 3;
+    const depth = ENV.depth || data.depth || 5;
 
     windDir = data.wind?.deg || 0;
     
