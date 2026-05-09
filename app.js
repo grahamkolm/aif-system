@@ -2336,6 +2336,9 @@ function openMap() {
                     : "-"
             }<br>
             📊 Pressure: ${s.pressure ?? "-"} hPa<br><br>
+            📊 Light: ${s.light ?? "-"} <br>
+            📊 Depth: ${s.depth ?? "-"} m<br>
+            📊 Altitude: ${s.altitude ?? "-"} m<br><br>
 
             🐟 Activity: ${s.activity ?? "-"}<br>
             💧 Water: ${s.clarity ?? "-"}<br>
@@ -2695,6 +2698,18 @@ async function continueScout() {
     console.log("Saved Scouts:", scouts);
     console.log("✅ Scout saved:", newScout);
 
+    if (newScout.light != null) {
+        ENV.light = newScout.light;
+    }
+    
+    if (newScout.depth != null) {
+    ENV.depth = newScout.depth;
+    }
+
+    if (newScout.altitude != null) {
+    ENV.altitude = newScout.altitude;
+    }
+    
     closeScout();
 
     // ============================
