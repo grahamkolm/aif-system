@@ -2353,11 +2353,23 @@ function openMap() {
            const offsetLon = s.lon + ((s.id || 1) * 0.00003);
 
            const marker = L.marker([offsetLat, offsetLon], {
-        icon: scoutIcon
+                icon: scoutIcon
 })
+            .addTo(mapInstance)
+            .bindPopup(popup);
 
-                .addTo(mapInstance)
-                .bindPopup(popup);
+            marker.on("click", () => {
+                if (s.light != null) {
+                    document.getElementById("lightValue").innerText = s.light + "%";
+                }
+
+                 if (s.depth != null) {
+                    document.getElementById("depthValue").innerText = s.depth + " m";
+                }
+
+                 if (s.bottom != null) {
+                    document.getElementById("bottomTempValue").innerText = s.bottom + " C";
+                }
 
             window.scoutMarkers.push(marker);
         });
