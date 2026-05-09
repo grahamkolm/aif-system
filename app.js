@@ -2372,8 +2372,9 @@ function openMap() {
                 }
                  window.scoutMarkers.push(marker);      
             });     
-    });
+        });
     }, 200);
+}
 
         // =============================
         // 🧱 FIX RENDER SIZE (CRITICAL)
