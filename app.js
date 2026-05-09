@@ -3705,10 +3705,12 @@ document.getElementById("clearMapBtn")?.addEventListener("click", () => {
 // ============================
 // ❌ CLOSE MAP
 // ============================
-document.getElementById("closeMapBtn")?.addEventListener("click", () => {
+
+    document.getElementById("closeMapBtn")?.addEventListener("click", () => {
     closeMap();
 });
 
 window.retryConnection = retryConnection;
 window.startScan = startScan;
+
 window.closeScout = closeScout;
