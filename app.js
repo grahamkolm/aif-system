@@ -2633,7 +2633,12 @@ async function continueScout() {
 
     function clearScoutMarkers() {
         scoutMarkers.forEach(marker => marker.remove());
+        
         scoutMarkers = [];
+
+        localStorage.removeItem("scouts");
+
+        console.log("Scouts permanently cleaned");
     }
 
     // ============================
