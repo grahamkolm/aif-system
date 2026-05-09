@@ -2422,8 +2422,10 @@ function updateMapLocation(lat, lon) {
         [lat, lon]
     );
 
-    if (distance > 50) { // meters threshold
-        mapInstance.setView([lat, lon], 13);
+    if (distance > 50 && followUser) { 
+        mapInstance.panTo([lat, lon], {
+            animate: true
+    });
     }
 
     // =============================
