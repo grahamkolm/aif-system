@@ -3699,7 +3699,8 @@ document.getElementById("clearMapBtn")?.addEventListener("click", () => {
     window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
     window.scoutMarkers = [];
 
-    console.log("🧹 Map cleared (visual only)"); });
+    console.log("🧹 Map cleared (visual only)"); 
+});
 
 // ============================
 // ❌ CLOSE MAP
