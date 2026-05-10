@@ -2367,15 +2367,15 @@ function openMap() {
                 updateDashboardFromScout(s);
 
                 if (scout.light != null) {
-                    document.getElementById("lightValue").innerText = scout.light + "%";
+                    document.getElementById("lightValue").innerText = s.light + "%";
                 }
 
                  if (scout.depth != null) {
-                    document.getElementById("depthValue").innerText = scout.depth + " m";
+                    document.getElementById("depthValue").innerText = s.depth + " m";
                 }
 
                  if (scout.bottom != null) {
-                    document.getElementById("bottomTempValue").innerText = scout.bottom + " C";
+                    document.getElementById("bottomTempValue").innerText = s.bottom + " C";
                 }
                  window.scoutMarkers.push(marker);      
             });     
