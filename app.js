@@ -2420,7 +2420,8 @@ function drawDropZone() {
         radius: zone.strength === "strong" ? 80 : 50,
         color: "#28a745",
         fillColor: "#28a745",
-        fillOpacity: 0.2
+        fillOpacity: 0.2,
+        interactive: false
     }).addTo(mapInstance);
 }
 
