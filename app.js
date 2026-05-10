@@ -438,7 +438,6 @@ document.getElementById("clearDropBtn")?.addEventListener("click", () => {
 
 });
 
-
 // ============================
 // 🔧 INIT CORE
 // ============================
@@ -565,8 +564,6 @@ function resizeCanvas() {
 // 💧 4. SPLASH SYSTEM
 // =====================================================
 
-
-
 // ================= RESIZE ================= 
 function resizeSplash() {
     if (!splashCanvas) return;
@@ -607,82 +604,237 @@ function initSplashBubbles() {
 // 🧭 5. COMPASS SYSTEM
 // =====================================================
 
+// ============================
+// 🧭 STATE
+// ============================
+let compassHeading = 0;
+let smoothHeading = 0;
+let compassEnabled = false;
+
+// ============================
+// 🧭 DIRECTION TEXT
+// ============================
 function getDirection(deg) {
-    if (deg >= 337 || deg < 23) return "N";
-    if (deg < 68) return "NE";
-    if (deg < 113) return "E";
-    if (deg < 158) return "SE";
-    if (deg < 203) return "S";
-    if (deg < 248) return "SW";
-    if (deg < 293) return "W";
+
+    if (deg >= 337.5 || deg < 22.5) return "N";
+    if (deg < 67.5) return "NE";
+    if (deg < 112.5) return "E";
+    if (deg < 157.5) return "SE";
+    if (deg < 202.5) return "S";
+    if (deg < 247.5) return "SW";
+    if (deg < 292.5) return "W";
+
     return "NW";
 }
 
+// ============================
+// 🧭 NORMALIZE ANGLE
+// ============================
+function normalizeHeading(angle) {
+
+    angle = angle % 360;
+
+    if (angle < 0) {
+        angle += 360;
+    }
+
+    return angle;
+}
+
+// ============================
+// 🧭 ENABLE COMPASS
+// ============================
 function enableCompass() {
 
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    if (compassEnabled) return;
+
+    // ============================
+    // 📱 iPhone / iOS
+    // ============================
+    if (
+        typeof DeviceOrientationEvent !== "undefined" &&
+        typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
 
         DeviceOrientationEvent.requestPermission()
-            .then(response => {
+            .then(permission => {
 
-                if (response === "granted") {
+                if (permission === "granted") {
 
-                    window.addEventListener("deviceorientation", e => {
-                        if (e.alpha !== null) {
-                            compassHeading = 360 - e.alpha;
-                        }
-                    });
+                    startCompass();
+
+                } else {
+
+                    console.warn("❌ Compass permission denied");
 
                 }
+
             })
-            .catch(console.error);
+            .catch(err => {
+                console.error("Compass permission error:", err);
+            });
 
-    } else {
+    }
 
-        window.addEventListener("deviceorientation", e => {
-            if (e.alpha !== null) {
-                compassHeading = 360 - e.alpha;
-            }
-        });
+    // ============================
+    // 🤖 Android / Normal
+    // ============================
+    else {
+
+        startCompass();
+
     }
 }
 
+// ============================
+// 🧭 START LISTENER
+// ============================
+function startCompass() {
+
+    if (compassEnabled) return;
+
+    compassEnabled = true;
+
+    window.addEventListener(
+        "deviceorientation",
+        handleCompassOrientation,
+        true
+    );
+
+    console.log("🧭 Compass enabled");
+}
+
+// ============================
+// 🧭 HANDLE ORIENTATION
+// ============================
+function handleCompassOrientation(event) {
+
+    let heading = null;
+
+    // ============================
+    // 🍎 iPhone SAFARI
+    // ============================
+    if (event.webkitCompassHeading != null) {
+
+        heading = event.webkitCompassHeading;
+
+    }
+
+    // ============================
+    // 🤖 Android
+    // ============================
+    else if (event.alpha != null) {
+
+        heading = 360 - event.alpha;
+
+    }
+
+    // ============================
+    // ❌ INVALID
+    // ============================
+    if (heading == null || isNaN(heading)) return;
+
+    heading = normalizeHeading(heading);
+
+    // ============================
+    // 🌊 SMOOTHING
+    // ============================
+    smoothHeading += (heading - smoothHeading) * 0.15;
+
+    smoothHeading = normalizeHeading(smoothHeading);
+
+    compassHeading = smoothHeading;
+
+    updateCompass(compassHeading);
+}
+
+// ============================
+// 🧭 UPDATE UI
+// ============================
 function updateCompass(heading) {
 
-    if (heading == null) return;
+    if (heading == null || isNaN(heading)) return;
 
-    const compass = document.getElementById("compassRing");
+    // ============================
+    // 🧭 ROTATE RING
+    // ============================
+    const compass =
+        document.querySelector(".compass-ring");
+
     if (compass) {
-        compass.style.transform = `rotate(${-heading}deg)`;
+
+        compass.style.transform =
+            `translate(-50%, -50%) rotate(${-heading}deg)`;
+
     }
 
+    // ============================
+    // 🧭 UPDATE TICKS
+    // ============================
     updateDirectionTicks(heading);
 
-    if (typeof windDir !== "undefined") {
+    // ============================
+    // 🎣 WIND ZONE
+    // ============================
+    if (typeof setFishingZone === "function") {
+
         setFishingZone(windDir);
+
     }
 }
 
+// ============================
+// 🧭 TICK HIGHLIGHTING
+// ============================
 function updateDirectionTicks(heading) {
-    const ticks = document.querySelectorAll("#compassTicks .tick");
+
+    const ticks =
+        document.querySelectorAll("#compassTicks .tick");
 
     ticks.forEach(tick => {
-        const angle = parseFloat(tick.dataset.angle);
-        const diff = Math.abs(angle - heading);
 
-        // Normalize difference (wrap around 360)
-        const adjusted = Math.min(diff, 360 - diff);
+        const angle =
+            parseFloat(tick.dataset.angle);
 
-        if (adjusted < 5) {
+        let difference =
+            Math.abs(angle - heading);
+
+        // ============================
+        // 🔄 WRAP 360
+        // ============================
+        difference =
+            Math.min(difference, 360 - difference);
+
+        // ============================
+        // 🎯 ACTIVE
+        // ============================
+        if (difference < 6) {
+
             tick.style.opacity = "1";
-            tick.style.height = "14px";
-        } else if (adjusted < 15) {
-            tick.style.opacity = "0.6";
-            tick.style.height = "10px";
-        } else {
+            tick.style.height = "16px";
+
+        }
+
+        // ============================
+        // 🌊 NEARBY
+        // ============================
+        else if (difference < 15) {
+
+            tick.style.opacity = "0.65";
+            tick.style.height = "12px";
+
+        }
+
+        // ============================
+        // ⚫ NORMAL
+        // ============================
+        else {
+
             tick.style.opacity = "0.2";
             tick.style.height = "6px";
+
         }
+
     });
 }
 
@@ -698,150 +850,268 @@ function updateDirectionTicks(heading) {
 // 🎯 7. TACTICAL ENGINE
 // =====================================================
 
-// ================= CONDITION ================= 
+// ============================
+// 🎯 CONDITION TEXT
+// ============================
 function getConditionText(SPI, envScore) {
 
-    const score = (SPI + envScore) / 2;
+    const combined =
+        ((SPI || 0) + (envScore || 0)) / 2;
 
-    if (score > 85) return "🔥 Conditions are excellent — fish should feed";
-    if (score > 70) return "👍 Conditions are good — fish active";
-    if (score > 55) return "👌 Conditions are fair — some movement";
-    if (score > 45) return "⚠️ Conditions are slow — bites limited";
-    if (score > 30) return "⚠️ Very slow - expect minimal activity";
+    if (combined >= 85)
+        return "🔥 Conditions are excellent — fish should feed";
+
+    if (combined >= 70)
+        return "👍 Conditions are good — fish active";
+
+    if (combined >= 55)
+        return "👌 Conditions are fair — some movement";
+
+    if (combined >= 45)
+        return "⚠️ Conditions are slow — bites limited";
+
+    if (combined >= 30)
+        return "⚠️ Very slow — expect minimal activity";
 
     return "❄️ Tough conditions — very quiet"; }
 
-// ================= ZONE ================= 
+// ============================
+// 📍 ZONE ADVICE
+// ============================
 function getZoneText(SPI, light, depth, wind) {
 
-    if (SPI > 75 && wind > 5) return "📍 Focus shallow windward zones";
-    if (light > 70) return "📍 Fish deeper cooler water";
-    if (depth >= 2 && depth <= 5) return "📍 Target mid-depth transitions";
+    light = Number(light) || 0;
+    depth = Number(depth) || 0;
+    wind = Number(wind) || 0;
+
+    if (SPI >= 75 && wind >= 5) {
+        return "📍 Focus shallow windward zones";
+    }
+
+    if (light >= 70) {
+        return "📍 Fish deeper cooler water";
+    }
+
+    if (depth >= 2 && depth <= 5) {
+        return "📍 Target mid-depth transitions";
+    }
 
     return "📍 Search structure and edges"; }
 
-// ================= CONFIDENCE ================= 
+// ============================
+// 🧠 CONFIDENCE
+// ============================
 function getConfidenceText(SPI, confScore) {
 
-    if (SPI > 75 && confScore > 75)
+    SPI = Number(SPI) || 0;
+    confScore = Number(confScore) || 0;
+
+    if (SPI >= 75 && confScore >= 75) {
         return "🧠 Stay on your spots — be patient";
+    }
 
-    if (SPI > 60)
+    if (SPI >= 60) {
         return "🧠 Give it time before changing";
+    }
 
-    if (SPI < 50)
+    if (SPI < 50) {
         return "🧠 Consider changing approach";
+    }
 
     return "🧠 Monitor and adjust if needed"; }
 
-// ================= MOMENTUM ================= 
+// ============================
+// ⚡ MOMENTUM
+// ============================
 function getXFactor(SPI, prevSPI) {
 
-    if (!prevSPI) return null;
+    if (prevSPI == null) return null;
 
-    const diff = SPI - prevSPI;
+    const difference = SPI - prevSPI;
 
-    if (diff > 8) return "⚡ Conditions improving — get ready";
-    if (SPI > 85) return "🚀 Prime feeding window now";
+    if (difference >= 8) {
+        return "⚡ Conditions improving — get ready";
+    }
+
+    if (SPI >= 85) {
+        return "🚀 Prime feeding window now";
+    }
 
     return null;
 }
 
-// ================= MAIN UPDATE ================= 
-function updateTacticalBar(SPI, envScore, confScore, ENV, prevSPI, forecastData) {
+// ============================
+// 🎯 MAIN UPDATE
+// ============================
+function updateTacticalBar(
+    SPI,
+    envScore,
+    confScore,
+    ENV,
+    prevSPI,
+    forecastData
+) {
 
-    const lines = [
+    const tacticalLines = [
+
         getConditionText(SPI, envScore),
-        getZoneText(SPI, ENV.light, ENV.depth, ENV.wind),
+
+        getZoneText(
+            SPI,
+            ENV?.light,
+            ENV?.depth,
+            ENV?.wind
+        ),
+
         getConfidenceText(SPI, confScore)
+
     ];
 
-    // ================= WINDOW =================
-    const window = getStableWindow(forecastData);
-    const windowText = getWindowText(window);
+    // ============================
+    // 🔒 WINDOW
+    // ============================
+    const bestWindow =
+        getStableWindow(forecastData);
+
+    const windowText =
+        getWindowText(bestWindow);
 
     if (windowText) {
-        lines.splice(1, 0, SPI > 80 ? "🔥 " + windowText : windowText);
+
+        tacticalLines.splice(
+            1,
+            0,
+            SPI >= 80
+                ? "🔥 " + windowText
+                : windowText
+        );
     }
 
-    // ================= MOMENTUM =================
-    const extra = getXFactor(SPI, prevSPI);
-    if (extra) lines.push(extra);
+    // ============================
+    // ⚡ MOMENTUM
+    // ============================
+    const extra =
+        getXFactor(SPI, prevSPI);
 
-    const el = document.getElementById("tactical");
-    if (el) el.innerText = lines.join("\n"); }
+    if (extra) {
+        tacticalLines.push(extra);
+    }
+
+    // ============================
+    // 🖥️ UPDATE UI
+    // ============================
+    const tacticalEl =
+        document.getElementById("tactical");
+
+    if (tacticalEl) {
+
+        tacticalEl.innerText =
+            tacticalLines.join("\n");
+
+    }
+}
 
 // =====================================================
 // 🎯 7. TACTICAL ENGINE END
 // =====================================================
 
+
 // =====================================================
 // 🔒 8. WINDOW ENGINE
 // =====================================================
 
+// ============================
+// 🎣 BEST WINDOW
+// ============================
 function getBestFishingWindow(forecastData) {
 
-    if (!forecastData || forecastData.length < 3) return null;
+    if (
+        !Array.isArray(forecastData) ||
+        forecastData.length < 3
+    ) {
+        return null;
+    }
 
-    let bestScore = 0;
+    let bestAverage = 0;
     let bestWindow = null;
 
-    for (let i = 0; i < forecastData.length - 2; i++) {
+    for (let i = 0; i <= forecastData.length - 3; i++) {
 
-        const avg =
-            (forecastData[i].spi +
-             forecastData[i+1].spi +
-             forecastData[i+2].spi) / 3;
+        const average = (
 
-        if (avg > bestScore) {
-            bestScore = avg;
-            bestWindow = [
-                forecastData[i].date,
-                forecastData[i+2].date
-            ];
+            forecastData[i].spi +
+            forecastData[i + 1].spi +
+            forecastData[i + 2].spi
+
+        ) / 3;
+
+        if (average > bestAverage) {
+
+            bestAverage = average;
+
+            bestWindow = {
+                start: forecastData[i].date,
+                end: forecastData[i + 2].date,
+                avgSPI: average
+            };
         }
     }
 
     return bestWindow;
 }
 
+// ============================
+// 🔒 STABLE WINDOW
+// ============================
 function getStableWindow(forecastData) {
 
+    const bestWindow =
+        getBestFishingWindow(forecastData);
+
+    if (!bestWindow) return null;
+
     try {
-        const stored = JSON.parse(localStorage.getItem("bestWindow"));
 
-        if (Array.isArray(stored) && stored.length === 2) {
-            return stored;
-        }
-    } catch {}
+        localStorage.setItem(
+            "bestWindow",
+            JSON.stringify(bestWindow)
+        );
 
-    const window = getBestFishingWindow(forecastData);
+    } catch (err) {
 
-    if (window) {
-        localStorage.setItem("bestWindow", JSON.stringify(window));
+        console.warn(
+            "Window storage failed:",
+            err
+        );
+
     }
 
-    return window;
+    return bestWindow;
 }
 
-function getWindowText(window, forecastData) {
+// ============================
+// 📝 WINDOW TEXT
+// ============================
+function getWindowText(bestWindow) {
 
-    if (!window || !forecastData) return null;
+    if (!bestWindow) return null;
 
-    const avgSPI = forecastData
-        .slice(0, 3)
-        .reduce((sum, d) => sum + d.spi, 0) / 3;
+    const avgSPI =
+        Number(bestWindow.avgSPI) || 0;
 
     if (avgSPI < 50) {
-        return `⚠️ Weak window: ${window[0]} → ${window[1]}`;
+
+        return `⚠️ Weak window: ${bestWindow.start} → ${bestWindow.end}`;
+
     }
 
     if (avgSPI < 65) {
-        return `🎯 Moderate window: ${window[0]} → ${window[1]}`;
+
+        return `🎯 Moderate window: ${bestWindow.start} → ${bestWindow.end}`;
+
     }
 
-    return `🔥 Strong feeding window: ${window[0]} → ${window[1]}`; 
-}
+    return `🔥 Strong feeding window: ${bestWindow.start} → ${bestWindow.end}`; }
 
 // =====================================================
 // 🔒 8. WINDOW ENGINE END
