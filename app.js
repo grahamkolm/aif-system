@@ -1220,7 +1220,19 @@ for (let i = splashRipples.length - 1; i >= 0; i--) {
 // 🌊 VISUAL ENGINE
 // =====================================================
 
+let animationRunning = false;
+
+// ============================
+// 🌊 RIPPLE
+// ============================
 function ripple() {
+
+    if (!canvas) return;
+
+    if (ripples.length > 20) {
+        ripples.shift();
+    }
+
     ripples.push({
         r: 0,
         alpha: 0.3,
@@ -1229,298 +1241,640 @@ function ripple() {
     });
 }
 
-
+// ============================
+// 🫧 SPAWN BUBBLE
+// ============================
 function spawnBubble() {
 
-    if (!canvas || hotspots.length === 0) return;
+    if (
+        !canvas ||
+        !hotspots.length
+    ) return;
 
-    const h = hotspots[Math.floor(Math.random() * hotspots.length)];
+    if (bubbles.length > 120) return;
 
-    let spiFactor = SPI / 100;
+    const hotspot =
+        hotspots[
+            Math.floor(
+                Math.random() * hotspots.length
+            )
+        ];
+
+    const spiFactor =
+        Math.max(0, Math.min(1, SPI / 100));
 
     bubbles.push({
-        x: h.x,
+
+        x: hotspot.x,
+
         y: canvas.height,
 
-        size: (Math.random() * 4 + 2) * (0.6 + spiFactor),
+        size:
+            (Math.random() * 4 + 2) *
+            (0.6 + spiFactor),
 
-        speed: (Math.random() * 0.8 + 0.3) * (0.5 + spiFactor),
+        speed:
+            (Math.random() * 0.8 + 0.3) *
+            (0.5 + spiFactor),
 
-        drift: (Math.random() - 0.5) * 0.6,
+        drift:
+            (Math.random() - 0.5) * 0.6,
 
-        alpha: 0.25 + (spiFactor * 0.3)
+        alpha:
+            0.25 + (spiFactor * 0.3)
+
     });
 }
 
+// ============================
+// 🎞️ MAIN ANIMATION
+// ============================
 function animate() {
 
-    if (!ctx || !canvas) return;
+    if (animationRunning) return;
+    animationRunning = true;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (typeof updateDirectionTicks === "function") {
-    updateDirectionTicks(compassHeading || 0 );
+    function frame() {
+
+        if (!ctx || !canvas) {
+            requestAnimationFrame(frame);
+            return;
+        }
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        // ============================
+        // 🧭 COMPASS TICKS
+        // ============================
+        if (
+            typeof updateDirectionTicks === "function"
+        ) {
+            updateDirectionTicks(
+                compassHeading || 0
+            );
+        }
+
+        // ============================
+        // 🫧 BUBBLE SPAWN
+        // ============================
+        const spawnRate =
+            0.02 +
+            (bubbleIntensity * 0.08);
+
+        if (Math.random() < spawnRate) {
+            spawnBubble();
+        }
+
+        // ============================
+        // 🫧 UPDATE BUBBLES
+        // ============================
+        for (let i = bubbles.length - 1; i >= 0; i--) {
+
+            const b = bubbles[i];
+
+            if (
+                b.x == null ||
+                b.y == null
+            ) {
+                bubbles.splice(i, 1);
+                continue;
+            }
+
+            b.y -= b.speed;
+            b.x += b.drift;
+
+            // natural wobble
+            b.x +=
+                Math.sin(b.y * 0.02) * 0.3;
+
+            const size = b.size || 6;
+
+            if (
+                !isFinite(b.x) ||
+                !isFinite(b.y) ||
+                !isFinite(size)
+            ) {
+                bubbles.splice(i, 1);
+                continue;
+            }
+
+            const gradient =
+                ctx.createRadialGradient(
+                    b.x - size * 0.4,
+                    b.y - size * 0.4,
+                    0,
+                    b.x,
+                    b.y,
+                    size
+                );
+
+            gradient.addColorStop(
+                0,
+                `rgba(255,255,255,${b.alpha})`
+            );
+
+            gradient.addColorStop(
+                0.3,
+                `rgba(200,230,255,${b.alpha * 0.6})`
+            );
+
+            gradient.addColorStop(
+                0.7,
+                `rgba(180,220,255,${b.alpha * 0.2})`
+            );
+
+            gradient.addColorStop(
+                1,
+                `rgba(180,220,255,0)`
+            );
+
+            ctx.fillStyle = gradient;
+
+            ctx.beginPath();
+
+            ctx.ellipse(
+                b.x,
+                b.y,
+                size * 0.9,
+                size * 1.1,
+                0,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+            // remove offscreen
+            if (b.y < -20) {
+                bubbles.splice(i, 1);
+            }
+        }
+
+        // ============================
+        // 🌊 UPDATE RIPPLES
+        // ============================
+        for (let i = ripples.length - 1; i >= 0; i--) {
+
+            const r = ripples[i];
+
+            r.r += 2;
+            r.alpha *= 0.95;
+
+            ctx.strokeStyle =
+                `rgba(255,255,255,${r.alpha})`;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                r.x,
+                r.y,
+                r.r,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.stroke();
+
+            if (r.alpha < 0.01) {
+                ripples.splice(i, 1);
+            }
+        }
+
+        requestAnimationFrame(frame);
     }
-    
-    let spawnRate = 0.02 + (bubbleIntensity * 0.08);
-    if (Math.random() < spawnRate) {
-        spawnBubble();
-    }
 
-bubbles.forEach((b, i) => {
-
-    if (b.x == null || b.y == null) return;
-
-    // 🌊 Movement
-    b.y -= b.speed;
-    b.x += b.drift;
-
-    // 🌊 Natural wobble (buoyancy effect)
-    b.x += Math.sin(b.y * 0.02) * 0.3;
-
-    const size = b.size || 6;
-
-    if (!isFinite(b.x) || !isFinite(b.y) || !isFinite(size)) return;
-
-    // 🎯 REALISTIC BUBBLE GRADIENT
-    let gradient = ctx.createRadialGradient(
-        b.x - size * 0.4,
-        b.y - size * 0.4,
-        0,
-        b.x,
-        b.y,
-        size
-    );
-
-    gradient.addColorStop(0, `rgba(255,255,255,${b.alpha})`);
-    gradient.addColorStop(0.3, `rgba(200,230,255,${b.alpha * 0.6})`);
-    gradient.addColorStop(0.7, `rgba(180,220,255,${b.alpha * 0.2})`);
-    gradient.addColorStop(1, `rgba(180,220,255,0)`);
-
-    ctx.fillStyle = gradient;
-
-    // 🔥 HIGH-END TOUCH (ELLIPSE = REAL BUBBLE SHAPE)
-    ctx.beginPath();
-    ctx.ellipse(
-        b.x,
-        b.y,
-        size * 0.9,
-        size * 1.1,
-        0,
-        0,
-        Math.PI * 2
-    );
-    ctx.fill();
-
-    // ❌ Remove bubble if off screen
-    if (b.y < -20) {
-        bubbles.splice(i, 1);
-    }
-});
-
-    ripples.forEach((r, i) => {
-
-        r.r += 2;
-        r.alpha *= 0.95;
-
-        ctx.strokeStyle = `rgba(255,255,255,${r.alpha})`;
-
-        ctx.beginPath();
-        ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-        ctx.stroke();
-
-        if (r.alpha < 0.01) ripples.splice(i, 1);
-    });
-
-    requestAnimationFrame(animate);
+    frame();
 }
 
+// ============================
+// 🎯 HOTSPOTS
+// ============================
 function generateHotspots() {
 
-    if (!canvas || !canvas.width) {
-        console.warn("Canvas not ready yet");
+    if (
+        !canvas ||
+        !canvas.width
+    ) {
+        console.warn(
+            "Canvas not ready yet"
+        );
         return;
     }
 
     hotspots = [];
 
-    for (let i = 0; i < Math.floor(canvas.width / 25); i++) {
+    const hotspotCount =
+        Math.min(
+            30,
+            Math.floor(canvas.width / 40)
+        );
+
+    for (let i = 0; i < hotspotCount; i++) {
+
         hotspots.push({
-            x: canvas.width * Math.random(), 
-            y: canvas.height * 0.7,
+
+            x:
+                canvas.width *
+                Math.random(),
+
+            y:
+                canvas.height * 0.7,
+
             radius: 80
+
         });
     }
 }
 
 // =====================================================
-// 🌦 5. WEATHER ENGINE
+// 🌦 WEATHER ENGINE
 // =====================================================
 
-function fetchWeatherSafe() {
- 
-    const API_KEY = "63ba514dc7c2242cb10cd2632d2569ad";
- 
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${API_KEY}`)
-        .then(r => r.json())
-        .then(data => {
-            console.log("Weather data received:", data);
- 
-            if (data && data.main) {
-                renderDashboard(data);
-            } else {
-                console.warn("Invalid weather data", data);
+const WEATHER_API_KEY =
+    "63ba514dc7c2242cb10cd2632d2569ad";
+
+// ============================
+// 🌦 SAFE WEATHER FETCH
+// ============================
+async function fetchWeatherSafe() {
+
+    const controller =
+        new AbortController();
+
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            7000
+        );
+
+    try {
+
+        const response = await fetch(
+
+            `https://urldefense.com/v3/__https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=$*7BWEATHER_API_KEY*7D__;JSU!!LtDMhTYuqQ!X7dOv88mTtoWvz97mkqLalpg7Pc3-eO4FEn-W8mr60m8rPk3PY60Lpz8WDPPcA2x3OkquyKvAHic5e5Q8sL2wujY$ `,
+
+            {
+                signal: controller.signal
             }
-        })
-        .catch(() => {
-            console.warn("Using simulated weather");
- 
-            // ONLY fallback if no previous data
-            if (!lastConditions || !lastConditions.main) {
-                renderDashboard({
-                    main: { temp: 22, pressure: 1018 },
-                    wind: { speed: 3, deg: 180 },
-                    clouds: { all: 40 }
-                });
+
+        );
+
+        clearTimeout(timeout);
+
+        const data =
+            await response.json();
+
+        if (
+            data &&
+            data.main
+        ) {
+
+            console.log(
+                "🌦 Weather loaded"
+            );
+
+            lastConditions = data;
+
+            renderDashboard(data);
+
+        } else {
+
+            throw new Error(
+                "Invalid weather payload"
+            );
+
+        }
+
+    } catch (err) {
+
+        console.warn(
+            "⚠️ Weather fallback active",
+            err
+        );
+
+        // use cached conditions first
+        if (
+            lastConditions &&
+            lastConditions.main
+        ) {
+
+            renderDashboard(
+                lastConditions
+            );
+
+            return;
+        }
+
+        // final fallback
+        renderDashboard({
+
+            main: {
+                temp: 22,
+                pressure: 1018
+            },
+
+            wind: {
+                speed: 3,
+                deg: 180
+            },
+
+            clouds: {
+                all: 40
             }
+
         });
+    }
 }
- 
+
+// ============================
+// 🌦 WEATHER → ENV
+// ============================
 function updateFromWeather(data) {
 
-  if (!ENV.air) {
-    ENV.air = data.main.temp;
-    SOURCE.air = "weather";
-  }
+    if (!data?.main) return;
 
-  if (!ENV.pressure) {
-    ENV.pressure = data.main.pressure;
-    SOURCE.pressure = "weather";
-  }
+    if (ENV.air == null) {
 
-  if (!ENV.wind) {
-    ENV.wind = data.wind.speed * 3.6;
-    SOURCE.wind = "weather";
-  }
+        ENV.air =
+            data.main.temp;
 
-  if (!ENV.cloud) {
-    ENV.cloud = data.clouds.all;
-    SOURCE.cloud = "weather";
-  }
+        SOURCE.air =
+            "weather";
+    }
+
+    if (ENV.pressure == null) {
+
+        ENV.pressure =
+            data.main.pressure;
+
+        SOURCE.pressure =
+            "weather";
+    }
+
+    if (
+        ENV.wind == null &&
+        data.wind
+    ) {
+
+        ENV.wind =
+            data.wind.speed * 3.6;
+
+        SOURCE.wind =
+            "weather";
+    }
+
+    if (
+        ENV.cloud == null &&
+        data.clouds
+    ) {
+
+        ENV.cloud =
+            data.clouds.all;
+
+        SOURCE.cloud =
+            "weather";
+    }
 }
 
+// ============================
+// 🌡 DERIVED VALUES
+// ============================
 function calculateDerivedValues() {
 
-  // Water temps fallback
-  if (!ENV.surface || !ENV.bottom) {
-    const surface = ENV.air - 1;
-    const bottom = surface - 2.5;
+    // ============================
+    // 🌊 WATER TEMPS
+    // ============================
+    if (
+        ENV.surface == null ||
+        ENV.bottom == null
+    ) {
 
-    if (!ENV.surface) {
-      ENV.surface = surface;
-      SOURCE.surface = "model";
+        const temps =
+            calculateWaterTemps(
+                ENV.air || 22
+            );
+
+        if (ENV.surface == null) {
+
+            ENV.surface =
+                temps.surface;
+
+            SOURCE.surface =
+                "model";
+        }
+
+        if (ENV.bottom == null) {
+
+            ENV.bottom =
+                temps.bottom;
+
+            SOURCE.bottom =
+                "model";
+        }
     }
 
-    if (!ENV.bottom) {
-      ENV.bottom = bottom;
-      SOURCE.bottom = "model";
+    // ============================
+    // 💨 OXYGEN
+    // ============================
+    const temp =
+        Number(ENV.surface) || 20;
+
+    const wind =
+        Number(ENV.wind) || 0;
+
+    const cloud =
+        Number(ENV.cloud) || 50;
+
+    let oxygen =
+        14.6 -
+        (temp * 0.4);
+
+    oxygen += wind * 0.1;
+    oxygen += cloud * 0.02;
+
+    ENV.oxygen =
+        Math.max(
+            5,
+            Math.min(14, oxygen)
+        );
+
+    SOURCE.oxygen =
+        "calculated";
+
+    // ============================
+    // ☀️ LIGHT
+    // ============================
+    if (ENV.light == null) {
+
+        const hour =
+            new Date().getHours();
+
+        if (
+            hour >= 6 &&
+            hour <= 10
+        ) {
+            ENV.light = 60;
+        }
+
+        else if (
+            hour >= 17 &&
+            hour <= 20
+        ) {
+            ENV.light = 65;
+        }
+
+        else if (
+            hour >= 10 &&
+            hour <= 16
+        ) {
+            ENV.light = 85;
+        }
+
+        else {
+            ENV.light = 20;
+        }
+
+        SOURCE.light =
+            "calculated";
     }
-  }
-
-  // Oxygen calculation
-  const temp = ENV.surface;
-  const wind = ENV.wind || 0;
-  const cloud = ENV.cloud || 50;
-
-  let oxygen = 14.6 - (temp * 0.4);
-  oxygen += wind * 0.1;
-  oxygen += cloud * 0.02;
-
-  ENV.oxygen = Math.max(5, Math.min(14, oxygen));
-  SOURCE.oxygen = "calculated";
-
-  // Light fallback
-  if (!ENV.light) {
-    const hour = new Date().getHours();
-
-    if (hour >= 6 && hour <= 10) ENV.light = 60;
-    else if (hour >= 17 && hour <= 20) ENV.light = 65;
-    else if (hour >= 10 && hour <= 16) ENV.light = 85;
-    else ENV.light = 20;
-
-    SOURCE.light = "calculated";
-  }
 }
 
-function analyzeWeather(w, p, c){
+// ============================
+// 🧠 WEATHER ANALYSIS
+// ============================
+function analyzeWeather(w, p, c) {
 
-    let insights = [];
-    let zone = getBestZone();
+    const insights = [];
+
+    const zone =
+        getBestZone();
 
     if (zone === "shallow") {
-    insights.push("Target shallow windward zones"); 
+        insights.push(
+            "Target shallow windward zones"
+        );
     }
 
     if (zone === "mid") {
-    insights.push("Fish mid-depth transition areas"); 
+        insights.push(
+            "Fish mid-depth transition areas"
+        );
     }
 
     if (zone === "deep") {
-    insights.push("Focus on deeper structure"); 
-    }
-    if(w >= 5 && w <= 15){
-        insights.push("Wind pushing food toward bank");
-    }
-
-    if(p > 1015){
-        insights.push("Stable pressure supports feeding");
+        insights.push(
+            "Focus on deeper structure"
+        );
     }
 
-    if(c >= 30 && c <= 70){
-        insights.push("Cloud cover improves fish confidence");
+    if (w >= 5 && w <= 15) {
+        insights.push(
+            "Wind pushing food toward bank"
+        );
     }
-  
+
+    if (p > 1015) {
+        insights.push(
+            "Stable pressure supports feeding"
+        );
+    }
+
+    if (c >= 30 && c <= 70) {
+        insights.push(
+            "Cloud cover improves fish confidence"
+        );
+    }
+
     return insights;
 }
 
+// ============================
+// 🌡 WATER TEMP MODEL
+// ============================
 function calculateWaterTemps(airTemp) {
 
-    // 🌞 Surface reacts fast (but not 1:1)
-    let surface = airTemp - 1;
+    airTemp =
+        Number(airTemp) || 22;
 
-    // 🌊 Add realism: warm air doesn't fully transfer
-    if (airTemp > 25) surface -= 1;
-    if (airTemp < 15) surface += 0.5;
+    let surface =
+        airTemp - 1;
 
-    // 🧊 Bottom is slower + more stable
-    let bottom = surface - 2.5;
+    if (airTemp > 25) {
+        surface -= 1;
+    }
 
-    // Stabilize bottom (never extreme swings)
-    if (bottom < 8) bottom = 8 + (airTemp * 0.1);
+    if (airTemp < 15) {
+        surface += 0.5;
+    }
+
+    let bottom =
+        surface - 2.5;
+
+    if (bottom < 8) {
+        bottom =
+            8 +
+            (airTemp * 0.1);
+    }
 
     return {
-        surface: parseFloat(surface.toFixed(1)),
-        bottom: parseFloat(bottom.toFixed(1)),
-        source: "forecast"
+
+        surface:
+            parseFloat(
+                surface.toFixed(1)
+            ),
+
+        bottom:
+            parseFloat(
+                bottom.toFixed(1)
+            ),
+
+        source:
+            "forecast"
+
     };
 }
 
 // =====================================================
-// 📊 WEAHTER ENGINE END
+// 🌦 WEATHER ENGINE END
 // =====================================================
 
 // =====================================================
 // 📊 SPI ENGINE
 // =====================================================
+
 function calculateSPI(envScore, waterScore, data) {
 
     let {
-        p, w, c, windDir, t, light,
-        depth, diff
+        p,
+        w,
+        c,
+        t,
+        light,
+        depth,
+        diff
     } = data;
 
+    // =============================
+    // 🛡️ SAFETY NORMALIZATION
+    // =============================
+
+    p = Number(p) || 1015;
+    w = Number(w) || 0;
+    c = Number(c) || 0;
+    t = Number(t) || 20;
+    light = Number(light) || 50;
+    depth = Number(depth) || 5;
+    diff = Number(diff) || 90;
+
     let reasons = [];
-    let isCold = t <= 15;
-    let trend = getPressureTrend(p);
+
+    const isCold = t <= 15;
+    const trend = getPressureTrend(p);
 
     // =============================
     // 🧠 1. BASE = ENV + WATER FUSION
@@ -1528,12 +1882,10 @@ function calculateSPI(envScore, waterScore, data) {
 
     let score;
 
-    if (waterScore !== null) {
+    if (waterScore !== null && !isNaN(waterScore)) {
 
-        // 🔥 TRUE FUSION (not just add-on)
+        // 🔥 TRUE FUSION
         score = (envScore * 0.6) + (waterScore * 0.4);
-
-        let delta = waterScore - envScore;
 
         // alignment boost
         if (envScore > 60 && waterScore > 60) {
@@ -1554,6 +1906,7 @@ function calculateSPI(envScore, waterScore, data) {
         }
 
     } else {
+
         // fallback
         score = envScore;
     }
@@ -1561,9 +1914,11 @@ function calculateSPI(envScore, waterScore, data) {
     // =============================
     // 🌬 2. WIND POSITIONING
     // =============================
+
     if (diff > 135) {
         score += 10;
         reasons.push("Wind pushing into zone");
+
     } else if (diff < 45) {
         score -= 6;
         reasons.push("Downwind zone");
@@ -1572,18 +1927,25 @@ function calculateSPI(envScore, waterScore, data) {
     // =============================
     // 🌊 3. DEPTH POSITIONING
     // =============================
+
     if (depth >= 2 && depth <= 5) {
+
         score += 8;
         reasons.push("Optimal feeding depth");
+
     } else if (depth < 1) {
+
         score -= 5;
+
     } else if (depth > 8) {
+
         score -= 4;
     }
 
     // =============================
     // 💡 4. LIGHT BEHAVIOUR
     // =============================
+
     if (light < 40) {
         score += 5;
         reasons.push("Low light feeding advantage");
@@ -1597,6 +1959,7 @@ function calculateSPI(envScore, waterScore, data) {
     // =============================
     // ❄️ 5. WINTER ADAPTATION
     // =============================
+
     if (isCold) {
 
         if (trend === "stable") {
@@ -1617,12 +1980,15 @@ function calculateSPI(envScore, waterScore, data) {
     // =============================
     // ⚡ 6. OPPORTUNITY BOOSTS
     // =============================
+
     if (w >= 5 && w <= 15 && c >= 30) {
+
         score += 6;
         reasons.push("Wind + cloud feeding setup");
     }
 
     if (p > 1015 && t >= 15) {
+
         score += 4;
         reasons.push("Stable atmospheric support");
     }
@@ -1630,29 +1996,46 @@ function calculateSPI(envScore, waterScore, data) {
     // =============================
     // 🔴 7. REAL LIMITS ONLY
     // =============================
+
     if (w < 1) score -= 5;
-    if (t < 8 || t > 32) score -= 5;
+
+    if (t < 8 || t > 32) {
+        score -= 5;
+    }
 
     // =============================
     // 🎯 8. FINAL SHAPING
     // =============================
 
-    // soft curve (keeps mid-range realistic)
+    score = Math.max(0, score);
+
+    // soft curve
     score = Math.pow(score / 100, 1.1) * 100;
 
     score = Math.max(25, Math.min(90, score));
 
     // =============================
-    // 🧠 REASON FILTER (your system)
+    // 🧠 REASON FILTER
     // =============================
+
     function filterInsights(reasons, SPI) {
+
         if (SPI < 45) {
+
             return reasons.map(r => {
-                if (r.includes("feeding")) return "Limited feeding activity";
-                if (r.includes("advantage")) return "Conditions slightly supportive";
+
+                if (r.includes("feeding")) {
+                    return "Limited feeding activity";
+                }
+
+                if (r.includes("advantage")) {
+                    return "Conditions slightly supportive";
+                }
+
                 return r;
             });
         }
+
         return reasons;
     }
 
@@ -1670,46 +2053,92 @@ function calculateSPI(envScore, waterScore, data) {
 
 function calculateCONF(SPI, envScore, p, w, c, t) {
 
-    let score = 50; // 🔥 BASELINE (important)
-
-    let isCold = t <= 15;
-    let trend = getPressureTrend(p);
-
     // =============================
-    // 🟢 1. ALIGNMENT (±15)
+    // 🛡️ SAFETY NORMALIZATION
     // =============================
-    let alignment = Math.abs(SPI - envScore);
 
-    if (alignment < 10) score += 12;
-    else if (alignment < 20) score += 6;
-    else score -= 6;
+    SPI = Number(SPI) || 50;
+    envScore = Number(envScore) || 50;
+    p = Number(p) || 1015;
+    w = Number(w) || 0;
+    c = Number(c) || 0;
+    t = Number(t) || 20;
 
-    // =============================
-    // 🟢 2. STABILITY (±15)
-    // =============================
-    let variability = Math.abs(SPI - (lastSPI ?? SPI));
+    let score = 50;
 
-    if (variability < 5) score += 12;
-    else if (variability < 10) score += 6;
-    else score -= 8;
+    const isCold = t <= 15;
+    const trend = getPressureTrend(p);
 
     // =============================
-    // 🟢 3. PRESSURE RELIABILITY (±12)
+    // 🟢 1. ALIGNMENT
     // =============================
-    if (trend === "stable") score += 10;
-    else if (trend === "rising") score += 6;
-    else score -= 4;
+
+    const alignment = Math.abs(SPI - envScore);
+
+    if (alignment < 10) {
+        score += 12;
+
+    } else if (alignment < 20) {
+        score += 6;
+
+    } else {
+        score -= 6;
+    }
 
     // =============================
-    // 🟢 4. ENV SUPPORT (±12)
+    // 🟢 2. STABILITY
     // =============================
-    if (envScore >= 60) score += 10;
-    else if (envScore >= 45) score += 6;
-    else score += 2; // 🔥 LOW ENV still gives confidence
+
+    const variability = Math.abs(SPI - (lastSPI ?? SPI));
+
+    if (variability < 5) {
+
+        score += 12;
+
+    } else if (variability < 10) {
+
+        score += 6;
+
+    } else {
+
+        score -= 8;
+    }
 
     // =============================
-    // 🟢 5. CONDITION CONSISTENCY (±10)
+    // 🟢 3. PRESSURE RELIABILITY
     // =============================
+
+    if (trend === "stable") {
+        score += 10;
+
+    } else if (trend === "rising") {
+        score += 6;
+
+    } else {
+        score -= 4;
+    }
+
+    // =============================
+    // 🟢 4. ENV SUPPORT
+    // =============================
+
+    if (envScore >= 60) {
+
+        score += 10;
+
+    } else if (envScore >= 45) {
+
+        score += 6;
+
+    } else {
+
+        score += 2;
+    }
+
+    // =============================
+    // 🟢 5. CONDITION CONSISTENCY
+    // =============================
+
     let consistency = 0;
 
     if (w >= 3 && w <= 15) consistency += 4;
@@ -1719,232 +2148,405 @@ function calculateCONF(SPI, envScore, p, w, c, t) {
     score += consistency;
 
     // =============================
-    // ❄️ 6. WINTER ADAPTATION (NEW)
+    // ❄️ 6. WINTER ADAPTATION
     // =============================
+
     if (isCold) {
 
-        // stable cold conditions = predictable
-        if (trend === "stable") score += 8;
+        if (trend === "stable") {
+            score += 8;
+        }
 
-        // alignment matters more in winter
-        if (alignment < 15) score += 6;
+        if (alignment < 15) {
+            score += 6;
+        }
 
-        // moderate SPI in winter is GOOD
-        if (SPI >= 40 && SPI <= 60) score += 6;
+        if (SPI >= 40 && SPI <= 60) {
+            score += 6;
+        }
     }
 
     // =============================
-    // 🔴 7. ONLY REAL RISKS (reduced penalties)
+    // 🔴 7. REAL RISKS
     // =============================
 
-    if (variability > 15) score -= 10; // unstable system
+    if (variability > 15) score -= 10;
 
     if (w > 20 || w < 1) score -= 6;
     if (t > 32 || t < 8) score -= 6;
     if (c > 95 || c < 5) score -= 5;
 
     // =============================
-    // 🎯 SOFT SCALING
+    // 🎯 FINAL SHAPING
     // =============================
+
+    score = Math.max(0, score);
+
     score = Math.pow(score / 100, 1.1) * 100;
 
-    if (isNaN(score)) score = 50;
+    if (isNaN(score)) {
+        score = 50;
+    }
 
-    return Math.max(35, Math.min(95, Math.round(score))); 
-}
+    return Math.max(35, Math.min(95, Math.round(score))); }
 
 // =====================================================
 // 📊 CONF ENGINE END
 // =====================================================
 
 // =====================================================
-// 📊  SCOUT and TILE ENGINE START
+// 📊 SCOUT + TILE ENGINE
 // =====================================================
 
 function calculateAverageSPI() {
-    if (drops.length === 0) return 0;
 
-    let total = drops.reduce((sum, d) => sum + d.spi, 0);
-    return parseFloat((total / drops.length).toFixed(1));
+    if (!drops || drops.length === 0) {
+        return 0;
+    }
+
+    const validDrops = drops.filter(d =>
+        d &&
+        typeof d.spi === "number" &&
+        !isNaN(d.spi)
+    );
+
+    if (validDrops.length === 0) {
+        return 0;
+    }
+
+    const total = validDrops.reduce(
+        (sum, d) => sum + d.spi,
+        0
+    );
+
+    return parseFloat(
+        (total / validDrops.length).toFixed(1)
+    );
 }
-
 
 // =====================================================
 // 🎣 AIF TILE ENGINE (CARP OPTIMISED)
 // =====================================================
 
+// ============================
 // 🎯 MAIN UPDATE FUNCTION
-function updateAllTiles(data) {
-  
-  applyTileColor("airTile", getAirStatus(data.air));
-  applyTileColor("surfaceTile", getSurfaceStatus(data.surface));
-  applyTileColor("bottomTile", getBottomStatus(data.bottom));
-  applyTileColor("depthTile", getDepthStatus(data.surface, data.bottom));
-  applyTileColor("pressureTile", getPressureStatus(data.pressure));
-  applyTileColor("windTile", getWindStatus(data.wind));
-  applyTileColor("cloudTile", getCloudStatus(data.cloud));
-  applyTileColor("oxygenTile", getOxygenStatus(data.oxygen, data.surface));
-  applyTileColor("lightTile", getLightStatus(data.cloud, data.time)); 
+// ============================
+
+function updateAllTiles(data = {}) {
+
+    applyTileColor(
+        "airTile",
+        getAirStatus(data.air)
+    );
+
+    applyTileColor(
+        "surfaceTile",
+        getSurfaceStatus(data.surface)
+    );
+
+    applyTileColor(
+        "bottomTile",
+        getBottomStatus(data.bottom)
+    );
+
+    applyTileColor(
+        "depthTile",
+        getDepthStatus(data.surface, data.bottom)
+    );
+
+    applyTileColor(
+        "pressureTile",
+        getPressureStatus(data.pressure)
+    );
+
+    applyTileColor(
+        "windTile",
+        getWindStatus(data.wind)
+    );
+
+    applyTileColor(
+        "cloudTile",
+        getCloudStatus(data.cloud)
+    );
+
+    applyTileColor(
+        "oxygenTile",
+        getOxygenStatus(data.oxygen, data.surface)
+    );
+
+    applyTileColor(
+        "lightTile",
+        getLightStatus(data.cloud, data.time)
+    );
 }
 
 // =====================================================
 // 🌬️ AIR TEMP
 // =====================================================
-function getAirStatus(temp) {
-  if (temp >= 15 && temp <= 24) return "green";
-  if (temp >= 10 && temp <= 28) return "green";
-  if (temp >= 7 && temp <= 24) return "orange";
-  return "red";
-}
 
+function getAirStatus(temp) {
+
+    temp = Number(temp);
+
+    if (isNaN(temp)) return "orange";
+
+    if (temp >= 15 && temp <= 24) return "green";
+    if (temp >= 10 && temp <= 28) return "green";
+    if (temp >= 7 && temp <= 24) return "orange";
+
+    return "red";
+}
 
 // =====================================================
 // 🌊 SURFACE TEMP
 // =====================================================
-function getSurfaceStatus(temp) {
-  if (temp >= 16 && temp <= 22) return "green";
-  if (temp >= 12 && temp <= 26) return "orange";
-  return "red";
-}
 
+function getSurfaceStatus(temp) {
+
+    temp = Number(temp);
+
+    if (isNaN(temp)) return "orange";
+
+    if (temp >= 16 && temp <= 22) return "green";
+    if (temp >= 12 && temp <= 26) return "orange";
+
+    return "red";
+}
 
 // =====================================================
 // ⬇️ BOTTOM TEMP
 // =====================================================
-function getBottomStatus(temp) {
-  if (temp >= 14 && temp <= 20) return "green";
-  if (temp >= 10 && temp <= 24) return "orange";
-  return "red";
-}
 
+function getBottomStatus(temp) {
+
+    temp = Number(temp);
+
+    if (isNaN(temp)) return "orange";
+
+    if (temp >= 14 && temp <= 20) return "green";
+    if (temp >= 10 && temp <= 24) return "orange";
+
+    return "red";
+}
 
 // =====================================================
 // 🌡️ DEPTH / MIXING
 // =====================================================
+
 function getDepthStatus(surface, bottom) {
-  const diff = Math.abs(surface - bottom);
 
-  if (diff <= 2) return "green";
-  if (diff <= 5) return "orange";
-  return "red";
+    surface = Number(surface);
+    bottom = Number(bottom);
+
+    if (isNaN(surface) || isNaN(bottom)) {
+        return "orange";
+    }
+
+    const diff = Math.abs(surface - bottom);
+
+    if (diff <= 2) return "green";
+    if (diff <= 5) return "orange";
+
+    return "red";
 }
-
 
 // =====================================================
 // 🌬️ PRESSURE
 // =====================================================
-function getPressureStatus(p) {
-  if (p >= 1012 && p <= 1022) return "green";
-  if (p >= 1005 && p <= 1028) return "orange";
-  return "red";
-}
 
+function getPressureStatus(p) {
+
+    p = Number(p);
+
+    if (isNaN(p)) return "orange";
+
+    if (p >= 1012 && p <= 1022) return "green";
+    if (p >= 1005 && p <= 1028) return "orange";
+
+    return "red";
+}
 
 // =====================================================
 // 💨 WIND
 // =====================================================
-function getWindStatus(wind) {
-  if (wind >= 5 && wind <= 15) return "green";
-  if (wind >= 2 && wind <= 20) return "orange";
-  return "red";
-}
 
+function getWindStatus(wind) {
+
+    wind = Number(wind);
+
+    if (isNaN(wind)) return "orange";
+
+    if (wind >= 5 && wind <= 15) return "green";
+    if (wind >= 2 && wind <= 20) return "orange";
+
+    return "red";
+}
 
 // =====================================================
 // ☁️ CLOUD
 // =====================================================
+
 function getCloudStatus(cloud) {
-  if (cloud >= 30 && cloud <= 70) return "green";
-  if (cloud >= 10 && cloud <= 90) return "orange";
-  return "red";
+
+    cloud = Number(cloud);
+
+    if (isNaN(cloud)) return "orange";
+
+    if (cloud >= 30 && cloud <= 70) return "green";
+    if (cloud >= 10 && cloud <= 90) return "orange";
+
+    return "red";
 }
 
+// =====================================================
+// 🫧 OXYGEN
+// =====================================================
 
-// =====================================================
-// 🫧 OXYGEN (VERY IMPORTANT)
-// =====================================================
 function getOxygenStatus(oxygen, temp) {
 
-  // fallback if oxygen not available
-  if (!oxygen) {
-    // estimate based on temp
-    if (temp >= 16 && temp <= 22) return "green";
-    if (temp >= 12 && temp <= 26) return "orange";
-    return "red";
-  }
+    oxygen = Number(oxygen);
+    temp = Number(temp);
 
-  if (oxygen >= 7) return "green";
-  if (oxygen >= 5) return "orange";
-  return "red";
+    // fallback estimation
+    if (isNaN(oxygen)) {
+
+        if (!isNaN(temp)) {
+
+            if (temp >= 16 && temp <= 22) return "green";
+            if (temp >= 12 && temp <= 26) return "orange";
+        }
+
+        return "orange";
+    }
+
+    if (oxygen >= 7) return "green";
+    if (oxygen >= 5) return "orange";
+
+    return "red";
 }
 
+// =====================================================
+// ☀️ LIGHT
+// =====================================================
 
-// =====================================================
-// ☀️ LIGHT (TIME + CLOUD COMBO)
-// =====================================================
 function getLightStatus(cloud, time) {
 
-  // assume time = hour (0–23)
-  if (time >= 6 && time <= 10) return "green";     // morning
-  if (time >= 17 && time <= 20) return "green";    // evening
+    cloud = Number(cloud);
 
-  if (cloud >= 40 && cloud <= 80) return "green";  // diffused light
+    // fallback to current hour
+    if (time == null || isNaN(time)) {
+        time = new Date().getHours();
+    }
 
-  if (time >= 10 && time <= 16) return "orange";   // midday
+    time = Number(time);
 
-  return "red"; // night / extreme
+    // 🌅 morning
+    if (time >= 6 && time <= 10) {
+        return "green";
+    }
+
+    // 🌇 evening
+    if (time >= 17 && time <= 20) {
+        return "green";
+    }
+
+    // ☁️ diffused daylight
+    if (cloud >= 40 && cloud <= 80) {
+        return "green";
+    }
+
+    // ☀️ harsh midday
+    if (time >= 10 && time <= 16) {
+        return "orange";
+    }
+
+    // 🌑 night/extreme
+    return "red";
 }
-
 
 // =====================================================
 // 🎨 APPLY COLOR ENGINE
-// ===================================================== 
-function applyTileColor(tileId, status) {
+// =====================================================
 
-  const tile = document.getElementById(tileId);
-  if (!tile) {
-    console.warn("Missing Tile:", tileId);
-    return;
-}
+function applyTileColor(tileId, status = "orange") {
 
- const icon = tile.querySelector("i");
+    const tile = document.getElementById(tileId);
+
+    if (!tile) {
+        console.warn("Missing Tile:", tileId);
+        return;
+    }
+
+    const icon = tile.querySelector("i");
+
+    // ============================
+    // 🎨 ICON STYLING
+    // ============================
 
     if (icon) {
-    if (status === "red") {
-        icon.style.color = "#ff3b3b";
-        icon.style.opacity = 1;
-    } else {
-        icon.style.color = "#ffffff";
-        icon.style.opacity = 0.6;
+
+        if (status === "red") {
+
+            icon.style.color = "#ff3b3b";
+            icon.style.opacity = "1";
+
+        } else {
+
+            icon.style.color = "#ffffff";
+            icon.style.opacity = "0.6";
+        }
+    }
+
+    // ============================
+    // RESET
+    // ============================
+
+    tile.style.borderColor = "";
+    tile.style.boxShadow = "";
+    tile.style.background = "";
+
+    // ============================
+    // GREEN
+    // ============================
+
+    if (status === "green") {
+
+        tile.style.borderColor = "#00ff9c";
+        tile.style.boxShadow =
+            "0 0 15px rgba(0,255,156,0.45)";
+        tile.style.background =
+            "rgba(0,255,156,0.05)";
+    }
+
+    // ============================
+    // ORANGE
+    // ============================
+
+    else if (status === "orange") {
+
+        tile.style.borderColor = "#ffaa00";
+        tile.style.boxShadow =
+            "0 0 12px rgba(255,170,0,0.35)";
+        tile.style.background =
+            "rgba(255,170,0,0.05)";
+    }
+
+    // ============================
+    // RED
+    // ============================
+
+    else {
+
+        tile.style.borderColor = "#ff3b3b";
+        tile.style.boxShadow =
+            "0 0 12px rgba(255,59,59,0.35)";
+        tile.style.background =
+            "rgba(255,59,59,0.05)";
     }
 }
 
-  // reset
-  tile.style.borderColor = "";
-  tile.style.boxShadow = "";
-  tile.style.background = "";
-
-  if (status === "green") {
-    tile.style.borderColor = "#00ff9c";
-    tile.style.boxShadow = "0 0 15px rgba(0,255,156,0.45)";
-    tile.style.background = "rgba(0,255,156,0.05)";
-  }
-
-  else if (status === "orange") {
-    tile.style.borderColor = "#ffaa00";
-    tile.style.boxShadow = "0 0 12px rgba(255,170,0,0.35)";
-    tile.style.background = "rgba(255,170,0,0.05)";
-  }
-
-  else {
-    tile.style.borderColor = "#ff3b3b";
-    tile.style.boxShadow = "0 0 12px rgba(255,59,59,0.35)";
-    tile.style.background = "rgba(255,59,59,0.05)";
-  }
-}
-
 // =====================================================
-// 📊  SCOUT and TILE ENGINE END
+// 📊 SCOUT and TILE ENGINE END
 // =====================================================
 
 // =====================================================
