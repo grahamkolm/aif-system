@@ -2365,7 +2365,7 @@ function openMap() {
             marker.on("click", () => {
                 selectdScout = scout;
                 updateDashboardFromScout(scout);
-            });
+
                 if (scout.light != null) {
                     document.getElementById("lightValue").innerText = scout.light + "%";
                 }
