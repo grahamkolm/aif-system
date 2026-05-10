@@ -847,7 +847,6 @@ function updateCompass(heading) {
         compass.style.transform =
             `rotate(${currentCompass}deg)`;
 
-    }
 
     // ============================
     // 🧭 UPDATE TICKS
@@ -862,7 +861,7 @@ function updateCompass(heading) {
         setFishingZone(windDir);
 
     }
-
+}
 // ============================
 // 🧭 TICK HIGHLIGHTING
 // ============================
