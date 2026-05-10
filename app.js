@@ -135,13 +135,13 @@ const WHITE = "#ffffff";
 // =====================================================
 // 🌍 0. GLOBAL BASE END
 // =====================================================
-let scouts = [];
+window.scouts = [];
 
     try {
-        scouts = JSON.parse(localStorage.getItem("scouts")) || [];
+        window.scouts = JSON.parse(localStorage.getItem("scouts")) || [];
     } catch (e) {
         console.warn("⚠️ Corrupt scout storage, resetting...");
-        scouts = [];
+        window.scouts = [];
     }
 
 // =====================================================
