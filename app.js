@@ -1579,65 +1579,78 @@ const WEATHER_API_KEY =
 // ============================
 async function fetchWeatherSafe() {
 
-    const controller =
-        new AbortController();
+    const controller = new AbortController();
 
-    const timeout =
-        setTimeout(
-            () => controller.abort(),
-            7000
-        );
+    const timeout = setTimeout(() => {
+        controller.abort();
+    }, 7000);
 
     try {
 
         const response = await fetch(
-
-            `https://urldefense.com/v3/__https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=$*7BWEATHER_API_KEY*7D__;JSU!!LtDMhTYuqQ!X7dOv88mTtoWvz97mkqLalpg7Pc3-eO4FEn-W8mr60m8rPk3PY60Lpz8WDPPcA2x3OkquyKvAHic5e5Q8sL2wujY$ `,
-
+            `https://urldefense.com/v3/__https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=$*7BWEATHER_API_KEY*7D__;JSU!!LtDMhTYuqQ!R8cT2v7pMzzcQELmDXZ-93Mu0RE6NgYcqRtKutcAQtHFqRyNJnzZXHDNaKPWRaaSGEM1Ki5glfc5Ttq_4TsTnjMo$ `,
             {
                 signal: controller.signal
             }
-
         );
 
         clearTimeout(timeout);
 
-        const data =
-            await response.json();
-
-        if (
-            data &&
-            data.main
-        ) {
-
-            console.log(
-                "🌦 Weather loaded"
+        // 🔒 HTTP VALIDATION
+        if (!response.ok) {
+            throw new Error(
+                `Weather API Error: ${response.status}`
             );
+        }
 
-            lastConditions = data;
+        const data = await response.json();
 
-            renderDashboard(data);
+        console.log(
+            "✅ LIVE WEATHER ACTIVE",
+            data
+        );
 
-        } else {
-
+        // 🔒 PAYLOAD VALIDATION
+        if (
+            !data ||
+            !data.main ||
+            !data.wind ||
+            !data.clouds
+        ) {
             throw new Error(
                 "Invalid weather payload"
             );
-
         }
 
+        // 🔒 CACHE LAST GOOD DATA
+        lastConditions = data;
+
+        console.log(
+            "🌦 Weather loaded successfully"
+        );
+
+        renderDashboard(data);
+
     } catch (err) {
+
+        clearTimeout(timeout);
 
         console.warn(
             "⚠️ Weather fallback active",
             err
         );
 
-        // use cached conditions first
+        // ============================
+        // 🔒 USE LAST GOOD WEATHER
+        // ============================
         if (
             lastConditions &&
             lastConditions.main
         ) {
+
+            console.log(
+                "♻️ Using cached weather"
+            );
 
             renderDashboard(
                 lastConditions
@@ -1646,7 +1659,13 @@ async function fetchWeatherSafe() {
             return;
         }
 
-        // final fallback
+        // ============================
+        // 🔒 FINAL SAFE FALLBACK
+        // ============================
+        console.log(
+            "🛟 Using simulated fallback weather"
+        );
+
         renderDashboard({
 
             main: {
@@ -1666,6 +1685,7 @@ async function fetchWeatherSafe() {
         });
     }
 }
+
 
 // ============================
 // 🌦 WEATHER → ENV
