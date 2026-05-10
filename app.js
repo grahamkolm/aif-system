@@ -2363,16 +2363,19 @@ function openMap() {
             .bindPopup(popup);
 
             marker.on("click", () => {
-                if (s.light != null) {
-                    document.getElementById("lightValue").innerText = s.light + "%";
+                selectdScout = scout;
+                updateDashboardFromScout(scout);
+            });
+                if (scout.light != null) {
+                    document.getElementById("lightValue").innerText = scout.light + "%";
                 }
 
-                 if (s.depth != null) {
-                    document.getElementById("depthValue").innerText = s.depth + " m";
+                 if (scout.depth != null) {
+                    document.getElementById("depthValue").innerText = scout.depth + " m";
                 }
 
-                 if (s.bottom != null) {
-                    document.getElementById("bottomTempValue").innerText = s.bottom + " C";
+                 if (scout.bottom != null) {
+                    document.getElementById("bottomTempValue").innerText = scout.bottom + " C";
                 }
                  window.scoutMarkers.push(marker);      
             });     
