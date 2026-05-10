@@ -2667,7 +2667,7 @@ async function continueScout() {
         lon,
         id: scouts.length + 1,
         time: Date.now(),
-
+        
         spi: SPI,
 
         // 🌡 TEMPS
@@ -2693,8 +2693,12 @@ async function continueScout() {
         birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
         structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value ?? null,
         wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null
-    };
 
+        impact: 0,
+        rodRank: 0
+};
+
+        newScout.impact = calculateScoutImpact(newScout);
     // ============================
     // 🔄 FIX THERMO VALUES
     // ============================
@@ -2704,6 +2708,23 @@ async function continueScout() {
             [newScout.thermoEnd, newScout.thermoStart];
         }
     }
+
+function rankScoutSpots() {
+
+    if (!scouts || scouts.length === 0) return [];
+
+    // highest first
+    const ranked = [...scouts]
+        .sort((a, b) => (b.impact || 0) - (a.impact || 0));
+
+    // assign rod positions
+    ranked.forEach((s, index) => {
+        s.rodRank = index + 1;
+    });
+
+    return ranked.slice(0, 3);
+}
+
 
     // ============================
     // ✅ MIN VALIDATION
@@ -3416,24 +3437,6 @@ drops.forEach(d => {
 // =====================================================
 // 🎯 BEST FISHING ZONE (DROPS BASED)
 // =====================================================
-function scoreScout(s) {
-    let score = 0;
-
-    if (s.activity === "rolling") score += 40;
-    if (s.activity === "active") score += 30;
-
-    if (s.clarity === "clean") score += 20;
-    if (s.clarity === "stained") score += 10;
-
-    if (s.birds === "present") score += 15;
-
-    if (s.structure === "dropoff") score += 20;
-
-    if (s.wind === "calm") score += 10;
-
-    return score;
-}
-
 function getBestScoutZone() {
 
     if (!scouts || scouts.length === 0) return null;
