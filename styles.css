@@ -1047,5 +1047,30 @@ input {
   color: white;
 }
 
+#reportScreen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+
+    overflow-y: auto;
+
+    padding: 24px;
+
+    background:
+        linear-gradient(rgba(0,0,0,0.65),
+        rgba(0,0,0,0.82));
+
+    backdrop-filter: blur(8px);
+
+    display: flex;
+    flex-direction: column;
+}
+
+#reportScreen.hidden {
+    display: none;
+}
+
 
 
