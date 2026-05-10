@@ -2692,7 +2692,7 @@ async function continueScout() {
         clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value ?? null,
         birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
         structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value ?? null,
-        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null
+        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null,
 
         impact: 0,
         rodRank: 0
