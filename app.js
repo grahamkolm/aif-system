@@ -2754,12 +2754,12 @@ function rankScoutSpots() {
     // ============================
     // 💾 SAVE
     // ============================
-    scouts.push(newScout);
+    window.scouts.push(newScout);
 
-    localStorage.setItem("scouts", JSON.stringify(scouts));
+    localStorage.setItem("scouts", JSON.stringify(window.scouts));
     localStorage.setItem("scoutLatest", JSON.stringify(newScout));
 
-    console.log("Saved Scouts:", scouts);
+    console.log("Saved Scouts:", window.scouts);
     console.log("✅ Scout saved:", newScout);
 
     if (newScout.light != null) {
