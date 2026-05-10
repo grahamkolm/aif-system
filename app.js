@@ -2363,8 +2363,8 @@ function openMap() {
             .bindPopup(popup);
 
             marker.on("click", () => {
-                selectdScout = scout;
-                updateDashboardFromScout(scout);
+                selectedScout = s;
+                updateDashboardFromScout(s);
 
                 if (scout.light != null) {
                     document.getElementById("lightValue").innerText = scout.light + "%";
