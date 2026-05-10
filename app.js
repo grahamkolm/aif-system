@@ -3444,7 +3444,7 @@ function getBestScoutZone() {
     // Score + filter strong scouts
     const goodScouts = scouts.filter(s => {
         const score = scoreScout(s);
-        return score >= 50 && s.lat && s.lon;
+        return score >= 10 && s.lat && s.lon;
     });
 
     if (goodScouts.length === 0) return null;
