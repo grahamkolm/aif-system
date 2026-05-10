@@ -1,6 +1,6 @@
 // =====================================================
-// 🌍 0. GLOBAL BASE START 
-// ===================================================== 
+// 🌍 0. GLOBAL BASE START
+// =====================================================
 
 // ============================
 // 🧠 CORE STATE
@@ -13,27 +13,37 @@ let currentSession = null;
 // ============================
 // 🌍 LOCATION + MAP
 // ============================
-let userLocation = { lat: null, lon: null }; 
-let mapInstance = null; 
+let userLocation = {
+    lat: null,
+    lon: null
+};
+
+let mapInstance = null;
 let userMarker = null;
+
 const userIcon = L.icon({
-    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+    iconUrl: "https://urldefense.com/v3/__https://maps.google.com/mapfiles/ms/icons/green-dot.png__;!!LtDMhTYuqQ!W8JZzZR__DiKd7BV09QoDEwIQaqKeMPmTS0JyzSQq9DvjhN4RbYeuqTAYvvntg8jerHJo9AA3fMtU9BWOi7P3P1m$ ",
     iconSize: [36, 36],
     iconAnchor: [18, 36]
 });
 
 const dropIcon = L.icon({
-    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    iconUrl: "https://urldefense.com/v3/__https://maps.google.com/mapfiles/ms/icons/blue-dot.png__;!!LtDMhTYuqQ!W8JZzZR__DiKd7BV09QoDEwIQaqKeMPmTS0JyzSQq9DvjhN4RbYeuqTAYvvntg8jerHJo9AA3fMtU9BWOsmhm_to$ ",
     iconSize: [24, 24],
     iconAnchor: [12, 24]
 });
 
 const scoutIcon = L.icon({
-    iconUrl: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+    iconUrl: "https://urldefense.com/v3/__https://maps.google.com/mapfiles/ms/icons/orange-dot.png__;!!LtDMhTYuqQ!W8JZzZR__DiKd7BV09QoDEwIQaqKeMPmTS0JyzSQq9DvjhN4RbYeuqTAYvvntg8jerHJo9AA3fMtU9BWOpGUN9U-$ ",
     iconSize: [28, 45],
     iconAnchor: [14, 45]
 });
-let scoutMarkers = [];
+
+// ============================
+// 🌍 GLOBAL MARKERS
+// ============================
+window.scoutMarkers = window.scoutMarkers || []; window.dropMarkers = window.dropMarkers || [];
+
 // ============================
 // 🧭 COMPASS
 // ============================
@@ -56,12 +66,9 @@ const ENV = {
     oxygen: null
 };
 
-let forecastData = [
-    { date: "Today", spi: 60 },
-    { date: "Tomorrow", spi: 72 },
-    { date: "Day 3", spi: 78 }
-];
-
+// ============================
+// 📡 DATA SOURCE TRACKING
+// ============================
 const SOURCE = {
     air: "none",
     surface: "none",
@@ -75,11 +82,20 @@ const SOURCE = {
 };
 
 // ============================
+// 📊 FORECAST
+// ============================
+let forecastData = [
+    { date: "Today", spi: 60 },
+    { date: "Tomorrow", spi: 72 },
+    { date: "Day 3", spi: 78 }
+];
+
+// ============================
 // 📊 SCORES
 // ============================
 let envScore = 0;
 let confScoreValue = 0;
-let score = 50;
+let scoutScore = 50;
 
 // ============================
 // 📈 HISTORY TRACKING
@@ -90,29 +106,37 @@ let pressureHistory = [];
 // ============================
 // 🌊 VISUAL ENGINE
 // ============================
-let canvas, ctx;
+let canvas;
+let ctx;
+
 let bubbles = [];
 let ripples = [];
 let hotspots = [];
 let splashRipples = [];
+
 let bubbleIntensity = 0.7;
 
 // ============================
 // 💧 SPLASH SYSTEM
 // ============================
 let splashActive = true;
+
 let splashCanvas;
 let splashCtx;
+
 let splashBubbles = [];
 
 // ============================
 // 🎣 SCOUT + DROPS
 // ============================
 let scoutData = {};
-let drops = [];
 let retryCount = 0;
-window.scoutMarkers = window.scoutMarkers || [];
-window.dropMarkers = window.dropMarkers || [];
+
+// ============================
+// 💾 GLOBAL STORAGE ARRAYS
+// ============================
+window.scouts = [];
+window.drops = [];
 
 // ============================
 // 🌡️ TEMP MODEL
@@ -133,28 +157,74 @@ const BLUE = "#00bfff";
 const WHITE = "#ffffff";
 
 // =====================================================
+// 💾 LOAD SCOUT STORAGE
+// =====================================================
+try {
+
+    const storedScouts = localStorage.getItem("scouts");
+
+    if (storedScouts) {
+
+        window.scouts = JSON.parse(storedScouts);
+
+        if (!Array.isArray(window.scouts)) {
+            throw new Error("Scout storage invalid");
+        }
+    }
+
+} catch (e) {
+
+    console.warn("⚠️ Corrupt scout storage reset:", e);
+
+    window.scouts = [];
+
+    localStorage.removeItem("scouts");
+}
+
+// =====================================================
+// 💾 LOAD DROP STORAGE
+// =====================================================
+try {
+
+    const storedDrops = localStorage.getItem("drops");
+
+    if (storedDrops) {
+
+        window.drops = JSON.parse(storedDrops);
+
+        if (!Array.isArray(window.drops)) {
+            throw new Error("Drop storage invalid");
+        }
+    }
+
+} catch (e) {
+
+    console.warn("⚠️ Corrupt drop storage reset:", e);
+
+    window.drops = [];
+
+    localStorage.removeItem("drops");
+}
+
+// =====================================================
 // 🌍 0. GLOBAL BASE END
 // =====================================================
-window.scouts = [];
 
-    try {
-        window.scouts = JSON.parse(localStorage.getItem("scouts")) || [];
-    } catch (e) {
-        console.warn("⚠️ Corrupt scout storage, resetting...");
-        window.scouts = [];
-    }
 
 // =====================================================
 // 🧩 2. UI HELPERS
 // =====================================================
 
-// ================= ICON COLOR ENGINE ================= 
-function setIcon(iconName, value, rules) {
+// ================= ICON COLOR ENGINE ================= function setIcon(iconName, value, rules) {
+
     const icon = document.querySelector(`[data-lucide="${iconName}"]`);
+
     if (!icon) return;
 
     for (const r of rules) {
+
         if (value >= r.min && value <= r.max) {
+
             icon.style.stroke = r.color;
             return;
         }
@@ -163,46 +233,60 @@ function setIcon(iconName, value, rules) {
     icon.style.stroke = GREEN;
 }
 
-// ================= SCORE COLOR ================= 
-function getScoreColor(value) {
+// ================= SCORE COLOR ================= function getScoreColor(value) {
+
     if (value >= 80) return "#00ff9c";
     if (value >= 60) return "#ffd700";
+
     return "#ff4d4d";
 }
 
-// ================= WIND TEXT ================= 
-function getWindDirectionText(deg) {
+// ================= WIND TEXT ================= function getWindDirectionText(deg) {
+
     if (deg >= 45 && deg < 135) return "Wind → East bank";
     if (deg >= 135 && deg < 225) return "Wind → South bank";
     if (deg >= 225 && deg < 315) return "Wind → West bank";
+
     return "Wind → North bank";
 }
 
-// ================= STORE SCOUT ================= 
-let originalScoutHTML = "";
+// ================= STORE SCOUT ================= let originalScoutHTML = "";
 
 function storeScoutScreen() {
+
     const el = document.getElementById("scoutScreen");
+
     if (!el) return;
 
     originalScoutHTML = el.innerHTML;
+
     el.classList.add("hidden");
 }
 
-// ================= COMPASS TICKS ================= 
-function createTicks() {
+// ================= COMPASS TICKS ================= function createTicks() {
+
     const container = document.getElementById("compassTicks");
+
     if (!container) return;
 
     for (let i = 0; i < 360; i += 5) {
+
         const tick = document.createElement("div");
+
         tick.className = "tick";
 
-        if (i % 90 === 0) tick.classList.add("tick-major");
-        else if (i % 15 === 0) tick.classList.add("tick-medium");
-        else tick.classList.add("tick-small");
+        if (i % 90 === 0) {
+            tick.classList.add("tick-major");
+        }
+        else if (i % 15 === 0) {
+            tick.classList.add("tick-medium");
+        }
+        else {
+            tick.classList.add("tick-small");
+        }
 
         tick.dataset.angle = i;
+
         tick.style.transform =
             `translate(-50%, -50%) rotate(${i}deg) translateY(-125px)`;
 
@@ -210,14 +294,16 @@ function createTicks() {
     }
 }
 
-// ================= GPS POSITION =================
+// ================= GPS POSITION ================= function positionDirections() {
 
-function positionDirections() {
     const labels = document.querySelectorAll(".direction-label");
-    const radius = 130; // adjust based on your compass size
+
+    const radius = 130;
 
     labels.forEach(label => {
+
         const angle = parseFloat(label.dataset.angle);
+
         const rad = (angle - 90) * (Math.PI / 180);
 
         const x = Math.cos(rad) * radius;
@@ -227,10 +313,10 @@ function positionDirections() {
     });
 }
 
+// ================= HOLD INTERACTION ================= function setupHold(elementId, callback) {
 
-// ================= HOLD INTERACTION ================= 
-    function setupHold(elementId, callback) {
     const el = document.getElementById(elementId);
+
     if (!el) return;
 
     let timer;
@@ -239,11 +325,16 @@ function positionDirections() {
         timer = setTimeout(callback, 600);
     });
 
-    el.addEventListener("mouseup", () => clearTimeout(timer));
-    el.addEventListener("mouseleave", () => clearTimeout(timer)); }
+    el.addEventListener("mouseup", () => {
+        clearTimeout(timer);
+    });
 
-// ================= INSIGHTS ================= 
-function showENVInsight() {
+    el.addEventListener("mouseleave", () => {
+        clearTimeout(timer);
+    });
+}
+
+// ================= INSIGHTS ================= function showENVInsight() {
     alert("ENV Insight coming soon..."); }
 
 function showCONFInsight() {
@@ -253,60 +344,103 @@ function showCONFInsight() {
 // 🧩 2. UI HELPERS END
 // =====================================================
 
+
 // =====================================================
 // 🚀 3. APP BOOT
 // =====================================================
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ============================
-    // 🧹 CLEAR SCOUTS
-    // ============================
-    document.getElementById("clearBtn")?.addEventListener("click", () => {
-        if (!confirm("Clear all scouts?")) return;
+// ============================
+// 🧹 CLEAR SCOUTS
+// ============================
+document.getElementById("clearBtn")?.addEventListener("click", () => {
 
-        window.scouts = [];
-        localStorage.removeItem("scouts");
-        localStorage.setItem("scouts", JSON.stringify([]));       
-
-        // 🔥 remove scout markers safely
-        if (window.scoutMarkers && mapInstance) {
-            window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
-            window.scoutMarkers = [];
-        }
-
-        console.log("🧹 Scouts cleared");
-        alert("All scouts cleared");
-    });
-
-    // ============================
-    // 🎯 CLEAR DROPS (NEW)
-    // ============================
-    document.getElementById("clearDropsBtn")?.addEventListener("click", () => {
-    if (!confirm("Clear all drops?")) return;
+    if (!confirm("Clear all scouts?")) return;
 
     // 🔥 CLEAR MEMORY
-    drops = [];
+    window.scouts = [];
 
-    // 🔥 REMOVE STORAGE COMPLETELY (not set empty)
+    // 🔥 CLEAR STORAGE
+    localStorage.removeItem("scouts");
+
+    // 🔥 REMOVE MAP MARKERS
+    if (window.scoutMarkers && mapInstance) {
+
+        window.scoutMarkers.forEach(marker => {
+
+            try {
+                mapInstance.removeLayer(marker);
+            } catch (err) {
+                console.warn("Scout marker remove failed:", err);
+            }
+
+        });
+
+        window.scoutMarkers = [];
+    }
+
+    // 🔥 FORCE REFRESH
+    if (typeof renderScouts === "function") {
+        renderScouts();
+    }
+
+    console.log("🧹 Scouts FULLY cleared");
+
+    alert("All scouts cleared");
+});
+
+// ============================
+// 🎯 CLEAR DROPS
+// ============================
+document.getElementById("clearDropBtn")?.addEventListener("click", () => {
+
+    if (!confirm("Clear all drops?")) return;
+
+    // ============================
+    // 🔥 CLEAR MEMORY
+    // ============================
+    window.drops = [];
+
+    // ============================
+    // 🔥 CLEAR STORAGE
+    // ============================
     localStorage.removeItem("drops");
 
-    // 🔥 CLEAR MARKERS
+    // ============================
+    // 🔥 REMOVE DROP MARKERS
+    // ============================
     if (window.dropMarkers && mapInstance) {
-        window.dropMarkers.forEach(m => mapInstance.removeLayer(m));
+
+        window.dropMarkers.forEach(marker => {
+
+            try {
+                mapInstance.removeLayer(marker);
+            } catch (err) {
+                console.warn("Drop marker remove failed:", err);
+            }
+
+        });
+
         window.dropMarkers = [];
     }
 
     console.log("🎯 Drops FULLY cleared");
+
     alert("All drops cleared");
+
 });
 
 
-    // ============================
-    // 🔧 INIT CORE
-    // ============================
-    loadDrops();   // 🔥 restores drops
-    setupScoutOptions();
+// ============================
+// 🔧 INIT CORE
+// ============================
+loadDrops();
+
+if (typeof loadScouts === "function") {
+    loadScouts();
+}
+
+setupScoutOptions();
 
     // =============================
     // 🌊 SPLASH INIT
