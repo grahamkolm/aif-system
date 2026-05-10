@@ -1588,7 +1588,7 @@ async function fetchWeatherSafe() {
     try {
 
         const response = await fetch(
-            `https://urldefense.com/v3/__https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=$*7BWEATHER_API_KEY*7D__;JSU!!LtDMhTYuqQ!R8cT2v7pMzzcQELmDXZ-93Mu0RE6NgYcqRtKutcAQtHFqRyNJnzZXHDNaKPWRaaSGEM1Ki5glfc5Ttq_4TsTnjMo$ `,
+            `https://api.openweathermap.org/data/2.5/weather?lat=-26.2&lon=28.0&units=metric&appid=${WEATHER_API_KEY}`,
             {
                 signal: controller.signal
             }
