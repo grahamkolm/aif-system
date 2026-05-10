@@ -838,7 +838,7 @@ function updateCompass(heading) {
     const compass =
         document.querySelector(".compass-ring");
 
-    if (compass) {
+    if (!compass) return; 
 
         currentCompass = 
             currentCompass +
