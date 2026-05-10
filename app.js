@@ -2626,7 +2626,29 @@ function applyTileColor(tileId, status = "orange") {
 // =====================================================
 
 // =====================================================
-// 📊 7. DASHBOARD (RENDER ENGINE START) // =====================================================
+// 🎣 FEEDING STATUS
+// =====================================================
+
+function feeding(spi) {
+
+    if (spi >= 80) {
+        return "High Activity 🔥";
+    }
+
+    if (spi >= 60) {
+        return "Active 👍";
+    }
+
+    if (spi >= 40) {
+        return "Slow 😐";
+    }
+
+    return "Low Activity ❄️";
+}
+
+// =====================================================
+// 📊 7. DASHBOARD (RENDER ENGINE START) 
+// =====================================================
 
 function renderDashboard(data) {
 
@@ -4712,6 +4734,186 @@ async function connectSensor() {
         console.error("Bluetooth error:", error);
     }
 }
+
+// =====================================================
+// 📡 SENSOR CONNECT SCREEN
+// =====================================================
+
+function showConnectingScreen() {
+
+    const screen =
+        document.getElementById("scoutScreen");
+
+    if (!screen) return;
+
+    screen.innerHTML = `
+    <div class="scout-card">
+
+        <div class="scout-title">
+            Connecting to AIF Sensor
+        </div>
+
+        <div class="sensor-list"
+             id="sensorStatusList">
+
+            Checking sensors...
+
+        </div>
+
+        <div class="scout-actions">
+
+            <button
+                onclick="retryConnection()"
+                class="btn secondary">
+
+                Retry
+
+            </button>
+
+            <button
+                onclick="startScan()"
+                class="btn primary">
+
+                Start Scan
+
+            </button>
+
+        </div>
+
+    </div>
+    `;
+
+    checkSensors();
+}
+
+
+
+// =====================================================
+// 📡 START SENSOR SCAN
+// =====================================================
+
+function startScan() {
+
+    const screen =
+        document.getElementById("scoutScreen");
+
+    if (!screen) return;
+
+    screen.innerHTML = `
+    <div class="scout-card">
+
+        <div class="scout-title">
+            Scanning...
+        </div>
+
+        <div class="scan-loader"></div>
+
+        <div class="scan-text">
+
+            Reading sensors...<br>
+            Calculating SPI...<br>
+            Analyzing conditions...
+
+        </div>
+
+    </div>
+    `;
+
+    setTimeout(() => {
+
+        fetch("https://urldefense.com/v3/__http://192.168.1.160/data__;!!LtDMhTYuqQ!SgDP6bLbYcCjabwkU83T_THzmlS4__qn5u7kJJXDpA1eCxInPb7TejlqIFwbW2KPIz3jX9JDbuhyI2coTBuFqYYn$ ")
+
+            .then(res => res.json())
+
+            .then(data => {
+
+                console.log(
+                    "✅ Sensor data:",
+                    data
+                );
+
+                populateSensorData(data);
+
+                renderDashboard({
+                    main: {
+                        temp: data.air || 18,
+                        pressure: data.pressure || 1015
+                    },
+
+                    wind: {
+                        speed: 3,
+                        deg: 180
+                    },
+
+                    clouds: {
+                        all: 40
+                    }
+                });
+
+                showResults(data);
+            })
+
+            .catch(err => {
+
+                console.warn(
+                    "Sensor scan failed:",
+                    err
+                );
+
+                showScanFailed();
+            });
+
+    }, 1500);
+}
+
+
+
+// =====================================================
+// ❌ SCAN FAILED
+// =====================================================
+
+function showScanFailed() {
+
+    const screen =
+        document.getElementById("scoutScreen");
+
+    if (!screen) return;
+
+    screen.innerHTML = `
+    <div class="scout-card">
+
+        <div class="scout-title">
+            Scan Failed
+        </div>
+
+        <div class="error-text">
+            ESP device not reachable
+        </div>
+
+        <div class="scout-actions">
+
+            <button
+                onclick="retryConnection()"
+                class="btn secondary">
+
+                Retry
+
+            </button>
+
+            <button
+                onclick="closeScout()"
+                class="btn primary">
+
+                Exit
+
+            </button>
+
+        </div>
+
+    </div>
+    `;
+}
+
 
 function populateSensorData(data) {
 
