@@ -352,6 +352,82 @@ function showCONFInsight() {
 // 🧩 2. UI HELPERS END
 // =====================================================
 
+// =====================================================
+// 💾 LOAD DROPS
+// =====================================================
+
+function loadDrops() {
+
+    try {
+
+        const stored =
+            localStorage.getItem("drops");
+
+        if (!stored) {
+            drops = [];
+            return;
+        }
+
+        const parsed = JSON.parse(stored);
+
+        if (!Array.isArray(parsed)) {
+
+            console.warn("⚠️ Invalid drops format");
+
+            drops = [];
+
+            localStorage.removeItem("drops");
+
+            return;
+        }
+
+        drops = parsed;
+
+        console.log("✅ Drops loaded:", drops.length);
+
+    } catch (e) {
+
+        console.warn("⚠️ Corrupt drops storage");
+
+        drops = [];
+
+        localStorage.removeItem("drops");
+    }
+}
+
+// =====================================================
+// 🔄 RETRY SENSOR CONNECTION
+// =====================================================
+
+function retryConnection() {
+
+    retryCount++;
+
+    const status =
+        document.getElementById("sensorStatusList");
+
+    if (retryCount > 5) {
+
+        if (status) {
+            status.innerHTML =
+                "❌ Unable to connect. Check AIF WiFi.";
+        }
+
+        return;
+    }
+
+    if (status) {
+        status.innerHTML =
+            `Reconnecting... (${retryCount}/5)`;
+    }
+
+    setTimeout(() => {
+
+        checkSensors();
+
+    }, 1000);
+}
+
 
 // =====================================================
 // 🚀 3. APP BOOT
