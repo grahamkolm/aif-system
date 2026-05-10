@@ -5619,8 +5619,8 @@ function setFishingZone(targetAngle) {
 
         const zoneWidth =
             zoneStrength === "strong"
-                ? 35
-                : 20;
+                ? 55
+                : 40;
 
         tick.classList.remove(
             "active-zone",
