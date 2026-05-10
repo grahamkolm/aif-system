@@ -2696,12 +2696,12 @@ async function continueScout() {
 
         // 📊 WEATHER / SENSOR
         air: parseFloat(document.getElementById("airTemp")?.value) || null,
-        pressure: parseFloat(document.getElementById("pressure")?.value) || null,
+        pressure: parseFloat(document.getElementById("scoutPressure")?.value) || null,
         altitude: parseFloat(document.getElementById("altitude")?.value) || null,
 
         turbidity: parseFloat(document.getElementById("turbidity")?.value) || null,
-        light: parseFloat(document.getElementById("light")?.value) || null,
-        depth: parseFloat(document.getElementById("depth")?.value) || null,
+        light: parseFloat(document.getElementById("scoutLight")?.value) || null,
+        depth: parseFloat(document.getElementById("scoutDepth")?.value) || null,
 
         // 🎯 OBSERVATIONS
         activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
