@@ -2666,6 +2666,7 @@ async function continueScout() {
         window.scoutMarkers.forEach(marker => marker.remove());
         
         window.scoutMarkers = [];
+        window.scouts = [];
 
         localStorage.removeItem("scouts");
 
