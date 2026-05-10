@@ -20,6 +20,7 @@ let userLocation = {
 
 let mapInstance = null;
 let userMarker = null;
+let currentCompass = 0;
 
 const userIcon = L.icon({
     iconUrl: "https://urldefense.com/v3/__https://maps.google.com/mapfiles/ms/icons/green-dot.png__;!!LtDMhTYuqQ!W8JZzZR__DiKd7BV09QoDEwIQaqKeMPmTS0JyzSQq9DvjhN4RbYeuqTAYvvntg8jerHJo9AA3fMtU9BWOi7P3P1m$ ",
@@ -839,8 +840,12 @@ function updateCompass(heading) {
 
     if (compass) {
 
+        currentCompass = 
+            currentCompass +
+            ((heading - currentCompass) * 0.15);
+        
         compass.style.transform =
-            `translate(-50%, -50%) rotate(${-heading}deg)`;
+            `rotate(${currentCompass}deg)`;
 
     }
 
