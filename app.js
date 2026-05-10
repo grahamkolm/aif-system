@@ -5462,7 +5462,12 @@ function buildReportMap() {
 
             reportMapInstance.invalidateSize();
 
-        }, 250);
+            reportMapInstance.setView(
+                [-26.2, 28.0],
+                13
+                );
+        
+            }, 800);
 
     }, 300);
 }
