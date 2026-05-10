@@ -5053,6 +5053,9 @@ function showDropFeedback() {
 function openReport() {
 
     const screen = document.getElementById("reportScreen");
+
+    if (!screen) return;
+
     screen.classList.remove("hidden");
     document.body.style.overflow = "hidden";
 
@@ -5060,54 +5063,234 @@ function openReport() {
 }
 
 function closeReport() {
-    document.getElementById("reportScreen").classList.add("hidden");
-    document.body.style.overflow = "auto"; 
-}
+
+    const screen = document.getElementById("reportScreen");
+
+    if (screen) {
+        screen.classList.add("hidden");
+    }
+
+    document.body.style.overflow = "auto"; }
 
 function buildReport() {
 
-    document.getElementById("repDrops").innerText = drops.length;
+    const allDrops =
+        Array.isArray(drops)
+            ? drops
+            : [];
 
-    // Best SPI
-    let best = drops.length ? Math.max(...drops.map(d => d.spi)) : 0;
-    document.getElementById("repBest").innerText = best.toFixed(1) + "%";
+    const allScouts =
+        Array.isArray(window.scouts)
+            ? window.scouts
+            : [];
 
-    // Average SPI
-    let avg = drops.length
-        ? drops.reduce((s, d) => s + d.spi, 0) / drops.length
-        : 0;
+    // ============================
+    // 📊 SUMMARY
+    // ============================
+    document.getElementById("repDrops").innerText =
+        allDrops.length;
 
-    document.getElementById("repAvg").innerText = avg.toFixed(1) + "%";
+    const best =
+        allDrops.length
+            ? Math.max(...allDrops.map(d => d.spi || 0))
+            : 0;
 
-    // Scout points
+    document.getElementById("repBest").innerText =
+        best.toFixed(1) + "%";
+
+    const avg =
+        allDrops.length
+            ? (
+                allDrops.reduce(
+                    (s, d) => s + (d.spi || 0),
+                    0
+                ) / allDrops.length
+            )
+            : 0;
+
+    document.getElementById("repAvg").innerText =
+        avg.toFixed(1) + "%";
+
     document.getElementById("repScout").innerText =
-        Object.keys(scoutData || {}).length;
+        allScouts.length;
 
-    // Build Drop Log
+    // ============================
+    // 🎣 TOP ROD PLAN
+    // ============================
+    const ranked =
+        [...allScouts]
+            .sort(
+                (a, b) =>
+                    (b.impact || 0)
+                    -
+                    (a.impact || 0)
+            )
+            .slice(0, 3);
+
+    window.bestRodPlan = ranked;
+
+    // ============================
+    // 📦 BUILD UI
+    // ============================
     buildDropLog();
 
-    // Build Map
     buildReportMap();
 }
 
 function buildDropLog() {
 
-    let container = document.getElementById("dropLog");
+    let container =
+        document.getElementById("dropLog");
+
+    if (!container) return;
+
     container.innerHTML = "";
 
+    // ============================
+    // 🎣 TOP RODS
+    // ============================
+    if (
+        window.bestRodPlan &&
+        window.bestRodPlan.length
+    ) {
+
+        let rodCard =
+            document.createElement("div");
+
+        rodCard.className =
+            "drop-card";
+
+        rodCard.innerHTML = `
+            <div class="drop-title">
+                🎣 Recommended Rod Placement
+            </div>
+
+            ${
+                window.bestRodPlan.map((s, i) => `
+
+                    <div style="
+                        margin-top:12px;
+                        padding:10px;
+                        border-radius:10px;
+                        background:rgba(255,255,255,0.04);
+                    ">
+
+                        <b>
+                            ${
+                                i === 0
+                                    ? "🥇 Rod 1"
+                                    : i === 1
+                                    ? "🥈 Rod 2"
+                                    : "🥉 Rod 3"
+                            }
+                        </b>
+
+                        <br>
+
+                        Scout:
+                        #${s.id || "-"}
+
+                        <br>
+
+                        📊 SPI:
+                        ${s.spi || "-"}
+
+                        <br>
+
+                        🎯 Impact:
+                        ${s.impact || 0}
+
+                        <br>
+
+                        🌡 Bottom:
+                        ${s.bottom || "-"}°C
+
+                        <br>
+
+                        📏 Depth:
+                        ${s.depth || "-"}m
+
+                    </div>
+
+                `).join("")
+            }
+        `;
+
+        container.appendChild(rodCard);
+    }
+
+    // ============================
+    // 📦 DROP HISTORY
+    // ============================
     drops.forEach((d, i) => {
 
-        let time = new Date(d.time).toLocaleString();
+        let time =
+            new Date(d.time)
+                .toLocaleString();
 
-        let el = document.createElement("div");
-        el.className = "drop-card";
+        let el =
+            document.createElement("div");
 
-       el.innerHTML = `
-<div class="drop-card">
-  <div class="drop-title">🎯 Drop ${i+1}</div>
-  <div>🕒 ${time}</div>
-  <div>📊 SPI: ${d.spi}%</div>
-  <div>📍 ${d.lat ? d.lat.toFixed(4) : "-"}, ${d.lon ? d.lon.toFixed(4) : "-"}</div> </div> `;
+        el.className =
+            "drop-card";
+
+        el.innerHTML = `
+
+            <div class="drop-title">
+                🎯 Drop ${i + 1}
+            </div>
+
+            <div>🕒 ${time}</div>
+
+            <div>
+                📊 SPI:
+                <b style="
+                    color:${
+                        d.spi >= 70
+                            ? '#00ff9c'
+                            : d.spi >= 50
+                            ? '#ffaa00'
+                            : '#ff5555'
+                    };
+                ">
+                    ${d.spi ?? "-"}%
+                </b>
+            </div>
+
+            <div>
+                🌡 Surface:
+                ${d.surface ?? "-"}°C
+            </div>
+
+            <div>
+                🌊 Bottom:
+                ${d.bottom ?? "-"}°C
+            </div>
+
+            <div>
+                📏 Depth:
+                ${d.depth ?? "-"}m
+            </div>
+
+            <div>
+                🫧 Oxygen:
+                ${d.oxygen ?? "-"}
+            </div>
+
+            <div>
+                📍 ${
+                    d.lat
+                        ? d.lat.toFixed(5)
+                        : "-"
+                },
+                ${
+                    d.lon
+                        ? d.lon.toFixed(5)
+                        : "-"
+                }
+            </div>
+
+        `;
 
         container.appendChild(el);
     });
@@ -5119,56 +5302,194 @@ function buildReportMap() {
 
     setTimeout(() => {
 
+        // ============================
+        // 🗺 INIT
+        // ============================
         if (!reportMapInstance) {
 
-            reportMapInstance = L.map('reportMap').setView([-26.2, 28.0], 13);
+            reportMapInstance =
+                L.map('reportMap')
+                    .setView(
+                        [-26.2, 28.0],
+                        13
+                    );
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-                .addTo(reportMapInstance);
+            L.tileLayer(
+                'https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!V-1JWzUPBl1gXZqblK2_M1s7D_JDtWvXYeukcWmddQdETzBZETA7B7sKIKahp8V3o2EReVoLapMaSC5dXF-eMKv2$ ',
+                {
+                    maxZoom: 19
+                }
+            ).addTo(reportMapInstance);
         }
 
-        // clear old markers
+        // ============================
+        // 🧹 CLEAR OLD
+        // ============================
         reportMapInstance.eachLayer(layer => {
-            if (layer instanceof L.Marker) {
+
+            if (
+                layer instanceof L.Marker ||
+                layer instanceof L.Circle
+            ) {
                 reportMapInstance.removeLayer(layer);
             }
+
         });
-    
-drops.forEach(d => {
-    if (!d.lat || !d.lon) return;
 
-    const marker = L.marker([d.lat, d.lon])
-        .addTo(reportMapInstance)
-        .bindPopup(`SPI: ${d.spi.toFixed(1)}%`);
+        // ============================
+        // 🌍 TILE LAYER
+        // ============================
+        L.tileLayer(
+            'https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!V-1JWzUPBl1gXZqblK2_M1s7D_JDtWvXYeukcWmddQdETzBZETA7B7sKIKahp8V3o2EReVoLapMaSC5dXF-eMKv2$ ',
+            {
+                maxZoom: 19
+            }
+        ).addTo(reportMapInstance);
 
-    scoutMarkers.push(marker);
-});
+        // ============================
+        // 🎯 DROP MARKERS
+        // ============================
+        drops.forEach((d, i) => {
 
+            if (!d.lat || !d.lon) return;
+
+            L.marker([d.lat, d.lon])
+                .addTo(reportMapInstance)
+                .bindPopup(`
+
+                    <b>🎯 Drop ${i + 1}</b>
+
+                    <br><br>
+
+                    📊 SPI:
+                    ${d.spi ?? "-"}
+
+                    <br>
+
+                    🌡 Surface:
+                    ${d.surface ?? "-"}
+
+                    °C
+
+                    <br>
+
+                    🌊 Bottom:
+                    ${d.bottom ?? "-"}
+
+                    °C
+
+                    <br>
+
+                    📏 Depth:
+                    ${d.depth ?? "-"}
+
+                    m
+
+                    <br>
+
+                    🫧 Oxygen:
+                    ${d.oxygen ?? "-"}
+
+                `);
+
+        });
+
+        // ============================
+        // 🎣 ROD ZONES
+        // ============================
+        if (window.bestRodPlan) {
+
+            window.bestRodPlan.forEach((s, i) => {
+
+                if (!s.lat || !s.lon) return;
+
+                L.circle(
+                    [s.lat, s.lon],
+                    {
+                        radius:
+                            i === 0
+                                ? 60
+                                : i === 1
+                                ? 45
+                                : 30,
+
+                        color:
+                            i === 0
+                                ? "#00ff9c"
+                                : i === 1
+                                ? "#ffaa00"
+                                : "#66ccff",
+
+                        fillOpacity: 0.20
+                    }
+
+                ).addTo(reportMapInstance);
+
+            });
+        }
+
+        // ============================
+        // 🎯 BEST DROP ZONE
+        // ============================
+        const zone =
+            getBestZone();
+
+        if (zone) {
+
+            L.circle(
+                [zone.lat, zone.lon],
+                {
+                    radius:
+                        zone.strength === "strong"
+                            ? 80
+                            : 50,
+
+                    color: "#00ffaa",
+                    fillColor: "#00ffaa",
+                    fillOpacity: 0.15
+                }
+
+            ).addTo(reportMapInstance);
+        }
+
+        // ============================
+        // 🔧 FIX SIZE
+        // ============================
         setTimeout(() => {
+
             reportMapInstance.invalidateSize();
-        }, 200);
+
+        }, 250);
 
     }, 300);
 }
 
 // =====================================================
-// 🎯 BEST FISHING ZONE (DROPS BASED)
+// 🎯 BEST FISHING ZONE (SCOUTS)
 // =====================================================
 function getBestScoutZone() {
 
-    if (!scouts || scouts.length === 0) return null;
+    if (!scouts || scouts.length === 0) {
+        return null;
+    }
 
-    // Score + filter strong scouts
-    const goodScouts = scouts.filter(s => s.lat && s.lon);
+    const goodScouts =
+        scouts.filter(
+            s => s.lat && s.lon
+        );
 
-    if (goodScouts.length === 0) return null;
+    if (!goodScouts.length) {
+        return null;
+    }
 
     let avgLat = 0;
     let avgLon = 0;
 
     goodScouts.forEach(s => {
+
         avgLat += s.lat;
         avgLon += s.lon;
+
     });
 
     avgLat /= goodScouts.length;
@@ -5177,42 +5498,75 @@ function getBestScoutZone() {
     return {
         lat: avgLat,
         lon: avgLon,
-        strength: goodScouts.length >= 3 ? "strong" : "normal",
+        strength:
+            goodScouts.length >= 3
+                ? "strong"
+                : "normal",
+
         count: goodScouts.length
     };
 }
 
 function drawScoutZone() {
-    const zone = getBestScoutZone();
-    if (!zone || !mapInstance) return;
 
-    if (window.scoutZoneCircle) {
-        mapInstance.removeLayer(window.scoutZoneCircle);
+    const zone =
+        getBestScoutZone();
+
+    if (!zone || !mapInstance) {
+        return;
     }
 
-    window.scoutZoneCircle = L.circle([zone.lat, zone.lon], {
-        radius: zone.strength === "strong" ? 50 : 30,
-        color: "#00ff88",
-        fillOpacity: 0.25
-    }).addTo(mapInstance);
+    if (window.scoutZoneCircle) {
+        mapInstance.removeLayer(
+            window.scoutZoneCircle
+        );
+    }
+
+    window.scoutZoneCircle =
+        L.circle(
+            [zone.lat, zone.lon],
+            {
+                radius:
+                    zone.strength === "strong"
+                        ? 50
+                        : 30,
+
+                color: "#00ff88",
+                fillOpacity: 0.25
+            }
+
+        ).addTo(mapInstance);
 }
 
-// Get best zone center from drops
+// =====================================================
+// 🎯 BEST DROP ZONE
+// =====================================================
 function getBestZone() {
 
-    if (!drops || drops.length === 0) return null;
+    if (!drops || drops.length === 0) {
+        return null;
+    }
 
-    // Only strong drops
-    const goodDrops = drops.filter(d => d.spi >= 65 && d.lat && d.lon);
+    const goodDrops =
+        drops.filter(
+            d =>
+                d.spi >= 65 &&
+                d.lat &&
+                d.lon
+        );
 
-    if (goodDrops.length === 0) return null;
+    if (!goodDrops.length) {
+        return null;
+    }
 
     let avgLat = 0;
     let avgLon = 0;
 
     goodDrops.forEach(d => {
+
         avgLat += d.lat;
         avgLon += d.lon;
+
     });
 
     avgLat /= goodDrops.length;
@@ -5221,38 +5575,66 @@ function getBestZone() {
     return {
         lat: avgLat,
         lon: avgLon,
-        strength: goodDrops.length >= 3 ? "strong" : "normal",
+
+        strength:
+            goodDrops.length >= 3
+                ? "strong"
+                : "normal",
+
         count: goodDrops.length
     };
 }
 
-
 // =====================================================
-// 🎯 SPI DIRECTION ZONE (UI TICKS)
+// 🎯 SPI DIRECTION ZONE
 // =====================================================
 function setFishingZone(targetAngle) {
 
-    const ticks = document.querySelectorAll(".tick");
+    const ticks =
+        document.querySelectorAll(".tick");
+
     if (!ticks.length) return;
 
-    const zoneData = getBestZone();
-    const zoneStrength = zoneData?.strength || "normal";
+    const zoneData =
+        getBestZone();
+
+    const zoneStrength =
+        zoneData?.strength || "normal";
 
     ticks.forEach(tick => {
 
-        const angle = parseInt(tick.dataset.angle);
-        let diff = Math.abs(angle - targetAngle);
-        if (diff > 180) diff = 360 - diff;
+        const angle =
+            parseInt(
+                tick.dataset.angle
+            );
 
-        const zoneWidth = zoneStrength === "strong" ? 35 : 20;
+        let diff =
+            Math.abs(
+                angle - targetAngle
+            );
 
-        tick.classList.remove("active-zone", "active-zone-strong");
+        if (diff > 180) {
+            diff = 360 - diff;
+        }
+
+        const zoneWidth =
+            zoneStrength === "strong"
+                ? 35
+                : 20;
+
+        tick.classList.remove(
+            "active-zone",
+            "active-zone-strong"
+        );
 
         if (diff < zoneWidth) {
+
             tick.classList.add(
+
                 zoneStrength === "strong"
                     ? "active-zone-strong"
                     : "active-zone"
+
             );
         }
 
@@ -5262,33 +5644,51 @@ function setFishingZone(targetAngle) {
 // 🌊 DAM
 let damData = {
     name: "",
-    type: "",        // lake, river, dam
+    type: "",
     avgDepth: 0,
     clarity: "",
-    structure: [],   // weed, rocks, dropoffs
+    structure: [],
     notes: ""
 };
 
-function saveDamData(data){
-    localStorage.setItem("damData", JSON.stringify(data)); }
+function saveDamData(data) {
 
-function loadDamData(){
-    return JSON.parse(localStorage.getItem("damData")) || {}; }
+    localStorage.setItem(
+        "damData",
+        JSON.stringify(data)
+    );
+}
 
-function openDam(){
+function loadDamData() {
 
-    let screen = document.getElementById("damScreen");
+    return JSON.parse(
+        localStorage.getItem("damData")
+    ) || {};
+}
+
+function openDam() {
+
+    let screen =
+        document.getElementById("damScreen");
+
     if (!screen) return;
 
-    screen.classList.remove("hidden");   // 🔥 IMPORTANT
-    document.body.style.overflow = "hidden";
+    screen.classList.remove("hidden");
+
+    document.body.style.overflow =
+        "hidden";
 
     screen.innerHTML = `
         <div class="scout-card">
 
-            <div class="scout-title">Dam Setup</div>
+            <div class="scout-title">
+                Dam Setup
+            </div>
 
-            <input placeholder="Dam Name" id="damName">
+            <input
+                placeholder="Dam Name"
+                id="damName"
+            >
 
             <select id="damType">
                 <option value="dam">Dam</option>
@@ -5296,7 +5696,10 @@ function openDam(){
                 <option value="river">River</option>
             </select>
 
-            <input placeholder="Avg Depth (m)" id="damDepth">
+            <input
+                placeholder="Avg Depth (m)"
+                id="damDepth"
+            >
 
             <select id="damClarity">
                 <option value="clear">Clear</option>
@@ -5305,175 +5708,353 @@ function openDam(){
             </select>
 
             <div class="scout-actions">
-                <button onclick="saveDam()" class="btn primary">Save</button>
-                <button onclick="closeDam()" class="btn secondary">Close</button> 
+
+                <button
+                    onclick="saveDam()"
+                    class="btn primary"
+                >
+                    Save
+                </button>
+
+                <button
+                    onclick="closeDam()"
+                    class="btn secondary"
+                >
+                    Close
+                </button>
+
             </div>
 
         </div>
     `;
 }
 
-function saveDam(){
+function saveDam() {
 
     let data = {
-        name: document.getElementById("damName").value,
-        type: document.getElementById("damType").value,
-        avgDepth: parseFloat(document.getElementById("damDepth").value),
-        clarity: document.getElementById("damClarity").value
+
+        name:
+            document.getElementById("damName").value,
+
+        type:
+            document.getElementById("damType").value,
+
+        avgDepth:
+            parseFloat(
+                document.getElementById("damDepth").value
+            ),
+
+        clarity:
+            document.getElementById("damClarity").value
     };
 
-    localStorage.setItem("damData", JSON.stringify(data));
+    localStorage.setItem(
+        "damData",
+        JSON.stringify(data)
+    );
 
     alert("Dam saved ✔");
 }
 
-function closeDam(){
-    let screen = document.getElementById("damScreen");
+function closeDam() {
+
+    let screen =
+        document.getElementById("damScreen");
+
     if (screen) {
         screen.classList.add("hidden");
     }
-    document.body.style.overflow = "auto"; 
+
+    document.body.style.overflow =
+        "auto";
 }
 
-
 // 🌊 PLAN
-function openPlan(){
+function openPlan() {
 
-    let dam = loadDamData();
+    let dam =
+        loadDamData();
 
     let plan = [];
 
-    if (SPI > 70){
-        plan.push("Fish shallow windward bank");
-    } else if (SPI > 50){
-        plan.push("Target mid-depth transitions");
-    } else {
-        plan.push("Focus deeper structure");
+    if (SPI > 70) {
+        plan.push(
+            "Fish shallow windward bank"
+        );
     }
 
-    if (dam.avgDepth > 5){
-        plan.push("Look for drop-offs");
+    else if (SPI > 50) {
+        plan.push(
+            "Target mid-depth transitions"
+        );
     }
 
-    if (dam.clarity === "clear"){
-        plan.push("Use natural bait, fish cautious");
+    else {
+        plan.push(
+            "Focus deeper structure"
+        );
+    }
+
+    if (dam.avgDepth > 5) {
+        plan.push(
+            "Look for drop-offs"
+        );
+    }
+
+    if (dam.clarity === "clear") {
+        plan.push(
+            "Use natural bait, fish cautious"
+        );
     }
 
     document.getElementById("planScreen").innerHTML = `
         <div class="scout-card">
-            <div class="scout-title">Fishing Plan 🎯</div>
-            <div>${plan.join("<br>")}</div>
-            <button onclick="closePlan()" class="btn primary">Close</button>
+
+            <div class="scout-title">
+                Fishing Plan 🎯
+            </div>
+
+            <div>
+                ${plan.join("<br>")}
+            </div>
+
+            <button
+                onclick="closePlan()"
+                class="btn primary"
+            >
+                Close
+            </button>
+
         </div>
     `;
 
-    document.getElementById("planScreen").classList.remove("hidden");
+    document.getElementById("planScreen")
+        .classList.remove("hidden");
 }
 
-function closePlan(){
-    let screen = document.getElementById("planScreen");
+function closePlan() {
+
+    let screen =
+        document.getElementById("planScreen");
+
     if (screen) {
         screen.classList.add("hidden");
     }
-    document.body.style.overflow = "auto"; 
-} 
 
-document.addEventListener("DOMContentLoaded", function() {
-
-  const svg = document.getElementById("spiGauge");
-  if (!svg) return;
-
-for (let i = 0; i < 360; i += 15) {
-
-    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-
-    line.setAttribute("x1", "150");
-    line.setAttribute("y1", "15");
-    line.setAttribute("x2", "150");
-    line.setAttribute("y2", "30");
-
-    line.setAttribute("stroke", "white");
-    line.setAttribute("stroke-width", (i % 90 === 0 ? 3 : 1).toString());
-    line.setAttribute("opacity", "0.3");
-
-    line.setAttribute("transform", "rotate(" + i + " 150 150)");
-
-    svg.appendChild(line);
+    document.body.style.overflow =
+        "auto";
 }
-});
 
-function showInsight(SPI, env, conf, light, depth) {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    const el = document.getElementById("aiContent");
+        const svg =
+            document.getElementById("spiGauge");
+
+        if (!svg) return;
+
+        for (
+            let i = 0;
+            i < 360;
+            i += 15
+        ) {
+
+            const line =
+                document.createElementNS(
+                    "https://urldefense.com/v3/__http://www.w3.org/2000/svg__;!!LtDMhTYuqQ!V-1JWzUPBl1gXZqblK2_M1s7D_JDtWvXYeukcWmddQdETzBZETA7B7sKIKahp8V3o2EReVoLapMaSC5dXNfXw30s$ ",
+                    "line"
+                );
+
+            line.setAttribute("x1", "150");
+            line.setAttribute("y1", "15");
+            line.setAttribute("x2", "150");
+            line.setAttribute("y2", "30");
+
+            line.setAttribute(
+                "stroke",
+                "white"
+            );
+
+            line.setAttribute(
+                "stroke-width",
+                (
+                    i % 90 === 0
+                        ? 3
+                        : 1
+                ).toString()
+            );
+
+            line.setAttribute(
+                "opacity",
+                "0.3"
+            );
+
+            line.setAttribute(
+                "transform",
+                "rotate(" + i + " 150 150)"
+            );
+
+            svg.appendChild(line);
+        }
+    }
+);
+
+function showInsight(
+    SPI,
+    env,
+    conf,
+    light,
+    depth
+) {
+
+    const el =
+        document.getElementById("aiContent");
+
     if (!el) return;
 
     let tips = [];
 
     if (!SPI || SPI === 0) {
-        el.innerHTML = "Loading conditions....";
+
+        el.innerHTML =
+            "Loading conditions....";
+
         return;
     }
-    
-    // 🎯 SPI BASED
+
+    // 🎯 SPI
     if (SPI > 75) {
-        tips.push("🔥 High feeding activity expected");
-        tips.push("🎯 Fish windward banks");
-        tips.push("🍬 Use high-attract bait");
-    } 
+
+        tips.push(
+            "🔥 High feeding activity expected"
+        );
+
+        tips.push(
+            "🎯 Fish windward banks"
+        );
+
+        tips.push(
+            "🍬 Use high-attract bait"
+        );
+    }
+
     else if (SPI > 55) {
-        tips.push("👍 Moderate activity");
-        tips.push("📍 Focus transition zones");
-        tips.push("🎣 Balanced baiting strategy");
-    } 
+
+        tips.push(
+            "👍 Moderate activity"
+        );
+
+        tips.push(
+            "📍 Focus transition zones"
+        );
+
+        tips.push(
+            "🎣 Balanced baiting strategy"
+        );
+    }
+
     else {
-        tips.push("⚠️ Low activity");
-        tips.push("🔍 Search deeper structure");
-        tips.push("🧪 Use single hookbait");
+
+        tips.push(
+            "⚠️ Low activity"
+        );
+
+        tips.push(
+            "🔍 Search deeper structure"
+        );
+
+        tips.push(
+            "🧪 Use single hookbait"
+        );
     }
 
     // 🌞 LIGHT
     if (light > 70) {
-        tips.push("🌞 Bright — fish deeper or shaded areas");
+
+        tips.push(
+            "🌞 Bright — fish deeper or shaded areas"
+        );
+
     } else {
-        tips.push("🌅 Low light — fish shallow margins");
+
+        tips.push(
+            "🌅 Low light — fish shallow margins"
+        );
     }
 
     // 🌊 DEPTH
-    if (depth >= 2 && depth <= 5) {
-        tips.push("📏 Ideal depth — patrol routes active");
+    if (
+        depth >= 2 &&
+        depth <= 5
+    ) {
+
+        tips.push(
+            "📏 Ideal depth — patrol routes active"
+        );
     }
 
-    // 🧠 CONFIDENCE
+    // 🧠 CONF
     if (conf > 80) {
-        tips.push("🧠 Stay consistent — pattern is reliable");
+
+        tips.push(
+            "🧠 Stay consistent — pattern is reliable"
+        );
+
     } else {
-        tips.push("🧠 Be ready to adapt");
+
+        tips.push(
+            "🧠 Be ready to adapt"
+        );
     }
 
-    el.innerHTML = tips.map(t => `<div class="ai-tip">${t}</div>`).join("");
+    el.innerHTML =
+        tips.map(
+            t =>
+                `<div class="ai-tip">${t}</div>`
+        ).join("");
 }
 
 // ============================
-// 🗑 CLEAR MAP SCOUTS (VISUAL ONLY)
+// 🗑 CLEAR MAP SCOUTS
 // ============================
-document.getElementById("clearMapBtn")?.addEventListener("click", () => {
-    if (!window.scoutMarkers) return;
+document.getElementById("clearMapBtn")
+?.addEventListener(
+    "click",
+    () => {
 
-    window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
-    window.scoutMarkers = [];
+        if (!window.scoutMarkers) {
+            return;
+        }
 
-    console.log("Map cleared (visual only)"); 
-});
+        window.scoutMarkers.forEach(
+            m => mapInstance.removeLayer(m)
+        );
+
+        window.scoutMarkers = [];
+
+        console.log(
+            "Map cleared (visual only)"
+        );
+    }
+);
 
 // ============================
 // ❌ CLOSE MAP
 // ============================
+document.getElementById("closeMapBtn")
+?.addEventListener(
+    "click",
+    () => {
+        closeMap();
+    }
+);
 
-    document.getElementById("closeMapBtn")?.addEventListener("click", () => {
-    closeMap();
-});
+window.retryConnection =
+    retryConnection;
 
-window.retryConnection = retryConnection;
-window.startScan = startScan;
+window.startScan =
+    startScan;
 
-window.closeScout = closeScout;
+window.closeScout =
+    closeScout;
