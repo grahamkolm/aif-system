@@ -607,7 +607,7 @@ function initSplashBubbles() {
 // ============================
 // 🧭 STATE
 // ============================
-let compassHeading = 0;
+
 let smoothHeading = 0;
 let compassEnabled = false;
 
