@@ -316,7 +316,6 @@ html, body {
 🧭 COMPASS SMOOTHING
 ========================= */
 
-.tick,
 .compass-ring,
 #compassLayer {
     transition: transform 0.6s ease-out;
