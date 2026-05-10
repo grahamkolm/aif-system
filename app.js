@@ -2315,8 +2315,8 @@ function openMap() {
 
         if (window.scoutMarkers) {
             window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
-        }
-        window.scoutMarkers = [];
+            window.scoutMarkers = [];
+    }
 
         scouts.forEach(s => {
 
@@ -2650,9 +2650,9 @@ async function continueScout() {
     console.log("📍 GPS Fix:", lat, lon);
 
     function clearScoutMarkers() {
-        scoutMarkers.forEach(marker => marker.remove());
+        window.scoutMarkers.forEach(marker => marker.remove());
         
-        scoutMarkers = [];
+        window.scoutMarkers = [];
 
         localStorage.removeItem("scouts");
 
