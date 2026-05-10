@@ -2362,6 +2362,8 @@ function openMap() {
             .addTo(mapInstance)
             .bindPopup(popup);
 
+            window.scoutMarkers.push(marker);
+            
             marker.on("click", () => {
                 selectedScout = s;
                 updateDashboardFromScout(s);
@@ -2389,8 +2391,7 @@ function openMap() {
             if (bottomEl && bottomValue != null) {
             bottomEl.innerText = bottomValue + " °C"; 
             }
-
-                 window.scoutMarkers.push(marker);      
+      
             });     
         });
     }, 200);
