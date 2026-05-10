@@ -862,7 +862,6 @@ function updateCompass(heading) {
         setFishingZone(windDir);
 
     }
-}
 
 // ============================
 // 🧭 TICK HIGHLIGHTING
