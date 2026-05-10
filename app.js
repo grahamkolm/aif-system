@@ -2366,15 +2366,15 @@ function openMap() {
                 selectedScout = s;
                 updateDashboardFromScout(s);
 
-                if (scout.light != null) {
+                if (s.light != null) {
                     document.getElementById("lightValue").innerText = s.light + "%";
                 }
 
-                 if (scout.depth != null) {
+                 if (s.depth != null) {
                     document.getElementById("depthValue").innerText = s.depth + " m";
                 }
 
-                 if (scout.bottom != null) {
+                 if (s.bottom != null) {
                     document.getElementById("bottomTempValue").innerText = s.bottom + " C";
                 }
                  window.scoutMarkers.push(marker);      
