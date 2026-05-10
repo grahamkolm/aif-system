@@ -2366,16 +2366,24 @@ function openMap() {
                 selectedScout = s;
                 updateDashboardFromScout(s);
 
-                if (s.light != null) {
-                    document.getElementById("lightValue").innerText = s.light + "%";
+                const lightValue = s.light;
+                if (lightValue != null) {
+                    document.getElementById("lightValue").innerText = lightValue + "%";
                 }
 
-                 if (s.depth != null) {
-                    document.getElementById("depthValue").innerText = s.depth + " m";
+                const pressureValue = s.pressure;
+                if (pressureValue != null) {
+                    document.getElementById("pressureValue").innerText = pressureValue + " hPa";
+                }
+                
+                const depthValue = s.depth;
+                 if (depthValue != null) {
+                    document.getElementById("depthValue").innerText = depthValue + " m";
                 }
 
-                 if (s.bottom != null) {
-                    document.getElementById("bottomTempValue").innerText = s.bottom + " C";
+                const bottomValue = s.bottom ?? s.bottomTemp;
+                 if (bottomValue != null) {
+                    document.getElementById("bottomTempValue").innerText = bottomValue + " C";
                 }
                  window.scoutMarkers.push(marker);      
             });     
