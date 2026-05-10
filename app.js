@@ -2366,25 +2366,30 @@ function openMap() {
                 selectedScout = s;
                 updateDashboardFromScout(s);
 
-                const lightValue = s.light;
-                if (lightValue != null) {
-                    document.getElementById("lightValue").innerText = lightValue + "%";
-                }
+            const lightEl = document.getElementById("lightValue");
 
-                const pressureValue = s.pressure;
-                if (pressureValue != null) {
-                    document.getElementById("pressureValue").innerText = pressureValue + " hPa";
-                }
-                
-                const depthValue = s.depth;
-                 if (depthValue != null) {
-                    document.getElementById("depthValue").innerText = depthValue + " m";
-                }
+            if (lightEl && lightValue != null) {
+            lightEl.innerText = lightValue + "%"; 
+            }
 
-                const bottomValue = s.bottom ?? s.bottomTemp;
-                 if (bottomValue != null) {
-                    document.getElementById("bottomTempValue").innerText = bottomValue + " C";
-                }
+            const pressureEl = document.getElementById("pressureValue");
+
+            if (pressureEl && pressureValue != null) {
+            pressureEl.innerText = pressureValue + " hPa"; 
+            }
+
+            const depthEl = document.getElementById("depthValue");
+
+            if (depthEl && depthValue != null) {
+            depthEl.innerText = depthValue + " m"; 
+            }
+
+            const bottomEl = document.getElementById("bottomTempValue");
+
+            if (bottomEl && bottomValue != null) {
+            bottomEl.innerText = bottomValue + " °C"; 
+            }
+
                  window.scoutMarkers.push(marker);      
             });     
         });
