@@ -215,7 +215,8 @@ try {
 // 🧩 2. UI HELPERS
 // =====================================================
 
-// ================= ICON COLOR ENGINE ================= function setIcon(iconName, value, rules) {
+// ================= ICON COLOR ENGINE ================= 
+function setIcon(iconName, value, rules) {
 
     const icon = document.querySelector(`[data-lucide="${iconName}"]`);
 
@@ -233,7 +234,8 @@ try {
     icon.style.stroke = GREEN;
 }
 
-// ================= SCORE COLOR ================= function getScoreColor(value) {
+// ================= SCORE COLOR ================= 
+function getScoreColor(value) {
 
     if (value >= 80) return "#00ff9c";
     if (value >= 60) return "#ffd700";
@@ -241,7 +243,8 @@ try {
     return "#ff4d4d";
 }
 
-// ================= WIND TEXT ================= function getWindDirectionText(deg) {
+// ================= WIND TEXT ================= 
+function getWindDirectionText(deg) {
 
     if (deg >= 45 && deg < 135) return "Wind → East bank";
     if (deg >= 135 && deg < 225) return "Wind → South bank";
@@ -250,7 +253,8 @@ try {
     return "Wind → North bank";
 }
 
-// ================= STORE SCOUT ================= let originalScoutHTML = "";
+// ================= STORE SCOUT ================= 
+let originalScoutHTML = "";
 
 function storeScoutScreen() {
 
@@ -263,7 +267,8 @@ function storeScoutScreen() {
     el.classList.add("hidden");
 }
 
-// ================= COMPASS TICKS ================= function createTicks() {
+// ================= COMPASS TICKS ================= 
+function createTicks() {
 
     const container = document.getElementById("compassTicks");
 
@@ -294,7 +299,8 @@ function storeScoutScreen() {
     }
 }
 
-// ================= GPS POSITION ================= function positionDirections() {
+// ================= GPS POSITION ================= 
+function positionDirections() {
 
     const labels = document.querySelectorAll(".direction-label");
 
@@ -313,7 +319,8 @@ function storeScoutScreen() {
     });
 }
 
-// ================= HOLD INTERACTION ================= function setupHold(elementId, callback) {
+// ================= HOLD INTERACTION ================= 
+    function setupHold(elementId, callback) {
 
     const el = document.getElementById(elementId);
 
@@ -334,7 +341,8 @@ function storeScoutScreen() {
     });
 }
 
-// ================= INSIGHTS ================= function showENVInsight() {
+// ================= INSIGHTS ================= 
+function showENVInsight() {
     alert("ENV Insight coming soon..."); }
 
 function showCONFInsight() {
