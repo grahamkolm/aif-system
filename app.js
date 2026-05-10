@@ -2550,187 +2550,256 @@ function applyTileColor(tileId, status = "orange") {
 // =====================================================
 
 // =====================================================
-// 📊 7. DASHBOARD (RENDER ENGINE START)
-// =====================================================
+// 📊 7. DASHBOARD (RENDER ENGINE START) // =====================================================
 
 function renderDashboard(data) {
 
     console.log("📊 Rendering dashboard");
 
     // =====================================================
-    // 🧠 1. INPUT (EXTRACT + NORMALISE)
+    // 🛡️ 1. SAFETY CHECK
     // =====================================================
+
+    if (!data || !data.main || !data.wind || !data.clouds) {
+        console.warn("Invalid dashboard data:", data);
+        return;
+    }
 
     lastConditions = data;
 
-    const t = data.main.temp;
-    const p = data.main.pressure;
-    const w = data.wind.speed * 3.6;
-    const c = data.clouds.all;
+    // =====================================================
+    // 🧠 2. INPUT NORMALISATION
+    // =====================================================
 
-    const light = ENV.light || data.light || 50;
-    const depth = ENV.depth || data.depth || 5;
+    const t = Number(data.main.temp) || 20;
+    const p = Number(data.main.pressure) || 1015;
+    const w = (Number(data.wind.speed) || 0) * 3.6;
+    const c = Number(data.clouds.all) || 0;
 
-    windDir = data.wind?.deg || 0;
-    
-    const tacticalData = { light, depth, wind: w };
+    const light =
+        Number(ENV.light) ||
+        Number(data.light) ||
+        50;
 
-    showInsight(
-        SPI,
-        envScore,
-        confScoreValue,
-        ENV.light || 50,
-        ENV.depth || 3
-    );
+    const depth =
+        Number(ENV.depth) ||
+        Number(data.depth) ||
+        5;
 
-    // ================= COMPASS DIFF =================
+    windDir = Number(data.wind?.deg) || 0;
+
+    // =====================================================
+    // 🧭 3. COMPASS DIFF
+    // =====================================================
+
     diff = 0;
 
     if (compassHeading != null) {
+
         diff = Math.abs(windDir - compassHeading);
-        if (diff > 180) diff = 360 - diff;
+
+        if (diff > 180) {
+            diff = 360 - diff;
+        }
     }
 
     console.log("Wind vs heading:", diff);
 
     // =====================================================
-    // 🌡️ 2. WATER MODEL
+    // 🌡️ 4. WATER MODEL
     // =====================================================
 
     let temps = calculateWaterTemps(t);
 
-    if (tempModel.source === "sensor") {
+    if (
+        tempModel &&
+        tempModel.source === "sensor"
+    ) {
         temps = tempModel;
     }
 
-    const surfaceTemp = temps.surface;
-    const bottomTemp = temps.bottom;
+    const surfaceTemp =
+        Number(temps.surface) || t - 1;
+
+    const bottomTemp =
+        Number(temps.bottom) || t - 3;
 
     // =====================================================
-    // 🧭 3. WORLD / POSITION SYSTEMS
+    // 🧭 5. WORLD SYSTEMS
     // =====================================================
 
     updateCompass(windDir);
     setFishingZone(windDir);
 
-    envScore = calculateENV(p, c, w, light, t);
-    confScoreValue = calculateCONF(SPI, envScore, p, w, c, t);
-    
-    const envEl = document.getElementById("envScore");
-    if (envEl) envEl.innerText = envScore + "%";
+    envScore = calculateENV(
+        p,
+        c,
+        w,
+        light,
+        t
+    );
 
-
-    const confEl = document.getElementById("confScore");
-    if (confEl) confEl.innerText = confScoreValue + "%";
-    
     // =====================================================
-    // 📊 4. SPI CALCULATION
+    // 📊 6. SPI CALCULATION
     // =====================================================
 
-let waterScore = null; // until sensor used
+    const previousSPI = lastSPI;
 
-const result = calculateSPI(
-    envScore,
-    waterScore,
-    {
+    const result = calculateSPI(
+        envScore,
+        null,
+        {
+            p,
+            w,
+            c,
+            t,
+            light,
+            depth,
+            diff
+        }
+    );
+
+    let finalSPI = Number(result.score) || 50;
+
+    // =============================
+    // 🔄 SMOOTHING
+    // =============================
+
+    if (previousSPI !== null) {
+
+        finalSPI = Math.round(
+            (finalSPI * 0.7) +
+            (previousSPI * 0.3)
+        );
+    }
+
+    // =============================
+    // 🌍 ENV ALIGNMENT
+    // =============================
+
+    const delta = finalSPI - envScore;
+
+    finalSPI -= delta * 0.2;
+
+    // =============================
+    // 🎯 LIMITS
+    // =============================
+
+    if (envScore < 85) {
+
+        const cap = envScore + 12;
+
+        if (finalSPI > cap) {
+
+            finalSPI -=
+                (finalSPI - cap) * 0.6;
+        }
+    }
+
+    // =============================
+    // 🎣 SCOUT IMPACT
+    // =============================
+
+    finalSPI +=
+        calculateScoutImpact(scoutData) * 0.5;
+
+    // =============================
+    // FINAL CLAMP
+    // =============================
+
+    finalSPI = Math.max(
+        10,
+        Math.min(98, Math.round(finalSPI))
+    );
+
+    SPI = finalSPI;
+
+    // =====================================================
+    // 📊 7. CONFIDENCE
+    // =====================================================
+
+    confScoreValue = calculateCONF(
+        SPI,
+        envScore,
         p,
         w,
         c,
-        windDir,
-        t,
-        light,
-        depth,
-        diff
+        t
+    );
+
+    lastSPI = SPI;
+
+    // =====================================================
+    // 🎨 8. COLORS
+    // =====================================================
+
+    const spiColor =
+        getScoreColor(SPI);
+
+    const envColor =
+        getScoreColor(envScore);
+
+    const confColor =
+        getScoreColor(confScoreValue);
+
+    // =====================================================
+    // 🎯 9. ELEMENTS
+    // =====================================================
+
+    const spiText =
+        document.getElementById("spiValue");
+
+    const envText =
+        document.getElementById("envScore");
+
+    const confText =
+        document.getElementById("confScore");
+
+    const spiCircle =
+        document.getElementById("spiCircle");
+
+    const envCircle =
+        document.getElementById("envCircle");
+
+    const confCircle =
+        document.getElementById("confCircle");
+
+    // =====================================================
+    // 🎨 10. APPLY COLORS
+    // =====================================================
+
+    if (spiText) {
+        spiText.style.color = spiColor;
+        spiText.innerText = SPI + "%";
     }
-);
 
-
-
-// =============================
-// 📊 SPI CORE
-// =============================
-waterScore = null;
-
-let finalSPI = result.score;
-
-// =============================
-// 🔄 SMOOTHING
-// =============================
-if (lastSPI !== null) {
-    finalSPI = Math.round((finalSPI * 0.7) + (lastSPI * 0.3)); }
-
-// =============================
-// 🌍 ENV ALIGNMENT
-// =============================
-let delta = finalSPI - envScore;
-finalSPI -= delta * 0.2;
-
-// =============================
-// 🎯 LIMITS
-// =============================
-if (envScore < 85) {
-    let cap = envScore + 12;
-    if (finalSPI > cap) {
-        finalSPI -= (finalSPI - cap) * 0.6;
+    if (envText) {
+        envText.style.color = envColor;
+        envText.innerText = envScore + "%";
     }
-}
 
-// =============================
-// 🎣 SCOUT IMPACT
-// =============================
-finalSPI += calculateScoutImpact(scoutData) * 0.5;
-
-// =============================
-// FINAL CLAMP
-// =============================
-finalSPI = Math.max(10, Math.min(98, Math.round(finalSPI)));
-
-SPI = finalSPI;
-lastSPI = finalSPI;
-
-
-    // =====================================================
-    // 📊 5. ENV + CONF (🔥 MUST BE HERE)
-    // =====================================================
-
-
-    // =====================================================
-    // 🎨 6. COLORS (NOW SAFE)
-    // =====================================================
-
-    const spiColor = getScoreColor(SPI);
-    const safeENV = isNaN(envScore) ? 50 : envScore;
-    const envColor = getScoreColor(safeENV);
-    const confColor = getScoreColor(confScoreValue);
-
-    // =====================================================
-    // 🎯 7. ELEMENTS
-    // =====================================================
-
-    const spiCircle = document.getElementById("spiCircle");
-    const envCircle = document.getElementById("envCircle");
-    const confCircle = document.getElementById("confCircle");
-
-    // =====================================================
-    // 🎨 8. APPLY COLORS
-    // =====================================================
-
-    const spiText = document.getElementById("spiValue");
-    const envText = document.getElementById("envScore");
-    const confText = document.getElementById("confScore");
-
-    if (spiText) spiText.style.color = spiColor;
-    if (envText) envText.style.color = envColor;
-    if (confText) confText.style.color = confColor;
+    if (confText) {
+        confText.style.color = confColor;
+        confText.innerText =
+            confScoreValue + "%";
+    }
 
     if (envCircle) {
-        envCircle.style.borderColor = envColor;
-        envCircle.style.boxShadow = `0 0 10px ${envColor}`;
+
+        envCircle.style.borderColor =
+            envColor;
+
+        envCircle.style.boxShadow =
+            `0 0 10px ${envColor}`;
     }
 
     if (confCircle) {
-        confCircle.style.borderColor = confColor;
-        confCircle.style.boxShadow = `0 0 10px ${confColor}`;
+
+        confCircle.style.borderColor =
+            confColor;
+
+        confCircle.style.boxShadow =
+            `0 0 10px ${confColor}`;
     }
 
     if (spiCircle) {
@@ -2738,10 +2807,15 @@ lastSPI = finalSPI;
     }
 
     // =====================================================
-    // 🧠 9. ANALYSIS
+    // 🧠 11. ANALYSIS
     // =====================================================
 
-    const tempAnalysis = analyzeTemperature(t, surfaceTemp, bottomTemp);
+    const tempAnalysis =
+        analyzeTemperature(
+            t,
+            surfaceTemp,
+            bottomTemp
+        );
 
     const combinedReasons = [
         ...(result.reasons || []),
@@ -2749,31 +2823,44 @@ lastSPI = finalSPI;
     ];
 
     updateTacticalBar(
-    SPI,
-    envScore,
-    confScoreValue,
-    ENV,
-    lastSPI,
-    forecastData || []
-);
+        SPI,
+        envScore,
+        confScoreValue,
+        ENV,
+        previousSPI,
+        forecastData || []
+    );
 
+    showInsight(
+        SPI,
+        envScore,
+        confScoreValue,
+        light,
+        depth
+    );
 
     // =====================================================
-    // 🎨 10. VISUAL ENGINE
+    // 🎨 12. VISUAL ENGINE
     // =====================================================
 
     updateSPI(SPI);
+
     bubbleIntensity = SPI / 100;
 
     // =====================================================
-    // 🫧 11. OXYGEN SYSTEM
+    // 🫧 13. OXYGEN
     // =====================================================
 
-    const oxygen = estimateOxygen(t, w, c);
+    const oxygen =
+        estimateOxygen(t, w, c);
 
-    const oxygenEl = document.getElementById("oxygen");
+    const oxygenEl =
+        document.getElementById("oxygen");
+
     if (oxygenEl) {
-        oxygenEl.innerText = oxygen.toFixed(1) + " mg/L";
+
+        oxygenEl.innerText =
+            oxygen.toFixed(1) + " mg/L";
     }
 
     setIcon("droplets", oxygen, [
@@ -2783,7 +2870,7 @@ lastSPI = finalSPI;
     ]);
 
     // =====================================================
-    // 📦 12. TILE ENGINE
+    // 📦 14. TILE ENGINE
     // =====================================================
 
     updateAllTiles({
@@ -2793,28 +2880,54 @@ lastSPI = finalSPI;
         pressure: p,
         wind: w,
         cloud: c,
-        oxygen: oxygen,
-        light: light,
+        oxygen,
+        light,
         time: new Date().getHours()
-        
     });
 
     // =====================================================
-    // 📊 13. UI VALUES
+    // 📊 15. UI VALUES
     // =====================================================
 
-    document.getElementById("air").innerText = t.toFixed(1) + "°C";
-    document.getElementById("surface").innerText = surfaceTemp.toFixed(1) + "°C";
-    document.getElementById("bottom").innerText = bottomTemp.toFixed(1) + "°C";
-    document.getElementById("pressure").innerText = p + " hPa";
-    document.getElementById("wind").innerText = w.toFixed(1) + " km/h";
-    document.getElementById("cloud").innerText = c + "%";
-    document.getElementById("feed").innerText = feeding(finalSPI);
-    document.getElementById("light").innerText = light + "%";
-    document.getElementById("depth").innerText = depth + " m";
+    const setText = (id, value) => {
+
+        const el =
+            document.getElementById(id);
+
+        if (el) {
+            el.innerText = value;
+        }
+    };
+
+    setText("air", t.toFixed(1) + "°C");
+    setText("surface",
+        surfaceTemp.toFixed(1) + "°C");
+
+    setText("bottom",
+        bottomTemp.toFixed(1) + "°C");
+
+    setText("pressure", p + " hPa");
+
+    setText("wind",
+        w.toFixed(1) + " km/h");
+
+    setText("cloud", c + "%");
+
+    setText("feed",
+        feeding(finalSPI));
+
+    setText("light", light + "%");
+
+    setText("depth", depth + " m");
+
+    setText("moon",
+        getMoonPhase());
+
+    setText("season",
+        getSeason());
 
     // =====================================================
-    // 🎨 14. ICON COLORS
+    // 🎨 16. ICON COLORS
     // =====================================================
 
     setIcon("sun", t, [
@@ -2854,21 +2967,20 @@ lastSPI = finalSPI;
     ]);
 
     // =====================================================
-    // 🌙 15. EXTRA INFO
+    // 🎨 17. TILE GLOW
     // =====================================================
 
-    document.getElementById("moon").innerText = getMoonPhase();
-    document.getElementById("season").innerText = getSeason();
+    document
+        .querySelectorAll(".tile")
+        .forEach(tile => {
 
-    // =====================================================
-    // 🎨 16. TILE GLOW
-    // =====================================================
+            tile.style.boxShadow =
+                SPI >= 80
 
-    document.querySelectorAll(".tile").forEach(tile => {
-        tile.style.boxShadow = SPI >= 80
-            ? "0 0 12px rgba(0,255,156,0.25), inset 0 0 10px rgba(255,255,255,0.05)"
-            : "0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05)";
-    });
+                ? "0 0 12px rgba(0,255,156,0.25), inset 0 0 10px rgba(255,255,255,0.05)"
+
+                : "0 6px 18px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.05)";
+        });
 }
 
 // =====================================================
@@ -2879,180 +2991,447 @@ lastSPI = finalSPI;
 // 🧠 8. ENVIRONMENT ENGINE
 // =====================================================
 
-function updateFromSensor(data) {
-    if (data.surfaceTemp) {
-        ENV.surface = data.surfaceTemp;
+// ============================
+// 📥 SENSOR INGEST
+// ============================
+function updateFromSensor(data = {}) {
+
+    if (!data || typeof data !== "object") {
+        console.warn("Invalid sensor payload");
+        return;
+    }
+
+    // ============================
+    // 🌊 SURFACE TEMP
+    // ============================
+    if (data.surfaceTemp != null && !isNaN(data.surfaceTemp)) {
+
+        ENV.surface = Number(data.surfaceTemp);
         SOURCE.surface = "sensor";
     }
-    if (data.bottomTemp) {
-        ENV.bottom = data.bottomTemp;
+
+    // ============================
+    // 🌊 BOTTOM TEMP
+    // ============================
+    if (data.bottomTemp != null && !isNaN(data.bottomTemp)) {
+
+        ENV.bottom = Number(data.bottomTemp);
         SOURCE.bottom = "sensor";
     }
-    if (data.pressure) {
-        ENV.pressure = data.pressure;
+
+    // ============================
+    // 🌡 PRESSURE
+    // ============================
+    if (data.pressure != null && !isNaN(data.pressure)) {
+
+        ENV.pressure = Number(data.pressure);
         SOURCE.pressure = "sensor";
     }
-    if (data.light) {
-        ENV.light = data.light;
+
+    // ============================
+    // 💡 LIGHT
+    // ============================
+    if (data.light != null && !isNaN(data.light)) {
+
+        ENV.light = Number(data.light);
         SOURCE.light = "sensor";
     }
-    if (data.depth) {
-        ENV.depth = data.depth;
+
+    // ============================
+    // 🌊 DEPTH
+    // ============================
+    if (data.depth != null && !isNaN(data.depth)) {
+
+        ENV.depth = Number(data.depth);
         SOURCE.depth = "sensor";
     }
-}
 
-// ================= ENV SCORE ================= 
+    console.log("📡 Sensor data updated"); }
+
+// =====================================================
+// 📊 ENV SCORE ENGINE
+// =====================================================
 function calculateENV(p, c, w, light, airTemp) {
 
-    let score = 50; // 🔥 BASELINE (THIS FIXES YOUR 30% ISSUE)
+    // ============================
+    // 🛡 NORMALISE INPUTS
+    // ============================
+    p = Number(p) || 1015;
+    c = Number(c) || 50;
+    w = Number(w) || 5;
+    light = Number(light) || 50;
+    airTemp = Number(airTemp) || 20;
+
+    let score = 50;
 
     // =============================
-    // 🌡 PRESSURE (±10)
+    // 🌡 PRESSURE
     // =============================
-    let trend = getPressureTrend(p);
+    const trend = getPressureTrend(p);
 
-    if (p >= 1012 && p <= 1020) score += 8;
-    else if (p >= 1008 && p <= 1024) score += 5;
-    else score -= 5;
+    if (p >= 1012 && p <= 1020) {
+        score += 8;
+    }
 
-    if (trend === "rising") score += 3;
-    if (trend === "falling") score -= 3;
+    else if (p >= 1008 && p <= 1024) {
+        score += 5;
+    }
 
-    // =============================
-    // 🌬 WIND (±10)
-    // =============================
-    if (w >= 5 && w <= 15) score += 8;
-    else if (w >= 3) score += 5;
-    else if (w < 2) score -= 4;
-    else score += 2;
+    else {
+        score -= 5;
+    }
 
-    // =============================
-    // ☁ CLOUD (±8)
-    // =============================
-    if (c >= 30 && c <= 70) score += 6;
-    else if (c > 70) score += 4;
-    else score -= 3;
+    if (trend === "rising") {
+        score += 3;
+    }
+
+    if (trend === "falling") {
+        score -= 3;
+    }
 
     // =============================
-    // 💡 LIGHT (±8)
+    // 🌬 WIND
     // =============================
-    if (light >= 40 && light <= 70) score += 6;
-    else if (light < 30) score += 5;
-    else if (light > 80) score -= 4;
+    if (w >= 5 && w <= 15) {
+        score += 8;
+    }
+
+    else if (w >= 3 && w < 20) {
+        score += 5;
+    }
+
+    else if (w < 2) {
+        score -= 4;
+    }
+
+    else {
+        score += 2;
+    }
 
     // =============================
-    // 🌡 TEMP (±12) → ADAPTIVE
+    // ☁ CLOUD
     // =============================
-    if (airTemp >= 18 && airTemp <= 24) score += 10;
-    else if (airTemp >= 15) score += 7;
-    else if (airTemp >= 12) score += 4;
-    else if (airTemp >= 10) score += 2;
-    else score -= 4;
+    if (c >= 30 && c <= 70) {
+        score += 6;
+    }
+
+    else if (c > 70 && c <= 90) {
+        score += 4;
+    }
+
+    else if (c < 15) {
+        score -= 4;
+    }
+
+    else {
+        score -= 2;
+    }
 
     // =============================
-    // ⚡ SMART INTERACTIONS (±10)
+    // 💡 LIGHT
+    // =============================
+    if (light >= 40 && light <= 70) {
+        score += 6;
+    }
+
+    else if (light < 30) {
+        score += 5;
+    }
+
+    else if (light > 80) {
+        score -= 4;
+    }
+
+    // =============================
+    // 🌡 AIR TEMP
+    // =============================
+    if (airTemp >= 18 && airTemp <= 24) {
+        score += 10;
+    }
+
+    else if (airTemp >= 15) {
+        score += 7;
+    }
+
+    else if (airTemp >= 12) {
+        score += 4;
+    }
+
+    else if (airTemp >= 10) {
+        score += 2;
+    }
+
+    else {
+        score -= 4;
+    }
+
+    // =============================
+    // ⚡ SMART INTERACTIONS
     // =============================
 
     // Wind + cloud synergy
-    if (w >= 5 && c >= 30) score += 5;
+    if (w >= 5 && c >= 30) {
+        score += 5;
+    }
 
-    // Low light advantage
-    if (light < 50) score += 3;
+    // Lower light feeding support
+    if (light < 50) {
+        score += 3;
+    }
 
-    // Dead calm + clear (bad combo)
-    if (w < 2 && c < 20) score -= 6;
+    // Dead calm + bright clear
+    if (w < 2 && c < 20) {
+        score -= 6;
+    }
+
+    // Strong wind disruption
+    if (w > 25) {
+        score -= 5;
+    }
 
     // =============================
-    // ⏱ TIME FACTOR (±8)
+    // ⏱ TIME FACTOR
     // =============================
-    let h = new Date().getHours();
+    const hour = new Date().getHours();
 
-    if (h >= 5 && h <= 9) score += 6;
-    else if (h >= 17 && h <= 20) score += 8;
-    else if (h >= 11 && h <= 15) score -= 4;
+    // Dawn
+    if (hour >= 5 && hour <= 9) {
+        score += 6;
+    }
+
+    // Evening
+    else if (hour >= 17 && hour <= 20) {
+        score += 8;
+    }
+
+    // Harsh midday
+    else if (hour >= 11 && hour <= 15) {
+        score -= 4;
+    }
 
     // =============================
-    // 🎯 CLAMP (IMPORTANT)
+    // 🎯 FINAL SHAPING
     // =============================
-    return Math.max(20, Math.min(85, Math.round(score))); 
+
+    // soft curve = more realistic
+    score = Math.pow(score / 100, 1.05) * 100;
+
+    if (isNaN(score)) {
+        score = 50;
+    }
+
+    return Math.max(
+        20,
+        Math.min(85, Math.round(score))
+    );
 }
 
-function calculateWaterScore(surfaceTemp, bottomTemp, thermoclineStart, thermoclineEnd, turbidity, light) {
+// =====================================================
+// 🌊 WATER SCORE ENGINE
+// =====================================================
+function calculateWaterScore(
+    surfaceTemp,
+    bottomTemp,
+    thermoclineStart,
+    thermoclineEnd,
+    turbidity,
+    light
+) {
+
+    // ============================
+    // 🛡 SAFETY NORMALISATION
+    // ============================
+    surfaceTemp = Number(surfaceTemp) || 18;
+    bottomTemp = Number(bottomTemp) || 15;
+    turbidity = Number(turbidity) || 40;
+    light = Number(light) || 50;
 
     let score = 0;
 
     // =============================
-    // 🌡 WATER TEMP PROFILE (30)
+    // 🌡 WATER TEMP PROFILE
     // =============================
-    let delta = Math.abs(surfaceTemp - bottomTemp);
+    const delta =
+        Math.abs(surfaceTemp - bottomTemp);
 
-    if (surfaceTemp >= 18 && surfaceTemp <= 24) score += 15;
-    else if (surfaceTemp >= 15) score += 12;
-    else if (surfaceTemp >= 12) score += 9;
-    else score += 6;
+    // Surface activity zone
+    if (surfaceTemp >= 18 && surfaceTemp <= 24) {
+        score += 15;
+    }
 
-    // Stability / layering
-    if (delta >= 2 && delta <= 5) score += 10;   // ideal thermocline
-    else if (delta > 5) score += 6;
-    else score += 4;
+    else if (surfaceTemp >= 15) {
+        score += 12;
+    }
 
-    // =============================
-    // 🌊 THERMOCLINE POSITION (20)
-    // =============================
-    if (thermoclineStart !== null && thermoclineEnd !== null) {
+    else if (surfaceTemp >= 12) {
+        score += 9;
+    }
 
-        let mid = (thermoclineStart + thermoclineEnd) / 2;
+    else {
+        score += 6;
+    }
 
-        if (mid >= 2 && mid <= 5) score += 20;   // perfect feeding zone
-        else if (mid <= 7) score += 15;
-        else score += 10;
+    // Layering quality
+    if (delta >= 2 && delta <= 5) {
+        score += 10;
+    }
+
+    else if (delta > 5) {
+        score += 6;
+    }
+
+    else {
+        score += 4;
     }
 
     // =============================
-    // 🌫 TURBIDITY (15)
+    // 🌊 THERMOCLINE
     // =============================
-    if (turbidity >= 30 && turbidity <= 60) score += 15;
-    else if (turbidity < 30) score += 10;
-    else score += 8;
+    if (
+        thermoclineStart != null &&
+        thermoclineEnd != null &&
+        !isNaN(thermoclineStart) &&
+        !isNaN(thermoclineEnd)
+    ) {
+
+        const mid =
+            (Number(thermoclineStart) +
+             Number(thermoclineEnd)) / 2;
+
+        if (mid >= 2 && mid <= 5) {
+            score += 20;
+        }
+
+        else if (mid <= 7) {
+            score += 15;
+        }
+
+        else {
+            score += 10;
+        }
+    }
 
     // =============================
-    // 💡 LIGHT PENETRATION (10)
+    // 🌫 TURBIDITY
     // =============================
-    if (light >= 30 && light <= 70) score += 10;
-    else if (light < 30) score += 8;
-    else score += 6;
+    if (turbidity >= 30 && turbidity <= 60) {
+        score += 15;
+    }
 
-    return Math.max(0, Math.min(100, Math.round(score))); 
+    else if (turbidity < 30) {
+        score += 10;
+    }
+
+    else {
+        score += 8;
+    }
+
+    // =============================
+    // 💡 LIGHT PENETRATION
+    // =============================
+    if (light >= 30 && light <= 70) {
+        score += 10;
+    }
+
+    else if (light < 30) {
+        score += 8;
+    }
+
+    else {
+        score += 6;
+    }
+
+    // =============================
+    // 🎯 FINAL CLAMP
+    // =============================
+    if (isNaN(score)) {
+        score = 50;
+    }
+
+    return Math.max(
+        0,
+        Math.min(100, Math.round(score))
+    );
 }
 
+// =====================================================
+// 🎯 FINAL SPI FUSION
+// =====================================================
+function calculateFinalSPI(
+    envScore,
+    waterScore,
+    hasSensor
+) {
 
-function calculateFinalSPI(envScore, waterScore, hasSensor) {
+    envScore = Number(envScore) || 50;
+    waterScore = Number(waterScore) || 50;
 
+    // =============================
+    // 🌍 ENV ONLY MODE
+    // =============================
     if (!hasSensor) {
-        return envScore; // fallback clean
+
+        return Math.max(
+            0,
+            Math.min(100, Math.round(envScore))
+        );
     }
 
-    // 🔥 Weighted + adaptive
-    let finalScore = (envScore * 0.6) + (waterScore * 0.4);
+    // =============================
+    // 🌊 TRUE FUSION
+    // =============================
+    let finalScore =
+        (envScore * 0.6) +
+        (waterScore * 0.4);
 
-    // Boost when both agree
-    if (envScore > 60 && waterScore > 60) {
+    // =============================
+    // 🤝 ALIGNMENT BOOST
+    // =============================
+    if (
+        envScore > 60 &&
+        waterScore > 60
+    ) {
+
         finalScore += 5;
     }
 
-    // Conflict handling
-    if (envScore > 60 && waterScore < 40) {
-        finalScore -= 8; // looks good outside, bad below
+    // =============================
+    // ⚠️ CONFLICT HANDLING
+    // =============================
+    if (
+        envScore > 60 &&
+        waterScore < 40
+    ) {
+
+        finalScore -= 8;
     }
 
-    if (envScore < 40 && waterScore > 60) {
-        finalScore += 10; // 🔥 hidden opportunity
+    // =============================
+    // 🔥 HIDDEN WATER OPPORTUNITY
+    // =============================
+    if (
+        envScore < 40 &&
+        waterScore > 60
+    ) {
+
+        finalScore += 10;
     }
 
-    return Math.max(0, Math.min(100, Math.round(finalScore))); 
+    // =============================
+    // 🎯 SOFT CURVE
+    // =============================
+    finalScore =
+        Math.pow(finalScore / 100, 1.05) * 100;
+
+    if (isNaN(finalScore)) {
+        finalScore = envScore;
+    }
+
+    return Math.max(
+        0,
+        Math.min(100, Math.round(finalScore))
+    );
 }
-
 
 // =====================================================
 // 🧠 8. ENVIRONMENT ENGINE END
@@ -3062,104 +3441,256 @@ function calculateFinalSPI(envScore, waterScore, hasSensor) {
 // 📈 TRENDS & TIME
 // =====================================================
 
-function getTempTrend(t) {
-    tempHistory.push(t);
-    if (tempHistory.length > 6) tempHistory.shift();
+// ============================
+// 🌡 TEMP TREND
+// ============================
+function getTempTrend(temp) {
 
-    if (tempHistory.length < 2) return "stable";
+    temp = Number(temp);
 
-    const diff = tempHistory[tempHistory.length - 1] - tempHistory[0];
+    if (isNaN(temp)) {
+        return "stable";
+    }
 
-    if (diff > 1) return "warming";
-    if (diff < -1) return "cooling_fast";
+    tempHistory.push(temp);
+
+    // Keep only latest 6 readings
+    if (tempHistory.length > 6) {
+        tempHistory.shift();
+    }
+
+    // Need enough data
+    if (tempHistory.length < 2) {
+        return "stable";
+    }
+
+    const oldest = tempHistory[0];
+    const latest = tempHistory[tempHistory.length - 1];
+
+    const diff = latest - oldest;
+
+    if (diff >= 1.5) return "warming";
+    if (diff <= -1.5) return "cooling_fast";
+
     return "stable";
 }
 
-function getPressureTrend(p) {
-    pressureHistory.push(p);
+// ============================
+// 🌡 PRESSURE TREND
+// ============================
+function getPressureTrend(pressure) {
 
-    if (pressureHistory.length > 6) pressureHistory.shift();
-    if (pressureHistory.length < 2) return "stable";
+    pressure = Number(pressure);
 
-    const diff = pressureHistory.at(-1) - pressureHistory[0];
+    if (isNaN(pressure)) {
+        return "stable";
+    }
 
-    if (diff > 1) return "rising";
-    if (diff < -1) return "falling";
+    pressureHistory.push(pressure);
+
+    // Keep only latest 6 readings
+    if (pressureHistory.length > 6) {
+        pressureHistory.shift();
+    }
+
+    if (pressureHistory.length < 2) {
+        return "stable";
+    }
+
+    const oldest = pressureHistory[0];
+    const latest = pressureHistory[pressureHistory.length - 1];
+
+    const diff = latest - oldest;
+
+    if (diff >= 1.5) return "rising";
+    if (diff <= -1.5) return "falling";
+
     return "stable";
 }
 
+// ============================
+// 🌅 PRIME FEED WINDOW
+// ============================
 function sunriseWindow() {
-    const h = new Date().getHours();
-    if (h >= 5 && h <= 9) return 10;
-    if (h >= 17 && h <= 20) return 12;
+
+    const hour = new Date().getHours();
+
+    // Dawn
+    if (hour >= 5 && hour <= 9) {
+        return 10;
+    }
+
+    // Evening
+    if (hour >= 17 && hour <= 20) {
+        return 12;
+    }
+
     return 0;
 }
 
+// ============================
+// 🍂 SEASONAL WEIGHT
+// ============================
 function seasonalWeight() {
-    const m = new Date().getMonth() + 1;
 
-    if (m <= 2 || m === 12) return 8;
-    if (m <= 5) return 4;
-    if (m <= 8) return -4;
+    const month = new Date().getMonth() + 1;
+
+    // Summer
+    if (month <= 2 || month === 12) {
+        return 8;
+    }
+
+    // Autumn
+    if (month <= 5) {
+        return 4;
+    }
+
+    // Winter
+    if (month <= 8) {
+        return -4;
+    }
+
+    // Spring
     return 6;
 }
 
+// ============================
+// 🍂 SEASON NAME
+// ============================
 function getSeason() {
-    const m = new Date().getMonth() + 1;
 
-    if (m <= 2 || m === 12) return "Summer";
-    if (m <= 5) return "Autumn";
-    if (m <= 8) return "Winter";
+    const month = new Date().getMonth() + 1;
+
+    if (month <= 2 || month === 12) {
+        return "Summer";
+    }
+
+    if (month <= 5) {
+        return "Autumn";
+    }
+
+    if (month <= 8) {
+        return "Winter";
+    }
+
     return "Spring";
 }
 
+// ============================
+// 🌙 MOON PHASE
+// ============================
 function getMoonPhase() {
-    const d = new Date();
-    const lp = 2551443;
-    const now = d.getTime() / 1000;
-    const new_moon = 592500;
 
-    const phase = ((now - new_moon) % lp) / lp;
+    const now = new Date();
 
-    if (phase < 0.25) return "Waxing";
-    if (phase < 0.5) return "Full";
-    if (phase < 0.75) return "Waning";
-    return "New";
+    const lunarCycle = 2551443;
+    const unixNow = now.getTime() / 1000;
+
+    const knownNewMoon = 592500;
+
+    const phase =
+        ((unixNow - knownNewMoon) % lunarCycle) / lunarCycle;
+
+    if (phase < 0.03 || phase > 0.97) {
+        return "New";
+    }
+
+    if (phase < 0.22) {
+        return "Waxing";
+    }
+
+    if (phase < 0.28) {
+        return "Quarter";
+    }
+
+    if (phase < 0.47) {
+        return "Waxing";
+    }
+
+    if (phase < 0.53) {
+        return "Full";
+    }
+
+    if (phase < 0.72) {
+        return "Waning";
+    }
+
+    if (phase < 0.78) {
+        return "Quarter";
+    }
+
+    return "Waning";
 }
 
 // =====================================================
 // 📈 TRENDS & TIME END
 // =====================================================
 
+// =====================================================
+// 🌡 TEMPERATURE ANALYSIS
+// =====================================================
 function analyzeTemperature(air, surface, bottom) {
 
-    let score = 0;
-    let insights = []; // ✅ MUST be an array
+    air = Number(air) || 20;
+    surface = Number(surface) || air - 1;
+    bottom = Number(bottom) || surface - 2;
 
-    // Surface temp logic
+    let score = 0;
+    let insights = [];
+
+    // ============================
+    // 🌊 SURFACE CONDITIONS
+    // ============================
     if (surface >= 18 && surface <= 24) {
+
         score += 8;
         insights.push("Surface temp optimal (18–24°C)");
-    } else if (surface > 24) {
+
+    }
+
+    else if (surface > 24) {
+
         score -= 4;
         insights.push("Surface temp too warm — fish may go deeper");
-    } else {
+
+    }
+
+    else {
+
         score -= 6;
         insights.push("Surface temp too cold — reduced activity");
     }
 
-    // Thermal layering
-    if (bottom < surface - 3) {
+    // ============================
+    // 🌊 THERMAL LAYERING
+    // ============================
+    const delta = surface - bottom;
+
+    if (delta >= 3) {
+
         score -= 4;
         insights.push("Thermal drop detected — fish holding deeper");
-    } else {
+
+    }
+
+    else {
+
         score += 2;
         insights.push("Stable water column — good feeding movement");
     }
 
+    // ============================
+    // ❄️ COLD WATER STABILITY
+    // ============================
+    if (surface <= 15 && delta <= 2) {
+
+        score += 2;
+        insights.push("Stable winter water profile");
+    }
+
     return {
         score: score,
-        insights: insights // ✅ THIS is what fixes your error
+        insights: insights
     };
 }
 
@@ -3167,22 +3698,62 @@ function analyzeTemperature(air, surface, bottom) {
 // 🎯 STRATEGY ENGINE
 // =====================================================
 
+// ============================
+// 🌬 CASTING STRATEGY
+// ============================
 function getCastingAdvice(diff) {
-    if (diff < 45) return "Into wind ⚠️";
-    if (diff > 135) return "Perfect windward 🔥";
+
+    diff = Number(diff) || 0;
+
+    if (diff < 45) {
+        return "Into wind ⚠️";
+    }
+
+    if (diff > 135) {
+        return "Perfect windward 🔥";
+    }
+
     return "Crosswind ⚠️";
 }
 
+// ============================
+// 🌊 DEPTH STRATEGY
+// ============================
 function getDepthStrategy(light, depth) {
-    if (light < 30) return "Fish shallow margins";
-    if (light > 70) return "Fish deeper structure";
-    if (depth >= 2 && depth <= 5) return "Target patrol routes";
+
+    light = Number(light) || 50;
+    depth = Number(depth) || 3;
+
+    if (light < 30) {
+        return "Fish shallow margins";
+    }
+
+    if (light > 70) {
+        return "Fish deeper structure";
+    }
+
+    if (depth >= 2 && depth <= 5) {
+        return "Target patrol routes";
+    }
+
     return "Adjust depth";
 }
 
+// ============================
+// 🍪 BAIT STRATEGY
+// ============================
 function getBaitSuggestion(SPI) {
-    if (SPI > 75) return "High attract bait";
-    if (SPI > 60) return "Balanced boilie approach";
+
+    SPI = Number(SPI) || 50;
+
+    if (SPI > 75) {
+        return "High attract bait";
+    }
+
+    if (SPI > 60) {
+        return "Balanced boilie approach";
+    }
+
     return "Single hookbait";
 }
 
@@ -3194,26 +3765,59 @@ function getBaitSuggestion(SPI) {
 // 🧭 9. GPS + COMPASS + MAP
 // =====================================================
 
-let watchId;
+let watchId = null;
 
+// ============================
+// 📍 GPS INIT
+// ============================
 function initGPS() {
-    if (!navigator.geolocation) return;
+
+    if (!navigator.geolocation) {
+
+        console.warn("GPS not supported");
+        return;
+    }
+
+    // Prevent duplicates
+    if (watchId !== null) {
+        return;
+    }
 
     watchId = navigator.geolocation.watchPosition(
+
         (pos) => {
+
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
 
+            // Safety validation
+            if (
+                lat == null ||
+                lon == null ||
+                isNaN(lat) ||
+                isNaN(lon)
+            ) {
+
+                console.warn("Invalid GPS fix");
+                return;
+            }
+
             userLocation = { lat, lon };
-            console.log("GPS Fix:", lat, lon);
-            // 🔥 update map automatically
+
+            console.log("📍 GPS Fix:", lat, lon);
+
+            // Update map live
             if (mapInstance) {
                 updateMapLocation(lat, lon);
             }
         },
+
         (err) => {
+
             console.warn("GPS error:", err);
+
         },
+
         {
             enableHighAccuracy: true,
             maximumAge: 5000,
@@ -3226,368 +3830,426 @@ function initGPS() {
 // 🧭 9. GPS + COMPASS + MAP END
 // =====================================================
 
-
 // ============================
-// 🗺️ OPEN MAP (CLEAN VERSION)
+// 🗺️ MAP CORE
 // ============================
 let followUser = true;
-let interactionTimeout;
+let interactionTimeout = null;
+let bestZoneCircle = null;
 
+// ============================
+// 🗺️ OPEN MAP
+// ============================
 function openMap() {
 
-    const mapScreen = document.getElementById("mapScreen");
-    if (!mapScreen) return;
+    const mapScreen =
+        document.getElementById("mapScreen");
+
+    if (!mapScreen) {
+        return;
+    }
 
     mapScreen.classList.remove("hidden");
+
     document.body.style.overflow = "hidden";
 
     setTimeout(() => {
 
-        // =============================
-        // 📍 GET LOCATION (SAFE)
-        // =============================
+        // ============================
+        // 📍 SAFE LOCATION
+        // ============================
         let lat = userLocation?.lat;
         let lon = userLocation?.lon;
 
-        if (!lat || !lon) {
-            console.warn("GPS not ready — using fallback");
+        if (
+            lat == null ||
+            lon == null ||
+            isNaN(lat) ||
+            isNaN(lon)
+        ) {
+
+            console.warn("GPS fallback used");
+
             lat = -26.2;
             lon = 28.0;
         }
 
-        // =============================
-        // 🗺️ CREATE MAP (ONLY ONCE)
-        // =============================
+        // ============================
+        // 🗺️ CREATE MAP
+        // ============================
         if (!mapInstance) {
 
-            mapInstance = L.map('mapContainer', {
+            mapInstance = L.map("mapContainer", {
                 zoomControl: true
             }).setView([lat, lon], 13);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '',
-                maxZoom: 19
-            }).addTo(mapInstance);
+            L.tileLayer(
+                "https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!WcgL4Rx00PoXCL91yDa5k9-cF7Avku31Pk44UeWkHU21tcxEcyHXGMn89kuy_ix4moXX3xt7d2KH60fOr_W7k4aN$ ",
+                {
+                    attribution: "",
+                    maxZoom: 19
+                }
+            ).addTo(mapInstance);
 
-            // =============================
-            // 🎯 HANDLE USER INTERACTION (ONLY ONCE)
-            // =============================
-            mapInstance.on("dragstart zoomstart", () => {
-                followUser = false;
-            });
+            // ============================
+            // 👆 USER INTERACTION
+            // ============================
+            mapInstance.on(
+                "dragstart zoomstart",
+                () => {
 
-            mapInstance.on("moveend zoomend", () => {
-                clearTimeout(interactionTimeout);
-                interactionTimeout = setTimeout(() => {
-                    followUser = true;
-                }, 5000);
-            });
+                    followUser = false;
+                }
+            );
+
+            mapInstance.on(
+                "moveend zoomend",
+                () => {
+
+                    clearTimeout(interactionTimeout);
+
+                    interactionTimeout = setTimeout(() => {
+
+                        followUser = true;
+
+                    }, 5000);
+                }
+            );
 
             console.log("✅ Map initialized");
-
-        } else {
-
-            // =============================
-            // 🔄 UPDATE VIEW (SMART FOLLOW)
-            // =============================
-            if (followUser) {
-                mapInstance.panTo([lat, lon]);
-            }
         }
 
-        // =============================
-        // 📍 UPDATE USER MARKER
-        // =============================
+        // ============================
+        // 📍 USER LOCATION
+        // ============================
         updateMapLocation(lat, lon);
 
-        // =============================
-        // 🔥 CLEAR OLD DROP MARKERS
-        // =============================
-        window.dropMarkers.forEach(m => mapInstance.removeLayer(m));
-        dropMarkers = [];
+        // ============================
+        // 🎯 RENDER DROPS
+        // ============================
+        renderDrops();
 
-        // =============================
-        // 🎯 DRAW DROPS
-        // =============================
-        drops.forEach(d => {
-            if (!d.lat || !d.lon) return;
+        // ============================
+        // 🎯 RENDER SCOUTS
+        // ============================
+        renderScouts();
 
-            const marker = L.marker([d.lat, d.lon], { icon: dropIcon })
-                .addTo(mapInstance)
-                .bindPopup(`SPI: ${d.spi}%`);
-
-            window.dropMarkers.push(marker);
-        });
-
+        // ============================
+        // 🌊 ZONES
+        // ============================
         drawDropZone();
-        drawScoutZone();
 
-        // =============================
-        // 🎯 SCOUT MARKERS
-        // =============================
-        console.log("SCOUTS:", window.scouts);
-
-        if (window.scoutMarkers) {
-            window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
-            window.scoutMarkers = [];
-    }
-
-        window.scouts.forEach(s => {
-
-            if (!s.lat || !s.lon) return;
-
-            const popup = `
-            <b>🎯 Scout #${s.id}</b><br>
-
-            <b style="color:${
-                s.spi >= 70 ? "green" :
-                s.spi >= 50 ? "orange" :
-                "red"
-            }">
-            Score: ${s.spi ?? "-"}
-            </b><br><br>
-
-            🌡 Bottom Temp: ${s.bottom ?? "-"}°C<br>
-            🌊 Thermocline: ${
-                s.thermoStart && s.thermoEnd
-                    ? `${s.thermoStart}-${s.thermoEnd}m`
-                    : "-"
-            }<br>
-            📊 Pressure: ${s.pressure ?? "-"} hPa<br><br>
-            📊 Light: ${s.light ?? "-"} <br>
-            📊 Depth: ${s.depth ?? "-"} m<br>
-            📊 Altitude: ${s.altitude ?? "-"} m<br><br>
-
-            🐟 Activity: ${s.activity ?? "-"}<br>
-            💧 Water: ${s.clarity ?? "-"}<br>
-            🏗 Structure: ${s.structure ?? "-"}<br>
-            🌬 Wind: ${s.wind ?? "-"}<br>
-            🐦 Birds: ${s.birds ?? "-"}<br><br>
-
-            📍 GPS: ${s.lat.toFixed(5)}, ${s.lon.toFixed(5)}
-            `;
-
-           const offsetLat = s.lat + ((s.id || 1) * 0.00003); 
-           const offsetLon = s.lon + ((s.id || 1) * 0.00003);
-
-           const marker = L.marker([offsetLat, offsetLon], {
-                icon: scoutIcon
-})
-            .addTo(mapInstance)
-            .bindPopup(popup);
-
-            window.scoutMarkers.push(marker);
-            
-            marker.on("click", () => {
-                selectedScout = s;
-                updateDashboardFromScout(s);
-
-            const lightEl = document.getElementById("lightValue");
-
-            if (lightEl && lightValue != null) {
-            lightEl.innerText = lightValue + "%"; 
-            }
-
-            const pressureEl = document.getElementById("pressureValue");
-
-            if (pressureEl && pressureValue != null) {
-            pressureEl.innerText = pressureValue + " hPa"; 
-            }
-
-            const depthEl = document.getElementById("depthValue");
-
-            if (depthEl && depthValue != null) {
-            depthEl.innerText = depthValue + " m"; 
-            }
-
-            const bottomEl = document.getElementById("bottomTempValue");
-
-            if (bottomEl && bottomValue != null) {
-            bottomEl.innerText = bottomValue + " °C"; 
-            }
-      
-            });     
-        });
-    }, 200);
-}
-
-        // =============================
-        // 🧱 FIX RENDER SIZE (CRITICAL)
-        // =============================
-        setTimeout(() => {
-            if (mapInstance) {
-                mapInstance.invalidateSize();
+        if (typeof drawScoutZone === "function") {
+            drawScoutZone();
         }
 
+        // ============================
+        // 🔧 FIX MAP SIZE
+        // ============================
+        setTimeout(() => {
+
+            if (mapInstance) {
+                mapInstance.invalidateSize();
+            }
+
+        }, 250);
+
     }, 200);
-
-let bestZoneCircle = null;
-
-function drawDropZone() {
-    const zone = getBestZone();
-    if (!zone || !mapInstance) return;
-
-    if (window.dropZoneCircle) {
-        mapInstance.removeLayer(window.dropZoneCircle);
-    }
-
-    window.dropZoneCircle = L.circle([zone.lat, zone.lon], {
-        radius: zone.strength === "strong" ? 80 : 50,
-        color: "#28a745",
-        fillColor: "#28a745",
-        fillOpacity: 0.2,
-        interactive: false
-    }).addTo(mapInstance);
 }
 
+// ============================
+// 🎯 RENDER DROPS
+// ============================
+function renderDrops() {
+
+    if (!mapInstance) return;
+
+    // Clear old markers
+    window.dropMarkers.forEach(marker => {
+
+        try {
+            mapInstance.removeLayer(marker);
+        }
+
+        catch (err) {
+            console.warn("Drop remove failed", err);
+        }
+    });
+
+    window.dropMarkers = [];
+
+    // Draw fresh
+    drops.forEach(drop => {
+
+        if (
+            drop.lat == null ||
+            drop.lon == null
+        ) return;
+
+        const marker = L.marker(
+            [drop.lat, drop.lon],
+            { icon: dropIcon }
+        )
+        .addTo(mapInstance)
+        .bindPopup(`🎯 SPI: ${drop.spi ?? "-" }%`);
+
+        window.dropMarkers.push(marker);
+    });
+}
+
+// ============================
+// 🎯 RENDER SCOUTS
+// ============================
+function renderScouts() {
+
+    if (!mapInstance) return;
+
+    // Remove old
+    window.scoutMarkers.forEach(marker => {
+
+        try {
+            mapInstance.removeLayer(marker);
+        }
+
+        catch (err) {
+            console.warn("Scout remove failed", err);
+        }
+    });
+
+    window.scoutMarkers = [];
+
+    // Render new
+    window.scouts.forEach((s, index) => {
+
+        if (
+            s.lat == null ||
+            s.lon == null
+        ) return;
+
+        // Offset stops overlap
+        const offsetLat =
+            s.lat + ((index + 1) * 0.00002);
+
+        const offsetLon =
+            s.lon + ((index + 1) * 0.00002);
+
+        const popup = `
+        <b>🎯 Scout #${s.id ?? index + 1}</b><br><br>
+
+        <b>SPI:</b> ${s.spi ?? "-"}%<br>
+        <b>Pressure:</b> ${s.pressure ?? "-"} hPa<br>
+        <b>Light:</b> ${s.light ?? "-"}%<br>
+        <b>Depth:</b> ${s.depth ?? "-"} m<br>
+        <b>Bottom:</b> ${s.bottom ?? "-"}°C<br><br>
+
+        <b>Activity:</b> ${s.activity ?? "-"}<br>
+        <b>Clarity:</b> ${s.clarity ?? "-"}<br>
+        <b>Structure:</b> ${s.structure ?? "-"}<br>
+        `;
+
+        const marker = L.marker(
+            [offsetLat, offsetLon],
+            { icon: scoutIcon }
+        )
+        .addTo(mapInstance)
+        .bindPopup(popup);
+
+        marker.on("click", () => {
+
+            selectedScout = s;
+
+            if (
+                typeof updateDashboardFromScout ===
+                "function"
+            ) {
+
+                updateDashboardFromScout(s);
+            }
+        });
+
+        window.scoutMarkers.push(marker);
+    });
+}
+
+// ============================
+// 🌊 BEST ZONE
+// ============================
+function drawDropZone() {
+
+    if (!mapInstance) return;
+
+    const zone = getBestZone();
+
+    if (!zone) return;
+
+    if (window.dropZoneCircle) {
+
+        mapInstance.removeLayer(
+            window.dropZoneCircle
+        );
+    }
+
+    window.dropZoneCircle = L.circle(
+        [zone.lat, zone.lon],
+        {
+            radius:
+                zone.strength === "strong"
+                    ? 80
+                    : 50,
+
+            color: "#28a745",
+            fillColor: "#28a745",
+            fillOpacity: 0.2,
+            interactive: false
+        }
+    ).addTo(mapInstance);
+}
 
 // ============================
 // ❌ CLOSE MAP
 // ============================
 function closeMap() {
-    const screen = document.getElementById("mapScreen");
-    if (screen) screen.classList.add("hidden");
+
+    const screen =
+        document.getElementById("mapScreen");
+
+    if (screen) {
+        screen.classList.add("hidden");
+    }
+
     document.body.style.overflow = "auto"; }
 
-
 // ============================
-// 📌 UPDATE USER LOCATION (CLEAN)
+// 📍 UPDATE USER LOCATION
 // ============================
 function updateMapLocation(lat, lon) {
 
-    // 🔒 STOP if map not ready
+    // ============================
+    // 🛡 SAFETY
+    // ============================
     if (!mapInstance) {
-        console.warn("⛔ Map not ready — skip update");
         return;
     }
 
-    // 🔒 STOP if invalid coords
-    if (lat == null || lon == null || isNaN(lat) || isNaN(lon)) {
-        console.warn("⛔ Invalid GPS — skip update");
+    if (
+        lat == null ||
+        lon == null ||
+        isNaN(lat) ||
+        isNaN(lon)
+    ) {
+
         return;
     }
 
-    // =============================
-    // 📍 UPDATE MAP VIEW (SMOOTH)
-    // =============================
-    // Only recenter if far away (prevents jitter later)
-    const currentCenter = mapInstance.getCenter();
+    // ============================
+    // 🧭 FOLLOW USER
+    // ============================
+    const currentCenter =
+        mapInstance.getCenter();
 
     const distance = mapInstance.distance(
         [currentCenter.lat, currentCenter.lng],
         [lat, lon]
     );
 
-    if (distance > 50 && followUser) { 
-        mapInstance.panTo([lat, lon], {
-            animate: true
-    });
+    if (distance > 50 && followUser) {
+
+        mapInstance.panTo(
+            [lat, lon],
+            {
+                animate: true
+            }
+        );
     }
 
-    // =============================
-    // 🧍 USER MARKER
-    // =============================
+    // ============================
+    // 👤 USER MARKER
+    // ============================
     if (!userMarker) {
 
-        userMarker = L.marker([lat, lon], {
-            icon: userIcon // ✅ your global icon
-        })
+        userMarker = L.marker(
+            [lat, lon],
+            { icon: userIcon }
+        )
         .addTo(mapInstance)
         .bindPopup("You 🎯");
 
-    } else {
+    }
+
+    else {
 
         userMarker.setLatLng([lat, lon]);
-
     }
 }
 
 
 // =====================================================
-// 🎯 10. UI HELPERS START
+// 🎯 UI HELPERS
 // =====================================================
 
-function updateSPI(v){
+function updateSPI(v) {
 
     if (v == null || isNaN(v)) return;
-    
-    let arc = document.getElementById("spiArc");
-    if(!arc) return;
+
+    const arc = document.getElementById("spiArc");
+    if (!arc) return;
 
     let color = GREEN;
 
-    if (v < 50) color = GREEN;
-    else if (v < 70) color = GREEN;
-
     arc.style.stroke = color;
 
-    let r = arc.r.baseVal.value;
-    let C = 2 * Math.PI * r;
+    const r = arc.r.baseVal.value;
+    const C = 2 * Math.PI * r;
 
     arc.style.strokeDasharray = C;
     arc.style.strokeDashoffset = C - (v / 100) * C;
 
-    document.getElementById("spiValue").textContent = Math.round(v) + "%";
+    const spiValue = document.getElementById("spiValue");
 
-    // 🔥 ADD YOUR GLOW HERE
-    let gauge = document.getElementById("spiGauge");
-
-    if(gauge){
-        gauge.style.filter = v >= 70
-            ? "drop-shadow(0 0 12px rgba(0,255,156,0.35))"
-            : "drop-shadow(0 0 6px rgba(0,255,156,0.15))";
+    if (spiValue) {
+        spiValue.textContent = Math.round(v) + "%";
     }
 
-let envCircle = document.querySelector(".env-circle");
-let confCircle = document.querySelector(".conf-circle");
+    const gauge = document.getElementById("spiGauge");
 
-if (envCircle && confCircle) {
-    if (v >= 70) {
-        envCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
-        confCircle.style.boxShadow = "0 0 10px rgba(0,255,156,0.4)";
-    } else {
-        envCircle.style.boxShadow = "none";
-        confCircle.style.boxShadow = "none";
+    if (gauge) {
+        gauge.style.filter =
+            v >= 70
+                ? "drop-shadow(0 0 12px rgba(0,255,156,0.35))"
+                : "drop-shadow(0 0 6px rgba(0,255,156,0.15))";
     }
-}
 }
 
 function estimateOxygen(temp, wind, cloud) {
 
-    // Base oxygen decreases with temperature
-    let base = 14.6 - (temp * 0.4);
+    let oxygen =
+        (14.6 - (temp * 0.4)) +
+        (wind * 0.1) +
+        (cloud * 0.02);
 
-    // Wind increases oxygen
-    let windEffect = wind * 0.1;
+    return Math.max(5, Math.min(14, oxygen)); }
 
-    // Clouds slightly increase oxygen (less sunlight = less algae consumption swings)
-    let cloudEffect = cloud * 0.02;
+function refreshDashboard() {
 
-    let oxygen = base + windEffect + cloudEffect;
-
-    return Math.max(5, Math.min(14, oxygen)); 
-}
-
-function refreshDashboard(){
     console.log("Manual refresh triggered");
 
-    let icon = document.getElementById("refreshIcon");
+    const icon = document.getElementById("refreshIcon");
 
-    if(icon){
+    if (icon) {
         icon.style.animation = "spin 1s linear infinite";
     }
 
     fetchWeatherSafe();
 
-    // stop after 1.5s (or when fetch returns later)
     setTimeout(() => {
-        if(icon){
+        if (icon) {
             icon.style.animation = "none";
         }
     }, 1500);
 }
 
 function toggleAI() {
+
     const panel = document.getElementById("aiPanel");
     const toggle = document.getElementById("aiToggle");
 
@@ -3595,60 +4257,64 @@ function toggleAI() {
 
     panel.classList.toggle("active");
 
-    if (panel.classList.contains("active")) {
-        toggle.innerText = "−";
+    toggle.innerText =
+        panel.classList.contains("active") ? "−" : "+";
 
-        if (typeof showInsight === "function") {
-            showInsight(
-                SPI,
-                envScore,          // ✅ REAL VALUE
-                confScoreValue,   // ✅ REAL VALUE
-                ENV.light || 50,
-                ENV.depth || 3
-            );
-        }
-
-    } else {
-        toggle.innerText = "+";
+    if (
+        panel.classList.contains("active") &&
+        typeof showInsight === "function"
+    ) {
+        showInsight(
+            SPI,
+            envScore,
+            confScoreValue,
+            ENV.light || 50,
+            ENV.depth || 3
+        );
     }
 }
 
-
 // =====================================================
-// 🎯 SCOUT MODE (SENSOR TRIGGER)
+// 🎣 SCOUT SYSTEM
 // =====================================================
 
 function setScout(type, value) {
+
     scoutData[type] = value;
+
     console.log("Scout:", scoutData);
 }
 
 function openScout() {
+
     const screen = document.getElementById("scoutScreen");
+
+    if (!screen) return;
+
     screen.classList.remove("hidden");
 
-    // 🔥 Important: delay until DOM is visible
     setTimeout(() => {
         setupScoutOptions();
     }, 50);
 }
 
-function setupScoutOptions(){
+function setupScoutOptions() {
 
     const buttons = document.querySelectorAll(".opt");
 
     buttons.forEach(btn => {
 
-        btn.onclick = function(){
+        btn.onclick = function () {
 
             const type = this.dataset.type;
             let value = this.dataset.value;
 
-            // ✅ NORMALIZE VALUES
-            if (value === "slightly-stained") value = "stained";
+            if (value === "slightly-stained") {
+                value = "stained";
+            }
 
-            // remove active from same group
-            document.querySelectorAll(`.opt[data-type="${type}"]`)
+            document
+                .querySelectorAll(`.opt[data-type="${type}"]`)
                 .forEach(el => el.classList.remove("active"));
 
             this.classList.add("active");
@@ -3660,11 +4326,65 @@ function setupScoutOptions(){
     });
 }
 
+function clearScoutMarkers() {
+
+    if (window.scoutMarkers) {
+
+        window.scoutMarkers.forEach(marker => {
+            try {
+                marker.remove();
+            } catch {}
+        });
+    }
+
+    window.scoutMarkers = [];
+
+    window.scouts = [];
+
+    localStorage.removeItem("scouts");
+
+    console.log("🧹 Scouts permanently cleaned"); }
+
+function calculateScoutImpact(scout) {
+
+    let score = 0;
+
+    if (scout.activity === "none") score -= 15;
+    if (scout.activity === "bubbles") score += 5;
+    if (scout.activity === "rolling") score += 15;
+
+    if (scout.clarity === "clear") score += 5;
+    if (scout.clarity === "stained") score += 10;
+    if (scout.clarity === "murky") score -= 5;
+
+    if (scout.birds === "active") score += 10;
+
+    if (scout.wind === "bank") score += 10;
+    if (scout.wind === "calm") score -= 5;
+
+    if (scout.structure === "weed") score += 5;
+    if (scout.structure === "dropoff") score += 10;
+
+    return Math.max(-20, Math.min(20, score)); }
+
+function rankScoutSpots() {
+
+    if (!window.scouts || window.scouts.length === 0) {
+        return [];
+    }
+
+    const ranked = [...window.scouts]
+        .sort((a, b) => (b.impact || 0) - (a.impact || 0));
+
+    ranked.forEach((s, index) => {
+        s.rodRank = index + 1;
+    });
+
+    return ranked.slice(0, 3);
+}
+
 async function continueScout() {
 
-    // ============================
-    // 📍 GPS (SAFE + FALLBACK)
-    // ============================
     const lat = userLocation?.lat ?? window.lastLat;
     const lon = userLocation?.lon ?? window.lastLon;
 
@@ -3676,670 +4396,336 @@ async function continueScout() {
     window.lastLat = lat;
     window.lastLon = lon;
 
-    console.log("📍 GPS Fix:", lat, lon);
-
-    function clearScoutMarkers() {
-        window.scoutMarkers.forEach(marker => marker.remove());
-        
-        window.scoutMarkers = [];
-        window.scouts = [];
-
-        localStorage.removeItem("scouts");
-
-        console.log("Scouts permanently cleaned");
-    }
-
-    // ============================
-    // 📥 COLLECT INPUT DATA (FIXED)
-    // ============================
     const newScout = {
+
+        id: window.scouts.length + 1,
+
+        time: Date.now(),
+
         lat,
         lon,
-        id: scouts.length + 1,
-        time: Date.now(),
-        
+
         spi: SPI,
 
-        // 🌡 TEMPS
-        bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
-        surface: parseFloat(document.getElementById("surfaceTemp")?.value) || null,
-
-        // 🌊 THERMOCLINE
-        thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
-        thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
-
-        // 📊 WEATHER / SENSOR
         air: parseFloat(document.getElementById("airTemp")?.value) || null,
+
         pressure: parseFloat(document.getElementById("scoutPressure")?.value) || null,
+
         altitude: parseFloat(document.getElementById("altitude")?.value) || null,
 
+        surface: parseFloat(document.getElementById("surfaceTemp")?.value) || null,
+
+        bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
+
+        thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
+
+        thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
+
         turbidity: parseFloat(document.getElementById("turbidity")?.value) || null,
+
         light: parseFloat(document.getElementById("scoutLight")?.value) || null,
+
         depth: parseFloat(document.getElementById("scoutDepth")?.value) || null,
 
-        // 🎯 OBSERVATIONS
-        activity: document.querySelector('.opt.active[data-type="activity"]')?.dataset.value ?? null,
-        clarity: document.querySelector('.opt.active[data-type="clarity"]')?.dataset.value ?? null,
-        birds: document.querySelector('.opt.active[data-type="birds"]')?.dataset.value ?? null,
-        structure: document.querySelector('.opt.active[data-type="structure"]')?.dataset.value ?? null,
-        wind: document.querySelector('.opt.active[data-type="wind"]')?.dataset.value ?? null,
+        activity:
+            document.querySelector('.opt.active[data-type="activity"]')
+                ?.dataset.value ?? null,
 
-        impact: 0,
-        rodRank: 0
-};
+        clarity:
+            document.querySelector('.opt.active[data-type="clarity"]')
+                ?.dataset.value ?? null,
 
-        newScout.impact = calculateScoutImpact(newScout);
-    // ============================
-    // 🔄 FIX THERMO VALUES
-    // ============================
-    if (newScout.thermoStart != null && newScout.thermoEnd != null) {
-        if (newScout.thermoStart > newScout.thermoEnd) {
-            [newScout.thermoStart, newScout.thermoEnd] =
-            [newScout.thermoEnd, newScout.thermoStart];
-        }
-    }
+        birds:
+            document.querySelector('.opt.active[data-type="birds"]')
+                ?.dataset.value ?? null,
 
-function rankScoutSpots() {
+        structure:
+            document.querySelector('.opt.active[data-type="structure"]')
+                ?.dataset.value ?? null,
 
-    if (!scouts || scouts.length === 0) return [];
+        wind:
+            document.querySelector('.opt.active[data-type="wind"]')
+                ?.dataset.value ?? null
+    };
 
-    // highest first
-    const ranked = [...scouts]
-        .sort((a, b) => (b.impact || 0) - (a.impact || 0));
+    newScout.impact = calculateScoutImpact(newScout);
 
-    // assign rod positions
-    ranked.forEach((s, index) => {
-        s.rodRank = index + 1;
-    });
-
-    return ranked.slice(0, 3);
-}
-
-
-    // ============================
-    // ✅ MIN VALIDATION
-    // ============================
-    const filledFields = Object.values(newScout)
-        .filter(v => v !== null && v !== undefined).length;
-
-    if (filledFields < 2) {
-        alert("⚠️ Add a few more observations");
-        return;
-    }
-
-    // ============================
-    // 💾 SAVE
-    // ============================
     window.scouts.push(newScout);
 
-    localStorage.setItem("scouts", JSON.stringify(window.scouts));
-    localStorage.setItem("scoutLatest", JSON.stringify(newScout));
+    localStorage.setItem(
+        "scouts",
+        JSON.stringify(window.scouts)
+    );
 
-    console.log("Saved Scouts:", window.scouts);
-    console.log("✅ Scout saved:", newScout);
+    localStorage.setItem(
+        "scoutLatest",
+        JSON.stringify(newScout)
+    );
 
     if (newScout.light != null) {
         ENV.light = newScout.light;
     }
-    
+
     if (newScout.depth != null) {
-    ENV.depth = newScout.depth;
+        ENV.depth = newScout.depth;
     }
 
-    if (newScout.altitude != null) {
-    ENV.altitude = newScout.altitude;
-    }
-    
     closeScout();
 
-    // ============================
-    // 🗺️ REFRESH MAP
-    // ============================
-    if (mapInstance) {
+    if (mapInstance && typeof drawScoutZone === "function") {
         drawScoutZone();
     }
 
-    alert("✅ Scout saved successfully"); 
-}
+    alert("✅ Scout saved successfully"); }
 
-function showConnectingScreen() {
+function closeScout() {
 
-    let screen = document.getElementById("scoutScreen");
+    document.body.style.overflow = "auto";
 
-    screen.innerHTML = `
-    <div class="scout-card">
-        <div class="scout-title">Connecting to AIF Sensor</div>
+    const screen = document.getElementById("scoutScreen");
 
-        <div class="sensor-list" id="sensorStatusList">
-            Checking sensors...
-        </div>
+    if (!screen) return;
 
-        <div class="scout-actions">
-            <button onclick="retryConnection()" class="btn secondary">Retry</button>
-            <button onclick="startScan()" class="btn primary">Start Scan</button>
-        </div>
-    </div>
-    `;
+    screen.classList.add("hidden");
 
-    checkSensors();
-}
-
-function updateScoutUI() {
-
-    const inputs = document.getElementById("sensorFields");
-    const btn = document.getElementById("scoutBtn");
-
-    if (!inputs || !btn) return;
-
-    if (dataSource === "manual") {
-        inputs.style.display = "block";
-        btn.innerText = "Save";
-    } else {
-        inputs.style.display = "none";
-        btn.innerText = "Scan Sensor";
-    }
-}
-
-
-async function handleScout() {
-
-  if (dataSource === "sensor") {
-    await connectSensor();
-  } else {
-    continueScout();
-  }
-
-}
-
-function simulateSensorFill() {
-    return {
-        air: 18,
-        pressure: 1015,
-        surface: 17,
-        bottom: 14,
-        turbidity: 45,
-        light: 60,
-        depth: 3
-    };
-}
-
-
-function fillScoutFields(data) {
-
-    document.getElementById("airTemp").value = data.air || "";
-    document.getElementById("pressure").value = data.pressure || "";
-    document.getElementById("surfaceTemp").value = data.surface || "";
-    document.getElementById("bottomTemp").value = data.bottom || "";
-    document.getElementById("turbidity").value = data.turbidity || "";
-    document.getElementById("light").value = data.light || "";
-    document.getElementById("depth").value = data.depth || "";
-
-}
-
-
-function checkSensors() {
-  let list = document.getElementById("sensorStatusList");
-
-  if (list) list.innerHTML = "Connecting...";
-
-  return fetch("http://192.168.1.160/data")
-    .then(res => res.json())
-    .then(data => {
-
-      document.getElementById("sensorStatusList").innerHTML = `
-        <div>Temperature ${data.temp !== undefined ? "✅" : "❌"}</div>
-        <div>Pressure ${data.pressure !== undefined ? "✅" : "❌"}</div>
-        <div>Altitude ${data.altitude !== undefined ? "✅" : "❌"}</div>
-        <div>Light ${data.light !== undefined ? "✅" : "❌"}</div>
-        <div>Turbidity ${data.turbidity !== undefined ? "✅" : "❌"}</div>
-        <div>Depth ${data.depth !== undefined ? "✅" : "❌"}</div>
-      `;
-
-      return true; // 👈 success
-    })
-    .catch(err => {
-      console.error("FETCH ERROR:", err);
-
-      document.getElementById("sensorStatusList").innerHTML =
-        "❌ Connection failed";
-
-      return false; // 👈 fail
-    });
-}
-
-function retryConnection() {
-
-    retryCount++;
-
-    if (retryCount > 5) {
-        document.getElementById("sensorStatusList").innerHTML =
-            "❌ Unable to connect. Check AIF WiFi.";
-        return;
-    }
-
-    document.getElementById("sensorStatusList").innerHTML =
-        `Reconnecting... (${retryCount}/5)`;
-
-    setTimeout(checkSensors, 1000);
-}
-
-function updateDashboardFromScout(data) {
-
-  if (data.air)
-    document.getElementById("air").innerText = data.air + "°C";
-
-  if (data.surface)
-    document.getElementById("surface").innerText = data.surface + "°C";
-
-  if (data.bottom)
-    document.getElementById("bottom").innerText = data.bottom + "°C";
-
-  if (data.pressure)
-    document.getElementById("pressure").innerText = data.pressure + " hPa";
-
-  if (data.light)
-    document.getElementById("light").innerText = data.light + "%";
-
-  if (data.depth)
-    document.getElementById("depth").innerText = data.depth + " m";
-
-  console.log("Dashboard updated from Scout ✅"); 
-}
-
-
-let bleCharacteristic;
-
-function handleSensorData(event) {
-  const value = event.target.value;
-
-  // decode bytes → string
-  const decoder = new TextDecoder('utf-8');
-  const jsonString = decoder.decode(value);
-
-  console.log("RAW:", jsonString);
-
-  try {
-    const data = JSON.parse(jsonString);
-
-    console.log("Parsed:", data);
-
-    populateSensorData(data);
-
-  } catch (e) {
-    console.error("JSON parse error:", e);
-  }
-}
-
-function startScan() {
-
-    let screen = document.getElementById("scoutScreen");
-
-    screen.innerHTML = `
-    <div class="scout-card">
-        <div class="scout-title">Scanning...</div>
-        <div class="scan-loader"></div>
-        <div class="scan-text">
-            Reading sensors<br>
-            Calculating SPI<br>
-            Analyzing conditions...
-        </div>
-    </div>
-    `;
+    screen.innerHTML = originalScoutHTML;
 
     setTimeout(() => {
 
-        fetch("http://192.168.1.160/data")
-            .then(res => res.json())
-            .then(data => {
-            if (data.surfaceTemp && data.bottomTemp) {
-                tempModel = {
-                surface: data.surfaceTemp,
-                bottom: data.bottomTemp,
-                source: "sensor"
-        };
-    }
+        setupScoutOptions();
 
-                renderDashboard(data);
-                showResults(data);
-            })
-            .catch(() => {
-                showScanFailed();
-            });
+        if (typeof selectSource === "function") {
+            selectSource(dataSource || "manual");
+        }
 
-    }, 2000);
+    }, 50);
 }
 
-let scoutMode = "manual";
+// =====================================================
+// 📡 SENSOR / BLUETOOTH
+// =====================================================
 
-function updateScoutMode(mode) {
-
-  scoutMode = mode;
-
-  const sensorBox = document.getElementById("sensorBox");
-  const manualBtn = document.getElementById("manualBtn");
-  const sensorBtn = document.getElementById("sensorBtn");
-
-  if (mode === "sensor") {
-    sensorBox.style.display = "block";
-    manualBtn.classList.remove("active");
-    sensorBtn.classList.add("active");
-  } else {
-    sensorBox.style.display = "none";
-    manualBtn.classList.add("active");
-    sensorBtn.classList.remove("active");
-  }
-}
-
-let dataSource = "manual"; // default
+let dataSource = "manual";
 
 function selectSource(type) {
-  dataSource = type;
 
-  document.querySelectorAll('.source-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
+    dataSource = type;
 
-  document.querySelector(`[data-source="${type}"]`)
-    .classList.add('active');
+    document.querySelectorAll(".source-btn")
+        .forEach(btn => btn.classList.remove("active"));
 
-  // SHOW / HIDE SENSOR UI
-  document.getElementById("sensorBox").style.display =
-    type === "sensor" ? "block" : "none"; 
+    document
+        .querySelector(`[data-source="${type}"]`)
+        ?.classList.add("active");
+
+    const sensorBox =
+        document.getElementById("sensorBox");
+
+    if (sensorBox) {
+        sensorBox.style.display =
+            type === "sensor" ? "block" : "none";
+    }
 }
 
+function checkSensors() {
+
+    const list =
+        document.getElementById("sensorStatusList");
+
+    if (list) {
+        list.innerHTML = "Connecting...";
+    }
+
+    return fetch("https://urldefense.com/v3/__http://192.168.1.160/data__;!!LtDMhTYuqQ!UK2eMS51J5_QFg3ARyavpW_lTRas5sFA2I1UL1yVIUPw2MnlwXibRxs_mqwVaSDUz_7Ty_yyCWqrhRxUwuuYZXJc$ ")
+        .then(res => res.json())
+        .then(data => {
+
+            if (list) {
+
+                list.innerHTML = `
+                    <div>Temperature ${data.temp !== undefined ? "✅" : "❌"}</div>
+                    <div>Pressure ${data.pressure !== undefined ? "✅" : "❌"}</div>
+                    <div>Altitude ${data.altitude !== undefined ? "✅" : "❌"}</div>
+                    <div>Light ${data.light !== undefined ? "✅" : "❌"}</div>
+                    <div>Turbidity ${data.turbidity !== undefined ? "✅" : "❌"}</div>
+                    <div>Depth ${data.depth !== undefined ? "✅" : "❌"}</div>
+                `;
+            }
+
+            return true;
+        })
+        .catch(err => {
+
+            console.error("FETCH ERROR:", err);
+
+            if (list) {
+                list.innerHTML = "❌ Connection failed";
+            }
+
+            return false;
+        });
+}
 
 async function connectSensor() {
 
-  try {
-    const device = await navigator.bluetooth.requestDevice({
-      acceptAllDevices: true,
-      optionalServices: ['12345678-1234-1234-1234-1234567890ab'] // your ESP32 service
-    });
+    try {
 
-    const server = await device.gatt.connect();
-    const service = await server.getPrimaryService('12345678-1234-1234-1234-1234567890ab');
-    const characteristic = await service.getCharacteristic('abcd1234-ab12-cd34-ef56-abcdef123456');
+        const device =
+            await navigator.bluetooth.requestDevice({
+                acceptAllDevices: true,
+                optionalServices: [
+                    "12345678-1234-1234-1234-1234567890ab"
+                ]
+            });
 
-    await characteristic.startNotifications();
+        const server = await device.gatt.connect();
 
-    characteristic.addEventListener('characteristicvaluechanged', (event) => {
+        const service =
+            await server.getPrimaryService(
+                "12345678-1234-1234-1234-1234567890ab"
+            );
 
-      const value = event.target.value;
+        const characteristic =
+            await service.getCharacteristic(
+                "abcd1234-ab12-cd34-ef56-abcdef123456"
+            );
 
-      // 👉 THIS IS YOUR CODE (CORRECT PLACE)
-      const decoder = new TextDecoder('utf-8');
-      const jsonString = decoder.decode(value);
+        await characteristic.startNotifications();
 
-      try {
-        const data = JSON.parse(jsonString);
-        console.log("Sensor data:", data);
+        characteristic.addEventListener(
+            "characteristicvaluechanged",
+            event => {
 
-        populateSensorData(data); // ← your function
+                const value = event.target.value;
 
-      } catch (e) {
-        console.error("JSON parse error:", e, jsonString);
-      }
+                const decoder =
+                    new TextDecoder("utf-8");
 
-    });
+                const jsonString =
+                    decoder.decode(value);
 
-    document.getElementById("sensorStatus").innerText = "Connected ✅";
+                try {
 
-  } catch (error) {
-    console.error("Bluetooth error:", error);
-  }
-}
+                    const data =
+                        JSON.parse(jsonString);
 
-function applySensorData(data) {
+                    console.log("Sensor data:", data);
 
-  document.getElementById("airTemp").value = data.temp ?? "";
-  document.getElementById("pressure").value = data.pressure ?? "";
-  document.getElementById("surfaceTemp").value = data.surfaceTemp ?? "";
-  document.getElementById("bottomTemp").value = data.bottomTemp ?? "";
-  document.getElementById("depth").value = data.depth ?? "";
+                    populateSensorData(data);
 
-}
+                } catch (e) {
 
-function showScanFailed() {
+                    console.error(
+                        "JSON parse error:",
+                        e
+                    );
+                }
+            }
+        );
 
-    let screen = document.getElementById("scoutScreen");
+        const sensorStatus =
+            document.getElementById("sensorStatus");
 
-    screen.innerHTML = `
-    <div class="scout-card">
-        <div class="scout-title">Scan Failed</div>
+        if (sensorStatus) {
+            sensorStatus.innerText =
+                "Connected ✅";
+        }
 
-        <div class="error-text">
-            ESP device not reachable
-        </div>
+    } catch (error) {
 
-        <div class="scout-actions">
-            <button onclick="retryConnection()" class="btn secondary">Retry</button>
-            <button onclick="closeScout()" class="btn primary">Exit</button>
-        </div>
-    </div>
-    `;
+        console.error("Bluetooth error:", error);
+    }
 }
 
 function populateSensorData(data) {
 
-  document.getElementById("airTemp").value = data.air || "";
-  document.getElementById("pressure").value = data.pressure || "";
-  document.getElementById("altitude").value = data.altitude || "";
+    document.getElementById("airTemp").value =
+        data.air || "";
 
-  document.getElementById("surfaceTemp").value = data.surface || "";
-  document.getElementById("bottomTemp").value = data.bottom || "";
+    document.getElementById("scoutPressure").value =
+        data.pressure || "";
 
-  document.getElementById("turbidity").value = data.turbidity || "";
+    document.getElementById("altitude").value =
+        data.altitude || "";
 
-  alert("Sensor data loaded ✅");
+    document.getElementById("surfaceTemp").value =
+        data.surface || "";
 
+    document.getElementById("bottomTemp").value =
+        data.bottom || "";
+
+    document.getElementById("turbidity").value =
+        data.turbidity || "";
+
+    document.getElementById("scoutLight").value =
+        data.light || "";
+
+    document.getElementById("scoutDepth").value =
+        data.depth || "";
+
+    alert("Sensor data loaded ✅");
 }
 
-function saveAndScan() {
-    localStorage.setItem("scoutData", JSON.stringify(scoutData));
-    showConnectingScreen();
-}
-
-function resetTempModel(){
-    tempModel = {
-        surface: null,
-        bottom: null,
-        source: "forecast"
-    };
-}
-
-
-function loadDrops() {
-    try {
-        const stored = localStorage.getItem("drops");
-
-        if (!stored) {
-            drops = [];
-            return;
-        }
-
-        const parsed = JSON.parse(stored);
-
-        // 🔥 HARD VALIDATION
-        if (!Array.isArray(parsed) || parsed.length === 0) {
-            drops = [];
-            localStorage.removeItem("drops"); // clean bad state
-            return;
-        }
-
-        drops = parsed;
-
-    } catch (e) {
-        console.warn("⚠️ Corrupt drop storage, resetting...");
-        drops = [];
-        localStorage.removeItem("drops");
-    }
-}
-
-console.log("DROPS AFTER LOAD:", drops);
-
-function showSummary() {
-
-    let last = drops[drops.length - 1];
-
-    let screen = document.getElementById("scoutScreen");
-
-    screen.innerHTML = `
-        <div class="scout-title">Scout Summary</div>
-
-        <div>📍 Lat: ${last.lat?.toFixed(5)}</div>
-        <div>📍 Lon: ${last.lon?.toFixed(5)}</div>
-
-        <div>📊 SPI: ${last.spi}%</div>
-        <div>🌍 ENV: ${last.env}%</div>
-        <div>🧠 CONF: ${last.conf}%</div>
-
-        <div>🌡 Surface: ${last.surface || "-"}°C</div>
-        <div>🌊 Bottom: ${last.bottom || "-"}°C</div>
-        <div>📏 Depth: ${last.depth || "-"} m</div>
-
-        <div class="scout-btn" onclick="closeScout()">Done</div>
-    `;
-}
-
-function showResults(data) {
-
-    let screen = document.getElementById("scoutScreen");
-
-    let scout = JSON.parse(localStorage.getItem("scoutData")) || {};
-
-    screen.innerHTML = `
-        <div class="scout-title">Scan Complete</div>
-
-        <div>SPI: ${SPI}%</div>
-
-        <div style="margin-top:15px;">
-            <b>Scout Inputs:</b><br>
-            Activity: ${scout.activity || "-"}<br>
-            Clarity: ${scout.clarity || "-"}<br>
-            Wind: ${scout.wind || "-"}
-        </div>
-
-        <div style="margin-top:15px;">
-            <b>Sensor Data:</b><br>
-            Temp: ${data.main?.temp || "-"}°C<br>
-            Oxygen: ${data.oxygen || "-"}
-        </div>
-
-        <div class="scout-btn" onclick="closeScout()">Done</div>
-    `;
-}
-
-function calculateScoutImpact(scout){
-
-    let score = 0;
-
-    // 🐟 Activity
-    if(scout.activity === "none") score -= 15;
-    if(scout.activity === "bubbles") score += 5;
-    if(scout.activity === "rolling") score += 15;
-
-    // 🌊 Clarity
-    if(scout.clarity === "clear") score += 5;
-    if(scout.clarity === "stained") score += 10;
-    if(scout.clarity === "murky") score -= 5;
-
-    // 🐦 Birds
-    if(scout.birds === "some") score += 5;
-    if(scout.birds === "active") score += 10;
-
-    // 🌬 Wind effect
-    if(scout.wind === "bank") score += 10;
-    if(scout.wind === "calm") score -= 5;
-
-    // 🌊 Surface activity
-    if(scout.surface === "medium") score += 5;
-    if(scout.surface === "high") score += 10;
-
-    // 🪵 Structure
-    if(scout.structure === "weed") score += 5;
-    if(scout.structure === "dropoff") score += 10;
-
-    return Math.max(-20, Math.min(20, score)); 
-}
-
-function closeScout(){
-    
-    document.body.style.overflow = "auto";
-    let screen = document.getElementById("scoutScreen");
-
-    screen.classList.add("hidden");
-
-    screen.innerHTML = originalScoutHTML; 
-}
-
-function feeding(spi) {
-
-    if (spi >= 80) return "High Activity 🔥";
-    if (spi >= 60) return "Active 👍";
-    if (spi >= 40) return "Slow 😐";
-    return "Low Activity ❄️";
-}
-
-// 🌊 HOLD AND COACH
-function setupHold(elementId, callback) {
-
-    let timer;
-    const el = document.getElementById(elementId);
-
-    if (!el) {
-        console.log("❌ Element NOT FOUND:", elementId);
-        return;
-    }
-
-    console.log("✅ HOLD ATTACHED:", elementId);
-
-    el.addEventListener("touchstart", () => {
-        timer = setTimeout(callback, 600);
-    });
-
-    el.addEventListener("touchend", () => {
-        clearTimeout(timer);
-    });
-}
-
-
-// 🌊 DROP
+// =====================================================
+// 🎯 DROP SYSTEM
+// =====================================================
 
 function openDrop() {
 
     if (!userLocation.lat || !userLocation.lon) {
+
         alert("GPS not ready yet — wait a few seconds");
+
         return;
     }
 
     const drop = {
+
         id: Date.now(),
+
         time: new Date().toISOString(),
+
         lat: userLocation.lat,
+
         lon: userLocation.lon,
+
         spi: SPI,
+
         env: envScore,
+
         conf: confScoreValue,
+
         surface: ENV.surface,
+
         bottom: ENV.bottom,
+
         depth: ENV.depth,
+
         oxygen: ENV.oxygen,
+
         scout: { ...scoutData }
     };
 
     drops.push(drop);
-    localStorage.setItem("drops", JSON.stringify(drops));
+
+    localStorage.setItem(
+        "drops",
+        JSON.stringify(drops)
+    );
 
     console.log("DROP SAVED:", drop);
 
     showDropFeedback();
+
     ripple();
 }
 
 function showDropFeedback() {
 
-    let toast = document.createElement("div");
-    toast.innerText = `🎯 Drop logged • SPI ${SPI.toFixed(1)}%`;
+    const toast = document.createElement("div");
+
+    toast.innerText =
+        `🎯 Drop logged • SPI ${SPI.toFixed(1)}%`;
 
     toast.style.position = "fixed";
     toast.style.bottom = "120px";
@@ -4351,15 +4737,18 @@ function showDropFeedback() {
     toast.style.borderRadius = "12px";
     toast.style.fontSize = "14px";
     toast.style.zIndex = "9999";
-    toast.style.boxShadow = "0 0 10px rgba(0,255,156,0.3)";
 
     document.body.appendChild(toast);
 
     setTimeout(() => {
+
         toast.style.opacity = "0";
+
         setTimeout(() => toast.remove(), 300);
+
     }, 1500);
 }
+
 
 // 🌊 REPORT
 
@@ -4647,7 +5036,6 @@ function closeDam(){
     }
     document.body.style.overflow = "auto"; 
 }
-
 
 
 // 🌊 PLAN
