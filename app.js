@@ -2311,14 +2311,14 @@ function openMap() {
         // =============================
         // 🎯 SCOUT MARKERS
         // =============================
-        console.log("SCOUTS:", scouts);
+        console.log("SCOUTS:", window.scouts);
 
         if (window.scoutMarkers) {
             window.scoutMarkers.forEach(m => mapInstance.removeLayer(m));
             window.scoutMarkers = [];
     }
 
-        scouts.forEach(s => {
+        window.scouts.forEach(s => {
 
             if (!s.lat || !s.lon) return;
 
