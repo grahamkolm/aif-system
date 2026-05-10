@@ -2672,14 +2672,14 @@ async function continueScout() {
 
         // 🌡 TEMPS
         bottom: parseFloat(document.getElementById("bottomTemp")?.value) || null,
-        surfaceTemp: parseFloat(document.getElementById("surfaceTemp")?.value) || null,
+        surface: parseFloat(document.getElementById("surfaceTemp")?.value) || null,
 
         // 🌊 THERMOCLINE
         thermoStart: parseFloat(document.getElementById("thermoStart")?.value) || null,
         thermoEnd: parseFloat(document.getElementById("thermoEnd")?.value) || null,
 
         // 📊 WEATHER / SENSOR
-        airTemp: parseFloat(document.getElementById("airTemp")?.value) || null,
+        air: parseFloat(document.getElementById("airTemp")?.value) || null,
         pressure: parseFloat(document.getElementById("pressure")?.value) || null,
         altitude: parseFloat(document.getElementById("altitude")?.value) || null,
 
@@ -2823,10 +2823,10 @@ async function handleScout() {
 
 function simulateSensorFill() {
     return {
-        airTemp: 18,
+        air: 18,
         pressure: 1015,
-        surfaceTemp: 17,
-        bottomTemp: 14,
+        surface: 17,
+        bottom: 14,
         turbidity: 45,
         light: 60,
         depth: 3
@@ -2836,10 +2836,10 @@ function simulateSensorFill() {
 
 function fillScoutFields(data) {
 
-    document.getElementById("airTemp").value = data.airTemp || "";
+    document.getElementById("airTemp").value = data.air || "";
     document.getElementById("pressure").value = data.pressure || "";
-    document.getElementById("surfaceTemp").value = data.surfaceTemp || "";
-    document.getElementById("bottomTemp").value = data.bottomTemp || "";
+    document.getElementById("surfaceTemp").value = data.surface || "";
+    document.getElementById("bottomTemp").value = data.bottom || "";
     document.getElementById("turbidity").value = data.turbidity || "";
     document.getElementById("light").value = data.light || "";
     document.getElementById("depth").value = data.depth || "";
