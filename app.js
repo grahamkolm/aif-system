@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("clearBtn")?.addEventListener("click", () => {
         if (!confirm("Clear all scouts?")) return;
 
-        scouts = [];
+        window.scouts = [];
         localStorage.removeItem("scouts");
         localStorage.setItem("scouts", JSON.stringify([]));       
 
