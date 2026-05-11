@@ -5104,7 +5104,16 @@ function showDropFeedback() {
 }
 
 
-// 🌊 REPORT
+// =====================================================
+// 🌊 REPORT SYSTEM
+// =====================================================
+
+let reportMapInstance = null;
+let reportTileLayer = null;
+
+// =====================================================
+// 🌊 OPEN REPORT
+// =====================================================
 
 function openReport() {
 
@@ -5118,6 +5127,10 @@ function openReport() {
     buildReport();
 }
 
+// =====================================================
+// ❌ CLOSE REPORT
+// =====================================================
+
 function closeReport() {
 
     const screen = document.getElementById("reportScreen");
@@ -5128,170 +5141,165 @@ function closeReport() {
 
     document.body.style.overflow = "auto"; }
 
+// =====================================================
+// 📊 BUILD REPORT
+// =====================================================
+
 function buildReport() {
 
-    const allDrops =
-        Array.isArray(drops)
-            ? drops
-            : [];
+    const allDrops = Array.isArray(window.drops)
+        ? window.drops
+        : [];
 
-    const allScouts =
-        Array.isArray(window.scouts)
-            ? window.scouts
-            : [];
+    const allScouts = Array.isArray(window.scouts)
+        ? window.scouts
+        : [];
 
-    // ============================
-    // 📊 SUMMARY
-    // ============================
-    document.getElementById("repDrops").innerText =
-        allDrops.length;
+    // =================================================
+    // 📈 SUMMARY
+    // =================================================
 
-    const best =
-        allDrops.length
-            ? Math.max(...allDrops.map(d => d.spi || 0))
-            : 0;
+    const bestSPI = allDrops.length
+        ? Math.max(...allDrops.map(d => Number(d.spi) || 0))
+        : 0;
 
-    document.getElementById("repBest").innerText =
-        best.toFixed(1) + "%";
+    const avgSPI = allDrops.length
+        ? (
+            allDrops.reduce(
+                (sum, d) => sum + (Number(d.spi) || 0),
+                0
+            ) / allDrops.length
+        )
+        : 0;
 
-    const avg =
-        allDrops.length
-            ? (
-                allDrops.reduce(
-                    (s, d) => s + (d.spi || 0),
-                    0
-                ) / allDrops.length
-            )
-            : 0;
+    const repDrops = document.getElementById("repDrops");
+    const repBest = document.getElementById("repBest");
+    const repAvg = document.getElementById("repAvg");
+    const repScout = document.getElementById("repScout");
 
-    document.getElementById("repAvg").innerText =
-        avg.toFixed(1) + "%";
+    if (repDrops) repDrops.innerText = allDrops.length;
+    if (repBest) repBest.innerText = `${bestSPI.toFixed(1)}%`;
+    if (repAvg) repAvg.innerText = `${avgSPI.toFixed(1)}%`;
+    if (repScout) repScout.innerText = allScouts.length;
 
-    document.getElementById("repScout").innerText =
-        allScouts.length;
+    // =================================================
+    // 🎣 BEST ROD PLAN
+    // =================================================
 
-    // ============================
-    // 🎣 TOP ROD PLAN
-    // ============================
-    const ranked =
-        [...allScouts]
-            .sort(
-                (a, b) =>
-                    (b.impact || 0)
-                    -
-                    (a.impact || 0)
-            )
-            .slice(0, 3);
+    window.bestRodPlan = [...allScouts]
+        .sort((a, b) =>
+            (Number(b.impact) || 0) -
+            (Number(a.impact) || 0)
+        )
+        .slice(0, 3);
 
-    window.bestRodPlan = ranked;
-
-    // ============================
+    // =================================================
     // 📦 BUILD UI
-    // ============================
-    buildDropLog();
+    // =================================================
 
+    buildDropLog();
     buildReportMap();
 }
 
+// =====================================================
+// 📦 DROP LOG
+// =====================================================
+
 function buildDropLog() {
 
-    let container =
-        document.getElementById("dropLog");
+    const container = document.getElementById("dropLog");
 
     if (!container) return;
 
     container.innerHTML = "";
 
-    // ============================
+    // =================================================
     // 🎣 TOP RODS
-    // ============================
+    // =================================================
+
     if (
-        window.bestRodPlan &&
+        Array.isArray(window.bestRodPlan) &&
         window.bestRodPlan.length
     ) {
 
-        let rodCard =
-            document.createElement("div");
+        const rodCard = document.createElement("div");
 
-        rodCard.className =
-            "drop-card";
+        rodCard.className = "drop-card";
 
         rodCard.innerHTML = `
             <div class="drop-title">
                 🎣 Recommended Rod Placement
             </div>
 
-            ${
-                window.bestRodPlan.map((s, i) => `
+            ${window.bestRodPlan.map((s, i) => `
 
-                    <div style="
-                        margin-top:12px;
-                        padding:10px;
-                        border-radius:10px;
-                        background:rgba(255,255,255,0.04);
-                    ">
+                <div style="
+                    margin-top:12px;
+                    padding:10px;
+                    border-radius:10px;
+                    background:rgba(255,255,255,0.04);
+                ">
 
-                        <b>
-                            ${
-                                i === 0
-                                    ? "🥇 Rod 1"
-                                    : i === 1
-                                    ? "🥈 Rod 2"
-                                    : "🥉 Rod 3"
-                            }
-                        </b>
+                    <b>
+                        ${
+                            i === 0 ? "🥇 Rod 1" :
+                            i === 1 ? "🥈 Rod 2" :
+                            "🥉 Rod 3"
+                        }
+                    </b>
 
-                        <br>
+                    <br><br>
 
-                        Scout:
-                        #${s.id || "-"}
+                    Scout: #${s.id ?? "-"}
 
-                        <br>
+                    <br>
 
-                        📊 SPI:
-                        ${s.spi || "-"}
+                    📊 SPI: ${s.spi ?? "-"}
 
-                        <br>
+                    <br>
 
-                        🎯 Impact:
-                        ${s.impact || 0}
+                    🎯 Impact: ${s.impact ?? 0}
 
-                        <br>
+                    <br>
 
-                        🌡 Bottom:
-                        ${s.bottom || "-"}°C
+                    🌡 Bottom: ${s.bottom ?? "-"}°C
 
-                        <br>
+                    <br>
 
-                        📏 Depth:
-                        ${s.depth || "-"}m
+                    📏 Depth: ${s.depth ?? "-"}m
 
-                    </div>
+                </div>
 
-                `).join("")
-            }
+            `).join("")}
         `;
 
         container.appendChild(rodCard);
     }
 
-    // ============================
-    // 📦 DROP HISTORY
-    // ============================
-    drops.forEach((d, i) => {
+    // =================================================
+    // 🎯 DROP HISTORY
+    // =================================================
 
-        let time =
-            new Date(d.time)
-                .toLocaleString();
+    (window.drops || []).forEach((d, i) => {
 
-        let el =
-            document.createElement("div");
+        const el = document.createElement("div");
 
-        el.className =
-            "drop-card";
+        el.className = "drop-card";
+
+        const spi = Number(d.spi) || 0;
+
+        const spiColor =
+            spi >= 70
+                ? "#00ff9c"
+                : spi >= 50
+                ? "#ffaa00"
+                : "#ff5555";
+
+        const time = d.time
+            ? new Date(d.time).toLocaleString()
+            : "-";
 
         el.innerHTML = `
-
             <div class="drop-title">
                 🎯 Drop ${i + 1}
             </div>
@@ -5300,15 +5308,7 @@ function buildDropLog() {
 
             <div>
                 📊 SPI:
-                <b style="
-                    color:${
-                        d.spi >= 70
-                            ? '#00ff9c'
-                            : d.spi >= 50
-                            ? '#ffaa00'
-                            : '#ff5555'
-                    };
-                ">
+                <b style="color:${spiColor}">
                     ${d.spi ?? "-"}%
                 </b>
             </div>
@@ -5334,53 +5334,61 @@ function buildDropLog() {
             </div>
 
             <div>
-                📍 ${
+                📍
+                ${
                     d.lat
-                        ? d.lat.toFixed(5)
+                        ? Number(d.lat).toFixed(5)
                         : "-"
                 },
                 ${
                     d.lon
-                        ? d.lon.toFixed(5)
+                        ? Number(d.lon).toFixed(5)
                         : "-"
                 }
             </div>
-
         `;
 
         container.appendChild(el);
     });
 }
 
-let reportMapInstance;
+// =====================================================
+// 🗺 REPORT MAP
+// =====================================================
 
 function buildReportMap() {
 
+    const mapElement = document.getElementById("reportMap");
+
+    if (!mapElement) return;
+
     setTimeout(() => {
 
-        // ============================
-        // 🗺 INIT
-        // ============================
+        // =============================================
+        // 🗺 INIT MAP
+        // =============================================
+
         if (!reportMapInstance) {
 
-            reportMapInstance =
-                L.map('reportMap')
-                    .setView(
-                        [-26.2, 28.0],
-                        13
-                    );
+            reportMapInstance = L.map("reportMap").setView(
+                [-26.2, 28.0],
+                13
+            );
 
-            L.tileLayer(
-                'https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!V-1JWzUPBl1gXZqblK2_M1s7D_JDtWvXYeukcWmddQdETzBZETA7B7sKIKahp8V3o2EReVoLapMaSC5dXF-eMKv2$ ',
+            reportTileLayer = L.tileLayer(
+                "https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!X6zaTAQpLjrkWT-rpdRgyK2di55SS-1HmpBgnh35PEE6VSysgBfu3hEJvKACwytrOVocc7LykE3K03hRkuAskkWN$ ",
                 {
                     maxZoom: 19
                 }
-            ).addTo(reportMapInstance);
+            );
+
+            reportTileLayer.addTo(reportMapInstance);
         }
 
-        // ============================
-        // 🧹 CLEAR OLD
-        // ============================
+        // =============================================
+        // 🧹 CLEAR OLD MARKERS
+        // =============================================
+
         reportMapInstance.eachLayer(layer => {
 
             if (
@@ -5392,105 +5400,85 @@ function buildReportMap() {
 
         });
 
-        // ============================
-        // 🌍 TILE LAYER
-        // ============================
-        L.tileLayer(
-            'https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!V-1JWzUPBl1gXZqblK2_M1s7D_JDtWvXYeukcWmddQdETzBZETA7B7sKIKahp8V3o2EReVoLapMaSC5dXF-eMKv2$ ',
-            {
-                maxZoom: 19
-            }
-        ).addTo(reportMapInstance);
-
-        // ============================
+        // =============================================
         // 🎯 DROP MARKERS
-        // ============================
-        drops.forEach((d, i) => {
+        // =============================================
+
+        const bounds = [];
+
+        (window.drops || []).forEach((d, i) => {
 
             if (!d.lat || !d.lon) return;
 
-            L.marker([d.lat, d.lon])
+            const lat = Number(d.lat);
+            const lon = Number(d.lon);
+
+            bounds.push([lat, lon]);
+
+            L.marker([lat, lon])
                 .addTo(reportMapInstance)
                 .bindPopup(`
-
                     <b>🎯 Drop ${i + 1}</b>
 
                     <br><br>
 
-                    📊 SPI:
-                    ${d.spi ?? "-"}
+                    📊 SPI: ${d.spi ?? "-"}
 
                     <br>
 
-                    🌡 Surface:
-                    ${d.surface ?? "-"}
-
-                    °C
+                    🌡 Surface: ${d.surface ?? "-"}°C
 
                     <br>
 
-                    🌊 Bottom:
-                    ${d.bottom ?? "-"}
-
-                    °C
+                    🌊 Bottom: ${d.bottom ?? "-"}°C
 
                     <br>
 
-                    📏 Depth:
-                    ${d.depth ?? "-"}
-
-                    m
+                    📏 Depth: ${d.depth ?? "-"}m
 
                     <br>
 
-                    🫧 Oxygen:
-                    ${d.oxygen ?? "-"}
-
+                    🫧 Oxygen: ${d.oxygen ?? "-"}
                 `);
+        });
+
+        // =============================================
+        // 🎣 ROD ZONES
+        // =============================================
+
+        (window.bestRodPlan || []).forEach((s, i) => {
+
+            if (!s.lat || !s.lon) return;
+
+            const lat = Number(s.lat);
+            const lon = Number(s.lon);
+
+            L.circle(
+                [lat, lon],
+                {
+                    radius:
+                        i === 0 ? 60 :
+                        i === 1 ? 45 :
+                        30,
+
+                    color:
+                        i === 0 ? "#00ff9c" :
+                        i === 1 ? "#ffaa00" :
+                        "#66ccff",
+
+                    fillOpacity: 0.20
+                }
+            ).addTo(reportMapInstance);
 
         });
 
-        // ============================
-        // 🎣 ROD ZONES
-        // ============================
-        if (window.bestRodPlan) {
+        // =============================================
+        // 🌊 BEST ZONE
+        // =============================================
 
-            window.bestRodPlan.forEach((s, i) => {
+        const zone = getBestZone?.();
 
-                if (!s.lat || !s.lon) return;
-
-                L.circle(
-                    [s.lat, s.lon],
-                    {
-                        radius:
-                            i === 0
-                                ? 60
-                                : i === 1
-                                ? 45
-                                : 30,
-
-                        color:
-                            i === 0
-                                ? "#00ff9c"
-                                : i === 1
-                                ? "#ffaa00"
-                                : "#66ccff",
-
-                        fillOpacity: 0.20
-                    }
-
-                ).addTo(reportMapInstance);
-
-            });
-        }
-
-        // ============================
-        // 🎯 BEST DROP ZONE
-        // ============================
-        const zone =
-            getBestZone();
-
-        if (zone) {
+        if (zone && zone.lat && zone.lon) {
 
             L.circle(
                 [zone.lat, zone.lon],
@@ -5504,45 +5492,34 @@ function buildReportMap() {
                     fillColor: "#00ffaa",
                     fillOpacity: 0.15
                 }
-
             ).addTo(reportMapInstance);
         }
 
-        // ============================
-        // 🔧 FIX SIZE
-        // ============================
-setTimeout(() => {
+        // =============================================
+        // 🔧 FIX MAP SIZE
+        // =============================================
 
-    reportMapInstance.invalidateSize(true);
+        setTimeout(() => {
 
-if (drops.length > 0) {
+            reportMapInstance.invalidateSize(true);
 
-    const bounds = [];
+            if (bounds.length > 0) {
 
-    drops.forEach(d => {
+                reportMapInstance.fitBounds(bounds, {
+                    padding: [40, 40]
+                });
 
-        if (d.lat && d.lon) {
-            bounds.push([d.lat, d.lon]);
-        }
+            } else {
 
-    });
+                reportMapInstance.setView(
+                    [-26.2, 28.0],
+                    13
+                );
+            }
 
-    if (bounds.length > 0) {
+        }, 400);
 
-        reportMapInstance.fitBounds(bounds, {
-            padding: [40, 40]
-        });
-
-    } else {
-
-        reportMapInstance.setView(
-            [-26.2, 28.0],
-            13
-        );
-}
-
-}, 1200);
-
+    }, 200);
 }
 
                
