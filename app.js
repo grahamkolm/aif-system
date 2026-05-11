@@ -5515,23 +5515,23 @@ setTimeout(() => {
 
     reportMapInstance.invalidateSize(true);
 
-    if (drops.length > 0) {
+if (drops.length > 0) {
 
-        const bounds = [];
+    const bounds = [];
 
-        drops.forEach(d => {
+    drops.forEach(d => {
 
-            if (d.lat && d.lon) {
-                bounds.push([d.lat, d.lon]);
-            }
-
-        });
-
-        if (bounds.length > 0) {
-            reportMapInstance.fitBounds(bounds, {
-                padding: [40, 40]
-            });
+        if (d.lat && d.lon) {
+            bounds.push([d.lat, d.lon]);
         }
+
+    });
+
+    if (bounds.length > 0) {
+
+        reportMapInstance.fitBounds(bounds, {
+            padding: [40, 40]
+        });
 
     } else {
 
@@ -5542,8 +5542,19 @@ setTimeout(() => {
 
     }
 
-}, 1200);
+} else {
+
+    reportMapInstance.setView(
+        [-26.2, 28.0],
+        13
+    );
+
 }
+
+}, 1200);
+
+}
+
                
 // =====================================================
 // 🎯 BEST FISHING ZONE (SCOUTS)
