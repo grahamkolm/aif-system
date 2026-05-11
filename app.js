@@ -4083,7 +4083,7 @@ function openMap() {
         // ============================
         // 🎯 RENDER SCOUTS
         // ============================
-        renderScouts();
+        // renderScouts();
 
         // ============================
         // 🌊 ZONES
