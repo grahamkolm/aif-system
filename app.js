@@ -5545,7 +5545,6 @@ function buildReportMap() {
                     [-26.2, 28.0],
                     13
                 );
-            }
 
         }, 400);
         }
