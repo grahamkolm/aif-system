@@ -5418,29 +5418,59 @@ function buildReportMap() {
             L.marker([lat, lon])
                 .addTo(reportMapInstance)
                 .bindPopup(`
-                    <b>🎯 Drop ${i + 1}</b>
 
-                    <br><br>
+    <div class="scout-popup">
 
-                    📊 SPI: ${d.spi ?? "-"}
+        <div style="
+            font-size:20px;
+            font-weight:700;
+            margin-bottom:12px;
+        ">
+            🎯 Scout #${s.id ?? "-"}
+        </div>
 
-                    <br>
+        <div><b>📊 SPI:</b> ${s.spi ?? "-"}%</div>
 
-                    🌡 Surface: ${d.surface ?? "-"}°C
+        <div><b>🌡 Surface:</b> ${s.surface ?? "-"}°C</div>
 
-                    <br>
+        <div><b>🌊 Bottom:</b> ${s.bottom ?? "-"}°C</div>
 
-                    🌊 Bottom: ${d.bottom ?? "-"}°C
+        <div><b>📏 Depth:</b> ${s.depth ?? "-"} m</div>
 
-                    <br>
+        <div><b>🫧 Oxygen:</b> ${s.oxygen ?? "-"}</div>
 
-                    📏 Depth: ${d.depth ?? "-"}m
+        <div><b>🌬 Wind:</b> ${s.wind ?? "-"} km/h</div>
 
-                    <br>
+        <div><b>🧭 Direction:</b> ${s.windDir ?? "-"}</div>
 
-                    🫧 Oxygen: ${d.oxygen ?? "-"}
-                `);
-        });
+        <div><b>☁ Pressure:</b> ${s.pressure ?? "-"} hPa</div>
+
+        <div><b>💡 Light:</b> ${s.light ?? "-"}%</div>
+
+        <div><b>🐟 Activity:</b> ${s.activity ?? "-"}</div>
+
+        <div><b>👁 Clarity:</b> ${s.clarity ?? "-"}</div>
+
+        <div><b>🌿 Structure:</b> ${s.structure ?? "-"}</div>
+
+        <hr style="
+            border:none;
+            border-top:1px solid rgba(255,255,255,0.15);
+            margin:12px 0;
+        ">
+
+        <div style="
+            font-size:12px;
+            opacity:0.8;
+        ">
+            📍 ${s.lat?.toFixed(5) ?? "-"},
+            ${s.lon?.toFixed(5) ?? "-"}
+        </div>
+
+    </div>
+
+`)
+
 
         // =============================================
         // 🎣 ROD ZONES
