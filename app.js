@@ -4149,116 +4149,101 @@ function renderDrops() {
     window.dropMarkers = [];
 
 
- // ============================
+    // ============================
     // 🎯 DRAW NEW
     // ============================
-    drops.forEach(drop => {
-
-        if (
-            drop.lat == null ||
-            drop.lon == null
-        ) return;
-
-        const marker = L.marker(
-            [drop.lat, drop.lon],
-            {
-                icon: dropIcon
-            }
-        )
-        .addTo(mapInstance)
-        .bindPopup(            🎯 SPI:             ${drop.spi ?? "-"}%        );
-
-        window.dropMarkers.push(
-            marker
-        );
-    });
-}
-
-
-// ============================
-// 🎯 RENDER SCOUTS
-// ============================
-function renderScouts() {
-
-    if (!mapInstance) return;
-
-    // ============================
-    // 🧹 REMOVE OLD
-    // ============================
-    window.scoutMarkers.forEach(
-        marker => {
-
-            try {
-
-                mapInstance.removeLayer(
-                    marker
-                );
-
-            } catch (err) {
-
-                console.warn(
-                    "Scout remove failed",
-                    err
-                );
-            }
-        }
-    );
-
-    window.scoutMarkers = [];
-
-
-    // Render new
-    window.scouts.forEach((s, index) => {
-
-        if (
-            s.lat == null ||
-            s.lon == null
-        ) return;
-
-        // Offset stops overlap
-        const offsetLat =
-            s.lat + ((index + 1) * 0.00002);
-
-        const offsetLon =
-            s.lon + ((index + 1) * 0.00002);
-
-        const popup = `
-        <b>🎯 Scout #${s.id ?? index + 1}</b><br><br>
-
-        <b>SPI:</b> ${s.spi ?? "-"}%<br>
-        <b>Pressure:</b> ${s.pressure ?? "-"} hPa<br>
-        <b>Light:</b> ${s.light ?? "-"}%<br>
-        <b>Depth:</b> ${s.depth ?? "-"} m<br>
-        <b>Bottom:</b> ${s.bottom ?? "-"}°C<br><br>
-
-        <b>Activity:</b> ${s.activity ?? "-"}<br>
-        <b>Clarity:</b> ${s.clarity ?? "-"}<br>
-        <b>Structure:</b> ${s.structure ?? "-"}<br>
-        `;
-
-        const marker = L.marker(
-            [offsetLat, offsetLon],
-            { icon: scoutIcon }
-        )
-        .addTo(mapInstance)
-        .bindPopup(popup);
-
-        marker.on("click", () => {
-
-            selectedScout = s;
+    window.scouts.forEach(
+        (s, index) => {
 
             if (
-                typeof updateDashboardFromScout ===
-                "function"
-            ) {
+                s.lat == null ||
+                s.lon == null
+            ) return;
 
-                updateDashboardFromScout(s);
-            }
-        });
+            // ============================
+            // 📍 OFFSET MARKERS
+            // ============================
+            const offsetLat =
+                s.lat +
+                ((index + 1) * 0.00002);
 
-        window.scoutMarkers.push(marker);
-    });
+            const offsetLon =
+                s.lon +
+                ((index + 1) * 0.00002);
+
+            const popup = `
+            <b>
+            🎯 Scout #${s.id ?? index + 1}
+            </b>
+            <br><br>
+
+            <b>SPI:</b>
+            ${s.spi ?? "-"}%
+            <br>
+
+            <b>Pressure:</b>
+            ${s.pressure ?? "-"} hPa
+            <br>
+
+            <b>Light:</b>
+            ${s.light ?? "-"}%
+            <br>
+
+            <b>Depth:</b>
+            ${s.depth ?? "-"} m
+            <br>
+
+            <b>Bottom:</b>
+            ${s.bottom ?? "-"}°C
+            <br><br>
+
+            <b>Activity:</b>
+            ${s.activity ?? "-"}
+            <br>
+
+            <b>Clarity:</b>
+            ${s.clarity ?? "-"}
+            <br>
+
+            <b>Structure:</b>
+            ${s.structure ?? "-"}
+            `;
+
+            const marker = L.marker(
+                [offsetLat, offsetLon],
+                {
+                    icon: scoutIcon
+                }
+            )
+            .addTo(mapInstance)
+            .bindPopup(popup);
+
+            // ============================
+            // 🎯 SELECT SCOUT
+            // ============================
+            marker.on("click", () => {
+
+                selectedScout = s;
+
+                if (
+                    typeof
+                    updateDashboardFromScout ===
+                    "function"
+                ) {
+
+                    updateDashboardFromScout(
+                        s
+                    );
+                }
+            });
+
+            window.scoutMarkers.push(
+                marker
+            );
+        }
+    );
 }
+``
 
 // ============================
 // 🌊 BEST ZONE
