@@ -3959,6 +3959,22 @@ let interactionTimeout = null;
 let bestZoneCircle = null;
 
 // ============================
+// 🗺️ MAP GLOBALS
+// ============================
+window.dropMarkers =
+    window.dropMarkers || [];
+
+window.scoutMarkers =
+    window.scoutMarkers || [];
+
+window.scouts =
+    window.scouts || [];
+
+window.drops =
+    window.drops || [];
+
+
+// ============================
 // 🗺️ OPEN MAP
 // ============================
 function openMap() {
@@ -3974,9 +3990,9 @@ function openMap() {
 
     document.body.style.overflow = "hidden";
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
 
-        // ============================
+// ============================
         // 📍 SAFE LOCATION
         // ============================
         let lat = userLocation?.lat;
@@ -3989,7 +4005,9 @@ function openMap() {
             isNaN(lon)
         ) {
 
-            console.warn("GPS fallback used");
+            console.warn(
+                "GPS fallback used"
+            );
 
             lat = -26.2;
             lon = 28.0;
@@ -4000,14 +4018,21 @@ function openMap() {
         // ============================
         if (!mapInstance) {
 
-            mapInstance = L.map("mapContainer", {
-                zoomControl: true
-            }).setView([lat, lon], 13);
-
-            L.tileLayer(
-                "https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!WcgL4Rx00PoXCL91yDa5k9-cF7Avku31Pk44UeWkHU21tcxEcyHXGMn89kuy_ix4moXX3xt7d2KH60fOr_W7k4aN$ ",
+            mapInstance = L.map(
+                "mapContainer",
                 {
-                    attribution: "",
+                    zoomControl: true
+                }
+            ).setView([lat, lon], 13);
+
+            // ============================
+            // 🌍 TILE LAYER
+            // ============================
+            L.tileLayer(
+                "https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!SIpIrsTK7U1YnaADIwp2ASd5E5dNxk8zZOEm-qu2tgSinKWVYnZ4QS5ihjnQRghAmYXHNENVTQ9pYVRUSrgVbWD6$ ",
+                {
+                    attribution:
+                        '© OpenStreetMap contributors',
                     maxZoom: 19
                 }
             ).addTo(mapInstance);
@@ -4027,17 +4052,22 @@ function openMap() {
                 "moveend zoomend",
                 () => {
 
-                    clearTimeout(interactionTimeout);
+                    clearTimeout(
+                        interactionTimeout
+                    );
 
-                    interactionTimeout = setTimeout(() => {
+                    interactionTimeout =
+                        setTimeout(() => {
 
-                        followUser = true;
+                            followUser = true;
 
-                    }, 5000);
+                        }, 5000);
                 }
             );
 
-            console.log("✅ Map initialized");
+            console.log(
+                "✅ Map initialized"
+            );
         }
 
         // ============================
@@ -4060,7 +4090,10 @@ function openMap() {
         // ============================
         drawDropZone();
 
-        if (typeof drawScoutZone === "function") {
+        if (
+            typeof drawScoutZone ===
+            "function"
+        ) {
             drawScoutZone();
         }
 
@@ -4070,12 +4103,18 @@ function openMap() {
         setTimeout(() => {
 
             if (mapInstance) {
+
                 mapInstance.invalidateSize();
+
+                mapInstance.setView(
+                    [lat, lon],
+                    13
+                );
             }
 
-        }, 250);
+        }, 300);
 
-    }, 200);
+    });
 }
 
 // ============================
@@ -4085,21 +4124,34 @@ function renderDrops() {
 
     if (!mapInstance) return;
 
-    // Clear old markers
-    window.dropMarkers.forEach(marker => {
+    // ============================
+    // 🧹 CLEAR OLD
+    // ============================
+    window.dropMarkers.forEach(
+        marker => {
 
-        try {
-            mapInstance.removeLayer(marker);
-        }
+            try {
 
-        catch (err) {
-            console.warn("Drop remove failed", err);
+                mapInstance.removeLayer(
+                    marker
+                );
+
+            } catch (err) {
+
+                console.warn(
+                    "Drop remove failed",
+                    err
+                );
+            }
         }
-    });
+    );
 
     window.dropMarkers = [];
 
-    // Draw fresh
+
+ // ============================
+    // 🎯 DRAW NEW
+    // ============================
     drops.forEach(drop => {
 
         if (
@@ -4109,14 +4161,19 @@ function renderDrops() {
 
         const marker = L.marker(
             [drop.lat, drop.lon],
-            { icon: dropIcon }
+            {
+                icon: dropIcon
+            }
         )
         .addTo(mapInstance)
-        .bindPopup(`🎯 SPI: ${drop.spi ?? "-" }%`);
+        .bindPopup(            🎯 SPI:             ${drop.spi ?? "-"}%        );
 
-        window.dropMarkers.push(marker);
+        window.dropMarkers.push(
+            marker
+        );
     });
 }
+
 
 // ============================
 // 🎯 RENDER SCOUTS
@@ -4125,19 +4182,30 @@ function renderScouts() {
 
     if (!mapInstance) return;
 
-    // Remove old
-    window.scoutMarkers.forEach(marker => {
+    // ============================
+    // 🧹 REMOVE OLD
+    // ============================
+    window.scoutMarkers.forEach(
+        marker => {
 
-        try {
-            mapInstance.removeLayer(marker);
-        }
+            try {
 
-        catch (err) {
-            console.warn("Scout remove failed", err);
+                mapInstance.removeLayer(
+                    marker
+                );
+
+            } catch (err) {
+
+                console.warn(
+                    "Scout remove failed",
+                    err
+                );
+            }
         }
-    });
+    );
 
     window.scoutMarkers = [];
+
 
     // Render new
     window.scouts.forEach((s, index) => {
