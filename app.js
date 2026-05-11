@@ -5376,7 +5376,7 @@ function buildReportMap() {
             );
 
             reportTileLayer = L.tileLayer(
-                "https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!X6zaTAQpLjrkWT-rpdRgyK2di55SS-1HmpBgnh35PEE6VSysgBfu3hEJvKACwytrOVocc7LykE3K03hRkuAskkWN$ ",
+                "https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!Tb194Wlyq4EjnYCjybW90eEzseIhWsHssSEeRw5GP6VnsjOSbdAC4KQoGQiHSV16irbMGB3934q5h2BDidROYe0m$ ",
                 {
                     maxZoom: 19
                 }
@@ -5419,58 +5419,45 @@ function buildReportMap() {
                 .addTo(reportMapInstance)
                 .bindPopup(`
 
-    <div class="scout-popup">
+                    <div class="scout-popup">
 
-        <div style="
-            font-size:20px;
-            font-weight:700;
-            margin-bottom:12px;
-        ">
-            🎯 Scout #${s.id ?? "-"}
-        </div>
+                        <div style="
+                            font-size:20px;
+                            font-weight:700;
+                            margin-bottom:12px;
+                        ">
+                            🎯 Drop #${i + 1}
+                        </div>
 
-        <div><b>📊 SPI:</b> ${s.spi ?? "-"}%</div>
+                        <div><b>📊 SPI:</b> ${d.spi ?? "-"}%</div>
 
-        <div><b>🌡 Surface:</b> ${s.surface ?? "-"}°C</div>
+                        <div><b>🌡 Surface:</b> ${d.surface ?? "-"}°C</div>
 
-        <div><b>🌊 Bottom:</b> ${s.bottom ?? "-"}°C</div>
+                        <div><b>🌊 Bottom:</b> ${d.bottom ?? "-"}°C</div>
 
-        <div><b>📏 Depth:</b> ${s.depth ?? "-"} m</div>
+                        <div><b>📏 Depth:</b> ${d.depth ?? "-"} m</div>
 
-        <div><b>🫧 Oxygen:</b> ${s.oxygen ?? "-"}</div>
+                        <div><b>🫧 Oxygen:</b> ${d.oxygen ?? "-"}</div>
 
-        <div><b>🌬 Wind:</b> ${s.wind ?? "-"} km/h</div>
+                        <hr style="
+                            border:none;
+                            border-top:1px solid rgba(255,255,255,0.15);
+                            margin:12px 0;
+                        ">
 
-        <div><b>🧭 Direction:</b> ${s.windDir ?? "-"}</div>
+                        <div style="
+                            font-size:12px;
+                            opacity:0.8;
+                        ">
+                            📍 ${lat.toFixed(5)},
+                            ${lon.toFixed(5)}
+                        </div>
 
-        <div><b>☁ Pressure:</b> ${s.pressure ?? "-"} hPa</div>
+                    </div>
 
-        <div><b>💡 Light:</b> ${s.light ?? "-"}%</div>
+                `);
 
-        <div><b>🐟 Activity:</b> ${s.activity ?? "-"}</div>
-
-        <div><b>👁 Clarity:</b> ${s.clarity ?? "-"}</div>
-
-        <div><b>🌿 Structure:</b> ${s.structure ?? "-"}</div>
-
-        <hr style="
-            border:none;
-            border-top:1px solid rgba(255,255,255,0.15);
-            margin:12px 0;
-        ">
-
-        <div style="
-            font-size:12px;
-            opacity:0.8;
-        ">
-            📍 ${s.lat?.toFixed(5) ?? "-"},
-            ${s.lon?.toFixed(5) ?? "-"}
-        </div>
-
-    </div>
-
-`)
-
+        });
 
         // =============================================
         // 🎣 ROD ZONES
@@ -5545,9 +5532,12 @@ function buildReportMap() {
                     [-26.2, 28.0],
                     13
                 );
+            }
 
         }, 400);
-        }
+
+    }, 100);
+}
                
 // =====================================================
 // 🎯 BEST FISHING ZONE (SCOUTS)
