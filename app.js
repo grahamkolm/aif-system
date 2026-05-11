@@ -5539,12 +5539,6 @@ if (drops.length > 0) {
             [-26.2, 28.0],
             13
         );
-
-    reportMapInstance.setView(
-        [-26.2, 28.0],
-        13
-    );
-
 }
 
 }, 1200);
