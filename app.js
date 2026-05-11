@@ -4029,10 +4029,10 @@ function openMap() {
             // 🌍 TILE LAYER
             // ============================
             L.tileLayer(
-                "https://urldefense.com/v3/__https://*7Bs*7D.tile.openstreetmap.org/*7Bz*7D/*7Bx*7D/*7By*7D.png__;JSUlJSUlJSU!!LtDMhTYuqQ!SIpIrsTK7U1YnaADIwp2ASd5E5dNxk8zZOEm-qu2tgSinKWVYnZ4QS5ihjnQRghAmYXHNENVTQ9pYVRUSrgVbWD6$ ",
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
                     attribution:
-                        '© OpenStreetMap contributors',
+                        '&copy; OpenStreetMap contributors',
                     maxZoom: 19
                 }
             ).addTo(mapInstance);
